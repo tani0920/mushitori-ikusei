@@ -96,7 +96,7 @@ p{margin:.3em 0}
 
 /* 下のタブ（スマホで親指がとどく場所） */
 #tabs{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;justify-content:center;gap:6px;padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px));background:#14284aee;border-top:2px solid var(--edge)}
-#tabs button{font:inherit;flex:1;max-width:150px;font-size:14px;color:var(--ink);background:transparent;border:2px solid #f7f1df55;border-radius:10px;padding:.5em .2em;cursor:pointer;line-height:1.2}
+#tabs button{font:inherit;flex:1;max-width:150px;font-size:13px;color:var(--ink);background:transparent;border:2px solid #f7f1df55;border-radius:10px;padding:.5em .2em;cursor:pointer;line-height:1.2}
 #tabs button .ic{display:block;font-size:20px;line-height:1.1}
 #tabs button.on{background:var(--sun);color:#1b130c;border-color:var(--sun)}
 #tabs button .badge{position:absolute;transform:translate(.4em,-1.4em);background:var(--low);color:#fff;font-size:10px;border-radius:999px;padding:0 .45em}
@@ -246,6 +246,59 @@ p{margin:.3em 0}
 .spark{position:absolute;width:10px;height:10px;border-radius:50%;background:#ffe27a;box-shadow:0 0 8px #ffe27a;animation:spark 1.6s ease-out infinite;opacity:0}
 @keyframes spark{0%{opacity:0;transform:scale(.2)}30%{opacity:1}100%{opacity:0;transform:translateY(-40px) scale(1.2)}}
 
+/* ステータス表・結果発表 */
+.stats{display:grid;grid-template-columns:auto 1fr auto;gap:3px 8px;font-size:13px;align-items:center}
+.stats .bar{height:10px}
+.stats .bar i{background:var(--sun)}
+.stats .mk{color:var(--sun);width:1.5em;text-align:center}
+.result{background:var(--paper);color:var(--paper-ink);border-radius:8px;padding:.8em 1em;line-height:1.7}
+.result h3{color:#5a3a10;border-color:var(--paper-line);margin-top:.4em}
+.result .big{font-size:22px;color:#5a3a10;text-align:center;margin:.2em 0}
+.result .stats .mk{color:#7a5a20}
+.result .stats .bar{background:#0002;border-color:#7a5a20}
+.result .stats .bar i{background:#c08030}
+.result .pic{width:min(50%,200px);aspect-ratio:1;margin:0 auto}
+.result .pic svg{width:100%;height:100%}
+.result .born{display:inline-block;background:#5a3a10;color:#f3ead2;border-radius:999px;padding:0 .7em;font-size:12px}
+.tag{display:inline-block;background:#14284a;border:1px solid #f7f1df88;border-radius:999px;padding:0 .6em;font-size:11px;color:#fff;vertical-align:middle}
+.tag.born{background:#5a3a10}
+.choice{display:flex;flex-direction:column;gap:.5em;margin-top:.6em}
+.choice .btn{text-align:left;display:flex;justify-content:space-between;gap:.5em;align-items:center}
+.choice .btn small{display:block;font-size:11px;color:var(--mute)}
+.choice .btn.pri small{color:#1b130c99}
+#msgLayer input{font:inherit;width:100%;padding:.4em .6em;border-radius:6px;border:2px solid var(--edge);background:#fff;color:#1b130c;margin-top:.5em}
+/* 虫ずもう */
+.rivals{display:grid;gap:8px}
+.rival{background:var(--win);border:3px solid var(--edge);border-radius:8px;padding:.5em .8em;display:flex;gap:10px;align-items:center;box-shadow:0 0 0 2px var(--win)}
+.rival .pic{width:56px;height:56px;flex:none}
+.rival .pic svg{width:100%;height:100%}
+.rival b{color:var(--sun);font-weight:400}
+.rival.won{border-color:var(--ok)}
+.rival.locked{opacity:.5}
+.rival .small{display:block}
+#arena{position:fixed;inset:0;z-index:150;background:linear-gradient(#f0a060,#f8d8a0 50%,#8a6a3a 51%,#5a3d22);display:flex;flex-direction:column;padding:max(12px,env(safe-area-inset-top,0px)) 12px max(12px,env(safe-area-inset-bottom,0px))}
+#arena .ring{position:relative;flex:1;max-height:46vh;display:flex;align-items:flex-end;justify-content:space-around;padding-bottom:4%}
+#arena .fighter{width:34%;max-width:200px;aspect-ratio:1;position:relative;transition:transform .25s}
+#arena .fighter svg{width:100%;height:100%;filter:drop-shadow(0 6px 4px #0006)}
+#arena .fighter.mine svg{transform:scaleX(-1)}
+#arena .fighter.hit{animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px) rotate(-4deg)}75%{transform:translateX(8px) rotate(4deg)}}
+#arena .fighter.act{transform:translateY(-14px) scale(1.06)}
+#arena .fighter.mine.act{transform:translateY(-14px) scale(1.06)}
+#arena .fighter.down{transform:rotate(90deg) translateY(20px);opacity:.7}
+#arena .info{position:absolute;top:0;background:#14284acc;border:2px solid var(--edge);border-radius:8px;padding:.3em .6em;font-size:12px;color:#fff;max-width:48%}
+#arena .info.l{left:0}#arena .info.r{right:0}
+#arena .info .bar{width:100%;height:8px;margin-top:2px}
+#arena .vs{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);font-size:40px;color:var(--sun);text-shadow:3px 3px 0 #5a2a10;pointer-events:none}
+#arena .dohyo{position:absolute;left:10%;right:10%;bottom:0;height:14%;border-radius:50%;background:#c8a060;border:4px solid #8a6a3a}
+#arena .log{background:var(--win);border:3px solid var(--edge);border-radius:6px;padding:.5em .8em;min-height:5.5em;max-height:30vh;overflow-y:auto;font-size:15px;line-height:1.6;color:#fff}
+#arena .log div{animation:fadein .3s}
+@keyframes fadein{from{opacity:0;transform:translateY(4px)}to{opacity:1}}
+#arena .log .my{color:var(--sun)}
+#arena .log .ko{color:#ff9}
+#arena .ctl{display:flex;justify-content:flex-end;gap:.5em;margin-top:8px}
+#arena .cheer{position:absolute;font-size:22px;animation:cheerUp 1s forwards;pointer-events:none}
+@keyframes cheerUp{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-50px)}}
 @media (min-width:600px){ #tabs button{font-size:15px} }
 </style>
 
@@ -257,8 +310,9 @@ p{margin:.3em 0}
 <div id="tabs" hidden>
   <button type="button" data-t="home"><span class="ic">🏠</span>おうち</button>
   <button type="button" data-t="out"><span class="ic">🌳</span>そと</button>
+  <button type="button" data-t="sumo"><span class="ic">🏟</span>ずもう</button>
   <button type="button" data-t="dex"><span class="ic">📖</span>ずかん</button>
-  <button type="button" data-t="opt"><span class="ic">⚙</span>オプション</button>
+  <button type="button" data-t="opt"><span class="ic">⚙</span>その他</button>
 </div>
 <div class="saveMark" id="saveMark">セーブしました</div>
 
@@ -276,9 +330,23 @@ const SAVE_KEY = KEY_PRE + 'munakata-mushisodate-v1';
 const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
-const GAME_VER = '0.1.0';
-const BUILD = '20261023-2050';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const GAME_VER = '0.2.0';
+const BUILD = '20261023-2312';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
+  {v:'0.2.0', date:'2026-10-24', items:[
+    '虫を「むなかた虫とり日記」の虫にそろえた（モンシロチョウ・アゲハ・カラスアゲハ・オオムラサキ・ショウリョウバッタ・トノサマバッタ・オオカマキリ・コクワガタ・ノコギリ・ヒラタ・ミヤマ・オオクワガタ・カブトムシ＋スズムシ）。大島を追加',
+    '虫とり日記でミアレカブトに出会っていると、宗像大社で「ミアレカブトのたまご」が見つかる（同じ端末・同じブラウザで）',
+    'そだつ期間を短くした（モンシロチョウ3日、カブトムシ6日など）。成虫はケースで長くくらし、虫ずもうに出られる',
+    '「予告」：次のすがたまで1日をきると「明日の朝、羽化するかも」などと教えてくれる',
+    'つれてかえるとき、ケースの広さ（ふつう／広い）と、おき場所（げんかん・へや・ベランダの日かげ）をえらぶ。育て方でステータスの伸びがかわる',
+    '脱皮・さなぎ・羽化のたびに、それまでの世話がステータス（たいりょく・ちから・まもり・すばやさ・かいふく）になる',
+    '羽化のとき「けっか発表」：大きさ・オスメス・性格・ステータス・わざが決まり、名前をつけられる',
+    '性格：食いしんぼう・やんちゃ・のんびり・がまん強い・おくびょう・まけずぎらい・人なつっこい。育て方で決まり、観察の文と虫ずもうの動きにあらわれる',
+    '生まれ：つかまえた場所が虫に残る（城山うまれはまもりが強い、さつき松原うまれはすばやい、など）。夜につかまえた虫は夜型',
+    'わざ：種類ごとの基本わざ＋育て方で決まる得意わざ（大ツノスラム・かたまりガード・うっとりソング など）',
+    '虫ずもう（「ずもう」タブ）：虫とり日記のライバル6人と対戦。コマンドはなく、虫が自分で戦う。実況つき。負けたときは、どこが足りなかったかと育て方のヒントが出る',
+    'トラブル：しめりすぎとよごれで「カビ」、古いエサに「アリ」。そうじで直る',
+    'ずかんに本物の大きさと季節、生まれの記録、さいだいサイズの記録を追加']},
   {v:'0.1.0', date:'2026-10-23', items:[
     'さいしょのデモ。宗像の5つの場所（宗像大社・城山・さつき松原・釣川・赤間）で虫をみつけて、おうちで3つのケースでそだてる',
     '虫は7しゅるい（モンシロチョウ・ショウリョウバッタ・アゲハチョウ・オオカマキリ・スズムシ・ノコギリクワガタ・カブトムシ）＋見るだけのゲンジボタル',
@@ -418,56 +486,169 @@ const dg = n=> `${n}D`;   // どんぐり（虫とり日記と同じ、子ども
 const ITEMS = {
   zeri:    {name:'こん虫ゼリー', price:5, desc:'カブトムシ・クワガタのごはん'},
   kyabetsu:{name:'キャベツの葉', price:2, desc:'モンシロチョウの幼虫のごはん'},
-  mikan:   {name:'ミカンの葉',   price:3, desc:'アゲハチョウの幼虫のごはん'},
+  mikan:   {name:'ミカンの葉',   price:3, desc:'アゲハ・カラスアゲハの幼虫のごはん'},
+  enoki:   {name:'エノキの葉',   price:6, desc:'オオムラサキの幼虫のごはん。城山でひろえる'},
   nasu:    {name:'ナス',         price:3, desc:'スズムシのごはん'},
   koorogi: {name:'エサ用コオロギ', price:4, desc:'オオカマキリのごはん（生きた虫しか食べない）'},
   kusa:    {name:'草',           price:0, desc:'バッタのごはん。にわや公園でとれる'},
   mitsu:   {name:'さとう水',     price:0, desc:'チョウの成虫のごはん。おうちで作れる'},
+  wide:    {name:'広いケース',   price:30, desc:'虫がよく動けて、すばやくなる。1ぴきに1つ'},
 };
+/* 虫のデータ：名前・絵の形（shape）・色（c）・めずらしさ（rank）・強さのもと（lv）は「むなかた虫とり日記」と同じ。
+   plan: 育ちかた。larva=幼虫、pupa=さなぎ、adult=成虫。days はそのすがたでいる日数（成虫はケースでくらす日数のめやす）
+   幼虫→幼虫は「脱皮」、幼虫→さなぎは「さなぎになる」、さなぎ→成虫と、さいごの幼虫→成虫は「羽化」
+   じっさいの虫はもっと長くかかるので、ずかんの「じっさいは」に書いてある。size は成虫の大きさ（mm、オスのめやす） */
 const BUGS = {
-  monshiro:  {name:'モンシロチョウ', kind:'butterfly', rank:1, time:['asa','hiru'], spots:['any'], food:'kyabetsu', foodAdult:'mitsu',
-    plan:[{k:'larva',days:2},{k:'larva',days:2},{k:'pupa',days:2},{k:'adult',days:3}],
-    desc:'畑や公園でよく見る白いチョウ。幼虫はキャベツの葉を食べる「アオムシ」。', real:'幼虫からさなぎまで2〜3週間、さなぎから1〜2週間で羽化する。',
-    care:'キャベツの葉を毎日新しいものにとりかえる。フンはこまめにそうじ。さなぎはさわらない。', find:'キャベツの葉のうらで、小さなアオムシをみつけた！'},
-  shoryo:    {name:'ショウリョウバッタ', kind:'grass', rank:1, time:['asa','hiru','yu'], spots:['any'], food:'kusa', foodAdult:'kusa',
-    plan:[{k:'larva',days:2},{k:'larva',days:2},{k:'larva',days:2},{k:'adult',days:4}],
-    desc:'先のとがった顔の大きなバッタ。さなぎにならず、脱皮をくりかえして大きくなる。', real:'幼虫は夏のあいだに5〜6回脱皮して、成虫になる。',
-    care:'新しい草（イネ科）を毎日入れる。きりふきで少ししめらせる。', find:'草むらで、小さなバッタの幼虫がピョンとはねた！'},
-  ageha:     {name:'アゲハチョウ', kind:'butterfly', rank:2, time:['hiru'], spots:['akama','taisha'], food:'mikan', foodAdult:'mitsu',
-    plan:[{k:'larva',days:2},{k:'larva',days:3},{k:'pupa',days:3},{k:'adult',days:3}],
-    desc:'黄色と黒のもようが美しい大きなチョウ。幼虫はミカンの木にいて、おどろくと黄色いツノを出す。', real:'幼虫は4回脱皮して、約2〜3週間でさなぎになる。',
-    care:'ミカンやサンショウの葉を毎日とりかえる。さなぎになる前に、幼虫はケースの中をうろうろするよ。', find:'ミカンの木の葉に、鳥のフンみたいな幼虫がいた！ アゲハの幼虫だ！'},
-  kamakiri:  {name:'オオカマキリ', kind:'mantis', rank:2, time:['hiru','yu'], spots:['matsubara','tsurikawa'], food:'koorogi', foodAdult:'koorogi',
-    plan:[{k:'larva',days:3},{k:'larva',days:3},{k:'adult',days:6}],
-    desc:'大きなカマで虫をつかまえるハンター。生きている虫しか食べない。', real:'春に卵からかえって、7回くらい脱皮しながら、秋に成虫になる。',
-    care:'生きた虫（コオロギなど）をあたえる。1つのケースに1ぴきだけ（いっしょにすると共食いする）。', find:'草のかげで、カマをかまえた小さなカマキリの幼虫をみつけた！'},
-  suzumushi: {name:'スズムシ', kind:'cricket', rank:2, time:['yu','yoru'], spots:['tsurikawa','akama'], food:'nasu', foodAdult:'nasu',
-    plan:[{k:'larva',days:3},{k:'larva',days:3},{k:'adult',days:5}],
-    desc:'「リーンリーン」と鳴く、秋の虫。鳴くのはオスだけ。夜になると鳴きだす。', real:'卵からかえった幼虫は、約2か月で成虫になる。',
+  monshiro:  {name:'モンシロチョウ', shape:'butterfly', c:['#ffffff','#3a3a3a','#2a2a2a','#f6f6ee'], rank:1, lv:1, spd:4, time:['asa','hiru'], spots:['any'], food:'kyabetsu', foodAdult:'mitsu', size:[45,55],
+    plan:[{k:'larva',days:1},{k:'larva',days:1},{k:'pupa',days:1},{k:'adult',days:20}],
+    desc:'畑や田んぼのまわりでよく見る白いチョウ。幼虫はキャベツの葉を食べる「アオムシ」。', info:'はねを広げて約5cm。3〜11月。', real:'幼虫からさなぎまで2〜3週間、さなぎから1〜2週間で羽化する。',
+    care:'幼虫（アオムシ）をキャベツの葉で育てると、さなぎ→チョウになるのを観察できる。葉は毎日新しいものに。', find:'キャベツの葉のうらで、小さなアオムシをみつけた！'},
+  ageha:     {name:'アゲハチョウ', shape:'butterfly', c:['#222222','#222222','#e04040','#f0d850'], rank:2, lv:6, spd:4, time:['asa','hiru'], spots:['akama','taisha'], food:'mikan', foodAdult:'mitsu', size:[80,95],
+    plan:[{k:'larva',days:1},{k:'larva',days:2},{k:'pupa',days:1},{k:'adult',days:20}],
+    desc:'黄色と黒のもようが美しい大きなチョウ。幼虫はミカンの木にいて、おどろくと黄色いツノを出す。', info:'はねを広げて約8〜9cm。3〜10月。', real:'幼虫は4回脱皮して、約2〜3週間でさなぎになる。',
+    care:'幼虫をミカンやサンショウの葉で育てる。さなぎになる前に、幼虫はケースの中をうろうろするよ。', find:'ミカンの木の葉に、鳥のフンみたいな幼虫がいた！ アゲハの幼虫だ！'},
+  karasu:    {name:'カラスアゲハ', shape:'butterfly', c:['#1a2a2a','#111111','#3ac0a0','#2a4a5a'], rank:3, lv:14, spd:4, time:['asa','hiru'], spots:['joyama','oshima'], food:'mikan', foodAdult:'mitsu', size:[85,120],
+    plan:[{k:'larva',days:2},{k:'larva',days:2},{k:'pupa',days:1},{k:'adult',days:20}],
+    desc:'黒いはねが、光の角度で青緑にかがやくアゲハ。山の林で見つかる。', info:'はねを広げて約8〜12cm。4〜9月。', real:'幼虫はカラスザンショウの葉を食べて、3〜4週間でさなぎになる。',
+    care:'幼虫はカラスザンショウやミカンのなかまの葉を食べる。はねの青緑の光を観察しよう。', find:'山の木の葉のうらに、緑色の大きな幼虫がいた！'},
+  oomurasaki:{name:'オオムラサキ', shape:'butterfly', c:['#4a3a8a','#222222','#f0e060','#6a4ac0'], rank:4, lv:15, spd:4, time:['hiru'], spots:['joyama'], food:'enoki', foodAdult:'mitsu', size:[100,120],
+    plan:[{k:'larva',days:2},{k:'larva',days:2},{k:'pupa',days:2},{k:'adult',days:20}],
+    desc:'日本の国チョウ。オスのはねはむらさき色にかがやく。幼虫は頭にツノがあって、エノキの葉を食べる。', info:'はねを広げてオス約10cm・メス約12cm。6〜8月。', real:'幼虫のまま冬をこして、翌年の初夏にさなぎになる。1年がかり。',
+    care:'幼虫はエノキの葉しか食べない。数がへっている場所もあるので、大切に育てて、かならずもとの場所にかえそう。', find:'エノキの葉に、ツノのある緑の幼虫がいた！ オオムラサキだ！'},
+  shoryo:    {name:'ショウリョウバッタ', shape:'grass', c:['#7cc444','#5a9a30','#ffffff'], rank:1, lv:2, spd:3, time:['asa','hiru','yu'], spots:['any'], food:'kusa', foodAdult:'kusa', size:[45,80],
+    plan:[{k:'larva',days:1},{k:'larva',days:1},{k:'larva',days:1},{k:'adult',days:20}],
+    desc:'先のとがった顔の大きなバッタ。さなぎにならず、脱皮をくりかえして大きくなる。', info:'オス約5cm・メス約8cm。7〜11月。', real:'幼虫は夏のあいだに5〜6回脱皮して、成虫になる。',
+    care:'エノコログサやススキなどイネ科の草を入れ、きりふきで少ししめらせる。', find:'草むらで、小さなバッタの幼虫がピョンとはねた！'},
+  tonosama:  {name:'トノサマバッタ', shape:'grass', c:['#8a8f4a','#6a6a30','#e8e0a0'], rank:2, lv:4, spd:4, time:['hiru','yu'], spots:['matsubara','akama'], food:'kusa', foodAdult:'kusa', size:[40,65],
+    plan:[{k:'larva',days:1},{k:'larva',days:2},{k:'larva',days:1},{k:'adult',days:20}],
+    desc:'草むらの王様。ジャンプ力がすごく、遠くまで飛んでにげる。', info:'オス約4.5cm・メス約6.5cm。7〜11月。', real:'幼虫は約1か月で成虫になる。',
+    care:'大きめのケースにイネ科の草を入れる。しめった土を入れておくと、メスが卵をうむことも。', find:'原っぱの土の上に、茶色っぽいバッタの幼虫がいた！'},
+  kamakiri:  {name:'オオカマキリ', shape:'mantis', c:['#5aa040','#7cc050','#f8f040'], rank:3, lv:8, spd:1, time:['hiru','yu'], spots:['matsubara','tsurikawa'], food:'koorogi', foodAdult:'koorogi', size:[70,95],
+    plan:[{k:'larva',days:2},{k:'larva',days:2},{k:'adult',days:20}],
+    desc:'大きなカマで虫をつかまえるハンター。生きている虫しか食べない。', info:'約7〜9.5cm。8〜11月。', real:'春に卵からかえって、7回くらい脱皮しながら、秋に成虫になる。',
+    care:'生きたバッタやコオロギをエサに。共食いするので1ぴきずつ、背の高いケースで飼う。', find:'草のかげで、カマをかまえた小さなカマキリの幼虫をみつけた！'},
+  suzumushi: {name:'スズムシ', shape:'cricket', c:['#2b2b2b','#1e1e1e','#555555'], rank:2, lv:5, spd:2, time:['yu','yoru'], spots:['tsurikawa','akama'], food:'nasu', foodAdult:'nasu', size:[17,25],
+    plan:[{k:'larva',days:2},{k:'larva',days:2},{k:'adult',days:20}],
+    desc:'「リーンリーン」と鳴く、秋の虫。鳴くのはオスだけ。夜になると鳴きだす。', info:'約1.7〜2.5cm。8〜10月。', real:'卵からかえった幼虫は、約2か月で成虫になる。',
     care:'ナスやキュウリと、けずりぶしをあたえる。土はしめらせて、暗くて静かな場所に。', find:'草の根もとで、黒くて小さなスズムシの幼虫をみつけた！'},
-  nokogiri:  {name:'ノコギリクワガタ', kind:'stag', rank:3, time:['asa','yoru'], spots:['taisha','joyama'], food:'zeri', foodAdult:'zeri',
-    plan:[{k:'larva',days:3},{k:'larva',days:3},{k:'pupa',days:3},{k:'adult',days:5}],
-    desc:'ギザギザの大あごがかっこいいクワガタ。クヌギの樹液に集まる。', real:'幼虫はくさった木の中で1〜2年そだつ。このゲームでは2週間でそだつよ。',
-    care:'幼虫はくさった木のくず（マット）の中で育てる。成虫にはこん虫ゼリー。土はかわかさない。', find:'くさった木のそばの土から、白い幼虫が出てきた！'},
-  kabuto:    {name:'カブトムシ', kind:'beetle', rank:3, time:['asa','yoru'], spots:['taisha','joyama'], food:'zeri', foodAdult:'zeri',
-    plan:[{k:'larva',days:4},{k:'larva',days:3},{k:'pupa',days:3},{k:'adult',days:4}],
-    desc:'夏の虫の王様。オスの大きなツノで、ほかの虫を投げとばす。昼は土の中でねている。', real:'幼虫は腐葉土の中で約10か月そだつ。このゲームでは2週間でそだつよ。',
-    care:'幼虫は腐葉土（マット）の中で。土がかわかないように、きりふきをする。さなぎの部屋はぜったいにこわさない。成虫にはこん虫ゼリー。', find:'腐葉土の中から、まるまると太った白い幼虫が出てきた！'},
-  genji:     {name:'ゲンジボタル', kind:'firefly', rank:3, time:['yoru'], spots:['tsurikawa'], watch:true,
-    desc:'夜の釣川で光る、宗像の夏の宝もの。きれいな川にしかすめない。', real:'幼虫は川の中でカワニナという貝を食べて約1年そだつ。',
-    care:'ホタルは、きれいな川の水と、エサのカワニナがないと育たない。つかまえずに、見るだけにしよう。', find:'川のそばで、ふわっと光るゲンジボタルをみつけた！'},
+  kokuwa:    {name:'コクワガタ', shape:'stag', c:['#2a1a10','#3a2a1a','#6a5a3a'], rank:2, lv:7, spd:1, time:['asa','yu','yoru'], spots:['taisha','akama'], food:'zeri', foodAdult:'zeri', size:[25,50],
+    plan:[{k:'larva',days:2},{k:'larva',days:2},{k:'pupa',days:1},{k:'adult',days:20}],
+    desc:'小さいけど力もちなクワガタ。木のすきまにかくれるのが上手。', info:'オス約2〜5cm・メス約2〜3cm。6〜9月。', real:'幼虫はくさった木の中で約1年そだつ。成虫は冬をこして2〜3年生きることもある。',
+    care:'こん虫マットとこん虫ゼリー、とまり木を入れて1ぴきずつ。', find:'くさった木のすきまから、小さな白い幼虫が出てきた！'},
+  nokogiri:  {name:'ノコギリクワガタ', shape:'stag', c:['#7a3010','#4a1a08','#a85a28'], rank:3, lv:10, spd:1, time:['asa','yu','yoru'], spots:['taisha','joyama'], food:'zeri', foodAdult:'zeri', size:[35,75],
+    plan:[{k:'larva',days:2},{k:'larva',days:2},{k:'pupa',days:2},{k:'adult',days:20}],
+    desc:'ギザギザの大あごがかっこいいクワガタ。クヌギの樹液に集まる。', info:'オス約3〜7.5cm・メス約2.5〜4cm。7〜8月。', real:'幼虫はくさった木の中で1〜2年そだつ。このゲームでは1週間でそだつよ。',
+    care:'こん虫マットとこん虫ゼリー、とまり木を入れる。けんかするのでオスは1ぴきずつ。', find:'くさった木のそばの土から、白い幼虫が出てきた！'},
+  hirata:    {name:'ヒラタクワガタ', shape:'stag', c:['#141414','#242424','#4a4a4a'], rank:4, lv:16, spd:1, time:['yoru'], spots:['taisha','joyama'], food:'zeri', foodAdult:'zeri', size:[30,75],
+    plan:[{k:'larva',days:2},{k:'larva',days:3},{k:'pupa',days:2},{k:'adult',days:20}],
+    desc:'平たい体と太い大あごをもつ、パワーじまんのクワガタ。はさむ力はさいきょう級。', info:'オス約2〜7.5cm・メス約2〜4cm。6〜9月。', real:'幼虫は1年ほどで成虫になる。成虫はじょうぶで、数年生きることもある。',
+    care:'気があらく、はさむ力が強いので1ぴきずつ。指をはさまれないように、そっと。', find:'夜のクヌギの根もとの土から、太い幼虫が出てきた！'},
+  miyama:    {name:'ミヤマクワガタ', shape:'stag', c:['#6a4a28','#8a6a38','#c8a060'], rank:4, lv:15, spd:1, time:['asa','yu','yoru'], spots:['joyama','oshima'], food:'zeri', foodAdult:'zeri', size:[30,80],
+    plan:[{k:'larva',days:3},{k:'larva',days:3},{k:'pupa',days:2},{k:'adult',days:20}],
+    desc:'頭のでっぱりが特ちょうの、すずしい山にすむクワガタ。', info:'オス約3〜8cm・メス約2.5〜4.5cm。7〜8月。', real:'幼虫は2年ほどかけて成虫になる。',
+    care:'暑さに弱いので、25℃より低いすずしい場所で飼う。こん虫マットとゼリー、とまり木を。', find:'山のすずしい土の中から、大きな白い幼虫が出てきた！'},
+  ookuwa:    {name:'オオクワガタ', shape:'stag', c:['#111111','#1c1c1c','#3a3a3a'], rank:5, lv:22, spd:1, time:['yoru'], spots:['oshima'], food:'zeri', foodAdult:'zeri', size:[30,77],
+    plan:[{k:'larva',days:3},{k:'larva',days:3},{k:'pupa',days:2},{k:'adult',days:20}],
+    desc:'クワガタの王様。とても用心深く、なかなか姿を見せない。', info:'オス約3〜7.7cm・メス約3〜4.5cm。6〜8月（夜に活動）。', real:'幼虫は1〜2年で成虫になる。成虫はじょうぶで数年生きる。',
+    care:'野生のものは数がへっていて、国のレッドリストにのっている。ゲームの中だけで、大切に育てよう。', find:'島の夜。大きな木のうろの中に、立派な幼虫がいた！ オオクワガタだ！'},
+  kabuto:    {name:'カブトムシ', shape:'beetle', c:['#5a2a10','#3a1a08','#8a4a20'], rank:3, lv:11, spd:1, time:['asa','yoru'], spots:['taisha','joyama'], food:'zeri', foodAdult:'zeri', size:[35,80],
+    plan:[{k:'larva',days:2},{k:'larva',days:2},{k:'pupa',days:2},{k:'adult',days:20}],
+    desc:'夏の虫の王様。オスの大きなツノで、ほかの虫を投げとばす。昼は土の中でねている。', info:'オス約3〜8cm（ツノをふくむ）・メス約3〜5cm。7〜8月。', real:'幼虫は腐葉土の中で約10か月そだつ。このゲームでは1週間でそだつよ。',
+    care:'こん虫マットを深めにしき、こん虫ゼリーととまり木を。土がかわかないように、きりふきをする。さなぎの部屋はぜったいにこわさない。', find:'腐葉土の中から、まるまると太った白い幼虫が出てきた！'},
+  kinkabuto: {name:'ミアレカブト', shape:'beetle', c:['#e8c040','#c89820','#fff0a0'], rank:5, lv:25, spd:2, time:['asa','yoru'], spots:['taisha'], food:'zeri', foodAdult:'zeri', size:[80,95], link:true,
+    plan:[{k:'larva',days:3},{k:'larva',days:3},{k:'pupa',days:3},{k:'adult',days:20}],
+    desc:'金色にかがやく、宗像の伝説の虫（このゲームのための架空の虫）。みあれ祭の夜に姿を見せるという。', info:'約9cm（伝説）。夏の夜と朝（伝説）。', real:'伝説の虫なので、だれも育てたことがない。',
+    care:'カブトムシと同じでよいといわれている。金色の光は、大切に育てた人にだけ見えるとか。', find:'宗像大社の木の根もとに、金色にかがやくたまごがあった！ 虫とり日記で出会った、ミアレカブトのたまごだ！'},
+  genji:     {name:'ゲンジボタル', shape:'firefly', c:['#2a2a2a','#e04040','#e8ff60','#4a4a4a'], rank:3, lv:8, spd:2, time:['yoru'], spots:['tsurikawa'], watch:true, size:[15,20],
+    desc:'夜の釣川で光る、宗像の夏の宝もの。きれいな川にしかすめない。', info:'約1.5〜2cm。5〜7月。', real:'幼虫は川の中でカワニナという貝を食べて約1年そだつ。',
+    care:'成虫は水しかのまず、1〜2週間ほどしか生きない。とることが禁止されている場所も多いので、観察して楽しもう。', find:'川のそばで、ふわっと光るゲンジボタルをみつけた！'},
+  abura:     {name:'アブラゼミ', shape:'cicada', c:['#5a3a20','#3a2a1a','#2a2a2a','#9a6a3a'], rank:1, lv:4, spd:2, time:['asa','hiru','yu'], spots:[], npc:true, size:[55,60],
+    desc:'「ジージー」と鳴く、茶色いはねのセミ。宗像の夏の音といえばこれ。', info:'はねの先まで約5.5〜6cm。7〜9月。', real:'幼虫は土の中で数年そだつ。', care:'成虫は木のしるをすうので、飼うのはむずかしい。', find:''},
 };
 const STAGE_NAME = {larva:'幼虫', pupa:'さなぎ', adult:'成虫'};
-// 場所：緯度・経度・半径(m)。位置そのものは使ったらすぐ捨てる（虫とり日記と同じ）
+/* 虫ずもうのタイプ（虫とり日記と同じ値）：ちから・まもり（受けるダメージの倍率）・たいりょく・かいふく（ふんばるで回復する割合） */
+const TYPES = {
+  kouchu:{name:'こうちゅう', atk:1.05, def:0.86, hp:1.08, heal:0.08},
+  chou:  {name:'チョウ',     atk:0.92, def:1.00, hp:0.98, heal:0.22},
+  batta: {name:'バッタ・カマキリ', atk:1.08, def:0.96, hp:1.00, heal:0.11},
+  semi:  {name:'セミ',       atk:0.95, def:0.95, hp:1.02, heal:0.15},
+  naki:  {name:'鳴く虫',     atk:0.95, def:0.95, hp:1.00, heal:0.15},
+  mizube:{name:'ホタル',     atk:0.98, def:0.96, hp:1.04, heal:0.20},
+};
+const SHAPE_TYPE = {beetle:'kouchu', stag:'kouchu', butterfly:'chou', grass:'batta', mantis:'batta', cicada:'semi', cricket:'naki', firefly:'mizube'};
+/* わざ：mult いりょく／acc ねらい／open 使ったあとのスキ（受けるダメージ倍率）／pierce ふんばりをつきやぶる／hits 回数
+   blind 相手の攻撃が当たりにくくなる回数／weaken 相手のちから／heal 回復する割合／charm 相手が「うっとり」して動けない回数／counter ふんばりながら反撃／first かならず先に動く */
+const MOVES = {
+  // 基本わざ（形ごと。虫とり日記のひっさつわざと同じ）
+  beetle:   {name:'ツノでなげとばし', mult:2.0, acc:.70, open:1.5, info:'いりょくがとても大きい'},
+  stag:     {name:'はさみなげ',       mult:1.8, acc:.75, open:1.5, pierce:true, info:'ふんばっている相手にもきく'},
+  butterfly:{name:'りんぷんふぶき',   mult:1.0, acc:.95, open:1.2, blind:2, info:'相手の攻撃が2回当たりにくくなる'},
+  grass:    {name:'ジャンプおしだし', mult:1.9, acc:.70, open:1.5, info:'いりょくが大きい'},
+  mantis:   {name:'れんぞくカマおし', mult:1.05, acc:.90, open:1.4, hits:2, info:'2回こうげきする'},
+  cicada:   {name:'ミンミン大音量',   mult:1.1, acc:.90, open:1.3, weaken:.8, info:'相手のちからを下げる'},
+  cricket:  {name:'リーンリーン',     mult:1.1, acc:.90, open:1.3, weaken:.85, info:'鳴き声で、相手のちからを下げる'},
+  firefly:  {name:'ピカピカフラッシュ', mult:1.1, acc:1.0, open:1.2, blind:2, info:'相手の攻撃が2回当たりにくくなる'},
+  // 得意わざ（育て方で決まる：atk ちから型／def まもり型／spd すばやさ型）
+  beetle_atk:   {name:'大ツノスラム',     mult:2.4, acc:.65, open:1.6, info:'いりょくがものすごく大きい'},
+  beetle_def:   {name:'かたまりガード',   mult:.8,  acc:1.0, open:1.0, counter:true, info:'ふんばりながら反撃する'},
+  beetle_spd:   {name:'ブーンとびこみ',   mult:1.6, acc:.95, open:1.15, info:'当たりやすく、スキが小さい'},
+  stag_atk:     {name:'はさみロック',     mult:1.7, acc:.80, open:1.4, pierce:true, weaken:.8, info:'ふんばりをつきやぶって、ちからも下げる'},
+  stag_def:     {name:'かたいよろい',     mult:.8,  acc:1.0, open:1.0, counter:true, info:'ふんばりながら反撃する'},
+  stag_spd:     {name:'とびはさみ',       mult:1.5, acc:.95, open:1.2, pierce:true, info:'当たりやすく、ふんばりにもきく'},
+  mantis_atk:   {name:'3れんカマおし',    mult:1.0, acc:.85, open:1.5, hits:3, info:'3回こうげきする'},
+  mantis_def:   {name:'まちぶせカマ',     mult:.9,  acc:1.0, open:1.0, counter:true, info:'ふんばりながら反撃する'},
+  mantis_spd:   {name:'先手のカマ',       mult:1.3, acc:.95, open:1.2, first:true, info:'かならず先に動く'},
+  grass_atk:    {name:'大ジャンプ',       mult:2.3, acc:.65, open:1.6, info:'いりょくがものすごく大きい'},
+  grass_def:    {name:'ふんばりキック',   mult:.9,  acc:1.0, open:1.0, counter:true, info:'ふんばりながら反撃する'},
+  grass_spd:    {name:'キチキチおどし',   mult:1.0, acc:.95, open:1.2, blind:2, info:'相手の攻撃が2回当たりにくくなる'},
+  butterfly_atk:{name:'りんぷんあらし',   mult:1.4, acc:.85, open:1.3, blind:1, info:'いりょくがあり、相手の攻撃も当たりにくくなる'},
+  butterfly_def:{name:'花のかおり',       mult:0,   acc:1.0, open:1.1, heal:.3, info:'たいりょくを3割かいふくする'},
+  butterfly_spd:{name:'ひらひらかわし',   mult:.6,  acc:1.0, open:1.0, blind:3, info:'相手の攻撃が3回当たりにくくなる'},
+  cricket_atk:  {name:'大合唱',           mult:1.3, acc:.90, open:1.3, weaken:.7, info:'相手のちからを大きく下げる'},
+  cricket_def:  {name:'こもりうた',       mult:0,   acc:1.0, open:1.1, heal:.25, info:'たいりょくをかいふくする'},
+  cricket_spd:  {name:'うっとりソング',   mult:1.0, acc:.90, open:1.3, charm:1, info:'相手がうっとりして、1回動けなくなる'},
+};
+/* 性格：育て方で決まる。対戦での行動のくせ（atk 攻める／guard ふんばる／sp わざを使う の重み） */
+const PERS = {
+  futsu:    {name:'ふつう',       w:{atk:5, guard:2, sp:3}, txt:'きまぐれに動く。'},
+  kuishinbo:{name:'食いしんぼう', w:{atk:6, guard:1, sp:4}, txt:'朝からエサにかぶりついている。', how:'エサをたっぷりあげると、こうなりやすい'},
+  yancha:   {name:'やんちゃ',     w:{atk:6, guard:1, sp:3}, txt:'ケースの中を、元気にかけまわっている。', how:'広いケースで育てると、こうなりやすい'},
+  nonbiri:  {name:'のんびり',     w:{atk:4, guard:4, sp:2}, txt:'ゆっくり動いて、よく休んでいる。', how:'げんかんの静かな場所で、こまめにそうじすると、こうなりやすい'},
+  gaman:    {name:'がまん強い',   w:{atk:5, guard:3, sp:2}, txt:'ちょっとのことでは、びくともしない。', how:'少しのピンチを乗りこえると、こうなりやすい'},
+  okubyo:   {name:'おくびょう',   w:{atk:3, guard:5, sp:2}, txt:'ものかげにかくれて、ようすをうかがっている。', how:'さわりすぎたり、ケースをよく動かすと、こうなりやすい'},
+  makezu:   {name:'まけずぎらい', w:{atk:5, guard:2, sp:4}, txt:'こっちをじっと見て、にらみかえしてくる。', how:'大島うまれや、虫ずもうで負けた虫は、こうなりやすい'},
+  hitonatsu:{name:'人なつっこい', w:{atk:5, guard:2, sp:3}, txt:'近づくと、こっちに寄ってくる。', how:'へやで育てると、こうなりやすい'},
+};
+/* 生まれ：つかまえた場所が虫に残る。st はステータスのかたより（ひかえめ）、pers は出やすい性格 */
+const BORN = {
+  taisha:   {name:'宗像大社うまれ', st:{heal:.05}, luck:true, pers:'nonbiri', txt:'神社の林で生まれた。めずらしい個体が少し出やすい。'},
+  joyama:   {name:'城山うまれ',     st:{def:.06, hp:.03}, pers:'gaman', txt:'山の森で鍛えられた。まもりとたいりょくが強い。'},
+  matsubara:{name:'さつき松原うまれ', st:{spd:.07}, pers:'yancha', txt:'海風にのって育った。すばやい。'},
+  tsurikawa:{name:'釣川うまれ',     st:{heal:.05}, tough:true, pers:'nonbiri', txt:'川べりのしめった草むらで育った。かいふくがよく、しめりけに強い。'},
+  akama:    {name:'赤間うまれ',     st:{atk:.02, hp:.02, def:.02, spd:.02, heal:.02}, pers:'hitonatsu', txt:'町で人に慣れている。おうえんがよくきく。'},
+  oshima:   {name:'大島うまれ',     st:{atk:.04, def:.04}, pers:'makezu', rareColor:true, txt:'船でしか行けない島で生まれた。島だけの色の個体がいる。'},
+  any:      {name:'旅の虫',         st:{}, pers:'futsu', txt:'どこから来たのか、わからない。'},
+};
+/* 場所：緯度・経度・半径(m)。位置そのものは使ったらすぐ捨てる（虫とり日記と同じ） */
 const SPOTS = [
   {key:'taisha',    name:'宗像大社',   lat:33.83124, lon:130.5143, pts:[[33.83124,130.5143,700]],  gift:'zeri',    env:'クヌギの木の林',   warn:'神社の木や虫はたいせつに。境内の木をほったり、虫を持ち帰ったりしないでね。'},
-  {key:'joyama',    name:'城山',       lat:33.81722, lon:130.59393, pts:[[33.81722,130.59393,1500]], gift:'zeri',    env:'山の森',           warn:'山道はスズメバチやマムシに気をつけて。水分もしっかりとろう。'},
+  {key:'joyama',    name:'城山',       lat:33.81722, lon:130.59393, pts:[[33.81722,130.59393,1500]], gift:'enoki',   env:'山の森',           warn:'山道はスズメバチやマムシに気をつけて。水分もしっかりとろう。'},
   {key:'matsubara', name:'さつき松原', lat:33.85758, lon:130.5156, pts:[[33.85758,130.5156,1300],[33.8700,130.5260,1300],[33.8830,130.5337,900],[33.8495,130.4990,900]], gift:'koorogi', env:'海ぞいの松林と草むら', warn:'海に入るときは、かならずおうちの人といっしょにね。'},
   {key:'tsurikawa', name:'釣川',       lat:33.84475, lon:130.5043, pts:[[33.84475,130.5043,500],[33.85238,130.50005,500],[33.826,130.530,600],[33.80647,130.55864,500]], gift:'nasu', env:'川べりの草むら', warn:'川には子どもだけで入らないでね。'},
   {key:'akama',     name:'赤間',       lat:33.80821, lon:130.56945, pts:[[33.80821,130.56945,1200],[33.80049,130.58264,1000]], gift:'mikan', env:'町の公園と畑',   warn:'車や自転車に気をつけてね。'},
+  {key:'oshima',    name:'大島',       lat:33.8975, lon:130.4325, pts:[[33.8975,130.4325,2500]], gift:'zeri', env:'船でわたる島の森', warn:'海やフェリーのりばでは、おうちの人からはなれないでね。'},
 ];
 const ANY_SPOT = {key:'any', name:'どこにでもある草むら', env:'公園や道ばたの草むら', gift:'kyabetsu', warn:'道路のそばでは、車に気をつけてね。'};
-const spotBugs = (key, slot)=> Object.keys(BUGS).filter(id=> (BUGS[id].spots.includes(key) || BUGS[id].spots.includes('any')) && (!slot || BUGS[id].time.includes(slot)));
+/* 虫ずもうのライバル（虫とり日記と同じ6人。lv は虫の強さ、money は初めて勝ったときのどんぐり） */
+const RIVALS = [
+  {key:'yuta',  name:'ゆうた（1年生）',   short:'ゆうた', bug:'abura',    lv:6,  money:30,  hi:'ぼくのセミ、つよいんだぞ！',              win:'うわーん、まけた〜！',            lose:'やったー！ セミの勝ち！'},
+  {key:'haruka',name:'はるか（3年生）',   short:'はるか', bug:'kamakiri', lv:10, money:50,  hi:'カマキリのカマ、なめないでよね。',        win:'…くやしい。でも、いい虫ね。',      lose:'ほらね、カマキリは最強なの。'},
+  {key:'kenta', name:'けんた（4年生）',   short:'けんた', bug:'nokogiri', lv:13, money:80,  hi:'ノコギリのはさみで、土俵の外へ なげとばしてやる！', win:'まじかよ…！ 育て方、教えてくれよな。', lose:'へへん、となりのクラスの勝ちだな！'},
+  {key:'soma',  name:'そうま（5年生）',   short:'そうま', bug:'kabuto',   lv:16, money:120, hi:'夏の王様カブトムシに勝てるかな？',        win:'王様がやられた…。きみ、やるなあ。',  lose:'王様の力、思い知ったか！'},
+  {key:'daichi',name:'だいち（6年生）',   short:'だいち', bug:'miyama',   lv:20, money:200, hi:'おれのミヤマは、城山でいちばん強いぜ！',  win:'…おまえ、ただものじゃないな。',     lose:'ガッハッハ！ 出直してこい！'},
+  {key:'ren',   name:'れん（中1・チャンピオン）', short:'れん', bug:'hirata', lv:22, money:300, hi:'チャンピオンの座は、ゆずらないよ。', win:'参った。今日からきみがチャンピオンだ。', lose:'まだまだ。またちょうせんしにおいで。'},
+];
+const spotBugs = (key, slot)=> Object.keys(BUGS).filter(id=> !BUGS[id].npc && !BUGS[id].link && (BUGS[id].spots.includes(key) || BUGS[id].spots.includes('any')) && (!slot || BUGS[id].time.includes(slot)));
 function distM(a, b, c, d){ const R = 6371000, r = Math.PI/180, x = (d-b)*r*Math.cos((a+c)/2*r), y = (c-a)*r; return Math.hypot(x, y) * R; }
 function nearSpot(lat, lon){
   let best = null;
@@ -489,11 +670,18 @@ function getPos(){
    ========================================================= */
 let S = null;
 function newGame(){
-  return {v:1, money:20, cases:Array.from({length:CASES}, ()=>null), items:{kyabetsu:2, kusa:1}, dex:{}, yk:{}, visits:{}, last:null, demoOff:0, started:Date.now(), stats:{raised:0, released:0}};
+  return {v:2, money:30, cases:Array.from({length:CASES}, ()=>null), items:{kyabetsu:2, kusa:1}, dex:{}, yk:{}, visits:{}, last:null, demoOff:0, started:Date.now(), stats:{raised:0, released:0, wins:0, loses:0}, sumo:{}, sumoDay:{}, link:{}};
 }
+function migrate(s){   // 古いセーブ（v1）を v2 のかたちにする
+  if(s.v >= 2) return s;
+  s.v = 2; s.stats = Object.assign({raised:0, released:0, wins:0, loses:0}, s.stats); s.sumo = {}; s.sumoDay = {}; s.link = {};
+  s.cases = s.cases.map(c=>{ if(!c || !BUGS[c.bug]) return null; return Object.assign(c, {ind:{hp:1, atk:1, def:1, spd:1, heal:1}, log:newLog(), tot:newLog(), place:'genkan', wide:false, born:(SPOTS.find(sp=>sp.name===c.from)||{key:'any'}).key, bornSlot:'hiru'}); });
+  return s;
+}
+const newLog = ()=> ({feed:0, feedFull:0, wet:0, clean:0, over:0, lowH:0, hours:0});
 function save(){ if(QS.has('demo')) return;   // 確認用のURL（?demo=…）で遊んだときは、ほんとうのセーブを上書きしない
   try{ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); const m = $('saveMark'); m.classList.add('on'); setTimeout(()=>m.classList.remove('on'), 900); }catch(e){} }
-function load(){ try{ const j = JSON.parse(localStorage.getItem(SAVE_KEY)); return j && j.v ? j : null; }catch(e){ return null; } }
+function load(){ try{ const j = JSON.parse(localStorage.getItem(SAVE_KEY)); return j && j.v ? migrate(j) : null; }catch(e){ return null; } }
 function clearSave(){ try{ localStorage.removeItem(SAVE_KEY); }catch(e){} }
 const AUTO_KEY = 'munakata-autosave-v1';
 let autoSave = (()=>{ try{ return localStorage.getItem(AUTO_KEY) !== 'off'; }catch(e){ return true; } })();   // はじめは ON
@@ -501,160 +689,250 @@ function setAutoSave(on){ autoSave = on; try{ localStorage.setItem(AUTO_KEY, on 
 function autoSaveNow(){ if(!autoSave || !S) return; save(); }
 document.addEventListener('visibilitychange', ()=>{ if(document.hidden) autoSaveNow(); });
 addEventListener('pagehide', autoSaveNow);
+/* 虫とり日記のセーブ（同じ tani0920.github.io にあるので読める）：ミアレカブトに出会っていたら、たまごがもらえる */
+function readDiary(){ try{ const j = JSON.parse(localStorage.getItem((window.DEMO ? 'demo-' : '') + 'munakata-mushitori-v1')); return j && j.dex ? j : null; }catch(e){ return null; } }
 
 /* =========================================================
    成長の計算
    虫ごとに、おなか・しめりけ・きれいさ が時間とともにへる。3つの平均が「元気」。
    元気が高いと育ちが進み、低いと止まる。元気がとても低いままだと、虫は自然にかえる（死なせない。でも、お世話しないとさよならになる）
    すがたがかわるタイミングは「次にケースをのぞいたとき」にアニメーションで見せる（pending）
+   世話のしかたは log に記録して、すがたがかわるときにステータスへ変える
    ========================================================= */
 function stageOf(c){ return BUGS[c.bug].plan[c.si]; }
-function genkiOf(c){ const st = stageOf(c); return Math.round(st.k === 'pupa' ? (c.wet*2 + c.clean)/3 : (c.hunger + c.wet + c.clean)/3); }
+function genkiOf(c){ const st = stageOf(c); const g = st.k === 'pupa' ? (c.wet*2 + c.clean)/3 : (c.hunger + c.wet + c.clean)/3; return Math.round(clamp(g - (c.trouble ? 20 : 0), 0, 100)); }
 function tickCase(c){
   const t = now(); let h = (t - c.tick) / H; if(h <= 0) return; if(h > 24*60) h = 24*60;
   c.tick = t;
-  const st = stageOf(c);
-  // 1時間ずつ進める（長いあいだ放っておいたときも、順番どおりに計算する）
+  const st = stageOf(c), tough = BORN[c.born] && BORN[c.born].tough;
+  const wetK = (c.place === 'beranda' ? 1.25 : 1) * (tough ? .8 : 1), cleanK = (c.place === 'genkan' ? .85 : 1) * (c.wide ? .9 : 1);
   let left = h;
   while(left > 0){
     const d = Math.min(1, left); left -= d;
     if(st.k !== 'pupa') c.hunger = clamp(c.hunger - 100/HUNGER_H*d, 0, 100);
-    c.wet = clamp(c.wet - 100/WET_H*d, 0, 100);
-    c.clean = clamp(c.clean - 100/CLEAN_H*d, 0, 100);
+    c.wet = clamp(c.wet - 100/WET_H*d*wetK, 0, 100);
+    c.clean = clamp(c.clean - 100/CLEAN_H*d*cleanK, 0, 100);
     const g = genkiOf(c);
+    c.log.hours += d; if(g < 30) c.log.lowH += d;
     if(!c.pending){ const sp = g >= 60 ? 1 : g >= 30 ? .5 : 0; c.prog += d*sp; if(c.prog >= st.days*24){ c.prog = st.days*24; c.pending = true; } }
     if(g < 15){ c.weak = (c.weak||0) + d; if(c.weak >= WEAK_H && !c.gone) c.gone = true; } else c.weak = 0;
+    // トラブル：しめりすぎ＋よごれ → カビ。おなかすき＋よごれ → アリ（1時間ごとに少しの確率）
+    if(!c.trouble && st.k !== 'adult' || !c.trouble){
+      if(c.wet > 85 && c.clean < 50 && Math.random() < .02*d) c.trouble = 'kabi';
+      else if(c.hunger < 30 && c.clean < 40 && st.k !== 'pupa' && Math.random() < .02*d) c.trouble = 'ari';
+    }
   }
 }
 function tickAll(){ if(!S) return; S.cases.forEach(c=>{ if(c) tickCase(c); }); }
+const TROUBLE = {
+  kabi:{name:'カビ', txt:'ケースの中に、白いカビがはえている！ しめりすぎと、よごれが原因。そうじをして、少しかわかそう。', fix:'そうじをして、カビをとった。しばらく、きりふきはひかえめに。'},
+  ari: {name:'アリ', txt:'古いエサに、アリが集まってきた！ 食べのこしは、そのままにしないで。そうじをしよう。', fix:'そうじをして、アリをおいだした。エサは、古くなる前にとりかえよう。'},
+};
 const meterCls = v=> v < 30 ? 'low' : v < 60 ? 'mid' : '';
-const stageLabel = c=>{ const st = stageOf(c); const n = BUGS[c.bug].plan.slice(0, c.si).filter(s=>s.k==='larva').length; return st.k === 'larva' && n ? `${STAGE_NAME.larva}・${n+1}回目` : STAGE_NAME[st.k]; };
+const instarOf = c=> BUGS[c.bug].plan.slice(0, c.si).filter(s=>s.k==='larva').length;
+const stageLabel = c=>{ const st = stageOf(c), n = instarOf(c); return st.k === 'larva' && n ? `${STAGE_NAME.larva}・${n+1}回目` : STAGE_NAME[st.k]; };
 const daysLeft = c=> Math.max(0, Math.ceil((stageOf(c).days*24 - c.prog)/24));
-const needs = c=>{ const st = stageOf(c), a = []; if(st.k !== 'pupa' && c.hunger < 40) a.push('おなか'); if(c.wet < 40) a.push('しめりけ'); if(c.clean < 40) a.push('そうじ'); return a; };
+const needs = c=>{ const st = stageOf(c), a = []; if(c.trouble) a.push(TROUBLE[c.trouble].name); if(st.k !== 'pupa' && c.hunger < 40) a.push('おなか'); if(c.wet < 40) a.push('しめりけ'); if(c.clean < 40) a.push('そうじ'); return a; };
+/* 予告：次のすがたまで1日をきったら、何が起きそうかを教える */
+function forecast(c){
+  if(c.pending) return null;
+  const st = stageOf(c), b = BUGS[c.bug], nx = b.plan[c.si+1], leftH = st.days*24 - c.prog;
+  if(!nx || leftH > 24) return null;
+  if(st.k === 'larva' && nx.k === 'larva') return 'そろそろ脱皮しそう。じっと動かなくなっても、心配しないでね。';
+  if(nx.k === 'pupa') return 'そろそろさなぎになりそう。糸をはいたり、土にもぐったりしたら、さわらないで。';
+  if(b.shape === 'butterfly') return '明日の朝、羽化するかも！ 朝いちばんにのぞいてみよう。';
+  if(b.shape === 'beetle' || b.shape === 'stag') return '明日の夜、土から出てくるかも！ 夜にのぞいてみよう。';
+  if(b.shape === 'cricket') return '明日の夕方、羽化するかも。はねが生えたら、鳴きはじめるよ。';
+  return '明日、さいごの脱皮で成虫になりそう！';
+}
+/* 世話の記録 → ステータス（すがたがかわるときに1回）。育て方で伸びるところがちがう */
+function applyGrowth(c){
+  const L = c.log, days = Math.max(1, L.hours/24), ind = c.ind, T = c.tot;
+  const feedRate = L.feed/days, fullRate = L.feed ? L.feedFull/L.feed : 0;
+  ind.atk += clamp(feedRate*.02, 0, .04) + (fullRate > .5 ? .02 : 0);
+  ind.hp  += clamp(feedRate*.01, 0, .02) + (L.lowH < 6 ? .02 : 0);
+  ind.spd += (c.wide ? .04 : .01) + (c.place === 'heya' ? .01 : 0);
+  ind.def += (c.place === 'beranda' ? .04 : .01) + (L.lowH > 24 && L.lowH < 72 ? .01 : 0);
+  ind.heal += clamp(L.clean/days*.015, 0, .03) + (c.place === 'genkan' ? .02 : 0);
+  for(const k in L) T[k] += L[k];
+  c.log = newLog();
+}
+/* 羽化のとき：生まれ・運・性格・大きさ・わざを決める */
+function finalize(c){
+  const b = BUGS[c.bug], born = BORN[c.born] || BORN.any, ind = c.ind, T = c.tot;
+  for(const k in born.st) ind[k] += born.st[k];
+  if(c.born === 'any'){ ind[pick(['hp','atk','def','spd','heal'])] += .05; }
+  for(const k in ind) ind[k] = +(ind[k] + (Math.random()*.08 - .04)).toFixed(3);
+  // 性格：世話の傾向と生まれで点をつけて、いちばん高いもの
+  const days = Math.max(1, T.hours/24), sc = {futsu:1};
+  sc.kuishinbo = (T.feed ? T.feedFull/T.feed : 0)*3 + T.feed/days;
+  sc.yancha = (c.wide ? 2.5 : 0) + (c.place === 'heya' ? .5 : 0);
+  sc.nonbiri = (c.place === 'genkan' ? 2 : 0) + clamp(T.clean/days, 0, 1.5);
+  sc.gaman = T.lowH > 24 ? 2.5 : T.lowH > 12 ? 1 : 0;
+  sc.okubyo = T.over >= 6 ? 3 : T.over >= 3 ? 1.5 : 0;
+  sc.hitonatsu = c.place === 'heya' ? 2 : 0;
+  sc.makezu = 0;
+  if(born.pers) sc[born.pers] = (sc[born.pers]||0) + 1.5;
+  for(const k in sc) sc[k] += Math.random()*.8;
+  c.pers = Object.keys(sc).sort((a,b)=>sc[b]-sc[a])[0];
+  // 大きさ：エサと元気で決まる。オスメス
+  c.sex = Math.random() < .6 ? 'オス' : 'メス';
+  const q = clamp((ind.atk + ind.hp - 2)/.3, 0, 1) * .6 + Math.random()*.4 + (born.luck && Math.random() < .3 ? .15 : 0);
+  const [mn, mx] = b.size; c.size = Math.round((mn + (mx-mn)*q) * (c.sex === 'メス' ? .8 : 1));
+  c.rare = (born.rareColor && Math.random() < .25) || (born.luck && Math.random() < .15);
+  // わざ：基本わざ ＋ いちばん伸びたステータスの得意わざ
+  const grow = {atk:ind.atk, def:ind.def, spd:ind.spd}, best = Object.keys(grow).sort((a,b)=>grow[b]-grow[a])[0];
+  c.moves = [b.shape, MOVES[b.shape + '_' + best] ? b.shape + '_' + best : b.shape];
+  c.uka = dayKey();
+}
+/* 虫ずもう用の数字（虫とり日記の式をもとに、種類の差を小さくして、育て方の差が効くようにした） */
+function fighterOf(c, name){
+  const b = BUGS[c.bug], t = TYPES[SHAPE_TYPE[b.shape]], ind = c.ind || {hp:1, atk:1, def:1, spd:1, heal:1}, lv = 8 + (c.lv || b.lv)*.5;
+  const sizeK = c.size ? .9 + .2*clamp((c.size - b.size[0])/(b.size[1]-b.size[0]), 0, 1) : 1;
+  const maxhp = Math.round((28 + lv*4.2) * t.hp * ind.hp * sizeK);
+  return {name:name || c.name || b.name, id:c.bug, b, t, lv, maxhp, hp:maxhp, atk:(5 + lv*.8) * t.atk * ind.atk * sizeK, def:t.def / ind.def, spd:b.spd * ind.spd, heal:t.heal * ind.heal,
+    moves:(c.moves || [b.shape]).map(k=>MOVES[k]), pers:PERS[c.pers || 'futsu'], night:c.bornSlot === 'yoru', guard:false, open:1, blind:0, weak:1, charm:0, counter:false};
+}
+const mark = (v, hi, lo)=> v >= hi ? '◎' : v <= lo ? '△' : '○';
+const statLine = f=> `${f.t.name}タイプ　たいりょく${f.maxhp}　ちから${Math.round(f.atk)}　まもり${mark(1/f.def, 1.12, .96)}　すばやさ${mark(f.spd, 4, 1)}　かいふく${mark(f.heal, .16, .08)}`;
 
 /* =========================================================
-   虫の絵（パーツ分けした2DのSVG）。viewBox は 100x100
+   虫の絵（パーツ分けした2DのSVG）。viewBox は 100x100。色は虫とり日記と同じ c[] を使う
    ========================================================= */
 function svgBug(id, stage, o={}){
   const b = BUGS[id], cls = ['bug', o.rest ? 'rest' : '', o.sleep ? 'sleep' : '', o.cls||''].join(' ');
   let inner = '';
-  if(stage === 'larva') inner = larvaSVG(b, o);
-  else if(stage === 'pupa') inner = pupaSVG(b);
+  if(stage === 'larva') inner = larvaSVG(id, b, o);
+  else if(stage === 'pupa') inner = pupaSVG(id, b);
   else inner = adultSVG(id, b, o);
+  if(o.rare) inner += `<circle cx="50" cy="50" r="46" fill="none" stroke="#ffe27a" stroke-width="1.5" opacity=".7" class="glow"/>`;
   const sc = o.scale || 1;
   return `<svg class="${cls}" viewBox="0 0 100 100" aria-label="${esc(b.name)}の${esc(STAGE_NAME[stage]||'')}"><g transform="translate(50 50) scale(${sc}) translate(-50 -50)">${inner}</g></svg>`;
 }
-function larvaSVG(b, o){
-  const small = o.instar === 0 ? .7 : 1;
-  if(b.kind === 'beetle' || b.kind === 'stag'){   // 白くて太い幼虫（C のかたち）
+const LEG = (d, cls='leg', col='#3a1a08', w=3)=> `<path class="${cls}" d="${d}" stroke="${col}" stroke-width="${w}" fill="none" stroke-linecap="round"/>`;
+function larvaSVG(id, b, o){
+  const small = o.instar === 0 ? .7 : 1, sh = b.shape;
+  if(sh === 'beetle' || sh === 'stag'){   // 白くて太い幼虫（C のかたち）
+    const head = id === 'kinkabuto' ? '#c89820' : '#9a6a3a';
     return `<g class="grub" transform="translate(50 50) scale(${small}) translate(-50 -50)">
       <path d="M32 42 C 32 18, 78 18, 78 48 C 78 74, 52 80, 44 64" stroke="#f3ead2" stroke-width="17" fill="none" stroke-linecap="round"/>
       <path d="M40 30 L44 36 M50 25 L52 32 M60 25 L60 32 M69 30 L66 36 M74 42 L68 44 M74 54 L68 52" stroke="#d8c9a3" stroke-width="2" stroke-linecap="round"/>
-      <circle cx="31" cy="43" r="8" fill="#9a6a3a"/><circle cx="28" cy="41" r="1.6" fill="#2c2418"/>
+      <circle cx="31" cy="43" r="8" fill="${head}"/><circle cx="28" cy="41" r="1.6" fill="#2c2418"/>
       <path d="M26 48 l-4 4 M30 50 l-2 5" stroke="#5a3a20" stroke-width="2" stroke-linecap="round"/></g>`;
   }
-  if(b.kind === 'butterfly'){   // いもむし（ふしごとにゆれる）
-    const c1 = b.name === 'アゲハチョウ' ? (o.instar === 0 ? '#3a3a2a' : '#8bc34a') : '#9ccc65', c2 = b.name === 'アゲハチョウ' ? (o.instar === 0 ? '#f3ead2' : '#5a8a30') : '#7cb342';
+  if(sh === 'butterfly'){   // いもむし（ふしごとにゆれる）
+    const bird = (id === 'ageha' || id === 'karasu') && o.instar === 0;   // アゲハの小さい幼虫は鳥のフンのような色
+    const c1 = bird ? '#3a3a2a' : id === 'monshiro' ? '#9ccc65' : '#8bc34a', c2 = bird ? '#f3ead2' : id === 'monshiro' ? '#7cb342' : '#5a8a30';
     let s = `<g transform="translate(50 50) scale(${small}) translate(-50 -50)">`;
     for(let i=0;i<7;i++) s += `<circle class="seg" cx="${22+i*9}" cy="58" r="7.5" fill="${i%2?c1:c2}"/>`;
     s += `<circle cx="82" cy="58" r="7" fill="${c2}"/><circle cx="84" cy="56" r="1.6" fill="#2c2418"/><circle cx="84" cy="60" r="1.6" fill="#2c2418"/>`;
-    if(b.name === 'アゲハチョウ' && o.instar !== 0) s += `<circle cx="70" cy="54" r="2.5" fill="#2c2418"/><circle cx="71" cy="53" r="1" fill="#fff"/>`;
-    for(let i=0;i<5;i++) s += `<path class="leg ${i%2?'b':''}" d="M${30+i*11} 64 l-2 6 M${34+i*11} 64 l2 6" stroke="#5a7a30" stroke-width="2" stroke-linecap="round"/>`;
+    if((id === 'ageha' || id === 'karasu') && !bird) s += `<circle cx="70" cy="54" r="2.5" fill="#2c2418"/><circle cx="71" cy="53" r="1" fill="#fff"/>`;   // 目玉もよう
+    if(id === 'oomurasaki') s += `<path d="M80 52 L76 40 M86 52 L90 40" stroke="${c2}" stroke-width="3" stroke-linecap="round"/>`;   // 頭のツノ
+    for(let i=0;i<5;i++) s += LEG(`M${30+i*11} 64 l-2 6 M${34+i*11} 64 l2 6`, 'leg ' + (i%2?'b':''), '#5a7a30', 2);
     return s + '</g>';
   }
-  if(b.kind === 'cricket'){   // 小さな黒いコオロギのすがた（はねなし）
+  if(sh === 'cricket'){
     return `<g transform="translate(50 50) scale(${.75*small}) translate(-50 -50)">
       <path class="ant" d="M62 44 L88 18" stroke="#333" stroke-width="2" stroke-linecap="round"/><path class="ant r" d="M64 46 L92 32" stroke="#333" stroke-width="2" stroke-linecap="round"/>
-      <path class="leg" d="M42 62 L30 78 L24 84" stroke="#333" stroke-width="3" fill="none" stroke-linecap="round"/><path class="leg b" d="M50 62 L54 76 M56 60 L66 74" stroke="#333" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-      <ellipse class="body" cx="50" cy="55" rx="20" ry="11" fill="#2b2b2b"/><circle cx="65" cy="52" r="7" fill="#1e1e1e"/><circle cx="68" cy="50" r="1.6" fill="#fff"/></g>`;
+      ${LEG('M42 62 L30 78 L24 84', 'leg', '#333')}${LEG('M50 62 L54 76 M56 60 L66 74', 'leg b', '#333', 2.5)}
+      <ellipse class="body" cx="50" cy="55" rx="20" ry="11" fill="${b.c[0]}"/><circle cx="65" cy="52" r="7" fill="${b.c[1]}"/><circle cx="68" cy="50" r="1.6" fill="#fff"/></g>`;
   }
-  if(b.kind === 'mantis'){   // はねのない小さなカマキリ
+  if(sh === 'mantis'){
     return `<g transform="translate(50 50) scale(${.8*small}) translate(-50 -50)">
       <path class="ant" d="M66 36 L80 16" stroke="#4a8a30" stroke-width="1.5"/><path class="ant r" d="M70 36 L88 24" stroke="#4a8a30" stroke-width="1.5"/>
-      <path class="leg" d="M48 60 L36 80 M54 60 L62 80" stroke="#4a8a30" stroke-width="2.5" stroke-linecap="round"/>
-      <path class="body" d="M30 66 Q50 52 68 44" stroke="#7cc050" stroke-width="9" fill="none" stroke-linecap="round"/>
-      <path d="M66 36 l-8 10 l6 6" stroke="#5aa040" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M62 44 l4 12" stroke="#5aa040" stroke-width="4" stroke-linecap="round"/>
-      <path d="M62 38 L76 34 L70 46 Z" fill="#7cc050"/><circle cx="72" cy="38" r="2.2" fill="#2c2418"/></g>`;
+      ${LEG('M48 60 L36 80 M54 60 L62 80', 'leg', '#4a8a30', 2.5)}
+      <path class="body" d="M30 66 Q50 52 68 44" stroke="${b.c[1]}" stroke-width="9" fill="none" stroke-linecap="round"/>
+      <path d="M66 36 l-8 10 l6 6" stroke="${b.c[0]}" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M62 44 l4 12" stroke="${b.c[0]}" stroke-width="4" stroke-linecap="round"/>
+      <path d="M62 38 L76 34 L70 46 Z" fill="${b.c[1]}"/><circle cx="72" cy="38" r="2.2" fill="#2c2418"/></g>`;
   }
   // バッタの幼虫（はねなし）
   return `<g class="hop" transform="translate(50 50) scale(${.8*small}) translate(-50 -50)">
-    <path class="ant" d="M70 44 L86 24" stroke="#5a9a30" stroke-width="2" stroke-linecap="round"/>
-    <path class="leg" d="M44 58 L30 44 L26 68" stroke="#5a9a30" stroke-width="3" fill="none" stroke-linecap="round"/>
-    <path class="leg b" d="M54 60 L52 72 M60 60 L66 72" stroke="#5a9a30" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-    <path class="body" d="M28 56 L70 48 L76 42 L80 48 L72 60 Z" fill="#7cc444"/><circle cx="74" cy="47" r="2.2" fill="#2c2418"/></g>`;
+    <path class="ant" d="M70 44 L86 24" stroke="${b.c[1]}" stroke-width="2" stroke-linecap="round"/>
+    ${LEG('M44 58 L30 44 L26 68', 'leg', b.c[1])}${LEG('M54 60 L52 72 M60 60 L66 72', 'leg b', b.c[1], 2.5)}
+    <path class="body" d="M28 56 L70 48 L76 42 L80 48 L72 60 Z" fill="${b.c[0]}"/><circle cx="74" cy="47" r="2.2" fill="#2c2418"/></g>`;
 }
-function pupaSVG(b){
-  if(b.kind === 'beetle' || b.kind === 'stag'){   // 土の中の、茶色いさなぎ（カブトはツノのふくらみ）
-    const horn = b.kind === 'beetle' ? `<path d="M58 28 L64 10 L70 28" fill="#c09060"/>` : `<path d="M54 26 L50 14 M66 26 L70 14" stroke="#c09060" stroke-width="4" stroke-linecap="round"/>`;
+function pupaSVG(id, b){
+  if(b.shape === 'beetle' || b.shape === 'stag'){   // 土の中の、茶色いさなぎ（カブトはツノのふくらみ）
+    const col = id === 'kinkabuto' ? '#e8c060' : '#d8a870', line = id === 'kinkabuto' ? '#c09020' : '#b08050';
+    const horn = b.shape === 'beetle' ? `<path d="M58 28 L64 10 L70 28" fill="${line}"/>` : `<path d="M54 26 L50 14 M66 26 L70 14" stroke="${line}" stroke-width="4" stroke-linecap="round"/>`;
     return `<g class="pupa"><ellipse cx="50" cy="80" rx="34" ry="12" fill="#3b2715" opacity=".5"/>
-      <ellipse cx="55" cy="58" rx="20" ry="30" fill="#d8a870"/>${horn}
-      <path d="M40 50 l10 2 M40 60 l10 2 M40 70 l8 2 M62 40 l6 -2 M64 50 l6 -1" stroke="#b08050" stroke-width="2" stroke-linecap="round"/>
-      <path d="M48 45 l-6 8 M50 55 l-6 8 M52 65 l-5 7" stroke="#b08050" stroke-width="4" stroke-linecap="round"/></g>`;
+      <ellipse cx="55" cy="58" rx="20" ry="30" fill="${col}"/>${horn}
+      <path d="M40 50 l10 2 M40 60 l10 2 M40 70 l8 2 M62 40 l6 -2 M64 50 l6 -1" stroke="${line}" stroke-width="2" stroke-linecap="round"/>
+      <path d="M48 45 l-6 8 M50 55 l-6 8 M52 65 l-5 7" stroke="${line}" stroke-width="4" stroke-linecap="round"/></g>`;
   }
   // チョウのさなぎ（葉や枝に糸でぶらさがる）
-  const col = b.name === 'アゲハチョウ' ? '#8bb04a' : '#a8c870';
+  const col = id === 'monshiro' ? '#a8c870' : id === 'oomurasaki' ? '#b8d890' : '#8bb04a';
   return `<g class="pupa"><path d="M50 4 L50 18" stroke="#6a5a3a" stroke-width="2"/><path d="M42 18 Q50 10 58 18" stroke="#fff" stroke-width="1" fill="none"/>
     <path d="M50 16 L63 42 L59 84 Q50 94 41 84 L37 42 Z" fill="${col}"/>
     <path d="M44 40 L56 40 M43 52 L57 52 M44 64 L56 64 M46 76 L54 76" stroke="#6a8a30" stroke-width="1.5"/>
     <path d="M41 30 L37 20 M59 30 L63 20" stroke="${col}" stroke-width="4" stroke-linecap="round"/></g>`;
 }
 function adultSVG(id, b, o){
-  if(b.kind === 'butterfly'){
-    const mon = id === 'monshiro';
-    const w1 = mon ? '#ffffff' : '#f0d850', w2 = mon ? '#e8e8e0' : '#222222', dot = mon ? '#3a3a3a' : '#e04040';
-    const wing = cls=> `<g class="wing ${cls}"><path d="M50 50 C 22 8, 2 28, 14 56 C 24 62, 40 58, 50 50Z" fill="${w1}" stroke="${w2}" stroke-width="2"/>
-      <path d="M50 52 C 26 56, 14 82, 30 88 C 42 88, 48 66, 50 52Z" fill="${w1}" stroke="${w2}" stroke-width="2"/>
-      ${mon ? `<circle cx="28" cy="36" r="3" fill="${dot}"/>` : `<path d="M50 50 C 30 22, 14 32, 18 50 Z" fill="${w2}" opacity=".85"/><circle cx="34" cy="78" r="3" fill="${dot}"/><circle cx="26" cy="66" r="2.5" fill="#4a8ad8"/>`}</g>`;
+  const c = b.c, sh = b.shape;
+  if(sh === 'butterfly'){
+    const W = {monshiro:{fill:'#ffffff', line:'#3a3a3a', pat:null, dot:'#3a3a3a'}, ageha:{fill:'#f0d850', line:'#222222', pat:'#222222', dot:'#e04040', blue:'#4a8ad8'},
+      karasu:{fill:'#1a2a2a', line:'#111111', pat:'#3ac0a0', dot:'#3ac0a0', blue:'#2a4a5a'}, oomurasaki:{fill:'#4a3a8a', line:'#222222', pat:'#6a4ac0', dot:'#f0e060', blue:'#f0e060'}}[id] || {fill:c[0], line:c[1], pat:c[2], dot:c[3]};
+    const wing = cls=> `<g class="wing ${cls}"><path d="M50 50 C 22 8, 2 28, 14 56 C 24 62, 40 58, 50 50Z" fill="${W.fill}" stroke="${W.line}" stroke-width="2"/>
+      <path d="M50 52 C 26 56, 14 82, 30 88 C 42 88, 48 66, 50 52Z" fill="${W.fill}" stroke="${W.line}" stroke-width="2"/>
+      ${W.pat ? `<path d="M50 50 C 30 22, 14 32, 18 50 Z" fill="${W.pat}" opacity="${id === 'ageha' ? .85 : .6}"/>` : ''}
+      <circle cx="${W.pat ? 34 : 28}" cy="${W.pat ? 78 : 36}" r="3" fill="${W.dot}"/>${W.blue ? `<circle cx="26" cy="66" r="2.5" fill="${W.blue}"/>` : ''}</g>`;
     return `${wing('l')}<g transform="translate(100 0) scale(-1 1)">${wing('r')}</g>
       <ellipse class="body" cx="50" cy="56" rx="4" ry="18" fill="#3a3a3a"/><circle cx="50" cy="38" r="4.5" fill="#3a3a3a"/>
       <path class="ant" d="M48 35 L40 22" stroke="#3a3a3a" stroke-width="1.5"/><path class="ant r" d="M52 35 L60 22" stroke="#3a3a3a" stroke-width="1.5"/>`;
   }
-  if(b.kind === 'beetle'){
-    return `<g class="leg" ><path d="M30 44 L14 36 L10 44" stroke="#3a1a08" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M70 44 L86 36 L90 44" stroke="#3a1a08" stroke-width="3" fill="none" stroke-linecap="round"/></g>
-      <g class="leg b"><path d="M28 56 L10 58 L6 66" stroke="#3a1a08" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M72 56 L90 58 L94 66" stroke="#3a1a08" stroke-width="3" fill="none" stroke-linecap="round"/></g>
-      <g class="leg"><path d="M32 68 L18 80 L20 88" stroke="#3a1a08" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M68 68 L82 80 L80 88" stroke="#3a1a08" stroke-width="3" fill="none" stroke-linecap="round"/></g>
-      <ellipse class="body" cx="50" cy="60" rx="24" ry="22" fill="#5a2a10"/><path d="M50 40 L50 82" stroke="#3a1a08" stroke-width="1.5"/>
-      <ellipse cx="50" cy="36" rx="16" ry="9" fill="#3a1a08"/>
-      <path d="M50 30 C 48 20, 46 14, 44 8 L50 12 L56 8 C 54 14, 52 20, 50 30 Z" fill="#3a1a08"/><path d="M46 30 L40 24 M54 30 L60 24" stroke="#3a1a08" stroke-width="3" stroke-linecap="round"/>
-      <ellipse cx="42" cy="52" rx="5" ry="8" fill="#8a4a20" opacity=".5"/>`;
+  if(sh === 'beetle'){
+    const gold = id === 'kinkabuto';
+    return `<g class="leg">${LEG('M30 44 L14 36 L10 44', '', c[1])}${LEG('M70 44 L86 36 L90 44', '', c[1])}</g>
+      <g class="leg b">${LEG('M28 56 L10 58 L6 66', '', c[1])}${LEG('M72 56 L90 58 L94 66', '', c[1])}</g>
+      <g class="leg">${LEG('M32 68 L18 80 L20 88', '', c[1])}${LEG('M68 68 L82 80 L80 88', '', c[1])}</g>
+      <ellipse class="body" cx="50" cy="60" rx="24" ry="22" fill="${c[0]}"/><path d="M50 40 L50 82" stroke="${c[1]}" stroke-width="1.5"/>
+      <ellipse cx="50" cy="36" rx="16" ry="9" fill="${c[1]}"/>
+      <path d="M50 30 C 48 20, 46 14, 44 8 L50 12 L56 8 C 54 14, 52 20, 50 30 Z" fill="${c[1]}"/><path d="M46 30 L40 24 M54 30 L60 24" stroke="${c[1]}" stroke-width="3" stroke-linecap="round"/>
+      <ellipse cx="42" cy="52" rx="5" ry="8" fill="${c[2]}" opacity="${gold ? .9 : .5}"/>${gold ? '<circle class="glow" cx="50" cy="60" r="30" fill="#ffe27a" opacity=".25"/>' : ''}`;
   }
-  if(b.kind === 'stag'){
-    return `<g class="leg"><path d="M30 48 L14 40 L10 48" stroke="#4a1a08" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M70 48 L86 40 L90 48" stroke="#4a1a08" stroke-width="3" fill="none" stroke-linecap="round"/></g>
-      <g class="leg b"><path d="M28 60 L10 62 L6 70" stroke="#4a1a08" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M72 60 L90 62 L94 70" stroke="#4a1a08" stroke-width="3" fill="none" stroke-linecap="round"/></g>
-      <g class="leg"><path d="M32 72 L18 84 L20 92" stroke="#4a1a08" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M68 72 L82 84 L80 92" stroke="#4a1a08" stroke-width="3" fill="none" stroke-linecap="round"/></g>
-      <ellipse class="body" cx="50" cy="64" rx="22" ry="22" fill="#7a3010"/><path d="M50 44 L50 86" stroke="#4a1a08" stroke-width="1.5"/>
-      <rect x="36" y="34" width="28" height="14" rx="4" fill="#4a1a08"/>
-      <path d="M42 34 C 36 24, 34 14, 40 6 L44 10 L40 14 L46 18 L42 22 L48 26 Z" fill="#a85a28"/><path d="M58 34 C 64 24, 66 14, 60 6 L56 10 L60 14 L54 18 L58 22 L52 26 Z" fill="#a85a28"/>`;
+  if(sh === 'stag'){
+    return `<g class="leg">${LEG('M30 48 L14 40 L10 48', '', c[1])}${LEG('M70 48 L86 40 L90 48', '', c[1])}</g>
+      <g class="leg b">${LEG('M28 60 L10 62 L6 70', '', c[1])}${LEG('M72 60 L90 62 L94 70', '', c[1])}</g>
+      <g class="leg">${LEG('M32 72 L18 84 L20 92', '', c[1])}${LEG('M68 72 L82 84 L80 92', '', c[1])}</g>
+      <ellipse class="body" cx="50" cy="64" rx="22" ry="22" fill="${c[0]}"/><path d="M50 44 L50 86" stroke="${c[1]}" stroke-width="1.5"/>
+      <rect x="36" y="34" width="28" height="14" rx="4" fill="${c[1]}"/>${id === 'miyama' ? `<path d="M36 36 L30 30 M64 36 L70 30" stroke="${c[1]}" stroke-width="5" stroke-linecap="round"/>` : ''}
+      <path d="M42 34 C 36 24, 34 14, 40 6 L44 10 L40 14 L46 18 L42 22 L48 26 Z" fill="${c[2]}"/><path d="M58 34 C 64 24, 66 14, 60 6 L56 10 L60 14 L54 18 L58 22 L52 26 Z" fill="${c[2]}"/>`;
   }
-  if(b.kind === 'mantis'){
+  if(sh === 'mantis'){
     return `<path class="ant" d="M66 30 L80 10" stroke="#4a8a30" stroke-width="1.5"/><path class="ant r" d="M70 30 L90 18" stroke="#4a8a30" stroke-width="1.5"/>
-      <path class="leg" d="M48 60 L34 84 M56 58 L66 84" stroke="#4a8a30" stroke-width="2.5" stroke-linecap="round"/><path class="leg b" d="M40 62 L24 76" stroke="#4a8a30" stroke-width="2.5" stroke-linecap="round"/>
+      ${LEG('M48 60 L34 84 M56 58 L66 84', 'leg', '#4a8a30', 2.5)}${LEG('M40 62 L24 76', 'leg b', '#4a8a30', 2.5)}
       <path d="M22 70 Q48 50 66 40" stroke="#9ad070" stroke-width="12" fill="none" stroke-linecap="round" opacity=".9"/>
-      <path class="body" d="M24 68 Q48 52 66 40" stroke="#7cc050" stroke-width="8" fill="none" stroke-linecap="round"/>
-      <path d="M66 32 l-10 12 l8 6" stroke="#5aa040" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M56 44 l-6 -2" stroke="#5aa040" stroke-width="3" stroke-linecap="round"/>
-      <path d="M60 36 L78 30 L70 44 Z" fill="#7cc050"/><circle cx="73" cy="35" r="2.5" fill="#2c2418"/>`;
+      <path class="body" d="M24 68 Q48 52 66 40" stroke="${c[1]}" stroke-width="8" fill="none" stroke-linecap="round"/>
+      <path d="M66 32 l-10 12 l8 6" stroke="${c[0]}" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M56 44 l-6 -2" stroke="${c[0]}" stroke-width="3" stroke-linecap="round"/>
+      <path d="M60 36 L78 30 L70 44 Z" fill="${c[1]}"/><circle cx="73" cy="35" r="2.5" fill="#2c2418"/>`;
   }
-  if(b.kind === 'cricket'){
+  if(sh === 'cricket'){
     return `<path class="ant" d="M62 44 L94 10" stroke="#333" stroke-width="2" stroke-linecap="round"/><path class="ant r" d="M64 46 L96 28" stroke="#333" stroke-width="2" stroke-linecap="round"/>
-      <path class="leg" d="M40 62 L26 80 L20 88" stroke="#333" stroke-width="3" fill="none" stroke-linecap="round"/><path class="leg b" d="M50 64 L54 78 M58 62 L70 76" stroke="#333" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-      <path class="body" d="M24 56 C 24 38, 72 36, 70 56 C 70 68, 26 70, 24 56 Z" fill="#2b2b2b"/><path d="M30 48 Q48 40 66 48 M30 56 Q48 50 66 56" stroke="#555" stroke-width="1.2" fill="none"/>
-      <circle cx="68" cy="52" r="8" fill="#1e1e1e"/><circle cx="71" cy="50" r="1.8" fill="#fff"/>
+      ${LEG('M40 62 L26 80 L20 88', 'leg', '#333')}${LEG('M50 64 L54 78 M58 62 L70 76', 'leg b', '#333', 2.5)}
+      <path class="body" d="M24 56 C 24 38, 72 36, 70 56 C 70 68, 26 70, 24 56 Z" fill="${c[0]}"/><path d="M30 48 Q48 40 66 48 M30 56 Q48 50 66 56" stroke="${c[2]}" stroke-width="1.2" fill="none"/>
+      <circle cx="68" cy="52" r="8" fill="${c[1]}"/><circle cx="71" cy="50" r="1.8" fill="#fff"/>
       ${o.sing ? `<text class="note" x="78" y="40" font-size="12" fill="#f4b63c">♪</text><text class="note b" x="86" y="48" font-size="10" fill="#f4b63c">♪</text>` : ''}`;
   }
-  if(b.kind === 'firefly'){
+  if(sh === 'cicada'){
+    return `<path class="leg" d="M40 56 L30 68 M50 58 L48 72 M60 56 L70 68" stroke="${c[1]}" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <path class="wing" d="M46 40 C 20 46, 12 70, 26 86 C 40 84, 48 60, 46 40 Z" fill="${c[3]}" stroke="${c[1]}" stroke-width="1.5" opacity=".85"/>
+      <g transform="translate(100 0) scale(-1 1)"><path class="wing" d="M46 40 C 20 46, 12 70, 26 86 C 40 84, 48 60, 46 40 Z" fill="${c[3]}" stroke="${c[1]}" stroke-width="1.5" opacity=".85"/></g>
+      <path class="body" d="M38 36 C 38 24, 62 24, 62 36 L58 72 Q50 80 42 72 Z" fill="${c[0]}"/><path d="M40 46 L60 46 M41 54 L59 54 M43 62 L57 62" stroke="${c[1]}" stroke-width="1.5"/>
+      <ellipse cx="50" cy="30" rx="13" ry="7" fill="${c[1]}"/><circle cx="40" cy="28" r="2.5" fill="#2c2418"/><circle cx="60" cy="28" r="2.5" fill="#2c2418"/>`;
+  }
+  if(sh === 'firefly'){
     return `<circle class="glow" cx="36" cy="60" r="16" fill="#e8ff60" opacity=".6"/>
       <path class="ant" d="M72 40 L86 24" stroke="#333" stroke-width="1.5"/><path class="ant r" d="M74 44 L92 36" stroke="#333" stroke-width="1.5"/>
-      <path class="leg" d="M50 60 L44 72 M58 58 L58 72 M66 56 L72 68" stroke="#333" stroke-width="2" stroke-linecap="round"/>
-      <path class="body" d="M30 52 C 30 40, 70 40, 70 52 C 70 62, 30 62, 30 52 Z" fill="#2a2a2a"/><rect x="60" y="42" width="14" height="18" rx="5" fill="#e04040"/><circle cx="76" cy="51" r="5" fill="#2a2a2a"/>
-      <path class="glow" d="M30 52 C 30 46, 40 44, 42 52 C 40 60, 30 58, 30 52 Z" fill="#e8ff60"/>`;
+      ${LEG('M50 60 L44 72 M58 58 L58 72 M66 56 L72 68', 'leg', '#333', 2)}
+      <path class="body" d="M30 52 C 30 40, 70 40, 70 52 C 70 62, 30 62, 30 52 Z" fill="${c[0]}"/><rect x="60" y="42" width="14" height="18" rx="5" fill="${c[1]}"/><circle cx="76" cy="51" r="5" fill="${c[0]}"/>
+      <path class="glow" d="M30 52 C 30 46, 40 44, 42 52 C 40 60, 30 58, 30 52 Z" fill="${c[2]}"/>`;
   }
   // バッタの成虫（はねあり）
-  return `<g class="hop"><path class="ant" d="M72 42 L92 20" stroke="#5a9a30" stroke-width="2" stroke-linecap="round"/>
-    <path class="leg" d="M44 60 L28 42 L22 70" stroke="#5a9a30" stroke-width="3" fill="none" stroke-linecap="round"/>
-    <path class="leg b" d="M54 62 L52 76 M62 62 L70 76" stroke="#5a9a30" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-    <path class="body" d="M20 58 L70 48 L80 40 L86 46 L74 62 Z" fill="#7cc444"/>
-    <path d="M22 54 L72 44 L76 48 L30 60 Z" fill="#5a9a30" opacity=".8"/><circle cx="79" cy="45" r="2.4" fill="#2c2418"/></g>`;
+  return `<g class="hop"><path class="ant" d="M72 42 L92 20" stroke="${c[1]}" stroke-width="2" stroke-linecap="round"/>
+    ${LEG('M44 60 L28 42 L22 70', 'leg', c[1])}${LEG('M54 62 L52 76 M62 62 L70 76', 'leg b', c[1], 2.5)}
+    <path class="body" d="M20 58 L70 48 L80 40 L86 46 L74 62 Z" fill="${c[0]}"/>
+    <path d="M22 54 L72 44 L76 48 L30 60 Z" fill="${c[1]}" opacity=".8"/><circle cx="79" cy="45" r="2.4" fill="#2c2418"/></g>`;
 }
 // 「いちばんいいすがた」（ずかんや見つけたときに見せる）
 const svgBest = (id, o={})=> svgBug(id, 'adult', o);
@@ -664,25 +942,24 @@ const svgBest = (id, o={})=> svgBug(id, 'adult', o);
    ========================================================= */
 const SKY = {asa:['#9ad0f0','#e8f4c0'], hiru:['#5aa6d8','#a9d7ea'], yu:['#f0a060','#f8d8a0'], yoru:['#0e1a3a','#24345a']};
 function placeBug(c, slot){   // どこに、どんなすがたでいるか
-  const b = BUGS[c.bug], st = stageOf(c).k, night = slot === 'yoru', day = slot === 'hiru' || slot === 'asa';
-  const ins = BUGS[c.bug].plan.slice(0, c.si).filter(s=>s.k==='larva').length;
-  if(b.kind === 'beetle' || b.kind === 'stag'){
+  const b = BUGS[c.bug], st = stageOf(c).k, night = slot === 'yoru', day = slot === 'hiru' || slot === 'asa', ins = instarOf(c);
+  if(b.shape === 'beetle' || b.shape === 'stag'){
     if(st === 'larva') return {x:30, y:66, s:.42, o:{instar:ins}, txt:'土の中で、ゆっくり動いている。土の中のくさった葉を食べているよ。'};
     if(st === 'pupa') return {x:60, y:66, s:.42, o:{}, txt:'土の中に、たまごのような部屋を作って、その中でさなぎになっている。ぜったいにこわさないでね。', chamber:true};
     if(night || slot === 'asa') return {x:50, y:40, s:.5, o:{}, txt:night ? '夜になって土から出てきた！ ゼリーをもぐもぐ食べている。' : '朝のうちは、まだ木の上でじっとしている。'};
     return {x:35, y:64, s:.4, o:{sleep:true}, txt:'昼のあいだは、土の中でねている。そっとしておこう。', buried:true};
   }
-  if(b.kind === 'butterfly'){
+  if(b.shape === 'butterfly'){
     if(st === 'larva') return {x:60, y:36, s:.4, o:{instar:ins}, txt:day ? '葉のふちから、むしゃむしゃ食べている。フンもたくさん出るよ。' : '葉のうらで、じっとしている。'};
     if(st === 'pupa') return {x:70, y:26, s:.4, o:{}, txt:'葉のうらに、糸でぶらさがっている。中では体が作りかえられているところ。'};
     if(night) return {x:40, y:30, s:.45, o:{rest:true, sleep:true}, txt:'はねをとじて、くきにとまってねている。'};
     return {x:55, y:34, s:.55, o:{}, txt:'花にとまって、さとう水をすっている。はねをひらいたりとじたりしているね。'};
   }
-  if(b.kind === 'mantis'){
+  if(b.shape === 'mantis'){
     if(night) return {x:40, y:40, s:.5, o:{sleep:true, instar:ins}, txt:'草のかげで、じっとしている。'};
     return {x:48, y:44, s:.55, o:{instar:ins}, txt:'カマをかまえて、エサの虫をねらっている。目があうと、こっちを見るよ。'};
   }
-  if(b.kind === 'cricket'){
+  if(b.shape === 'cricket'){
     if(night || slot === 'yu'){ return {x:50, y:46, s:.55, o:{sing: st === 'adult', instar:ins}, txt: st === 'adult' ? 'リーンリーン…。はねをこすりあわせて鳴いている！' : '暗くなってきて、かくれ家から出てきた。'}; }
     return {x:28, y:56, s:.45, o:{sleep:true, instar:ins}, txt:'昼は、かくれ家の下でじっとしている。暗くて静かな場所がすきなんだ。'};
   }
@@ -691,22 +968,22 @@ function placeBug(c, slot){   // どこに、どんなすがたでいるか
   return {x:50, y:44, s:.55, o:{instar:ins}, txt:'草をかじっている。ときどき、ピョンとはねるよ。'};
 }
 function sceneSVG(c, slot){
-  const b = BUGS[c.bug], st = stageOf(c).k, soilKind = b.kind === 'beetle' || b.kind === 'stag', [s1, s2] = SKY[slot], p = placeBug(c, slot);
+  const b = BUGS[c.bug], st = stageOf(c).k, soilKind = b.shape === 'beetle' || b.shape === 'stag', [s1, s2] = SKY[slot], p = placeBug(c, slot);
   const stars = slot === 'yoru' ? [[10,8],[30,14],[55,6],[80,12],[92,20],[68,18]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r=".6" fill="#fff"/>`).join('') : '';
   const sun = slot === 'yoru' ? `<circle cx="84" cy="14" r="5" fill="#fff6c0"/>` : slot === 'yu' ? `<circle cx="84" cy="22" r="6" fill="#ff8040"/>` : `<circle cx="84" cy="12" r="6" fill="#ffe27a"/>`;
   const soilTop = soilKind ? 52 : 70;
   let plants = '';
-  if(b.kind === 'butterfly') plants = `<path d="M40 ${soilTop} C 42 50, 44 40, 50 22" stroke="#4e7a36" stroke-width="2.5" fill="none"/>
+  if(b.shape === 'butterfly') plants = `<path d="M40 ${soilTop} C 42 50, 44 40, 50 22" stroke="#4e7a36" stroke-width="2.5" fill="none"/>
       <path d="M50 30 C 62 20, 76 24, 70 36 C 62 40, 54 36, 50 30Z" fill="#6cb04a"/><path d="M46 44 C 34 36, 26 40, 30 50 C 38 52, 44 50, 46 44Z" fill="#5a9a3a"/>
       <circle cx="52" cy="22" r="5" fill="#f4b63c"/><circle cx="52" cy="22" r="2" fill="#a85a28"/>`;
   else if(soilKind) plants = `<path d="M20 50 L36 32 L72 32 L80 50 Z" fill="#6a4a2a"/><path d="M36 32 L72 32 L68 36 L40 36 Z" fill="#8a6a3a"/><path d="M26 44 L30 40 M60 40 L64 36" stroke="#4a3a2a" stroke-width="1"/>
       <rect x="72" y="42" width="12" height="9" rx="2" fill="#e8c060" stroke="#a85a28" stroke-width="1"/>`;
   else plants = [12,22,30,62,72,84,92].map((x,i)=>`<path d="M${x} ${soilTop} C ${x+2} ${soilTop-14}, ${x-4} ${soilTop-22}, ${x+(i%2?3:-2)} ${soilTop-30}" stroke="#5a9a3a" stroke-width="2" fill="none"/>`).join('') +
-      (b.kind === 'cricket' ? `<path d="M14 ${soilTop} L22 ${soilTop-12} L40 ${soilTop-12} L44 ${soilTop} Z" fill="#8a6a3a"/>` : '');
+      (b.shape === 'cricket' ? `<path d="M14 ${soilTop} L22 ${soilTop-12} L40 ${soilTop-12} L44 ${soilTop} Z" fill="#8a6a3a"/>` : '');
   const chamber = p.chamber ? `<ellipse cx="${p.x+10}" cy="${p.y+2}" rx="17" ry="12" fill="#2a1a0a"/>` : '';
   const soil = `<rect x="0" y="${soilTop}" width="100" height="${100-soilTop}" fill="#5a3d22"/><rect x="0" y="${soilTop}" width="100" height="2" fill="#6c9a4a"/>
     ${[[8,80],[24,90],[48,84],[70,78],[88,92],[36,74],[60,94]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.4" fill="#3b2715"/>`).join('')}`;
-  const bug = `<g transform="translate(${p.x} ${p.y}) scale(${p.s*1.2}) translate(-50 -50)" style="${p.buried ? 'opacity:.55' : ''}">${svgBug(c.bug, st, p.o).replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '')}</g>`;
+  const bug = `<g transform="translate(${p.x} ${p.y}) scale(${p.s*1.2}) translate(-50 -50)" style="${p.buried ? 'opacity:.55' : ''}">${svgBug(c.bug, st, Object.assign({rare:c.rare}, p.o)).replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '')}</g>`;
   // ガラスのケースのわく
   const glass = `<rect x="1" y="1" width="98" height="98" fill="none" stroke="#f7f1df88" stroke-width="2" rx="2"/><path d="M4 4 L4 30" stroke="#fff" stroke-width="1" opacity=".5"/>`;
   const zz = p.o && p.o.sleep ? `<text class="zz" x="${p.x+8}" y="${p.y-8}" font-size="7" fill="#fff">z</text><text class="zz" x="${p.x+13}" y="${p.y-14}" font-size="5" fill="#fff" style="animation-delay:-1.2s">z</text>` : '';
@@ -731,6 +1008,15 @@ function say(text, opts={}){
 }
 const fmtMsg = t=> esc(t).replace(/【([^】]+)】/g, '<b class="yk">【$1】</b>').replace(/\n/g, '<br>');
 const ask = (text, yes='はい', no='いいえ')=> say(text, {ans:[yes, no]}).then(i=> i === 0);
+function askText(text, def=''){
+  return new Promise(res=>{
+    const L = document.createElement('div'); L.id = 'msgLayer';
+    L.innerHTML = `<div class="win">${fmtMsg(text)}<input type="text" maxlength="10" value="${esc(def)}"><div class="ans"><button type="button" class="btn pri">きめた</button></div></div>`;
+    const inp = L.querySelector('input'); L.querySelector('button').onclick = ()=>{ const v = inp.value.trim(); L.remove(); res(v); };
+    inp.onkeydown = e=>{ if(e.key === 'Enter') L.querySelector('button').click(); };
+    document.body.appendChild(L); inp.focus(); inp.select();
+  });
+}
 // そだてのやくそく：はじめての場面で、ひとことずつ教える
 async function yakusoku(key, text){ if(S.yk[key]) return; S.yk[key] = 1; await say('【そだてのやくそく】\n' + text); }
 
@@ -754,7 +1040,7 @@ document.querySelectorAll('#tabs button').forEach(b=> b.onclick = ()=> setTab(b.
 function render(){
   if(!S){ renderTitle(); return; }
   if(openCase !== null){ renderObs(); return; }
-  ({home:renderHome, out:renderOut, dex:renderDex, opt:renderOpt})[tab]();
+  ({home:renderHome, out:renderOut, sumo:renderSumo, dex:renderDex, opt:renderOpt})[tab]();
 }
 
 /* ---- タイトル ---- */
@@ -779,6 +1065,8 @@ function renderTitle(){
 }
 async function start(){
   $('tabs').hidden = false; setTab('home'); hud();
+  const diary = readDiary();
+  if(diary && diary.dex && diary.dex.kinkabuto && !S.link.kin){ S.link.kin = 1; save(); await say('この端末に「むなかた虫とり日記」のセーブがあった！\nミアレカブトに出会っているね…。宗像大社に行くと、なにかが見つかるかも。'); }
   if(!S.yk.hello){ S.yk.hello = 1;
     await say('ようこそ、「むなかた虫そだて」へ！\nこのゲームは、そとで虫をみつけて、おうちでそだてるゲーム。');
     await say('そとに出るときは、おうちの人のスマホで、いっしょに。\nおうちでのお世話は、きみひとりでもできるよ。');
@@ -792,11 +1080,11 @@ function renderHome(){
   const slot = slotOf();
   view.innerHTML = `<h2>おうちの飼育ケース</h2><div class="cases">${S.cases.map((c,i)=>{
     if(!c) return `<div class="case empty" data-i="${i}"><div>（からっぽ）</div><div class="small">そとで虫をみつけて、つれてかえろう</div></div>`;
-    const b = BUGS[c.bug], st = stageOf(c), nd = needs(c), g = genkiOf(c), ins = b.plan.slice(0, c.si).filter(s=>s.k==='larva').length;
+    const b = BUGS[c.bug], st = stageOf(c), nd = needs(c), g = genkiOf(c), ins = instarOf(c), fc = forecast(c);
     return `<div class="case" data-i="${i}">
-      <div class="pic" style="background:linear-gradient(${SKY[slot][0]},${SKY[slot][1]} 60%,#5a3d22 61%)">${svgBug(c.bug, st.k, {instar:ins, scale:.8, sleep:(placeBug(c, slot).o||{}).sleep})}
-        ${c.pending ? '<span class="ev norb">！</span>' : ''}${nd.length ? `<span class="alert">${nd.join('・')}</span>` : ''}</div>
-      <div class="nm">${esc(b.name)}</div><div class="st">${stageLabel(c)}${c.pending ? '　なにかおこりそう…' : `　あと${daysLeft(c)}日くらい`}</div>
+      <div class="pic" style="background:linear-gradient(${SKY[slot][0]},${SKY[slot][1]} 60%,#5a3d22 61%)">${svgBug(c.bug, st.k, {instar:ins, scale:.8, rare:c.rare, sleep:(placeBug(c, slot).o||{}).sleep})}
+        ${c.pending ? '<span class="ev norb">！</span>' : fc ? '<span class="ev norb">予告</span>' : ''}${nd.length ? `<span class="alert">${nd.join('・')}</span>` : ''}</div>
+      <div class="nm">${esc(c.name || b.name)}${c.name ? ` <small class="small">${esc(b.name)}</small>` : ''}</div><div class="st">${stageLabel(c)}${c.pending ? '　なにかおこりそう…' : st.k === 'adult' ? `　${c.size}mm・${esc(PERS[c.pers||'futsu'].name)}` : `　あと${daysLeft(c)}日くらい`}</div>
       <div class="meters"><span>元気</span><span class="bar"><i class="${meterCls(g)}" style="width:${g}%"></i></span></div></div>`;
   }).join('')}</div>
   <h3>もちもの</h3><div class="row">${Object.keys(S.items).filter(k=>S.items[k]>0).map(k=>`<span class="win" style="padding:.2em .6em;font-size:13px">${esc(ITEMS[k].name)} ×${S.items[k]}</span>`).join('') || '<span class="small">なにもない</span>'}</div>
@@ -805,7 +1093,7 @@ function renderHome(){
   $('btnShop').onclick = renderShop;
 }
 function renderShop(){
-  view.innerHTML = `<h2>エサを買う</h2><p class="small">どんぐり：<b style="color:var(--sun)">${dg(S.money)}</b>　場所から場所へ歩くともらえるよ。</p>
+  view.innerHTML = `<h2>エサと道具を買う</h2><p class="small">どんぐり：<b style="color:var(--sun)">${dg(S.money)}</b>　場所から場所へ歩くともらえるよ。</p>
     <div class="opt">${Object.keys(ITEMS).map(k=>{ const it = ITEMS[k], free = !it.price;
       return `<button type="button" class="btn" data-k="${k}" ${!free && S.money < it.price ? 'disabled' : ''}><span>${esc(it.name)}<br><small class="small">${esc(it.desc)}</small></span><span class="v">${free ? 'ただ' : dg(it.price)}　×${S.items[k]||0}</span></button>`; }).join('')}</div>
     <div class="row end" style="margin-top:10px"><button type="button" class="btn" id="btnBack">もどる</button></div>`;
@@ -814,51 +1102,65 @@ function renderShop(){
 }
 
 /* ---- 観察（ケースの中） ---- */
+const PLACES = {genkan:{name:'げんかん', desc:'すずしくて静か。かいふくがよくなり、のんびりした性格になりやすい'}, heya:{name:'へや', desc:'いつもそばにいる。人なつっこい性格になりやすい'}, beranda:{name:'ベランダの日かげ', desc:'外の空気。まもりが強くなる。ただし、かわきやすい'}};
+function indLine(c){ const f = fighterOf(c); return statLine(f); }
 async function renderObs(){
   const c = S.cases[openCase]; if(!c){ openCase = null; render(); return; }
-  const b = BUGS[c.bug], st = stageOf(c), slot = slotOf(), sc = sceneSVG(c, slot), g = genkiOf(c);
+  const b = BUGS[c.bug], st = stageOf(c), slot = slotOf(), sc = sceneSVG(c, slot), g = genkiOf(c), fc = forecast(c);
   const foodKey = st.k === 'adult' ? b.foodAdult : b.food, food = ITEMS[foodKey], haveFood = food.price === 0 || (S.items[foodKey]||0) > 0;
   const m = (lbl, v)=> `<span>${lbl}</span><span class="bar"><i class="${meterCls(v)}" style="width:${v}%"></i></span>`;
-  view.innerHTML = `<div class="row" style="justify-content:space-between"><h2>${esc(b.name)}の${stageLabel(c)}</h2><button type="button" class="btn sub" id="btnBack">もどる</button></div>
-    <div id="obs"><div class="scene">${sc.svg}</div><div class="obsTxt win">${esc(sc.txt)}${c.pending ? '<br><b class="yk">…なんだか、ようすがかわりそう！</b>' : ''}</div></div>
+  const persTxt = c.pers && st.k === 'adult' ? `${PERS[c.pers].name}なので、${PERS[c.pers].txt}` : '';
+  const title = c.name ? `${esc(c.name)}（${esc(b.name)}の${stageLabel(c)}）` : `${esc(b.name)}の${stageLabel(c)}`;
+  view.innerHTML = `<div class="row" style="justify-content:space-between"><h2>${title}</h2><button type="button" class="btn sub" id="btnBack">もどる</button></div>
+    <div class="row" style="margin-bottom:6px"><span class="tag born">${esc((BORN[c.born]||BORN.any).name)}</span>${c.bornSlot === 'yoru' ? '<span class="tag">夜型</span>' : ''}<span class="tag">${esc(PLACES[c.place].name)}</span>${c.wide ? '<span class="tag">広いケース</span>' : ''}${c.rare ? '<span class="tag" style="background:#7a5a20">めずらしい色</span>' : ''}</div>
+    <div id="obs"><div class="scene">${sc.svg}</div><div class="obsTxt win">${esc(sc.txt)}${persTxt ? `<br>${esc(persTxt)}` : ''}${c.trouble ? `<br><b class="yk">【${esc(TROUBLE[c.trouble].name)}】</b>${esc(TROUBLE[c.trouble].txt)}` : ''}${c.pending ? '<br><b class="yk">…なんだか、ようすがかわりそう！</b>' : fc ? `<br><b class="yk">【予告】</b>${esc(fc)}` : ''}</div></div>
     <div class="meters" style="margin-top:8px">${st.k !== 'pupa' ? m('おなか', c.hunger) : ''}${m('しめりけ', c.wet)}${m('きれいさ', c.clean)}${m('元気', g)}</div>
-    <p class="small">${SLOT_NAMES[slot]}のようす。${st.k === 'pupa' ? 'さなぎは、なにも食べない。' : `ごはんは「${esc(food.name)}」。`}${c.pending ? '' : `このすがたで、あと${daysLeft(c)}日くらい。`}</p>
+    <p class="small">${SLOT_NAMES[slot]}のようす。${st.k === 'pupa' ? 'さなぎは、なにも食べない。' : `ごはんは「${esc(food.name)}」。`}${c.pending || st.k === 'adult' ? '' : `このすがたで、あと${daysLeft(c)}日くらい。`}</p>
+    ${st.k === 'adult' ? `<p class="small">${esc(indLine(c))}<br>わざ：${c.moves.map(k=>esc(MOVES[k].name)).join('・')}　${c.size}mm ${esc(c.sex||'')}</p>` : ''}
     <div class="acts">
       <button type="button" class="btn ${st.k !== 'pupa' && c.hunger < 60 ? 'pri' : ''}" id="aFeed" ${st.k === 'pupa' ? 'disabled' : ''}>エサをあげる<small>${esc(food.name)}${food.price ? ` ×${S.items[foodKey]||0}` : ''}</small></button>
       <button type="button" class="btn ${c.wet < 60 ? 'pri' : ''}" id="aWet">きりふき<small>水をシュッとかける</small></button>
-      <button type="button" class="btn ${c.clean < 60 ? 'pri' : ''}" id="aClean">そうじ<small>フンや古いエサをとる</small></button>
+      <button type="button" class="btn ${c.clean < 60 || c.trouble ? 'pri' : ''}" id="aClean">そうじ<small>フンや古いエサをとる</small></button>
+      <button type="button" class="btn sub" id="aPlace">おき場所をかえる<small>いま：${esc(PLACES[c.place].name)}</small></button>
       <button type="button" class="btn sub" id="aLook">じっくり見る<small>ずかんでしらべる</small></button>
-      <button type="button" class="btn sub" id="aRelease">もとの場所にかえす<small>${st.k === 'adult' && c.pending ? 'ごほうびがもらえる' : 'いつでもできる'}</small></button>
+      <button type="button" class="btn sub" id="aRelease">もとの場所にかえす<small>${st.k === 'adult' ? 'ごほうびがもらえる' : 'いつでもできる'}</small></button>
     </div>`;
   $('btnBack').onclick = ()=>{ openCase = null; render(); };
   $('aFeed').onclick = async ()=>{
-    if(c.hunger > 80){ await say(`${b.name}は、まだおなかがいっぱいみたい。\nエサは、なくなったら新しいものにかえよう。`); return; }
+    if(c.hunger > 80){ c.log.over++; await say(`${b.name}は、まだおなかがいっぱいみたい。\nエサは、なくなったら新しいものにかえよう。`); save(); return; }
     if(!haveFood){ await say(`「${food.name}」がない！\nおうちの「どんぐりでエサを買う」で買えるよ。`); return; }
     if(food.price) S.items[foodKey]--;
+    c.log.feed++; if(c.hunger >= 50) c.log.feedFull++;   // おなかがまだあるのにあげた＝「たっぷり」
     c.hunger = 100; c.tick = now(); save();
     await yakusoku('feed', 'エサは、毎日見て、古くなったらとりかえよう。\n生きものを飼うということは、毎日の「つづける」ことなんだ。');
     renderObs();
   };
   $('aWet').onclick = async ()=>{
-    if(c.wet > 80){ await say('もう十分しめっているよ。\nしめらせすぎると、カビがはえたり、虫が弱ったりするんだ。'); return; }
-    c.wet = 100; save();
+    if(c.wet > 80){ c.log.over++; save(); await say('もう十分しめっているよ。\nしめらせすぎると、カビがはえたり、虫が弱ったりするんだ。'); return; }
+    c.wet = 100; c.log.wet++; save();
     await yakusoku('wet', 'きりふきは「しっとり」くらいでちょうどいい。びしょびしょにしないでね。');
     renderObs();
   };
   $('aClean').onclick = async ()=>{
-    if(c.clean > 80){ await say('もうきれいだよ。\nさわりすぎると、虫がつかれてしまうから、そっとしておこう。'); return; }
+    if(c.trouble){ const tr = TROUBLE[c.trouble]; c.trouble = null; c.clean = 100; c.log.clean++; if(tr === TROUBLE.kabi) c.wet = Math.min(c.wet, 60); save(); await say(tr.fix); await yakusoku('trouble', 'トラブルは、早く気づけば小さいうちに直せる。\n毎日ちょっとのぞくのが、いちばんのお世話。'); renderObs(); return; }
+    if(c.clean > 80){ c.log.over++; save(); await say('もうきれいだよ。\nさわりすぎると、虫がつかれてしまうから、そっとしておこう。'); return; }
     if(st.k === 'pupa' && !(await ask('さなぎのまわりは、動かさないほうがいい。\nケースのそとがわだけ、そっとそうじする？', 'そっとそうじする', 'やめておく'))) return;
-    c.clean = 100; save();
+    c.clean = 100; c.log.clean++; save();
     await yakusoku('clean', 'フンや古いエサは、こまめにとってあげよう。\n虫をさわるときは、力を入れずに、そっとね。');
+    renderObs();
+  };
+  $('aPlace').onclick = async ()=>{
+    const keys = Object.keys(PLACES), i = await say('どこにおく？', {ans:keys.map(k=>`${PLACES[k].name}：${PLACES[k].desc}`).concat(['やめる'])});
+    if(i >= keys.length) return; if(keys[i] !== c.place){ c.place = keys[i]; c.log.over++; save(); }   // うごかすと、少しおどろく
     renderObs();
   };
   $('aLook').onclick = ()=> showDexDetail(c.bug);
   $('aRelease').onclick = async ()=>{
-    const done = st.k === 'adult' && c.pending;
-    if(!(await ask(done ? `${b.name}は、りっぱな成虫になった。\nみつけた場所（${esc(c.from)}）に、かえしてあげる？` : `${b.name}を、まだとちゅうだけど、みつけた場所（${esc(c.from)}）にかえす？`, 'かえす', 'やめる'))) return;
+    const adult = st.k === 'adult', nm = c.name || b.name;
+    if(!(await ask(adult ? `${nm}は、りっぱな成虫になった。\nみつけた場所（${esc(c.from)}）に、かえしてあげる？\n（かえすと、虫ずもうには出られなくなるよ）` : `${nm}を、まだとちゅうだけど、みつけた場所（${esc(c.from)}）にかえす？`, 'かえす', 'やめる'))) return;
     S.cases[openCase] = null;
-    if(done){ S.money += 50; S.stats.released++; S.dex[c.bug].raised = dayKey(); await say(`${b.name}は、${c.from}の空へ元気に飛んでいった！\nさいごまでそだてたごほうびに、どんぐり ${dg(50)} をもらった。`); }
-    else { S.money += 5; await say(`${b.name}を${c.from}にかえした。\n「元気でね！」`); }
+    if(adult){ S.money += 50; S.stats.released++; const d = S.dex[c.bug]; d.raised = dayKey(); d.released = (d.released||0) + 1; await say(`${nm}は、${c.from}の空へ元気に飛んでいった！\nさいごまでそだてたごほうびに、どんぐり ${dg(50)} をもらった。`); }
+    else { S.money += 5; await say(`${nm}を${c.from}にかえした。\n「元気でね！」`); }
     await yakusoku('release', '観察がおわったら、みつけた場所にかえしてあげよう。\nちがう場所にはなすと、そこにいる虫たちがこまってしまうんだ。');
     save(); openCase = null; refresh();
   };
@@ -866,14 +1168,16 @@ async function renderObs(){
   if(c.pending){ await wait(600); await playEvent(c); }
 }
 async function playEvent(c){
-  const b = BUGS[c.bug], cur = stageOf(c), nx = b.plan[c.si+1], ins = b.plan.slice(0, c.si).filter(s=>s.k==='larva').length;
+  const b = BUGS[c.bug], cur = stageOf(c), nx = b.plan[c.si+1], ins = instarOf(c);
   if(!nx){   // 成虫のさいご：かえすとき
-    if(!c.doneSaid){ c.doneSaid = 1; save(); await say(`${b.name}は、すっかり元気な成虫になった！\nそろそろ、みつけた場所にかえしてあげよう。\n（「もとの場所にかえす」でごほうびがもらえる）`); }
+    if(!c.doneSaid){ c.doneSaid = 1; save(); await say(`${c.name || b.name}は、ケースでずいぶん長くくらした。\nそろそろ、みつけた場所にかえしてあげよう。\n（「もとの場所にかえす」でごほうびがもらえる）`); }
     return;
   }
   const kind = cur.k === 'larva' && nx.k === 'larva' ? 'molt' : nx.k === 'pupa' ? 'pupate' : 'emerge';
+  applyGrowth(c);
+  if(kind === 'emerge') finalize(c);
   const L = document.createElement('div'); L.id = 'evLayer';
-  const oldSvg = svgBug(c.bug, cur.k, {instar:ins}), newSvg = svgBug(c.bug, nx.k, {instar:ins+1, cls: kind === 'emerge' ? 'ev-emerge' : ''});
+  const oldSvg = svgBug(c.bug, cur.k, {instar:ins}), newSvg = svgBug(c.bug, nx.k, {instar:ins+1, rare:c.rare, cls: kind === 'emerge' ? 'ev-emerge' : ''});
   const ttl = {molt:'脱皮した！', pupate:'さなぎになった！', emerge:'羽化した！'}[kind];
   const cap = {molt:`${b.name}の幼虫は、古い皮をぬいで\nひとまわり大きくなった！`, pupate:`${b.name}の幼虫は、じっと動かなくなって…\nさなぎになった！`, emerge:`${b.name}の成虫が出てきた！\nはねが、ゆっくりひろがっていく…`}[kind];
   L.innerHTML = `<div class="stage"><div class="ly ${kind === 'emerge' ? 'ev-crack' : 'ev-old'}">${oldSvg}</div><div class="ly ev-new">${newSvg}</div>${kind === 'emerge' ? [20,45,70,30,60,80].map((x,i)=>`<i class="spark" style="left:${x}%;top:${40+(i%3)*15}%;animation-delay:${1.5+i*.2}s"></i>`).join('') : ''}</div><div class="ttl norb" hidden>${ttl}</div><div class="cap" hidden>${esc(cap).replace(/\n/g,'<br>')}</div>`;
@@ -885,33 +1189,55 @@ async function playEvent(c){
   // 次のすがたへ
   c.si++; c.prog = 0; c.pending = false; c.tick = now(); if(nx.k === 'pupa') c.hunger = 100;
   const bonus = {molt:10, pupate:20, emerge:30}[kind]; S.money += bonus; S.stats[kind] = (S.stats[kind]||0) + 1;
-  if(kind === 'emerge'){ S.dex[c.bug].adult = dayKey(); S.stats.raised++; }
+  if(kind === 'emerge'){ const d = S.dex[c.bug]; d.adult = dayKey(); d.born = Object.assign(d.born||{}, {[c.born]:1}); if(!d.best || c.size > d.best) d.best = c.size; S.stats.raised++; }
   save();
-  await say(`${ttl}　どんぐり ${dg(bonus)} をもらった。`);
+  const learned = kind === 'molt' && ins === 0 ? `\n【わざ】「${MOVES[b.shape].name}」をおぼえた！` : kind === 'pupate' || (kind === 'molt' && ins >= 1) ? '\n体の中で、得意わざが育っているみたい…' : '';
+  await say(`${ttl}　どんぐり ${dg(bonus)} をもらった。${learned}`);
   if(kind === 'molt') await yakusoku('molt', '脱皮したばかりの虫は、体がやわらかい。\nしばらくは、さわらないでそっと見ていよう。');
   if(kind === 'pupate') await yakusoku('pupate', 'さなぎの中では、体がまるごと作りかえられている。\nゆらしたり、さわったりしないでね。');
-  if(kind === 'emerge') await yakusoku('emerge', '羽化したばかりのはねは、まだやわらかい。\nはねがかわいてかたくなるまで、そっとしておこう。');
+  if(kind === 'emerge'){ await yakusoku('emerge', '羽化したばかりのはねは、まだやわらかい。\nはねがかわいてかたくなるまで、そっとしておこう。'); await showResult(c); }
   renderObs();
+}
+/* 羽化の「けっか発表」：大きさ・オスメス・性格・ステータス・わざ。そして名前をつける */
+async function showResult(c){
+  const b = BUGS[c.bug], f = fighterOf(c), born = BORN[c.born] || BORN.any, ind = c.ind;
+  const bar = (lbl, v, hi, lo)=> `<span>${lbl}</span><span class="bar"><i style="width:${Math.round(clamp((v-.8)/.6, .05, 1)*100)}%"></i></span><span class="mk">${mark(v, hi, lo)}</span>`;
+  const [mn, mx] = b.size, sizeMk = c.size >= mx*.95 ? '◎ とても大きい！' : c.size >= (mn+mx)/2 ? '○ 大きいほう' : '△ 小さめ';
+  const p = openPanel('けっか発表', `<div class="result">
+    <div class="pic">${svgBest(c.bug, {rare:c.rare})}</div>
+    <div class="big">${esc(b.name)}の成虫が生まれた！</div>
+    <p style="text-align:center"><span class="born">${esc(born.name)}</span>${c.bornSlot === 'yoru' ? ' <span class="born">夜型</span>' : ''}${c.rare ? ' <span class="born">めずらしい色</span>' : ''}</p>
+    <table><tr><td>大きさ</td><td>${c.size}mm　${sizeMk}</td></tr><tr><td>オス・メス</td><td>${esc(c.sex)}</td></tr>
+      <tr><td>性格</td><td><b>${esc(PERS[c.pers].name)}</b>　<small>${esc(PERS[c.pers].how||'')}</small></td></tr>
+      <tr><td>わざ</td><td>${c.moves.map(k=>`<b>${esc(MOVES[k].name)}</b>（${esc(MOVES[k].info)}）`).join('<br>')}</td></tr></table>
+    <h3>ステータス（虫ずもう用）</h3>
+    <div class="stats">${bar('たいりょく', ind.hp, 1.12, .95)}${bar('ちから', ind.atk, 1.12, .95)}${bar('まもり', ind.def, 1.12, .95)}${bar('すばやさ', ind.spd, 1.12, .95)}${bar('かいふく', ind.heal, 1.12, .95)}</div>
+    <p class="small" style="color:#7a5a20">${esc(statLine(f))}</p>
+    <p class="small" style="color:#7a5a20">${esc(born.txt)}</p></div>`);
+  await new Promise(r=>{ p.querySelector('.close').onclick = ()=>{ p.remove(); r(); }; });
+  const nm = await askText(`${b.name}に名前をつけよう！`, b.name);
+  c.name = (nm || b.name).slice(0, 10); save();
+  await say(`「${c.name}」と名づけた。\nこれから、虫ずもうに出られるよ！（「ずもう」タブ）`);
 }
 // 元気がとても低いままだった虫は、自然にかえる
 async function handleGone(){
   for(let i=0;i<S.cases.length;i++){ const c = S.cases[i]; if(!c || !c.gone) continue;
     S.cases[i] = null; save();
-    await say(`${BUGS[c.bug].name}は、元気がなくなって、ケースから出ていってしまった…。\nお世話が足りなかったみたい。\n【そだてのやくそく】\n飼うときめたら、毎日、エサとしめりけとそうじを見てあげよう。`);
+    await say(`${c.name || BUGS[c.bug].name}は、元気がなくなって、ケースから出ていってしまった…。\nお世話が足りなかったみたい。\n【そだてのやくそく】\n飼うときめたら、毎日、エサとしめりけとそうじを見てあげよう。`);
     render();
   }
 }
 
 /* ---- そと ---- */
-let outState = null;   // {spot, finds, found}
+let outState = null;   // {spot, outside}
 function renderOut(){
   const slot = slotOf(), today = dayKey();
   if(outState && outState.spot) return renderSpot();
   view.innerHTML = `<h2>そとへ虫をさがしに行く</h2>
-    <p class="small">いまは<b style="color:#fff">${SLOT_NAMES[slot]}</b>。時間帯によって、みつかる虫がかわるよ。宗像の場所に着いたら「いまいる場所をしらべる」。</p>
+    <p class="small">いまは<b style="color:#fff">${SLOT_NAMES[slot]}</b>。時間帯によって、みつかる虫がかわるよ。つかまえた場所と時間は、虫の「生まれ」として残る。</p>
     <div class="row"><button type="button" class="btn pri" id="btnGeo">📍 いまいる場所をしらべる</button></div>
-    <div class="spots" style="margin-top:10px">${SPOTS.map(sp=>{ const v = (S.visits[sp.key+'|'+today]||0);
-      return `<div class="spot"><b>${esc(sp.name)}</b>　<span class="small">${esc(sp.env)}</span><div class="bugs">${slot ? `いま：${spotBugs(sp.key, slot).map(id=>BUGS[id].name).join('・') || 'おやすみ中'}` : ''}　／　ほか：${spotBugs(sp.key).filter(id=>!BUGS[id].time.includes(slot) && !BUGS[id].spots.includes('any')).map(id=>`${BUGS[id].name}（${BUGS[id].time.map(t=>SLOT_NAMES[t]).join('・')}）`).join('・') || 'なし'}</div>${v ? `<div class="small">今日は${v}回さがした</div>` : ''}</div>`; }).join('')}
+    <div class="spots" style="margin-top:10px">${SPOTS.map(sp=>{ const v = (S.visits[sp.key+'|'+today]||0), bn = BORN[sp.key];
+      return `<div class="spot"><b>${esc(sp.name)}</b>　<span class="small">${esc(sp.env)}</span><div class="bugs">いま：${spotBugs(sp.key, slot).map(id=>BUGS[id].name).join('・') || 'おやすみ中'}　／　ほか：${spotBugs(sp.key).filter(id=>!BUGS[id].time.includes(slot) && !BUGS[id].spots.includes('any')).map(id=>`${BUGS[id].name}（${BUGS[id].time.map(t=>SLOT_NAMES[t]).join('・')}）`).join('・') || 'なし'}</div><div class="small">${esc(bn.name)}：${esc(bn.txt)}</div>${v ? `<div class="small">今日は${v}回さがした</div>` : ''}</div>`; }).join('')}
     <div class="spot"><b>${esc(ANY_SPOT.name)}</b>　<span class="small">宗像のそと・どこでも</span><div class="bugs">${spotBugs('any').map(id=>BUGS[id].name).join('・')}</div></div></div>
     <div class="demoBox" style="margin-top:12px"><h3>デモ用（本番にはありません）</h3><p class="small">じっさいに宗像に行かなくても、場所をえらんで「着いたことにする」ができます。</p>
       <div class="row"><select id="demoSpot" class="btn">${SPOTS.map(sp=>`<option value="${sp.key}">${esc(sp.name)}</option>`).join('')}<option value="any">宗像のそと（どこでも）</option></select><button type="button" class="btn" id="btnDemoGo">着いたことにする</button></div></div>`;
@@ -947,22 +1273,25 @@ async function arrive(sp, outside){
 function renderSpot(){
   const sp = outState.spot, slot = slotOf(), today = dayKey(), key = sp.key + '|' + today, used = S.visits[key]||0, left = FINDS_PER_VISIT - used;
   const here = spotBugs(sp.key, slot), later = spotBugs(sp.key).filter(id=>!here.includes(id));
+  const egg = sp.key === 'taisha' && S.link.kin && !S.link.kinEgg;
   view.innerHTML = `<div class="row" style="justify-content:space-between"><h2>${esc(sp.name)}</h2><button type="button" class="btn sub" id="btnLeave">おうちにかえる</button></div>
     <div class="spot here"><div class="small">${esc(sp.env)}　いまは${SLOT_NAMES[slot]}</div>
       <div>いまみつかりそう：${here.map(id=>BUGS[id].name).join('・') || 'おやすみ中'}</div>
-      ${later.length ? `<div class="bugs">べつの時間：${later.map(id=>`${BUGS[id].name}（${BUGS[id].time.map(t=>SLOT_NAMES[t]).join('・')}）`).join('・')}</div>` : ''}</div>
+      ${later.length ? `<div class="bugs">べつの時間：${later.map(id=>`${BUGS[id].name}（${BUGS[id].time.map(t=>SLOT_NAMES[t]).join('・')}）`).join('・')}</div>` : ''}
+      ${egg ? '<div class="small" style="color:var(--sun)">…木の根もとで、なにかが金色に光っている。</div>' : ''}</div>
     <div id="findBox" class="search"><p>草むらや木のまわりを、そっとのぞいてみよう。</p><p class="small">今日ここでさがせるのは、あと${left}回</p>
-      <button type="button" class="btn pri" id="btnFind" ${left <= 0 || !here.length ? 'disabled' : ''} style="font-size:18px;padding:.6em 1.6em">🔍 さがす</button></div>`;
+      <button type="button" class="btn pri" id="btnFind" ${left <= 0 || (!here.length && !egg) ? 'disabled' : ''} style="font-size:18px;padding:.6em 1.6em">🔍 さがす</button></div>`;
   $('btnLeave').onclick = ()=>{ outState = null; setTab('home'); };
-  $('btnFind').onclick = ()=> doFind(sp, here);
+  $('btnFind').onclick = ()=> doFind(sp, here, egg);
 }
-async function doFind(sp, here){
+async function doFind(sp, here, egg){
   const key = sp.key + '|' + dayKey(); S.visits[key] = (S.visits[key]||0) + 1; save();
   const box = $('findBox'); box.innerHTML = `<p class="dots">${pick(['草をかきわけている', '木のねもとをのぞいている', '葉のうらを見ている', 'じっと耳をすませている'])}</p>`;
   await wait(1400);
-  // めずらしい虫（rank が高い）ほど出にくい。何も見つからないこともある
-  const pool = []; here.forEach(id=>{ const w = {1:5, 2:3, 3:2}[BUGS[id].rank]; for(let i=0;i<w;i++) pool.push(id); }); for(let i=0;i<3;i++) pool.push(null);
-  const id = pick(pool);
+  // めずらしい虫（rank が高い）ほど出にくい。何も見つからないこともある。宗像大社うまれは少し運がいい
+  let id = null;
+  if(egg){ id = 'kinkabuto'; S.link.kinEgg = 1; }
+  else { const pool = []; here.forEach(b=>{ const w = {1:5, 2:3, 3:2, 4:1, 5:1}[BUGS[b].rank]; for(let i=0;i<w;i++) pool.push(b); }); for(let i=0;i<3;i++) pool.push(null); id = pick(pool); }
   if(!id){ box.innerHTML = `<p>…今回は、みつからなかった。</p><p class="small">虫は、きみのことをよく見ている。もう一度、しずかにさがしてみよう。</p><button type="button" class="btn" id="btnAgain">もどる</button>`; $('btnAgain').onclick = renderSpot; return; }
   const b = BUGS[id], first = !S.dex[id];
   S.dex[id] = S.dex[id] || {found:dayKey(), where:sp.name}; save();
@@ -981,9 +1310,16 @@ async function doFind(sp, here){
   $('bTake').onclick = async ()=>{
     const foodKey = b.food, food = ITEMS[foodKey];
     if(food.price && !(S.items[foodKey]||0)) await say(`つれてかえるなら、ごはんの「${food.name}」がいるよ。\nおうちの「どんぐりでエサを買う」で買っておこう。（いまのどんぐり：${dg(S.money)}）`);
-    S.cases[free] = {bug:id, si:0, prog:0, hunger:70, wet:70, clean:100, tick:now(), pending:false, from:sp.name, since:dayKey()};
+    // ケースとおき場所をえらぶ（育て方のはじまり）
+    const hasWide = (S.items.wide||0) > 0;
+    const wi = await say('どのケースに入れる？', {ans:['ふつうのケース', hasWide ? '広いケース（よく動けて、すばやくなる）' : '広いケース（もっていない。お店で30D）', 'やめる']});
+    if(wi === 2) return; if(wi === 1 && !hasWide){ await say('「広いケース」は、おうちの「どんぐりでエサを買う」で買えるよ。'); return; }
+    const keys = Object.keys(PLACES), pi = await say('おうちの、どこにおく？', {ans:keys.map(k=>`${PLACES[k].name}：${PLACES[k].desc}`)});
+    const wide = wi === 1; if(wide) S.items.wide--;
+    S.cases[free] = {bug:id, si:0, prog:0, hunger:70, wet:70, clean:100, tick:now(), pending:false, from:sp.name, born:sp.key, bornSlot:slotOf(), since:dayKey(),
+      ind:{hp:1, atk:1, def:1, spd:1, heal:1}, log:newLog(), tot:newLog(), place:keys[pi], wide, trouble:null};
     save(); hud();
-    await say(`${b.name}の幼虫を、${free+1}ばんめのケースに入れた。`);
+    await say(`${b.name}の${id === 'kinkabuto' ? 'たまご' : '幼虫'}を、${free+1}ばんめのケース（${PLACES[keys[pi]].name}）に入れた。\n「${BORN[sp.key].name}」の虫だ。`);
     await yakusoku('take', '虫をつれてかえるときは、いきをしやすいように、ふたにあなをあけたケースに。\n日なたにおくと、あつくて弱ってしまうよ。');
     renderSpot();
   };
@@ -991,25 +1327,149 @@ async function doFind(sp, here){
 
 /* ---- ずかん ---- */
 function renderDex(){
-  const ids = Object.keys(BUGS), n = ids.filter(id=>S.dex[id]).length, r = ids.filter(id=>S.dex[id] && S.dex[id].raised).length;
-  view.innerHTML = `<h2>こん虫ずかん</h2><p class="small">みつけた ${n} / ${ids.length}　そだてた ${r}</p>
+  const ids = Object.keys(BUGS).filter(id=>!BUGS[id].npc), n = ids.filter(id=>S.dex[id]).length, r = ids.filter(id=>S.dex[id] && S.dex[id].adult).length;
+  view.innerHTML = `<h2>こん虫ずかん</h2><p class="small">みつけた ${n} / ${ids.length}　羽化させた ${r}</p>
     <div class="dexGrid">${ids.map(id=>{ const d = S.dex[id], b = BUGS[id];
-      return `<div class="d ${d ? '' : 'no'}" data-id="${id}">${svgBest(id, {cls: d ? '' : 'sil'})}<div>${d ? esc(b.name) : '？？？'}</div>${d ? `<span class="mk">${d.raised ? '★そだてた' : d.adult ? '羽化した' : '見つけた'}</span>` : ''}</div>`; }).join('')}</div>`;
+      return `<div class="d ${d ? '' : 'no'}" data-id="${id}">${svgBest(id, {cls: d ? '' : 'sil'})}<div>${d ? esc(b.name) : '？？？'}</div>${d ? `<span class="mk">${d.raised ? '★そだててかえした' : d.adult ? '羽化した' : '見つけた'}</span>` : ''}</div>`; }).join('')}</div>`;
   view.querySelectorAll('.d').forEach(el=> el.onclick = ()=> showDexDetail(el.dataset.id));
 }
 function showDexDetail(id){
   const b = BUGS[id], d = S.dex[id];
-  const stages = b.watch ? '' : b.plan.map((s,i)=> `${STAGE_NAME[s.k]}${s.k==='larva' ? i+1 : ''} ${s.days}日`).join(' → ');
+  const stages = b.watch ? '' : b.plan.filter(s=>s.k!=='adult').map((s,i)=> `${STAGE_NAME[s.k]}${s.k==='larva' ? i+1 : ''} ${s.days}日`).join(' → ') + ' → 成虫';
+  const bornList = d && d.born ? Object.keys(d.born).map(k=>`<span class="born">${esc(BORN[k].name)}</span>`).join(' ') : '';
   openPanel(d ? b.name : '？？？', `<div class="paper">
     <div class="pic">${svgBest(id, {cls: d ? '' : 'sil'})}</div>
     ${d ? `<p>${esc(b.desc)}</p>
-    <table><tr><td>みつかる場所</td><td>${b.spots.includes('any') ? 'どこでも' : b.spots.map(k=>SPOTS.find(s=>s.key===k).name).join('・')}</td></tr>
+    <table><tr><td>本物の大きさ・季節</td><td>${esc(b.info||'')}</td></tr>
+      <tr><td>みつかる場所</td><td>${b.link ? '虫とり日記で出会った人だけ、宗像大社で' : b.spots.includes('any') ? 'どこでも' : b.spots.map(k=>SPOTS.find(s=>s.key===k).name).join('・')}</td></tr>
       <tr><td>時間帯</td><td>${b.time.map(t=>SLOT_NAMES[t]).join('・')}</td></tr>
-      ${b.watch ? '<tr><td>そだてる</td><td>見るだけ（飼えない）</td></tr>' : `<tr><td>ゲームでの育ちかた</td><td>${stages}</td></tr><tr><td>ごはん</td><td>${esc(ITEMS[b.food].name)}${b.foodAdult !== b.food ? `（成虫は${esc(ITEMS[b.foodAdult].name)}）` : ''}</td></tr>`}
+      ${b.watch ? '<tr><td>そだてる</td><td>見るだけ（飼えない）</td></tr>' : `<tr><td>ゲームでの育ちかた</td><td>${stages}</td></tr><tr><td>ごはん</td><td>${esc(ITEMS[b.food].name)}${b.foodAdult !== b.food ? `（成虫は${esc(ITEMS[b.foodAdult].name)}）` : ''}</td></tr>
+      <tr><td>基本わざ</td><td>${esc(MOVES[b.shape].name)}（${esc(MOVES[b.shape].info)}）</td></tr>
+      <tr><td>得意わざ</td><td>${['atk','def','spd'].filter(k=>MOVES[b.shape+'_'+k]).map(k=>`${{atk:'ちから型',def:'まもり型',spd:'すばやさ型'}[k]}：${esc(MOVES[b.shape+'_'+k].name)}`).join('<br>') || 'なし'}</td></tr>`}
       <tr><td>じっさいは</td><td>${esc(b.real)}</td></tr>
       <tr><td>飼いかた</td><td>${esc(b.care)}</td></tr>
-      <tr><td>きろく</td><td>${esc(d.found)} に ${esc(d.where)} でみつけた${d.adult ? `<br>${esc(d.adult)} に羽化した` : ''}${d.raised ? `<br>${esc(d.raised)} に、さいごまでそだててかえした` : ''}</td></tr></table>`
+      <tr><td>きろく</td><td>${esc(d.found)} に ${esc(d.where)} でみつけた${d.adult ? `<br>${esc(d.adult)} に羽化した` : ''}${d.best ? `<br>さいだい ${d.best}mm` : ''}${d.released ? `<br>${d.released}回、さいごまでそだててかえした` : ''}${bornList ? `<br>生まれ：${bornList}` : ''}</td></tr></table>`
     : '<p>まだみつけていない虫。</p>'}</div>`);
+}
+
+/* ---- 虫ずもう（オート対戦：コマンドはなく、虫が自分で戦う） ---- */
+const SUMO_REWIN = 10;
+function renderSumo(){
+  const adults = S.cases.map((c,i)=>({c,i})).filter(x=>x.c && stageOf(x.c).k === 'adult');
+  view.innerHTML = `<h2>虫ずもう</h2><p class="small">広場の切りかぶの上で、近所の子どもたちが虫ずもうをしている。コマンドはなし。虫は、育てたとおりに自分で戦う。</p>
+    ${adults.length ? `<p>出られる虫：${adults.map(x=>`<span class="tag">${esc(x.c.name||BUGS[x.c.bug].name)}</span>`).join(' ')}</p>` : '<p class="win">成虫になった虫がいないと、出られない。まずはそだてよう。</p>'}
+    <p class="small">かちぬき：${S.stats.wins}勝 ${S.stats.loses}敗${S.sumoChamp ? '　<b style="color:var(--sun)">チャンピオン！</b>' : ''}</p>
+    <div class="rivals">${RIVALS.map((r,i)=>{ const won = S.sumo[r.key], locked = i > 0 && !S.sumo[RIVALS[i-1].key], today = S.sumoDay[r.key] === dayKey();
+      return `<div class="rival ${won ? 'won' : ''} ${locked ? 'locked' : ''}"><div class="pic">${svgBest(r.bug, {cls: locked ? 'sil' : ''})}</div>
+        <div style="flex:1"><b>${esc(r.name)}</b>　<span class="small">${esc(BUGS[r.bug].name)}${won ? '　勝った！' : ''}</span><span class="small">${locked ? '前の相手に勝つと、ちょうせんできる' : esc(r.hi)}</span></div>
+        <button type="button" class="btn ${won ? 'sub' : 'pri'}" data-r="${i}" ${locked || today || !adults.length ? 'disabled' : ''}>${today ? 'また明日' : 'ちょうせん'}</button></div>`; }).join('')}</div>
+    <p class="small" style="margin-top:8px">【ルール】つっこむ＝ふつうの攻撃。ふんばる＝受けるダメージ半分、少し回復。わざ＝強いけど、次に動くまでスキができる。性格で、どれを選びやすいかがかわる。</p>`;
+  view.querySelectorAll('[data-r]').forEach(bt=> bt.onclick = async ()=>{
+    const r = RIVALS[+bt.dataset.r];
+    let x = adults[0]; if(adults.length > 1){ const i = await say('どの虫で出る？', {ans:adults.map(a=>`${a.c.name||BUGS[a.c.bug].name}（${BUGS[a.c.bug].name}）`)}); x = adults[i]; }
+    await sumoBattle(r, x.c);
+  });
+}
+function npcFighter(r){ return fighterOf({bug:r.bug, lv:r.lv, pers:'futsu'}, r.short + 'の' + BUGS[r.bug].name); }
+async function sumoBattle(r, c){
+  const me = fighterOf(c), op = npcFighter(r), night = slotOf() === 'yoru';
+  if(me.night && night) me.spd += 1;   // 夜型は夜に少しはやい
+  S.sumoDay[r.key] = dayKey(); save();
+  await say(`${r.name}「${r.hi}」`);
+  const A = document.createElement('div'); A.id = 'arena';
+  const info = (f, side)=> `<div class="info ${side}"><b>${esc(f.name)}</b> <small>${f.t.name}</small><span class="bar"><i id="hp-${side}" style="width:100%"></i></span><small id="hpn-${side}">${f.hp}/${f.maxhp}</small></div>`;
+  A.innerHTML = `<div class="ring"><div class="dohyo"></div>${info(me,'l')}${info(op,'r')}<div class="vs norb">VS</div>
+      <div class="fighter mine" id="f-l">${svgBest(me.id, {rare:c.rare})}</div><div class="fighter" id="f-r">${svgBest(op.id)}</div></div>
+    <div class="log" id="blog"></div><div class="ctl"><button type="button" class="btn sub" id="bCheer">おうえん！</button><button type="button" class="btn" id="bFast">はやおくり</button></div>`;
+  document.body.appendChild(A);
+  let fast = false, cheer = 0; $('bFast').onclick = ()=>{ fast = true; $('bFast').disabled = true; };
+  $('bCheer').onclick = e=>{ cheer++; const s = document.createElement('span'); s.className = 'cheer norb'; s.textContent = pick(['がんばれ！','いけー！','負けるな！']); s.style.left = (20 + Math.random()*40) + '%'; s.style.bottom = '30%'; A.querySelector('.ring').appendChild(s); setTimeout(()=>s.remove(), 1000); };
+  const logEl = $('blog');
+  const logLine = async (t, cls='')=>{ const d = document.createElement('div'); d.className = cls; d.textContent = t; logEl.appendChild(d); logEl.scrollTop = 1e6; await wait(fast ? 90 : 700); };
+  const drawHp = f=>{ const side = f === me ? 'l' : 'r'; $('hp-'+side).style.width = Math.max(0, f.hp/f.maxhp*100) + '%'; $('hp-'+side).className = f.hp/f.maxhp < .3 ? 'low' : ''; $('hpn-'+side).textContent = `${Math.max(0,Math.round(f.hp))}/${f.maxhp}`; };
+  const fx = (f, cls)=>{ const el = $('f-' + (f === me ? 'l' : 'r')); el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); setTimeout(()=>el.classList.remove(cls), 450); };
+  // 行動をえらぶ（性格の重み＋状況）
+  function choose(f, o){
+    if(f.charm > 0){ f.charm--; return 'charm'; }
+    const w = Object.assign({}, f.pers.w), hp = f.hp/f.maxhp, ohp = o.hp/o.maxhp;
+    if(hp < .35) w.guard += 2; if(f.pers === PERS.okubyo && hp < .5) w.guard += 3;
+    if(f.pers === PERS.makezu && hp < ohp) w.sp += 4;
+    if(f.pers === PERS.kuishinbo && hp > .5) w.sp += 2;
+    if(f.lastGuard) w.guard = Math.max(0, w.guard - 3);   // 2回つづけてはふんばりにくい
+    if(f.moves[1] && f.moves[1].heal && hp > .7) w.sp -= 2;
+    const tot = w.atk + w.guard + w.sp; let r = Math.random()*tot;
+    if((r -= w.atk) < 0) return 'atk'; if((r -= w.guard) < 0) return 'guard'; return 'sp';
+  }
+  function dmg(f, o, mult, pierce){
+    let d = f.atk * mult * f.weak * (0.85 + Math.random()*.3) * o.def * o.open;
+    if(o.guard && !pierce) d *= .5; if(o.pers === PERS.gaman && o.hp/o.maxhp < .3) d *= .9;
+    return Math.max(1, Math.round(d));
+  }
+  async function act(f, o, a){
+    const my = f === me, cls = my ? 'my' : '', nm = f.name;
+    f.open = 1; f.guard = false; f.counter = false;
+    if(a === 'charm'){ await logLine(`${nm}は うっとりして 動けない！`, cls); return; }
+    if(a === 'guard'){ f.guard = true; f.lastGuard = true; const h = Math.round(f.maxhp * f.heal); f.hp = Math.min(f.maxhp, f.hp + h); drawHp(f); await logLine(`${nm}は ふんばった！ HPが${h}かいふく`, cls); return; }
+    f.lastGuard = false;
+    const mv = a === 'sp' ? (f.moves[1] || f.moves[0]) : null;
+    fx(f, 'act');
+    if(mv){
+      await logLine(`${nm}の ${mv.name}！`, cls);
+      f.open = mv.open;
+      if(mv.heal){ const h = Math.round(f.maxhp*mv.heal); f.hp = Math.min(f.maxhp, f.hp + h); drawHp(f); await logLine(`${nm}の HPが${h}かいふくした`, cls); return; }
+      if(mv.counter){ f.guard = true; f.counter = true; }
+      const hits = mv.hits || 1; let any = false;
+      for(let i=0;i<hits;i++){
+        const acc = mv.acc * (f.blind > 0 ? .5 : 1); if(f.blind > 0) f.blind--;
+        if(Math.random() > acc){ await logLine(`…${o.name}は ひらりとかわした！`); continue; }
+        if(mv.mult > 0){ const d = dmg(f, o, mv.mult, mv.pierce); o.hp -= d; drawHp(o); fx(o, 'hit'); any = true; await logLine(`${o.name}の HPが${d}へった！`, cls); }
+        if(o.hp <= 0) return;
+      }
+      if(any || mv.mult === 0){
+        if(mv.blind){ o.blind = mv.blind; await logLine(`${o.name}は 目がくらんで、攻撃が当たりにくくなった`, cls); }
+        if(mv.weaken){ o.weak = Math.min(o.weak, mv.weaken); await logLine(`${o.name}の ちからが下がった`, cls); }
+        if(mv.charm){ o.charm = mv.charm; await logLine(`${o.name}は うっとりした！`, cls); }
+      }
+      if(mv.counter) await logLine(`${nm}は ふんばりながら かまえている`, cls);
+      return;
+    }
+    const acc = .9 * (f.blind > 0 ? .5 : 1); if(f.blind > 0) f.blind--;
+    await logLine(`${nm}の つっこみ！`, cls);
+    if(Math.random() > acc){ await logLine(`…${o.name}は ひらりとかわした！`); return; }
+    const d = dmg(f, o, 1, false); o.hp -= d; drawHp(o); fx(o, 'hit'); await logLine(`${o.name}の HPが${d}へった！`, cls);
+    if(o.counter && o.hp > 0){ const cd = Math.round(dmg(o, f, .6, false)); f.hp -= cd; drawHp(f); fx(f, 'hit'); await logLine(`${o.name}の はんげき！ ${nm}の HPが${cd}へった`, my ? '' : 'my'); }
+  }
+  await logLine(`${me.name} 対 ${op.name}！ はっけよい、のこった！`, 'ko');
+  let round = 0, winner = null;
+  while(round++ < 30){
+    if(cheer > 0 && round === 2){ const k = c.pers === 'hitonatsu' ? .08 : .04; me.atk *= 1 + k*Math.min(cheer, 3); await logLine(`おうえんで ${me.name}は はりきっている！`, 'my'); }
+    const am = choose(me, op), ao = choose(op, me);
+    const mf = am === 'sp' && me.moves[1] && me.moves[1].first, of = ao === 'sp' && op.moves[1] && op.moves[1].first;
+    const first = mf !== of ? (mf ? me : op) : (me.spd === op.spd ? (Math.random() < .5 ? me : op) : (me.spd > op.spd ? me : op));
+    const order = first === me ? [[me, op, am], [op, me, ao]] : [[op, me, ao], [me, op, am]];
+    for(const [f, o, a] of order){ if(f.hp <= 0) continue; await act(f, o, a); if(o.hp <= 0){ winner = f; break; } }
+    if(winner) break;
+  }
+  if(!winner) winner = me.hp/me.maxhp >= op.hp/op.maxhp ? me : op;
+  const won = winner === me, loser = won ? op : me;
+  $('f-' + (loser === me ? 'l' : 'r')).classList.add('down');
+  await logLine(won ? `${op.name}は 土俵の外へ！ ${me.name}の勝ち！` : `${me.name}は 土俵の外へ… ${op.name}の勝ち。`, 'ko');
+  await wait(fast ? 300 : 1200);
+  const ok = document.createElement('button'); ok.type = 'button'; ok.className = 'btn pri'; ok.textContent = 'つぎへ'; A.querySelector('.ctl').innerHTML = ''; A.querySelector('.ctl').appendChild(ok);
+  await new Promise(r=> ok.onclick = r); A.remove();
+  // 結果：勝因・敗因を育て方にむすびつける
+  const first = !S.sumo[r.key];
+  if(won){ S.stats.wins++; S.sumo[r.key] = dayKey(); const m = first ? r.money : SUMO_REWIN; S.money += m; if(r.key === 'ren') S.sumoChamp = true;
+    await say(`${r.short}「${r.win}」\nどんぐり ${dg(m)} をもらった！${first && r.key === 'ren' ? '\n【チャンピオン】きみの虫が、宗像でいちばん強い！' : ''}`); }
+  else { S.stats.loses++; if(c.pers !== 'makezu' && Math.random() < .3){ c.pers = 'makezu'; await say(`${r.short}「${r.lose}」\n${me.name}は、くやしそうに相手をにらんでいる…。性格が「まけずぎらい」になった！`); } else await say(`${r.short}「${r.lose}」`); }
+  save();
+  const cmp = {atk:me.atk/op.atk, hp:me.maxhp/op.maxhp, spd:(me.spd+1)/(op.spd+1), def:op.def/me.def, heal:me.heal/op.heal};
+  const keys = Object.keys(cmp).sort((a,b)=>cmp[a]-cmp[b]), low = keys[0], high = keys[keys.length-1];
+  const NAMES = {atk:'ちから', hp:'たいりょく', spd:'すばやさ', def:'まもり', heal:'かいふく'};
+  const HINT = {atk:'エサをたっぷりあげると、ちからがつく', hp:'毎日かかさず世話すると、たいりょくがつく', spd:'広いケースで育てると、すばやくなる', def:'ベランダの日かげで育てると、まもりが強くなる', heal:'げんかんの静かな場所で、こまめにそうじすると、かいふくがよくなる'};
+  if(won) await say(`【勝因】${me.name}は、相手より「${NAMES[high]}」が高かった。\n育て方が、ちゃんと虫に出ている！`);
+  else await say(`【敗因】${me.name}は、相手より「${NAMES[low]}」が足りなかった。\n【ヒント】${HINT[low]}。\n${BUGS[c.bug].rank < BUGS[r.bug].rank ? 'もっとめずらしい虫を育てるのも、ひとつの手。' : '次の虫で、ためしてみよう。'}`);
+  refresh();
 }
 
 /* ---- オプション ---- */
