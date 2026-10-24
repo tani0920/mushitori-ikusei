@@ -258,6 +258,15 @@ p{margin:.3em 0}
 .toolObj.spray{animation:sprayIc .25s ease-in-out infinite alternate}
 @keyframes sprayIc{from{transform:translate(-50%,-50%) scale(1.08)}to{transform:translate(-50%,-50%) scale(.98)}}
 .toolObj svg{width:1em;height:1em;display:block;filter:drop-shadow(0 2px 2px #0008)}
+.vh{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.photoRes{margin-top:6px;background:#0003;border-radius:8px;padding:.5em;font-size:13px}
+.photoRes ul{margin:.3em 0 0;padding-left:1.2em}
+.pthumb{float:left;width:90px;height:90px;object-fit:cover;border-radius:6px;margin:0 .6em .3em 0}
+.album{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:6px}
+.album .ph{background:var(--paper);color:var(--paper-ink);border-radius:6px;padding:3px;text-align:center;font-size:10px}
+.album .ph img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:4px;display:block}
+.album .ph span{display:flex;align-items:center;justify-content:center;aspect-ratio:1;font-size:24px;color:#0004}
+.album .ph.no{opacity:.6}
 .decoIc{display:inline-block;width:44px;height:44px;vertical-align:middle;margin-right:.4em;background:#a9d7ea44;border-radius:6px}
 .decoIc svg{width:100%;height:100%;display:block}
 .decoPick{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
@@ -415,7 +424,60 @@ p{margin:.3em 0}
 #arena .ctl{display:flex;justify-content:flex-end;gap:.5em;margin-top:8px}
 #arena .cheer{position:absolute;font-size:22px;animation:cheerUp 1s forwards;pointer-events:none}
 @keyframes cheerUp{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-50px)}}
-@media (min-width:600px){ #tabs button{font-size:15px} }
+@media (min-width:600px) and (orientation:portrait){ #tabs button{font-size:15px} }
+/* ===== 観察画面の2列（左：ケース／右：道具とステータス） ===== */
+.obsGrid{display:flex;flex-direction:column;gap:8px}
+.obsHead{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.obsHead h2{margin:0;font-size:16px;line-height:1.3}
+.obsR .meters{margin-top:6px}
+.obsR .info{margin:.3em 0}
+.drawer{margin-top:6px;background:#14284a88;border:2px solid #f7f1df55;border-radius:10px;padding:.3em .6em}
+.drawer summary{cursor:pointer;font-size:14px;color:var(--sun);list-style:none;padding:.3em 0}
+.drawer summary::-webkit-details-marker{display:none}
+.drawer[open] summary{border-bottom:1px solid #f7f1df33;margin-bottom:6px}
+.drawer .acts{margin-top:6px}
+#rotate{display:none}
+/* ===== 横画面：1画面でぜんぶ見える ===== */
+@media (orientation:landscape) and (min-width:600px){
+  body{padding-bottom:max(6px,env(safe-area-inset-bottom,0px));padding-left:calc(80px + env(safe-area-inset-left,0px))}
+  #tabs{left:0;top:0;bottom:0;right:auto;width:calc(74px + env(safe-area-inset-left,0px));flex-direction:column;justify-content:stretch;border-top:0;border-right:2px solid var(--edge);padding:max(6px,env(safe-area-inset-top,0px)) 6px max(6px,env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-left,0px))}
+  #tabs button{max-width:none;flex:1;font-size:12px;padding:.2em 0}
+  #tabs button .ic{font-size:22px}
+  #tabs button .badge{transform:translate(1.2em,-2.6em)}
+  #app{max-width:none;padding-block:4px 6px;gap:4px}
+  #msgLayer{padding-bottom:12px;padding-left:90px}
+  .saveMark{bottom:10px}
+  .obsGrid{display:grid;grid-template-columns:auto minmax(280px,1fr);gap:10px;align-items:start}
+  .obsL{display:flex;flex-direction:column;gap:6px}
+  #obs .scene{height:calc(100dvh - 128px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));width:auto;aspect-ratio:4/3;max-width:62vw}
+  #obs .obsTxt{font-size:13px;line-height:1.5;padding:.35em .7em;max-height:66px;overflow-y:auto;max-width:calc((100dvh - 128px) * 4 / 3)}
+  .obsR{max-height:calc(100dvh - 40px - env(safe-area-inset-top,0px));overflow-y:auto;padding-right:2px}
+  .obsR .tools{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:4px}
+  .obsR .tools .tbtn{min-height:56px;font-size:12px}
+  .obsR .tools .tbtn .ic{font-size:26px}
+  .obsR .guide{font-size:11.5px;line-height:1.45;margin-top:4px}
+  .obsR .meters{font-size:12px;gap:1px 8px}
+  .obsR .info{font-size:11.5px;line-height:1.45}
+  .toolObj{font-size:64px}
+  .decoPick .pk{min-width:56px;font-size:10px}
+  .decoPick .pk svg{width:32px;height:32px}
+  /* 虫ずもう：左に土俵、右に実況 */
+  #arena{display:grid;grid-template-columns:1.3fr 1fr;grid-template-rows:1fr auto;gap:8px 12px}
+  #arena .ring{grid-row:1 / 3;max-height:none}
+  #arena .log{grid-column:2;max-height:none;min-height:0;font-size:14px}
+  #arena .ctl{grid-column:2;margin-top:0}
+}
+@media (orientation:landscape) and (max-height:520px){
+  header{display:none}
+  #hud{font-size:13px;min-height:18px}
+}
+/* ===== スマホ・タブレットをたてにしているとき：横にしてもらう ===== */
+@media (orientation:portrait){
+  body.touch #rotate{display:flex;position:fixed;inset:0;z-index:20000;background:var(--frame);color:#fff;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:24px}
+  body.touch #rotate .ph{font-size:72px;animation:rot 2s ease-in-out infinite}
+  @keyframes rot{0%,30%{transform:rotate(0)}60%,100%{transform:rotate(-90deg)}}
+}
+
 </style>
 
 <div id="app">
@@ -427,10 +489,12 @@ p{margin:.3em 0}
   <button type="button" data-t="home"><span class="ic">🏠</span>おうち</button>
   <button type="button" data-t="out"><span class="ic">🌳</span>そと</button>
   <button type="button" data-t="sumo"><span class="ic">🏟</span>ずもう</button>
+  <button type="button" data-t="shop"><span class="ic">🛒</span>かう</button>
   <button type="button" data-t="dex"><span class="ic">📖</span>ずかん</button>
   <button type="button" data-t="opt"><span class="ic">⚙</span>その他</button>
 </div>
 <div class="saveMark" id="saveMark">セーブしました</div>
+<div id="rotate" class="norb"><div class="ph">📱</div><div style="font-size:20px;color:var(--sun)">スマホを よこにしてね</div><div style="font-size:14px">むなかた虫そだては、よこ画面であそぶゲームです。<br>画面の向きのロックをはずして、よこにしてください。</div></div>
 
 <script>
 'use strict';
@@ -446,9 +510,18 @@ const SAVE_KEY = KEY_PRE + 'munakata-mushisodate-v1';
 const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
-const GAME_VER = '0.5.2';
-const BUILD = '20261024-1205';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const GAME_VER = '0.6.0';
+const BUILD = '20261024-1226';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
+  {v:'0.6.0', date:'2026-10-24', items:[
+    'スマホ・タブレットは横画面であそぶようにした。たてにしているときは「よこにしてね」と出る（Androidのホーム画面アプリでは横に固定）',
+    '横画面では、タブを左にならべ、飼育ケースの画面を1画面におさめた。左にケース、右に道具・ステータス、その下の「ケースのこと」を開くと、おき場所・じっくり見る・広いケース・かえす',
+    '虫ずもうも横画面では、左に土俵、右に実況',
+    'タブに「かう」を追加（エサ・道具・かざり）。「どんぐりで」の言葉をはずした',
+    '広いケースは、つれてかえるときにその場で買えるようにした。あとからでも「ケースのこと」から広いケースにうつせる',
+    'そとの場所の画面で「本物の虫の写真をとる」ができる（虫とり日記と同じ、たんまつの中のAIで判定）。どんぐりがもらえて、今日その場所でもう1回さがせる。写真の虫のなかまの幼虫が見つかりやすくなる。1日5まいまで',
+    'ずかんに「本物の虫の写真アルバム」を追加',
+    'まだ正体を知らない虫は、場所の一覧でも名前を「？？？」でふせるようにした']},
   {v:'0.5.2', date:'2026-10-24', items:[
     'ずかんで、羽化させていない虫の成虫のすがたを見せないようにした。幼虫で見つけたら幼虫の絵、見つけていない虫は幼虫のかげ',
     '見つけたばかりの幼虫は、なんの虫かわからない（「なぞのいもむし」「なぞの白い幼虫」など）。1回脱皮して大きくなると「わかった！」となる',
@@ -542,6 +615,7 @@ checkUpdate();
 document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState === 'visible'){ checkUpdate(); if(S) refresh(); } });
 if(window.DEMO){ const b = document.createElement('div'); b.className = 'demoBadge norb'; b.textContent = 'デモ版'; document.body.appendChild(b); }
 if(matchMedia('(pointer:coarse)').matches) document.body.classList.add('touch');
+try{ if(screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(()=>{}); }catch(e){}
 
 /* =========================================================
    ふりがな（虫とり日記と同じしくみ）
@@ -764,7 +838,8 @@ const GROUP = {butterfly:{name:'いもむし', who:'チョウのなかま', find
 const groupOf = id=> ({stag:'beetle'})[BUGS[id].shape] || BUGS[id].shape;
 const eyeOf = g=> Object.keys(BUGS).filter(id=> groupOf(id) === g && S.dex[id] && S.dex[id].adult).reduce((a,id)=> a + (S.dex[id].raisedN||1), 0);
 function knowsAtFind(id){ const b = BUGS[id]; if(b.watch || b.link) return 'link'; if(S.dex[id] && S.dex[id].adult) return 'raised'; if(GROUP[groupOf(id)] && eyeOf(groupOf(id)) >= 3) return 'eye'; return null; }
-const caseKnown = c=> c.known !== false;   // 古いセーブは わかっていることにする
+const caseKnown = c=> c.known !== false;
+const nmQ = id=> S.dex[id] && S.dex[id].known ? BUGS[id].name : '？？？';   // まだ正体を知らない虫は、場所の一覧でも名前をふせる   // 古いセーブは わかっていることにする
 const dispName = c=> caseKnown(c) ? (c.name || BUGS[c.bug].name) : 'なぞの' + GROUP[groupOf(c.bug)].name;
 const speciesName = c=> caseKnown(c) ? BUGS[c.bug].name : '？？？';
 const WET_BAND = {beetle:[70,95], stag:[70,95], butterfly:[40,70], grass:[45,75], mantis:[45,75], cricket:[60,85], cicada:[40,70], firefly:[60,90]};   // ちょうどいいしめりけ
@@ -1300,7 +1375,7 @@ document.querySelectorAll('#tabs button').forEach(b=> b.onclick = ()=> setTab(b.
 function render(){
   if(!S){ renderTitle(); return; }
   if(openCase !== null){ renderObs(); return; }
-  ({home:renderHome, out:renderOut, sumo:renderSumo, dex:renderDex, opt:renderOpt})[tab]();
+  ({home:renderHome, out:renderOut, sumo:renderSumo, shop:renderShop, dex:renderDex, opt:renderOpt})[tab]();
 }
 
 /* ---- タイトル ---- */
@@ -1348,17 +1423,16 @@ function renderHome(){
       <div class="meters"><span>元気</span><span class="bar"><i class="${meterCls(g)}" style="width:${g}%"></i></span></div></div>`;
   }).join('')}</div>
   <h3>もちもの</h3><div class="row">${Object.keys(S.items).filter(k=>S.items[k]>0).map(k=>`<span class="win" style="padding:.2em .6em;font-size:13px">${esc(ITEMS[k].name)} ×${S.items[k]}</span>`).join('') || '<span class="small">なにもない</span>'}</div>
-  <div class="row" style="margin-top:8px"><button type="button" class="btn" id="btnShop">どんぐりでエサ・かざりを買う</button></div>`;
+  <div class="row" style="margin-top:8px"><button type="button" class="btn" id="btnShop">エサ・かざりを買う</button></div>`;
   view.querySelectorAll('.case').forEach(el=> el.onclick = ()=>{ const i = +el.dataset.i; if(S.cases[i]){ openCase = i; render(); scrollTo(0,0); } else setTab('out'); });
-  $('btnShop').onclick = renderShop;
+  $('btnShop').onclick = ()=> setTab('shop');
 }
 function renderShop(){
   view.innerHTML = `<h2>エサ・道具・かざりを買う</h2><p class="small">どんぐり：<b style="color:var(--sun)">${dg(S.money)}</b>　場所から場所へ歩くともらえるよ。</p>
     ${[['エサと道具', k=>!ITEMS[k].cat], ['かざり（マット）：ケースの土をかえる', k=>ITEMS[k].cat==='mat'], ['かざり：買って、ケースに自分で置く', k=>ITEMS[k].cat==='deco']].map(([ttl, f])=>`<h3>${ttl}</h3><div class="opt">${Object.keys(ITEMS).filter(f).map(k=>{ const it = ITEMS[k], free = !it.price;
       return `<button type="button" class="btn" data-k="${k}" ${!free && S.money < it.price ? 'disabled' : ''}><span>${it.cat ? `<span class="decoIc">${it.cat==='mat' ? `<svg viewBox="0 0 100 100"><rect x="10" y="50" width="80" height="40" rx="6" fill="${MATS[k].fill}"/><circle cx="30" cy="70" r="3" fill="${MATS[k].bits}"/><circle cx="60" cy="78" r="3" fill="${MATS[k].bits}"/></svg>` : `<svg viewBox="0 0 100 100">${decoSVG(k)}</svg>`}</span>` : ''}${esc(it.name)}<br><small class="small">${esc(it.desc)}</small></span><span class="v">${free ? 'ただ' : dg(it.price)}　×${S.items[k]||0}</span></button>`; }).join('')}</div>`).join('')}
-    <div class="row end" style="margin-top:10px"><button type="button" class="btn" id="btnBack">もどる</button></div>`;
-  view.querySelectorAll('[data-k]').forEach(b=> b.onclick = ()=>{ const k = b.dataset.k, it = ITEMS[k]; if(S.money < it.price) return; S.money -= it.price; S.items[k] = (S.items[k]||0) + 1; save(); hud(); renderShop(); });
-  $('btnBack').onclick = ()=> render();
+    `;
+  view.querySelectorAll('[data-k]').forEach(b=> b.onclick = ()=>{ const k = b.dataset.k, it = ITEMS[k]; if(S.money < it.price) return; S.money -= it.price; S.items[k] = (S.items[k]||0) + 1; save(); hud(); const y = scrollY; renderShop(); scrollTo(0, y); });
 }
 
 /* ---- 観察（ケースの中）：道具をえらんで、ケースの中を指でさわる ---- */
@@ -1384,24 +1458,34 @@ async function renderObs(){
   const dirtN = (c.dirt||[]).length, oldN = (c.foods||[]).filter(f=>f.old).length;
   const ownDeco = Object.keys(ITEMS).filter(k=>ITEMS[k].cat && (S.items[k]||0) > 0);
   const bigGuide = st.k === 'pupa' ? 'さなぎの間は、大そうじはできない。' : (!big || big.step === 1) ? ((c.soilAge||0) > 72 || big ? '' : 'まだ大そうじはいらない（3日に1回くらい）。') + '🤏をつかんで虫の上で止めると、そっとつまめる。右上のひなんケースへ運ぼう。すばやくぶつけると虫がいやがる。' : big.step === 2 ? `🧹をつかんで、土の上を左右に動かして入れかえよう（あと${3 - big.pass}回）` : '🤏をひなんケースの上で止めて虫をつまみ、ケースの中へもどそう。';
-  const guide = {big:bigGuide, kazari:ownDeco.length ? (decoSel ? (ITEMS[decoSel].cat === 'mat' ? 'マットは、えらぶとすぐにしきかえる。' : 'かざりをつかんで、置きたい場所ではなす。置いたものは、直接つまんで動かせる。左下の「しまう」に入れるともどる。') : '下から、置きたいかざりをえらぼう。') : 'かざりは、おうちの「どんぐりでエサ・かざりを買う」で買えるよ。',
+  const guide = {big:bigGuide, kazari:ownDeco.length ? (decoSel ? (ITEMS[decoSel].cat === 'mat' ? 'マットは、えらぶとすぐにしきかえる。' : 'かざりをつかんで、置きたい場所ではなす。置いたものは、直接つまんで動かせる。左下の「しまう」に入れるともどる。') : '下から、置きたいかざりをえらぼう。') : 'かざりは、「かう」で買えるよ。',
     yubi:'手をつかんで、葉や木にのせるとのぞける。虫にのせるとそっとさわる。置いたエサやかざりは、直接つまんで動かせる。', fukin:dirtN || oldN ? `スポンジをつかんで、よごれの上でこすろう（のこり${dirtN + oldN}）` : 'ガラスはきれい。', kiri:'きりふきをつかんで、かけたい場所で指を止めると水が出る。ケースぜんたいに少しずつ。左上の5本の棒が、場所ごとのしめりけ。', esa:st.k === 'pupa' ? 'さなぎは、なにも食べない。' : `エサをつかんで、置きたい場所ではなす（${esc(food.name)}${food.price ? ` ×${S.items[foodKey]||0}` : ''}）`, furu:'ケースをつかんで、左右に動かすとゆれる。何回もゆらすと、虫がおどろくよ。'}[tool];
   const esaGuide = st.k === 'pupa' ? '' : `エサをつかんで、置きたい場所ではなす`;
-  view.innerHTML = `<div class="row" style="justify-content:space-between"><h2>${title}</h2><button type="button" class="btn sub" id="btnBack">もどる</button></div>
-    <div class="row" style="margin-bottom:6px"><span class="tag born">${esc((BORN[c.born]||BORN.any).name)}</span>${c.bornSlot === 'yoru' ? '<span class="tag">夜型</span>' : ''}<span class="tag">${esc(PLACES[c.place].name)}</span>${c.wide ? '<span class="tag">広いケース</span>' : ''}${c.rare ? '<span class="tag" style="background:#7a5a20">めずらしい色</span>' : ''}</div>
-    <div id="obs"><div class="scene tool-${tool}" id="scene">${sc.svg}<div class="toolObj norb" id="toolObj" hidden></div><div class="binZone norb" id="binZone" hidden>しまう</div>${tool === 'big' && st.k !== 'pupa' ? `<div class="refuge norb ${big && big.step >= 1 ? 'on' : ''}" id="refuge"><small>ひなんケース</small><div class="rb" id="refugeBug">${big && big.step >= 2 ? svgBug(c.bug, st.k, {instar:instarOf(c), scale:.9}) : ''}</div></div>` : ''}<div class="mini norb" id="mini" hidden></div></div>
+  const tags = `<span class="tag born">${esc((BORN[c.born]||BORN.any).name)}</span>${c.bornSlot === 'yoru' ? '<span class="tag">夜型</span>' : ''}<span class="tag">${esc(PLACES[c.place].name)}</span>${c.wide ? '<span class="tag">広いケース</span>' : ''}${c.rare ? '<span class="tag" style="background:#7a5a20">めずらしい色</span>' : ''}`;
+  const msgHtml = `${esc(sc.txt)}${persTxt ? `<br>${esc(persTxt)}` : ''}${c.trouble ? `<br><b class="yk">【${esc(TROUBLE[c.trouble].name)}】</b>${esc(TROUBLE[c.trouble].txt)}` : ''}${(c.soak||0) > 30 ? '<br><b class="yk">【びちゃびちゃ】</b>水をかけすぎて、土に水たまりができている。かわくまで、きりふきはやめよう。' : ''}${c.pending ? '<br><b class="yk">…なんだか、ようすがかわりそう！</b>' : fc ? `<br><b class="yk">【予告】</b>${esc(fc)}` : ''}`;
+  // 左：ケース（＋メッセージ）／右：見出し・道具・ステータス・引き出し。横画面では1画面におさまる。たて画面（PCのせまい窓など）では上から順にならぶ
+  view.innerHTML = `<div class="obsGrid" id="obs">
+    <div class="obsL">
+      <div class="scene tool-${tool}" id="scene">${sc.svg}<div class="toolObj norb" id="toolObj" hidden></div><div class="binZone norb" id="binZone" hidden>しまう</div>${tool === 'big' && st.k !== 'pupa' ? `<div class="refuge norb ${big && big.step >= 1 ? 'on' : ''}" id="refuge"><small>ひなんケース</small><div class="rb" id="refugeBug">${big && big.step >= 2 ? svgBug(c.bug, st.k, {instar:instarOf(c), scale:.9}) : ''}</div></div>` : ''}<div class="mini norb" id="mini" hidden></div></div>
+      <div class="obsTxt win" id="obsTxt">${msgHtml}</div>
+    </div>
+    <div class="obsR">
+      <div class="obsHead"><h2>${title}</h2><button type="button" class="btn sub" id="btnBack">もどる</button></div>
       <div class="tools">${Object.keys(TOOLS).map(k=>`<button type="button" class="tbtn ${tool===k?'on':''}" data-tool="${k}" ${k==='esa' && st.k==='pupa' ? 'disabled' : ''}><span class="ic">${TOOLS[k].ic}</span>${TOOLS[k].name}</button>`).join('')}</div>
       ${tool === 'kazari' ? `<div class="decoPick" id="decoPick">${ownDeco.map(k=>`<button type="button" class="pk ${decoSel===k?'on':''}" data-deco="${k}"><svg viewBox="0 0 100 100">${ITEMS[k].cat==='mat' ? `<rect x="10" y="40" width="80" height="45" rx="6" fill="${MATS[k].fill}"/>` : decoSVG(k)}</svg>${esc(ITEMS[k].name)}<small>×${S.items[k]}</small></button>`).join('')}</div>` : ''}
       <div class="guide small" id="guide">${guide}</div>
-      <div class="obsTxt win" id="obsTxt">${esc(sc.txt)}${persTxt ? `<br>${esc(persTxt)}` : ''}${c.trouble ? `<br><b class="yk">【${esc(TROUBLE[c.trouble].name)}】</b>${esc(TROUBLE[c.trouble].txt)}` : ''}${(c.soak||0) > 30 ? '<br><b class="yk">【びちゃびちゃ】</b>水をかけすぎて、土に水たまりができている。かわくまで、きりふきはやめよう。' : ''}${c.pending ? '<br><b class="yk">…なんだか、ようすがかわりそう！</b>' : fc ? `<br><b class="yk">【予告】</b>${esc(fc)}` : ''}</div></div>
-    <div class="meters" style="margin-top:8px">${st.k !== 'pupa' ? m('おなか', c.hunger) : ''}${m('しめりけ', c.wet, `<b class="band" style="left:${band[0]}%;width:${band[1]-band[0]}%"></b>`)}${m('きれいさ', c.clean)}${m('元気', g)}</div>
-    <p class="small">${SLOT_NAMES[slot]}のようす。しめりけの帯が「ちょうどいい」。${c.pending || st.k === 'adult' ? '' : `このすがたで、あと${daysLeft(c)}日くらい。`}</p>
-    ${st.k === 'adult' ? `<p class="small">${esc(indLine(c))}<br>わざ：${c.moves.map(k=>esc(MOVES[k].name)).join('・')}　${c.size}mm ${esc(c.sex||'')}</p>` : ''}
-    <div class="acts">
-      <button type="button" class="btn sub" id="aPlace">おき場所をかえる<small>いま：${esc(PLACES[c.place].name)}</small></button>
-      <button type="button" class="btn sub" id="aLook">じっくり見る<small>ずかんでしらべる</small></button>
-      <button type="button" class="btn sub" id="aRelease">もとの場所にかえす<small>${st.k === 'adult' ? 'ごほうびがもらえる' : 'いつでもできる'}</small></button>
-    </div>`;
+      <div class="meters">${st.k !== 'pupa' ? m('おなか', c.hunger) : ''}${m('しめりけ', c.wet, `<b class="band" style="left:${band[0]}%;width:${band[1]-band[0]}%"></b>`)}${m('きれいさ', c.clean)}${m('元気', g)}</div>
+      <p class="small info">${SLOT_NAMES[slot]}のようす。${c.pending || st.k === 'adult' ? '' : `このすがたで、あと${daysLeft(c)}日くらい。`}${st.k === 'adult' ? `<br>${esc(indLine(c))}<br>わざ：${c.moves.map(k=>esc(MOVES[k].name)).join('・')}　${c.size}mm ${esc(c.sex||'')}` : ''}</p>
+      <details class="drawer" id="drawer" ${obsSession.drawer ? 'open' : ''}><summary>▸ ケースのこと（おき場所・じっくり見る・かえす）</summary>
+        <div class="row">${tags}</div>
+        <div class="acts">
+          <button type="button" class="btn sub" id="aPlace">おき場所をかえる<small>いま：${esc(PLACES[c.place].name)}</small></button>
+          <button type="button" class="btn sub" id="aLook">じっくり見る<small>ずかんでしらべる</small></button>
+          ${c.wide ? '' : `<button type="button" class="btn sub" id="aWide">広いケースにうつす<small>${(S.items.wide||0) > 0 ? `もっている ×${S.items.wide}` : dg(ITEMS.wide.price) + 'で買える'}</small></button>`}
+          <button type="button" class="btn sub" id="aRelease">もとの場所にかえす<small>${st.k === 'adult' ? 'ごほうびがもらえる' : 'いつでもできる'}</small></button>
+        </div></details>
+    </div></div>`;
+  $('drawer').ontoggle = e=>{ obsSession.drawer = e.target.open; };
   $('btnBack').onclick = ()=>{ openCase = null; obsSession = null; render(); };   // 大そうじのとちゅうでも、もどれば虫はケースにいる（big は obsSession ごと消える）
   view.querySelectorAll('[data-tool]').forEach(bt=> bt.onclick = async ()=>{ if(obsSession.big && bt.dataset.tool !== 'big'){ obsSession.big = null; await say('大そうじをとちゅうでやめた。虫はケースにもどした。'); } tool = bt.dataset.tool; renderObs(); });
   view.querySelectorAll('[data-deco]').forEach(bt=> bt.onclick = async ()=>{ const k = bt.dataset.deco;
@@ -1412,11 +1496,12 @@ async function renderObs(){
   const toolIc = ()=> tool === 'big' ? ((obsSession.big||{step:1}).step === 2 ? '🧹' : '🤏') : tool === 'kazari' ? (decoSel ? `<svg viewBox="0 0 100 100">${decoSVG(decoSel)}</svg>` : '') : ({yubi:'👆', fukin:'🧽', kiri:'🧴', esa:FOOD_IC[foodKey] || '🍽', furu:'✋'})[tool];
   // 道具は、ボタンを押すとケースの右下に出てくる。それをつかんで動かして使う。hot は「きく場所」（きりふきの口、指の先）
   const HOT = {yubi:{x:-8, y:-36}, fukin:{x:0, y:0}, kiri:{x:-22, y:-42}, esa:{x:0, y:0}, kazari:{x:0, y:10}, big:{x:-6, y:30}, furu:{x:0, y:0}};
-  const restPos = ()=>{ const r = sceneEl.getBoundingClientRect(); return {x:r.width - 56, y:r.height - 54}; };
+  const restPos = ()=>{ const r = sceneEl.getBoundingClientRect(), k = (parseFloat(getComputedStyle($('toolObj')).fontSize) || 84) / 84; return {x:r.width - 56*k, y:r.height - 54*k}; };
   const objPos = {x:0, y:0};
   const setObj = (x, y, cls='')=>{ objPos.x = x; objPos.y = y; toolObj.style.left = x + 'px'; toolObj.style.top = y + 'px'; toolObj.className = 'toolObj norb ' + cls; };
   const showTool = ()=>{ if(tool === 'furu' || (tool === 'big' && st.k === 'pupa') || (tool === 'esa' && st.k === 'pupa') || (tool === 'kazari' && (!decoSel || ITEMS[decoSel].cat === 'mat'))){ toolObj.hidden = true; return; } const r = restPos(); toolObj.innerHTML = toolIc() + '<span class="hint">つかんで動かす</span>'; toolObj.hidden = false; setObj(r.x, r.y, 'rest'); };
-  const hotXY = ()=>{ const r = sceneEl.getBoundingClientRect(), h = HOT[tool]; return toXYc(r.left + objPos.x + h.x, r.top + objPos.y + h.y); };
+  const hk = ()=> (parseFloat(getComputedStyle(toolObj).fontSize) || 84) / 84;
+  const hotXY = ()=>{ const r = sceneEl.getBoundingClientRect(), h0 = HOT[tool], h = {x:h0.x*hk(), y:h0.y*hk()}; return toXYc(r.left + objPos.x + h.x, r.top + objPos.y + h.y); };
   showTool();
   const ripple = e=>{ const r = sceneEl.getBoundingClientRect(), d = document.createElement('div'); d.className = 'ripple'; d.style.left = (e.clientX - r.left) + 'px'; d.style.top = (e.clientY - r.top) + 'px'; sceneEl.appendChild(d); setTimeout(()=>d.remove(), 520); };
   // ケースの中に重ねる小さなメーター：道具に合わせて、いま大事な数字だけ見せる（スマホでスクロールしなくてもわかるように）
@@ -1509,7 +1594,7 @@ async function renderObs(){
   // ---- エサ：置く ----
   const placeFood = async (x, y)=>{
     if(st.k === 'pupa') return;
-    if(!haveFood){ await say(`「${food.name}」がない！\nおうちの「どんぐりでエサを買う」で買えるよ。`); return; }
+    if(!haveFood){ await say(`「${food.name}」がない！\n「かう」で買えるよ。`); return; }
     const fresh = (c.foods||[]).filter(f=>!f.old).length;
     if(fresh >= 2){ c.log.over++; save(); await say('もうエサが置いてある。\n置きすぎると、古くなってアリがくるよ。食べたら、また置こう。'); return; }
     const soilTop = soilTopOf(b); y = clamp(y, 14, soilTop - 2); x = clamp(x, 8, 92);   // 土の中には置けない
@@ -1544,7 +1629,7 @@ async function renderObs(){
   const carryMove = e=>{ if(!carry) return; const r = sceneEl.getBoundingClientRect(); carry.style.left = (e.clientX - r.left) + 'px'; carry.style.top = (e.clientY - r.top + 18) + 'px'; if(refuge) refuge.classList.toggle('over', inRefuge(e)); };
   // 大そうじは道具で行う：手（🤏）で虫をつまむ → ひなんケース → ほうき（🧹）で土を入れかえ → 手で虫をもどす
   // 手を虫の上で止めると、そっとつまむ（約1びょう）。手をすばやく虫にぶつけると「力を入れすぎ」
-  const hotClient = ()=>{ const r = sceneEl.getBoundingClientRect(), h = HOT[tool]; return {clientX:r.left + objPos.x + h.x, clientY:r.top + objPos.y + h.y}; };
+  const hotClient = ()=>{ const r = sceneEl.getBoundingClientRect(), h0 = HOT[tool], h = {x:h0.x*hk(), y:h0.y*hk()}; return {clientX:r.left + objPos.x + h.x, clientY:r.top + objPos.y + h.y}; };
   let holdMs = 0, lastT = 0, lastP = null;
   const bigStep = ()=> (obsSession.big || {step:1}).step;
   const bigTick = e=>{   // 道具を動かしている間
@@ -1629,6 +1714,10 @@ async function renderObs(){
     if(i >= keys.length) return; if(keys[i] !== c.place){ c.place = keys[i]; c.log.over++; save(); }   // うごかすと、少しおどろく
     renderObs();
   };
+  if($('aWide')) $('aWide').onclick = async ()=>{
+    if(st.k === 'pupa'){ await say('さなぎの間は、うつさないほうがいい。羽化してからにしよう。'); return; }
+    if(!(S.items.wide > 0)){ if(S.money < ITEMS.wide.price){ await say(`どんぐりが足りない…（いま ${dg(S.money)}）`); return; } if(!(await ask(`広いケースを ${dg(ITEMS.wide.price)} で買って、うつす？`, '買ってうつす', 'やめる'))) return; S.money -= ITEMS.wide.price; S.items.wide = (S.items.wide||0) + 1; }
+    S.items.wide--; c.wide = true; c.log.over++; save(); hud(); await say('広いケースにうつした！\nのびのび動けるので、これからは すばやさが育ちやすくなる。'); renderObs(); };
   $('aLook').onclick = ()=> caseKnown(c) ? showDexDetail(c.bug) : say(`まだ、なんの虫かわからない。${GROUP[groupOf(c.bug)].who}みたいだ。\n脱皮して大きくなったら、もう一度見てみよう。`);
   $('aRelease').onclick = async ()=>{
     const adult = st.k === 'adult', nm = dispName(c);
@@ -1705,6 +1794,81 @@ async function handleGone(){
   }
 }
 
+
+/* =========================================================
+   本物の虫の写真（虫とり日記と同じしくみ：たんまつの中のAIで判定し、どこにも送らない）
+   そとで本物の虫をとると：どんぐり、今日その場所でもう1回さがせる、写真の虫のなかまが今日見つかりやすくなる
+   ========================================================= */
+const PHOTO_KEY = KEY_PRE + 'munakata-sodate-photos-v1';
+const PHOTO_DAILY = 5, PHOTO_MIN = .25;
+const MODEL_URL = 'https://storage.googleapis.com/tfjs-models/savedmodel/mobilenet_v2_1.0_224/model.json';
+const PHOTO_CATS = {
+  kabuto:   {name:'カブトムシ・クワガタのなかま', money:40, shapes:['beetle','stag'], labels:['rhinoceros beetle']},
+  beetle:   {name:'こうちゅうのなかま', money:20, shapes:['beetle','stag'], labels:['ground beetle','long-horned beetle','leaf beetle','dung beetle','weevil','tiger beetle']},
+  tentou:   {name:'テントウムシ', money:15, shapes:[], labels:['ladybug']},
+  cicada:   {name:'セミ', money:15, shapes:[], labels:['cicada']},
+  mantis:   {name:'カマキリ', money:25, shapes:['mantis'], labels:['mantis']},
+  dragonfly:{name:'トンボ', money:15, shapes:[], labels:['dragonfly','damselfly']},
+  batta:    {name:'バッタ・コオロギ', money:15, shapes:['grass','cricket'], labels:['grasshopper','cricket']},
+  chou:     {name:'チョウ', money:20, shapes:['butterfly'], labels:['admiral','ringlet','monarch','cabbage butterfly','sulphur butterfly','lycaenid']},
+  hachi:    {name:'ハチ（近づかないで！）', money:0, shapes:[], labels:['bee']},
+  ari:      {name:'アリ', money:5, shapes:[], labels:['ant']},
+  sonota:   {name:'そのほかの虫', money:10, shapes:[], labels:['walking stick','cockroach','leafhopper','lacewing','fly']},
+};
+const LABEL2CAT = {}; Object.entries(PHOTO_CATS).forEach(([k,c])=>c.labels.forEach(l=>{ if(!LABEL2CAT[l]) LABEL2CAT[l] = k; }));
+function loadPhotos(){ let p; try{ p = JSON.parse(localStorage.getItem(PHOTO_KEY)); }catch(e){} p = p || {}; p.cats = p.cats || {}; p.hashes = p.hashes || []; p.daily = p.daily || {date:'', n:0}; return p; }
+let photos = loadPhotos();
+function savePhotos(){ try{ localStorage.setItem(PHOTO_KEY, JSON.stringify(photos)); return true; }catch(e){ return false; } }
+const realDay = ()=> new Date().toLocaleDateString('ja-JP');   // 写真の枚数は本物の日付で数える（デモの「時間をすすめる」ではふえない）
+const photoLeft = ()=> photos.daily.date === realDay() ? Math.max(0, PHOTO_DAILY - photos.daily.n) : PHOTO_DAILY;
+function loadScript(src){ return new Promise((res,rej)=>{ const sc = document.createElement('script'); sc.src = src; sc.onload = res; sc.onerror = ()=>rej(new Error(src)); document.head.appendChild(sc); }); }
+let aiModel = null;
+async function getModel(){
+  if(aiModel) return aiModel;
+  if(!window.tf) await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js');
+  if(!window.mobilenet) await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1/dist/mobilenet.min.js');
+  aiModel = await mobilenet.load({version:2, alpha:1.0, modelUrl:MODEL_URL});
+  return aiModel;
+}
+function fileToImage(file){ return new Promise((res,rej)=>{ const u = URL.createObjectURL(file), im = new Image(); im.onload = ()=>res(im); im.onerror = rej; im.src = u; }); }
+function scaled(im, max){ const r = Math.min(1, max / Math.max(im.naturalWidth, im.naturalHeight)); const c = document.createElement('canvas');
+  c.width = Math.round(im.naturalWidth*r); c.height = Math.round(im.naturalHeight*r); c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); return c; }
+function aHash(im){ const c = document.createElement('canvas'); c.width = c.height = 8; const g = c.getContext('2d'); g.drawImage(im, 0, 0, 8, 8);
+  const d = g.getImageData(0,0,8,8).data, v = []; for(let i=0;i<64;i++) v.push(d[i*4]*.3 + d[i*4+1]*.59 + d[i*4+2]*.11);
+  const avg = v.reduce((a,b)=>a+b, 0) / 64; return v.map(x=>x>avg ? 1 : 0).join(''); }
+const hamming = (a,b)=> [...a].reduce((n,ch,i)=>n + (ch!==b[i]), 0);
+// 今日、写真のおかげで見つかりやすい形
+const photoBoost = shape=> S.photoBoost && S.photoBoost.day === dayKey() && S.photoBoost.shapes.includes(shape) ? 3 : 1;
+async function handlePhoto(file, sp, box){
+  if(!file) return;
+  const im = await fileToImage(file).catch(()=>null);
+  if(!im){ box.innerHTML = '写真を読みこめなかった…。べつの写真でためしてね。'; return; }
+  const thumb = scaled(im, 320).toDataURL('image/jpeg', .7), head = `<img class="pthumb" alt="" src="${thumb}">`;
+  if(photoLeft() <= 0){ box.innerHTML = head + '<b>今日のぶんはおしまい！</b><br>ごほうびは1日5まいまで。また明日。'; return; }
+  const h = aHash(im);
+  if(photos.hashes.some(x=>hamming(x,h) <= 4)){ box.innerHTML = head + '<b>この写真はもう見せてもらったよ！</b><br>ちがう虫か、べつの角度でとってみよう。'; return; }
+  box.innerHTML = head + 'AIが写真を調べているよ…<br><small>（はじめての時は準備に少し時間がかかります）</small>';
+  let preds;
+  try{ const model = await getModel(); preds = await model.classify(scaled(im, 448), 20); }
+  catch(e){ box.innerHTML = head + 'AIを読みこめなかった…。インターネットにつながっているか確かめて、もう一度ためしてね。'; return; }
+  const score = {}; let total = 0;
+  preds.forEach(p=>{ const k = LABEL2CAT[p.className.split(',')[0].trim()]; if(k){ score[k] = (score[k]||0) + p.probability; total += p.probability; } });
+  const cat = Object.keys(score).sort((a,b)=>score[b]-score[a])[0];
+  if(!cat || total < PHOTO_MIN){ box.innerHTML = head + `<b>うーん、虫が見つからないみたい…</b><br>虫に近づいて、大きく写るようにとってみよう。${cat ? `<br><small>（${esc(PHOTO_CATS[cat].name)}かも？ ${Math.round(total*100)}%）</small>` : ''}`; return; }
+  if(cat === 'hachi'){ box.innerHTML = head + '<b>ハチかも！ 気をつけて！</b><br>ハチ（とくにスズメバチ）は、さされるととても危険。写真のために近づかないでね。<br><small>ハチの写真では、ごほうびはもらえません。</small>'; return; }
+  const C = PHOTO_CATS[cat], first = !photos.cats[cat], gifts = [];
+  const money = C.money * (first ? 2 : 1); S.money += money; gifts.push(`どんぐり ${dg(money)}${first ? '（はじめてボーナス2ばい！）' : ''}`);
+  const vk = sp.key + '|' + dayKey(); if((S.visits[vk]||0) > 0){ S.visits[vk]--; gifts.push(`${sp.name}で、今日もう1回さがせる`); }
+  if(C.shapes.length){ S.photoBoost = {day:dayKey(), shapes:[...new Set([...(S.photoBoost && S.photoBoost.day === dayKey() ? S.photoBoost.shapes : []), ...C.shapes])]}; gifts.push(`今日は、${C.name}の幼虫が見つかりやすい`); }
+  photos.cats[cat] = {img:thumb, n:(photos.cats[cat]?.n||0) + 1, date:realDay(), where:sp.name};
+  photos.hashes.push(h); if(photos.hashes.length > 300) photos.hashes.shift();
+  photos.daily = {date:realDay(), n:(photos.daily.date === realDay() ? photos.daily.n : 0) + 1};
+  if(!savePhotos()){ photos.cats[cat].img = ''; savePhotos(); }
+  save(); hud();
+  box.innerHTML = head + `<b class="yk">${esc(C.name)}だ！</b> <small>AIのはんてい ${Math.round(score[cat]*100)}%</small>${first ? '<br>写真アルバムに登録された！' : ''}<ul>${gifts.map(g=>`<li>${esc(g)}</li>`).join('')}</ul>`;
+  await yakusoku('photo', '本物の虫は、写真をとったら そっとしておこう。\nつかまえなくても、写真で記録できるよ。');
+}
+
 /* ---- そと ---- */
 let outState = null;   // {spot, outside}
 function renderOut(){
@@ -1714,8 +1878,8 @@ function renderOut(){
     <p class="small">いまは<b style="color:#fff">${SLOT_NAMES[slot]}</b>。活動中の虫は見つけやすい。ねむっている虫も、さがせば見つかることがある（夜の山は危ないので、昼に行っても大丈夫）。つかまえた場所と時間は、虫の「生まれ」として残る。</p>
     <div class="row"><button type="button" class="btn pri" id="btnGeo">📍 いまいる場所をしらべる</button></div>
     <div class="spots" style="margin-top:10px">${SPOTS.map(sp=>{ const v = (S.visits[sp.key+'|'+today]||0), bn = BORN[sp.key];
-      return `<div class="spot"><b>${esc(sp.name)}</b>　<span class="small">${esc(sp.env)}</span><div class="bugs">いま活動中：${spotBugs(sp.key, slot).map(id=>BUGS[id].name).join('・') || 'いない'}　／　ねむっている：${spotBugs(sp.key).filter(id=>!BUGS[id].time.includes(slot) && !BUGS[id].spots.includes('any')).map(id=>`${BUGS[id].name}（${BUGS[id].time.map(t=>SLOT_NAMES[t]).join('・')}）`).join('・') || 'なし'}</div><div class="small">${esc(bn.name)}：${esc(bn.txt)}</div>${v ? `<div class="small">今日は${v}回さがした</div>` : ''}</div>`; }).join('')}
-    <div class="spot"><b>${esc(ANY_SPOT.name)}</b>　<span class="small">宗像のそと・どこでも</span><div class="bugs">${spotBugs('any').map(id=>BUGS[id].name).join('・')}</div></div></div>
+      return `<div class="spot"><b>${esc(sp.name)}</b>　<span class="small">${esc(sp.env)}</span><div class="bugs">いま活動中：${spotBugs(sp.key, slot).map(nmQ).join('・') || 'いない'}　／　ねむっている：${spotBugs(sp.key).filter(id=>!BUGS[id].time.includes(slot) && !BUGS[id].spots.includes('any')).map(id=>`${nmQ(id)}（${BUGS[id].time.map(t=>SLOT_NAMES[t]).join('・')}）`).join('・') || 'なし'}</div><div class="small">${esc(bn.name)}：${esc(bn.txt)}</div>${v ? `<div class="small">今日は${v}回さがした</div>` : ''}</div>`; }).join('')}
+    <div class="spot"><b>${esc(ANY_SPOT.name)}</b>　<span class="small">宗像のそと・どこでも</span><div class="bugs">${spotBugs('any').map(nmQ).join('・')}</div></div></div>
     <div class="demoBox" style="margin-top:12px"><h3>デモ用（本番にはありません）</h3><p class="small">じっさいに宗像に行かなくても、場所をえらんで「着いたことにする」ができます。</p>
       <div class="row"><select id="demoSpot" class="btn">${SPOTS.map(sp=>`<option value="${sp.key}">${esc(sp.name)}</option>`).join('')}<option value="any">宗像のそと（どこでも）</option></select><button type="button" class="btn" id="btnDemoGo">着いたことにする</button></div></div>`;
   $('btnGeo').onclick = async ()=>{
@@ -1753,11 +1917,16 @@ function renderSpot(){
   const egg = sp.key === 'taisha' && S.link.kin && !S.link.kinEgg;
   view.innerHTML = `<div class="row" style="justify-content:space-between"><h2>${esc(sp.name)}</h2><button type="button" class="btn sub" id="btnLeave">おうちにかえる</button></div>
     <div class="spot here"><div class="small">${esc(sp.env)}　いまは${SLOT_NAMES[slot]}</div>
-      <div>いま活動中：${here.map(id=>BUGS[id].name).join('・') || 'いない'}</div>
-      ${later.length ? `<div class="bugs">ねむっているけど、さがせる：${later.map(id=>`${BUGS[id].name}（${BUGS[id].time.map(t=>SLOT_NAMES[t]).join('・')}に活動）`).join('・')}</div>` : ''}
+      <div>いま活動中：${here.map(nmQ).join('・') || 'いない'}</div>
+      ${later.length ? `<div class="bugs">ねむっているけど、さがせる：${later.map(id=>`${nmQ(id)}（${BUGS[id].time.map(t=>SLOT_NAMES[t]).join('・')}に活動）`).join('・')}</div>` : ''}
       ${egg ? '<div class="small" style="color:var(--sun)">…木の根もとで、なにかが金色に光っている。</div>' : ''}</div>
     <div id="findBox" class="search"><p>草むらや木のまわりを、そっとのぞいてみよう。</p><p class="small">今日ここでさがせるのは、あと${left}回</p>
-      <button type="button" class="btn pri" id="btnFind" ${left <= 0 || (!all.length && !egg) ? 'disabled' : ''} style="font-size:18px;padding:.6em 1.6em">🔍 さがす</button></div>`;
+      <button type="button" class="btn pri" id="btnFind" ${left <= 0 || (!all.length && !egg) ? 'disabled' : ''} style="font-size:18px;padding:.6em 1.6em">🔍 さがす</button></div>
+    <div class="spot photoBox"><b>📷 本物の虫の写真をとる</b>　<span class="small">今日のこり ${photoLeft()}まい</span>
+      <div class="small">外で見つけた本物の虫をとると、どんぐりがもらえる。写真の虫のなかまの幼虫も見つかりやすくなるよ。写真はこのたんまつの中だけでAIが判定して、どこにも送られません。</div>
+      <div class="row" style="margin-top:6px"><label class="btn pri">カメラでとる<input id="camIn" class="vh" type="file" accept="image/*" capture="environment"></label><label class="btn">アルバムから<input id="libIn" class="vh" type="file" accept="image/*"></label></div>
+      <div id="photoRes" class="small"></div></div>`;
+  ['camIn','libIn'].forEach(k=>{ $(k).onchange = async e=>{ const f = e.target.files[0]; e.target.value = ''; const box = $('photoRes'); box.className = 'photoRes'; await handlePhoto(f, sp, box); }; });
   $('btnLeave').onclick = ()=>{ outState = null; setTab('home'); };
   $('btnFind').onclick = ()=> doFind(sp, all, egg, slot);
 }
@@ -1768,7 +1937,7 @@ async function doFind(sp, here, egg, slot){
   // めずらしい虫（rank が高い）ほど出にくい。何も見つからないこともある。宗像大社うまれは少し運がいい
   let id = null;
   if(egg){ id = 'kinkabuto'; S.link.kinEgg = 1; }
-  else { const pool = []; here.forEach(b=>{ const w = {1:5, 2:3, 3:2, 4:1, 5:1}[BUGS[b].rank] * (BUGS[b].time.includes(slot) ? 2 : 1); for(let i=0;i<w;i++) pool.push(b); }); for(let i=0;i<4;i++) pool.push(null); id = pick(pool); }
+  else { const pool = []; here.forEach(b=>{ const w = {1:5, 2:3, 3:2, 4:1, 5:1}[BUGS[b].rank] * (BUGS[b].time.includes(slot) ? 2 : 1) * photoBoost(BUGS[b].shape); for(let i=0;i<w;i++) pool.push(b); }); for(let i=0;i<4;i++) pool.push(null); id = pick(pool); }
   if(!id){ box.innerHTML = `<p>…今回は、みつからなかった。</p><p class="small">虫は、きみのことをよく見ている。もう一度、しずかにさがしてみよう。</p><button type="button" class="btn" id="btnAgain">もどる</button>`; $('btnAgain').onclick = renderSpot; return; }
   const b = BUGS[id], odd = !b.time.includes(slot) && !b.link, know = knowsAtFind(id), G = GROUP[groupOf(id)];
   const first = !S.dex[id];
@@ -1790,11 +1959,12 @@ async function doFind(sp, here, egg, slot){
   $('bLeave').onclick = ()=> renderSpot();
   $('bTake').onclick = async ()=>{
     const foodKey = b.food, food = ITEMS[foodKey];
-    if(food.price && !(S.items[foodKey]||0)) await say(`つれてかえるなら、ごはんの「${food.name}」がいるよ。\nおうちの「どんぐりでエサを買う」で買っておこう。（いまのどんぐり：${dg(S.money)}）`);
+    if(food.price && !(S.items[foodKey]||0)) await say(`つれてかえるなら、ごはんの「${food.name}」がいるよ。\n「かう」で買っておこう。（いまのどんぐり：${dg(S.money)}）`);
     // ケースとおき場所をえらぶ（育て方のはじまり）
     const hasWide = (S.items.wide||0) > 0;
-    const wi = await say('どのケースに入れる？', {ans:['ふつうのケース', hasWide ? '広いケース（よく動けて、すばやくなる）' : '広いケース（もっていない。お店で30D）', 'やめる']});
-    if(wi === 2) return; if(wi === 1 && !hasWide){ await say('「広いケース」は、おうちの「どんぐりでエサを買う」で買えるよ。'); return; }
+    const wp = ITEMS.wide.price, wi = await say('どのケースに入れる？\n（広いケースだと、よく動けて すばやくなる）', {ans:['ふつうのケース', hasWide ? '広いケース' : `広いケースを買って入れる（${dg(wp)}）`, 'やめる']});
+    if(wi === 2) return;
+    if(wi === 1 && !hasWide){ if(S.money < wp){ await say(`どんぐりが足りない…（いま ${dg(S.money)}）\nふつうのケースに入れて、あとで広いケースにうつすこともできるよ。`); return; } S.money -= wp; S.items.wide = (S.items.wide||0) + 1; hud(); }
     const keys = Object.keys(PLACES), pi = await say('おうちの、どこにおく？', {ans:keys.map(k=>`${PLACES[k].name}：${PLACES[k].desc}`)});
     const wide = wi === 1; if(wide) S.items.wide--;
     S.cases[free] = {bug:id, si:0, prog:0, hunger:70, wet:70, clean:100, tick:now(), pending:false, from:sp.name, born:sp.key, bornSlot:slotOf(), since:dayKey(),
@@ -1813,6 +1983,8 @@ function renderDex(){
   view.innerHTML = `<h2>こん虫ずかん</h2><p class="small">みつけた ${n} / ${ids.length}　羽化させた ${r}</p>
     <div class="dexGrid">${ids.map(id=>{ const d = S.dex[id], b = BUGS[id];
       return `<div class="d ${d ? '' : 'no'}" data-id="${id}">${dexPic(id)}<div>${d && d.known ? esc(b.name) : '？？？'}</div>${d ? `<span class="mk">${d.raised ? '★そだててかえした' : d.adult ? '羽化した' : d.known ? '幼虫を見つけた' : 'なぞの幼虫'}</span>` : ''}</div>`; }).join('')}</div>
+    <h3>本物の虫の写真アルバム（${Object.keys(PHOTO_CATS).filter(k=>k!=='hachi' && photos.cats[k]).length} / ${Object.keys(PHOTO_CATS).length - 1}）</h3>
+    <div class="album">${Object.keys(PHOTO_CATS).filter(k=>k!=='hachi').map(k=>{ const p = photos.cats[k]; return `<div class="ph ${p ? '' : 'no'}">${p && p.img ? `<img alt="" src="${p.img}">` : '<span>？</span>'}<small>${p ? esc(PHOTO_CATS[k].name) : '？？？'}</small></div>`; }).join('')}</div>
     <p class="small">観察眼：${Object.keys(GROUP).map(g=>`${GROUP[g].who} ${Math.min(3, eyeOf(g))}/3`).join('　')}<br>（同じなかまを3回羽化させると、幼虫を見ただけでわかるようになる）</p>`;
   view.querySelectorAll('.d').forEach(el=> el.onclick = ()=> showDexDetail(el.dataset.id));
 }
