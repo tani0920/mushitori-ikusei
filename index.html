@@ -203,6 +203,7 @@ p{margin:.3em 0}
 
 /* 虫のアニメーション（パーツ分けした2D：はね・足・体のふしを動かす） */
 .bug *{transform-box:fill-box;transform-origin:center}
+.bug g[transform]{transform-box:view-box;transform-origin:0 0}   /* transform を書いた g（左右反転のはねなど）は、ふつうの座標で動かす */
 .bug .wing{transform-origin:right center;animation:flap 1.1s ease-in-out infinite}
 .bug .wing.r{animation-delay:-.0s}
 @keyframes flap{0%,100%{transform:scaleX(1)}50%{transform:scaleX(.3)}}
@@ -524,8 +525,8 @@ html.land .obsR .info{font-size:13px;line-height:1.5}
 html.land .toolObj{font-size:64px}
 html.land .decoPick .pk{min-width:56px;font-size:11px}
 html.land .decoPick .pk svg{width:32px;height:32px}
-html.land{--dw:min(400px,calc(var(--W) * .5))}
-html.land .drawer{padding:max(10px,var(--st)) calc(12px + var(--sr)) 12px 14px}
+html.land{--dw:min(360px,calc(var(--W) * .44))}
+html.land .drawer{padding:max(10px,var(--st)) 12px 12px 14px}
 /* 左はしのタグ：そと・すもう・おみせ・ずかん・その他（おうちは右のタグ） */
 html.land #tabs{left:0;top:0;bottom:0;right:auto;width:calc(76px + var(--sl));flex-direction:column;justify-content:flex-start;gap:8px;background:transparent;border:0;padding:calc(max(6px,var(--st)) + 30px) 0 max(6px,var(--sb)) var(--sl)}
 html.land #tabs [data-t=home]{display:none}
@@ -564,16 +565,16 @@ html.land #arena .ctl{grid-column:2;margin-top:0}
 </div>
 <!-- 左メニュー（#tabs）：そと・すもう・おみせ・ずかん・その他（たて画面のPCでは下にならび、おうちもここ） -->
 <div id="tabs" hidden>
-  <button type="button" data-t="home"><span class="ic">🏠</span>おうち</button>
+  <button type="button" data-t="home"><span class="ic">🧺</span>虫かご</button>
   <button type="button" data-t="out"><span class="ic">🌳</span>そと</button>
   <button type="button" data-t="sumo"><span class="ic">🏟</span>すもう</button>
   <button type="button" data-t="shop"><span class="ic">🏪</span>おみせ</button>
   <button type="button" data-t="dex"><span class="ic">📖</span>ずかん</button>
   <button type="button" data-t="opt"><span class="ic">⚙</span>その他</button>
 </div>
-<!-- 右メニュー（#rtabs）：おうち・もちもの・ケースのこと。押すとパネルが出る -->
+<!-- 右メニュー（#rtabs）：虫かご・もちもの・ケースのこと。押すとパネルが出る -->
 <div id="rtabs" hidden>
-  <button type="button" class="rt" data-t="home"><span class="ic">🏠</span>おうち</button>
+  <button type="button" class="rt" data-t="home"><span class="ic">🧺</span>虫かご</button>
   <button type="button" class="rt" id="rtItems"><span class="ic">🎒</span>もちもの</button>
   <button type="button" class="rt" id="rtCase" hidden><span class="ic">📋</span>ケースの<br>こと</button>
 </div>
@@ -594,9 +595,13 @@ const SAVE_KEY = KEY_PRE + 'munakata-mushisodate-v1';
 const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
-const GAME_VER = '0.7.2';
-const BUILD = '20261024-1419';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const GAME_VER = '0.7.3';
+const BUILD = '20261024-1435';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
+  {v:'0.7.3', date:'2026-10-24', items:[
+    '右メニューのパネルを開いたとき、右に出ていたよけいな余白をなくして、はばをせまくした',
+    '「おうち」のタグを「虫かご」という名前にした',
+    '虫かごの中の虫を小さくして、上で切れないようにした']},
   {v:'0.7.2', date:'2026-10-24', items:[
     '飼育ケースの画面で、中央画面が横にずれる（右の道具ボタンがはみ出す）のを直した。虫かごを少し小さくした',
     '虫かごを、右上の日付・時間と重ならない高さまで下げた']},
@@ -1458,6 +1463,7 @@ function foodSVG(f){
 }
 function sceneSVG(c, slot, o={}){
   const b = BUGS[c.bug], st = stageOf(c).k, soilKind = b.shape === 'beetle' || b.shape === 'stag', [s1, s2] = SKY[slot], p = placeBug(c, slot);
+  p.y = Math.max(p.y, p.s*.85*50 + 3);   // 虫の頭やツノが、ケースの上で切れないように
   const stars = slot === 'yoru' ? [[10,8],[30,14],[55,6],[80,12],[92,20],[68,18]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r=".6" fill="#fff"/>`).join('') : '';
   const sun = slot === 'yoru' ? `<circle cx="84" cy="14" r="5" fill="#fff6c0"/>` : slot === 'yu' ? `<circle cx="84" cy="22" r="6" fill="#ff8040"/>` : `<circle cx="84" cy="12" r="6" fill="#ffe27a"/>`;
   const soilTop = soilTopOf(b), hk = hideKind(b), H = HIDE_POS[hk];
@@ -1477,7 +1483,7 @@ function sceneSVG(c, slot, o={}){
     <g id="soakLayer">${c.soakZ.map((v,z)=>`<ellipse class="sz" cx="${z*20+10}" cy="${soilTop+3}" rx="9" ry="2.3" fill="#6ab0e0" opacity="${(v > 0 ? Math.min(.85, v/40) : 0).toFixed(2)}"/>`).join('')}</g>`;
   const foods = (c.foods||[]).map(foodSVG).join('');
   const decos = (c.deco||[]).map(d=>`<g class="deco" data-deco="${d.id}" transform="translate(${d.x} ${d.y}) scale(.55) translate(-50 -70)"><g class="${ITEMS[d.k].hide ? 'leaf' : ''}">${decoSVG(d.k)}</g></g>`).join('');
-  const bug = `<g id="bugG" style="${p.buried ? 'opacity:.55' : p.hidden ? 'opacity:.35' : ''}"><g transform="translate(${p.x} ${p.y}) scale(${p.s*1.2}) translate(-50 -50)">${svgBug(c.bug, st, Object.assign({rare:c.rare}, p.o)).replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '')}</g></g>`;
+  const bug = `<g id="bugG" style="${p.buried ? 'opacity:.55' : p.hidden ? 'opacity:.35' : ''}"><g transform="translate(${p.x} ${p.y}) scale(${p.s*.85}) translate(-50 -50)">${svgBug(c.bug, st, Object.assign({rare:c.rare}, p.o)).replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '')}</g></g>`;
   const ants = c.trouble === 'ari' ? (c.foods.filter(f=>f.old)[0] ? [[-6,2],[-3,5],[3,6],[7,3],[10,7]].map(([dx,dy])=>`<circle cx="${c.foods.filter(f=>f.old)[0].x+dx}" cy="${c.foods.filter(f=>f.old)[0].y+dy}" r="1" fill="#111"/>`).join('') : '') : '';
   // ガラスのよごれ（こすると消える）：フン・くもり・カビ
   const dirt = (c.dirt||[]).map((d,i)=> d.k === 'kabi' ? `<g class="dirt" data-d="${i}" opacity="${(d.hp/3).toFixed(2)}"><circle cx="${d.x}" cy="${d.y}" r="4" fill="#eee" opacity=".8"/><circle cx="${d.x-2}" cy="${d.y+1}" r="2.5" fill="#fff"/><circle cx="${d.x+2}" cy="${d.y-1}" r="2" fill="#ddd"/></g>`
@@ -1601,12 +1607,12 @@ async function start(){
 function renderHome(){
   const slot = slotOf();
   const boxLine = i=>{ const B = BOXES[S.boxes[i]]; return `<div class="boxLine"><span>${B.ic} ${esc(B.name)}</span></div>`; };
-  view.innerHTML = `<h2>おうちの虫かご <small class="small">${S.boxes.length} / ${MAX_BOXES}こ</small></h2><div class="cases">${S.cases.map((c,i)=>{
+  view.innerHTML = `<h2>虫かご <small class="small">${S.boxes.length} / ${MAX_BOXES}こ</small></h2><div class="cases">${S.cases.map((c,i)=>{
     if(!c) return `<div class="case empty" data-i="${i}">${boxLine(i)}<div class="emptyBody"><div>（からっぽ）</div><div class="small">そとで虫をみつけて、つれてかえろう</div></div></div>`;
     const b = BUGS[c.bug], st = stageOf(c), nd = needs(c), g = genkiOf(c), ins = instarOf(c), fc = forecast(c);
     return `<div class="case" data-i="${i}">
       ${boxLine(i)}
-      <div class="pic" style="background:linear-gradient(${SKY[slot][0]},${SKY[slot][1]} 60%,#5a3d22 61%)">${svgBug(c.bug, st.k, {instar:ins, scale:.8, rare:c.rare, sleep:(placeBug(c, slot).o||{}).sleep})}
+      <div class="pic" style="background:linear-gradient(${SKY[slot][0]},${SKY[slot][1]} 60%,#5a3d22 61%)">${svgBug(c.bug, st.k, {instar:ins, scale:.66, rare:c.rare, sleep:(placeBug(c, slot).o||{}).sleep})}
         ${c.pending ? '<span class="ev norb">！</span>' : fc ? '<span class="ev norb">予告</span>' : ''}${nd.length ? `<span class="alert">${nd.join('・')}</span>` : ''}
         <span class="placeTag norb">${PLACE_IC[c.place]} ${esc(PLACES[c.place].name)}</span></div>
       <div class="nm">${esc(dispName(c))}</div>
