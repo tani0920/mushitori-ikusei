@@ -284,7 +284,7 @@ p{margin:.3em 0}
 @keyframes press{to{opacity:.6}}
 #bugG.jitter{animation:jitter .15s linear 4}
 @keyframes jitter{0%,100%{transform:translate(0,0)}25%{transform:translate(2px,-1px)}75%{transform:translate(-2px,1px)}}
-.binZone{position:absolute;left:6px;bottom:6px;z-index:4;background:#c0392bcc;color:#fff;border:2px dashed #fff;border-radius:10px;padding:.5em 1em;font-size:14px;pointer-events:none}
+.binZone{position:absolute;right:6px;bottom:6px;z-index:4;background:#c0392bcc;color:#fff;border:2px dashed #fff;border-radius:10px;padding:.5em 1em;font-size:14px;pointer-events:none}
 .binZone.over{background:#e74c3c;transform:scale(1.1)}
 .toolObj .hint{position:absolute;left:50%;top:-1.1em;transform:translateX(-50%);font-size:11px;white-space:nowrap;background:#14284acc;color:#fff;border-radius:999px;padding:0 .6em;border:1px solid #f7f1df88}
 .ripple{position:absolute;width:40px;height:40px;border-radius:50%;border:3px solid #fff;pointer-events:none;transform:translate(-50%,-50%) scale(.3);animation:ripple .5s ease-out forwards;z-index:2}
@@ -307,6 +307,7 @@ p{margin:.3em 0}
 @media (min-width:480px){ .tools .tbtn{font-size:14px} }
 .tools .tbtn .ic{display:block;font-size:36px;line-height:1.15}
 .tools .tbtn.on{background:var(--sun);color:#1b130c;border-color:var(--sun)}
+.tools .tbtn.back{background:#ffffff14;border-style:dashed}
 .tools .tbtn:disabled{opacity:.4}
 .guide{margin-top:6px;min-height:1.5em}
 .bar{position:relative}
@@ -440,65 +441,76 @@ p{margin:.3em 0}
 .drawer.open{transform:translateX(0)}
 .drawer .dHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;color:var(--sun)}
 .drawer .acts{margin-top:8px;grid-template-columns:1fr}
-@media (orientation:portrait){ .drawer{width:min(380px,86vw)} }
-#rotate{display:none}
+.drawer{width:min(380px,86vw)}
 /* ===== 横画面：1画面でぜんぶ見える ===== */
-@media (orientation:landscape) and (min-width:600px){
-  body{padding-bottom:max(6px,env(safe-area-inset-bottom,0px));padding-left:calc(80px + env(safe-area-inset-left,0px))}
-  #tabs{left:0;top:0;bottom:0;right:auto;width:calc(74px + env(safe-area-inset-left,0px));flex-direction:column;justify-content:stretch;border-top:0;border-right:2px solid var(--edge);padding:max(6px,env(safe-area-inset-top,0px)) 6px max(6px,env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-left,0px))}
-  #tabs button{max-width:none;flex:1;font-size:12px;padding:.2em 0}
-  #tabs button .ic{font-size:22px}
-  #tabs button .badge{transform:translate(1.2em,-2.6em)}
-  html,body{height:100%;overflow:hidden;overscroll-behavior:none}
-  #app{max-width:none;padding-block:4px 6px;gap:4px;height:100dvh;display:flex;flex-direction:column}
-  #view{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
-  /* タイトル：横画面で1画面に */
-  #titleScr{min-height:0;height:calc(100dvh - 12px);justify-content:center;gap:.2em;padding:2% 4%}
-  #titleScr .t1{font-size:3.6vh}
-  #titleScr .t2{font-size:9vh;margin:0}
-  #titleScr .t2 br{display:none}
-  #titleScr .hero{width:auto;height:24vh;margin:0}
-  #titleScr .hero svg{height:100%;width:auto}
-  #titleScr .t3{font-size:3vh}
-  #titleScr .t4{font-size:2.4vh;margin-top:.3em;padding:.2em .8em}
-  #titleScr .tbtns{margin-top:.3em}
-  #titleScr .vrow{margin-top:.3em}
-  #msgLayer{padding-bottom:12px;padding-left:90px}
-  .saveMark{bottom:10px}
-  .obsGrid{display:grid;grid-template-columns:auto minmax(280px,1fr);gap:10px;align-items:start}
-  .obsL{display:flex;flex-direction:column;gap:6px}
-  #obs .scene{height:calc(100dvh - 96px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));width:auto;aspect-ratio:4/3;max-width:64vw}
-  #obs .obsTxt{font-size:13px;line-height:1.5;padding:.35em .7em;max-height:66px;overflow-y:auto;max-width:calc((100dvh - 96px) * 4 / 3)}
-  .obsR{max-height:calc(100dvh - 12px - env(safe-area-inset-top,0px));overflow-y:auto;padding-right:30px}
-  body.obsMode #hud{display:none}
-  body.obsMode .obsHud{display:flex}
-  .obsR .tools{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:4px}
-  .obsR .tools .tbtn{min-height:56px;font-size:12px}
-  .obsR .tools .tbtn .ic{font-size:26px}
-  .obsR .guide{font-size:11.5px;line-height:1.45;margin-top:4px}
-  .obsR .meters{font-size:10.5px;gap:0 6px;width:72%;line-height:1.35}
-  .obsR .meters .bar{height:6px}
-  .obsR .info{font-size:11.5px;line-height:1.45}
-  .toolObj{font-size:64px}
-  .decoPick .pk{min-width:56px;font-size:10px}
-  .decoPick .pk svg{width:32px;height:32px}
-  /* 虫ずもう：左に土俵、右に実況 */
-  #arena{display:grid;grid-template-columns:1.3fr 1fr;grid-template-rows:1fr auto;gap:8px 12px}
-  #arena .ring{grid-row:1 / 3;max-height:none}
-  #arena .log{grid-column:2;max-height:none;min-height:0;font-size:14px}
-  #arena .ctl{grid-column:2;margin-top:0}
-}
-@media (orientation:landscape) and (max-height:520px){
-  header{display:none}
-  #hud{font-size:13px;min-height:18px}
-}
-/* ===== スマホ・タブレットをたてにしているとき：横にしてもらう ===== */
-@media (orientation:portrait){
-  body.touch #rotate{display:flex;position:fixed;inset:0;z-index:20000;background:var(--frame);color:#fff;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:24px}
-  body.touch #rotate .ph{font-size:72px;animation:rot 2s ease-in-out infinite}
-  @keyframes rot{0%,30%{transform:rotate(0)}60%,100%{transform:rotate(-90deg)}}
-}
-
+/* ===== 横レイアウト =====
+   html.land は JS が付ける：横画面のとき、または たて画面のスマホ・タブレットを「画面ごと90度まわして」横に見せているとき（向きロック対策）
+   --W / --H は横レイアウトの はば・高さ。--sl/--sr/--st/--sb は横にしたときの左右上下のセーフエリア */
+:root{--W:100vw;--H:100vh;--vw:100vw;--vh:100vh;--sl:env(safe-area-inset-left,0px);--sr:env(safe-area-inset-right,0px);--st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px)}
+html[data-rot="1"]{--sl:env(safe-area-inset-top,0px);--sr:env(safe-area-inset-bottom,0px);--st:env(safe-area-inset-right,0px);--sb:env(safe-area-inset-left,0px)}
+html[data-rot="-1"]{--sl:env(safe-area-inset-bottom,0px);--sr:env(safe-area-inset-top,0px);--st:env(safe-area-inset-left,0px);--sb:env(safe-area-inset-right,0px)}
+html[data-rot="1"] body,html[data-rot="-1"] body{position:fixed;top:0;left:0;width:var(--W);height:var(--H);transform-origin:0 0;margin:0}
+html[data-rot="1"] body{transform:translateX(var(--vw)) rotate(90deg)}
+html[data-rot="-1"] body{transform:translateY(var(--vh)) rotate(-90deg)}
+html[data-rot="1"],html[data-rot="-1"]{padding:0}
+html.land{height:100%;overflow:hidden;overscroll-behavior:none}
+html.land body{height:var(--H);min-height:0;overflow:hidden;overscroll-behavior:none;padding:0 0 0 calc(80px + var(--sl))}
+html.land body.title{padding-left:0}
+html.land #tabs{left:0;top:0;bottom:0;right:auto;width:calc(74px + var(--sl));flex-direction:column;justify-content:stretch;border-top:0;border-right:2px solid var(--edge);padding:max(6px,var(--st)) 6px max(6px,var(--sb)) max(6px,var(--sl))}
+html.land #tabs button{max-width:none;flex:1;font-size:12px;padding:.2em 0}
+html.land #tabs button .ic{font-size:22px}
+html.land #tabs button .badge{transform:translate(1.2em,-2.6em)}
+html.land header{display:none}
+html.land #app{max-width:none;padding:max(4px,var(--st)) calc(6px + var(--sr)) max(6px,var(--sb)) 0;gap:4px;height:var(--H);display:flex;flex-direction:column}
+html.land #view{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+/* 日付・時間・どんぐりは、どの画面でも右上に1行 */
+html.land #hud{position:fixed;top:max(4px,var(--st));right:calc(10px + var(--sr));z-index:65;font-size:14px;gap:12px;flex-wrap:nowrap;white-space:nowrap;background:#1e2f24ee;border-radius:999px;padding:0 .7em;min-height:24px}
+html.land body:not(.obsMode) #view{padding-top:28px}
+html.land body.title #hud{display:none}
+html.land body.title #view{padding-top:0}
+/* タイトル：横画面で1画面に */
+html.land #titleScr{min-height:0;height:calc(var(--H) - 12px);justify-content:center;gap:.2em;padding:2% 4%}
+html.land #titleScr .t1{font-size:calc(var(--H) * .036)}
+html.land #titleScr .t2{font-size:calc(var(--H) * .09);margin:0}
+html.land #titleScr .t2 br{display:none}
+html.land #titleScr .hero{width:auto;height:calc(var(--H) * .24);margin:0}
+html.land #titleScr .hero svg{height:100%;width:auto}
+html.land #titleScr .t3{font-size:calc(var(--H) * .034)}
+html.land #titleScr .t4{font-size:calc(var(--H) * .027);margin-top:.3em;padding:.2em .8em}
+html.land #titleScr .tbtns{margin-top:.3em}
+html.land #titleScr .vrow{margin-top:.3em}
+html.land #msgLayer{padding-bottom:12px;padding-left:90px}
+html.land #msgLayer .win{font-size:17px}
+html.land .saveMark{bottom:10px}
+/* 飼育ケースの画面 */
+html.land .obsGrid{display:grid;grid-template-columns:auto minmax(290px,1fr);gap:10px;align-items:start}
+html.land .obsL{display:flex;flex-direction:column;gap:6px}
+html.land #obs .scene{height:calc(var(--H) - 98px - var(--st) - var(--sb));width:auto;aspect-ratio:4/3;max-width:calc(var(--W) * .62)}
+html.land #obs .obsTxt{font-size:15px;line-height:1.5;padding:.35em .7em;max-height:76px;overflow-y:auto;max-width:calc((var(--H) - 98px) * 4 / 3)}
+html.land .obsR{max-height:calc(var(--H) - 8px - var(--st) - var(--sb));overflow-y:auto;padding:28px 34px 0 0}
+html.land .obsR .obsHead h2{font-size:16px}
+html.land .obsR .tools{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:4px}
+html.land .obsR .tools .tbtn{min-height:56px;font-size:12px}
+html.land .obsR .tools .tbtn .ic{font-size:26px}
+html.land .obsR .guide{font-size:13px;line-height:1.5;margin-top:4px}
+html.land .obsR .meters{font-size:11.5px;gap:0 6px;width:72%;line-height:1.35}
+html.land .obsR .meters .bar{height:6px}
+html.land .obsR .info{font-size:13px;line-height:1.5}
+html.land .toolObj{font-size:64px}
+html.land .decoPick .pk{min-width:56px;font-size:11px}
+html.land .decoPick .pk svg{width:32px;height:32px}
+html.land .drawer{width:min(400px,calc(var(--W) * .5));padding:max(10px,var(--st)) calc(12px + var(--sr)) 12px 14px}
+html.land .drawerTab{right:var(--sr)}
+/* 一覧の文字を少し大きく */
+html.land .small{font-size:13px}
+html.land .spot{font-size:15px}
+html.land .spot .bugs{font-size:13px}
+html.land .opt .btn{font-size:15px}
+/* 虫ずもう：左に土俵、右に実況 */
+html.land #arena{display:grid;grid-template-columns:1.3fr 1fr;grid-template-rows:1fr auto;gap:8px 12px;padding:max(10px,var(--st)) calc(12px + var(--sr)) max(10px,var(--sb)) calc(12px + var(--sl))}
+html.land #arena .ring{grid-row:1 / 3;max-height:none}
+html.land #arena .log{grid-column:2;max-height:none;min-height:0;font-size:15px}
+html.land #arena .ctl{grid-column:2;margin-top:0}
 </style>
 
 <div id="app">
@@ -509,13 +521,12 @@ p{margin:.3em 0}
 <div id="tabs" hidden>
   <button type="button" data-t="home"><span class="ic">🏠</span>おうち</button>
   <button type="button" data-t="out"><span class="ic">🌳</span>そと</button>
-  <button type="button" data-t="sumo"><span class="ic">🏟</span>ずもう</button>
+  <button type="button" data-t="sumo"><span class="ic">🏟</span>すもう</button>
   <button type="button" data-t="shop"><span class="ic">🛒</span>かう</button>
   <button type="button" data-t="dex"><span class="ic">📖</span>ずかん</button>
   <button type="button" data-t="opt"><span class="ic">⚙</span>その他</button>
 </div>
 <div class="saveMark" id="saveMark">セーブしました</div>
-<div id="rotate" class="norb"><div class="ph">📱</div><div style="font-size:20px;color:var(--sun)">スマホを よこにしてね</div><div style="font-size:14px">むなかた虫そだては、よこ画面であそぶゲームです。<br>画面の向きのロックをはずして、よこにしてください。</div></div>
 
 <script>
 'use strict';
@@ -531,9 +542,18 @@ const SAVE_KEY = KEY_PRE + 'munakata-mushisodate-v1';
 const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
-const GAME_VER = '0.6.1';
-const BUILD = '20261024-1243';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const GAME_VER = '0.6.2';
+const BUILD = '20261024-1309';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
+  {v:'0.6.2', date:'2026-10-24', items:[
+    'スマホ・タブレットがたて向きのとき（向きのロックをかけているときも）は、画面ごと90度まわして横画面で表示するようにした。さかさまに見えるときは「その他」かタイトルの「向きを反対に」',
+    '「ケースのこと」のタグが見えない・開いたときに切れる・ずれる、を直した',
+    '日付・時間・どんぐりを、どの画面でも右上の同じ場所に1行で出すようにした。どんぐりはアイコン（🌰）に',
+    '飼育ケースの「もどる」を、道具ボタンと同じ大きさの「↩ もどる」にした',
+    '読む文字を少し大きくした（ボタンのアイコンの下の文字はそのまま）',
+    'おうちの「エサ・かざりを買う」をけした（左の「かう」から買える）',
+    '「ずもう」を「すもう」にした',
+    '道具がケースの左下から出てくるようにした（「しまう」は右下）']},
   {v:'0.6.1', date:'2026-10-24', items:[
     '「ケースのこと」を、右はしのタグにした。タップすると右から左へスライドして出てくる',
     '飼育ケースの画面で、日付・時間・どんぐりを右の列の上にうつして、そのぶん虫かごとメッセージを大きくした',
@@ -600,7 +620,7 @@ const CHANGELOG = [
     '性格：食いしんぼう・やんちゃ・のんびり・がまん強い・おくびょう・まけずぎらい・人なつっこい。育て方で決まり、観察の文と虫ずもうの動きにあらわれる',
     '生まれ：つかまえた場所が虫に残る（城山うまれはまもりが強い、さつき松原うまれはすばやい、など）。夜につかまえた虫は夜型',
     'わざ：種類ごとの基本わざ＋育て方で決まる得意わざ（大ツノスラム・かたまりガード・うっとりソング など）',
-    '虫ずもう（「ずもう」タブ）：虫とり日記のライバル6人と対戦。コマンドはなく、虫が自分で戦う。実況つき。負けたときは、どこが足りなかったかと育て方のヒントが出る',
+    '虫ずもう（「すもう」タブ）：虫とり日記のライバル6人と対戦。コマンドはなく、虫が自分で戦う。実況つき。負けたときは、どこが足りなかったかと育て方のヒントが出る',
     'トラブル：しめりすぎとよごれで「カビ」、古いエサに「アリ」。そうじで直る',
     'ずかんに本物の大きさと季節、生まれの記録、さいだいサイズの記録を追加']},
   {v:'0.1.0', date:'2026-10-23', items:[
@@ -643,6 +663,37 @@ document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState 
 if(window.DEMO){ const b = document.createElement('div'); b.className = 'demoBadge norb'; b.textContent = 'デモ版'; document.body.appendChild(b); }
 if(matchMedia('(pointer:coarse)').matches) document.body.classList.add('touch');
 try{ if(screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(()=>{}); }catch(e){}
+/* =========================================================
+   横レイアウト：スマホ・タブレットがたて向き（向きロックをかけているときも）なら、画面ごと90度まわして横に見せる
+   まわしているあいだは、指の位置（clientX/Y）と要素の位置（getBoundingClientRect）を「まわした画面」の向きに直して返す
+   ========================================================= */
+const ROT_KEY = 'munakata-sodate-rot';
+let rotMode = 0;   // 0：まわさない　1：右に90度　-1：左に90度
+const rotPref = ()=>{ try{ return localStorage.getItem(ROT_KEY) === '-1' ? -1 : 1; }catch(e){ return 1; } };
+function c2f(x, y){ return rotMode === 1 ? {x:y, y:innerWidth - x} : rotMode === -1 ? {x:innerHeight - y, y:x} : {x, y}; }
+function f2c(x, y){ return rotMode === 1 ? {x:innerWidth - y, y:x} : rotMode === -1 ? {x:y, y:innerHeight - x} : {x, y}; }
+(function(){
+  const dX = Object.getOwnPropertyDescriptor(MouseEvent.prototype, 'clientX'), dY = Object.getOwnPropertyDescriptor(MouseEvent.prototype, 'clientY');
+  if(dX && dY && dX.get && dY.get){
+    Object.defineProperty(MouseEvent.prototype, 'clientX', {configurable:true, get(){ const x = dX.get.call(this); return rotMode ? c2f(x, dY.get.call(this)).x : x; }});
+    Object.defineProperty(MouseEvent.prototype, 'clientY', {configurable:true, get(){ const y = dY.get.call(this); return rotMode ? c2f(dX.get.call(this), y).y : y; }});
+  }
+  const gb = Element.prototype.getBoundingClientRect;
+  Element.prototype.getBoundingClientRect = function(){ const r = gb.call(this); if(!rotMode) return r;
+    const a = c2f(r.left, r.top), b = c2f(r.right, r.bottom), x = Math.min(a.x, b.x), y = Math.min(a.y, b.y);
+    return new DOMRect(x, y, Math.abs(a.x - b.x), Math.abs(a.y - b.y)); };
+})();
+function layout(){
+  const touch = document.body.classList.contains('touch'), portrait = innerHeight > innerWidth;
+  rotMode = touch && portrait ? rotPref() : 0;
+  const W = rotMode ? innerHeight : innerWidth, H = rotMode ? innerWidth : innerHeight, de = document.documentElement;
+  de.dataset.rot = rotMode; de.style.setProperty('--W', W + 'px'); de.style.setProperty('--H', H + 'px'); de.style.setProperty('--vw', innerWidth + 'px'); de.style.setProperty('--vh', innerHeight + 'px');
+  de.classList.toggle('land', W > H && W >= 600);
+}
+layout();
+addEventListener('resize', ()=>{ layout(); });
+addEventListener('orientationchange', ()=> setTimeout(layout, 300));
+function flipRot(){ try{ localStorage.setItem(ROT_KEY, rotPref() === 1 ? '-1' : '1'); }catch(e){} layout(); }
 
 /* =========================================================
    ふりがな（虫とり日記と同じしくみ）
@@ -1388,12 +1439,12 @@ async function yakusoku(key, text){ if(S.yk[key]) return; S.yk[key] = 1; await s
 let tab = 'home', openCase = null;
 const view = $('view');
 function refresh(){ tickAll(); handleGone(); hud(); render(); }
-const hudHtml = ()=>{ const slot = slotOf(); return `<span class="slot">${SLOT_ICON[slot]} ${SLOT_NAMES[slot]}</span><span>${dateStr()} ${hhmm()}</span><span class="money">どんぐり ${dg(S.money)}</span>`; };
+const hudHtml = ()=>{ const slot = slotOf(); return `<span class="slot">${SLOT_ICON[slot]} ${SLOT_NAMES[slot]}</span><span>${dateStr()} ${hhmm()}</span><span class="money" title="どんぐり">🌰 ${dg(S.money)}</span>`; };
 function hud(){
   if(!S){ $('hud').hidden = true; return; }
   $('hud').hidden = false;
   const slot = slotOf();
-  $('hud').innerHTML = hudHtml(); const oh = $('obsHud'); if(oh) oh.innerHTML = hudHtml();
+  $('hud').innerHTML = hudHtml();
   document.body.classList.toggle('obsMode', openCase !== null);
   const n = S.cases.filter(c=>c && (c.pending || needs(c).length)).length;
   const hb = document.querySelector('#tabs [data-t=home]'); hb.querySelector('.badge')?.remove();
@@ -1402,7 +1453,8 @@ function hud(){
 function setTab(t){ tab = t; openCase = null; document.querySelectorAll('#tabs button').forEach(b=> b.classList.toggle('on', b.dataset.t === t)); render(); (scrollTo(0,0), view.scrollTop = 0); }
 document.querySelectorAll('#tabs button').forEach(b=> b.onclick = ()=> setTab(b.dataset.t));
 function render(){
-  document.body.classList.toggle('obsMode', !!S && openCase !== null);
+  document.body.classList.toggle('obsMode', !!S && openCase !== null); document.body.classList.toggle('title', !S);
+  document.querySelectorAll('body > .drawer, body > .drawerTab').forEach(e=>e.remove());   // ケースのこと は、ケースの画面のときだけ
   if(!S){ renderTitle(); return; }
   if(openCase !== null){ renderObs(); return; }
   ({home:renderHome, out:renderOut, sumo:renderSumo, shop:renderShop, dex:renderDex, opt:renderOpt})[tab]();
@@ -1420,12 +1472,12 @@ function renderTitle(){
     <div class="t3">宗像の森や川で虫をみつけて、おうちのケースでそだてよう。脱皮・さなぎ・羽化を見られるかな？</div>
     <div class="t4">※このゲームに出てくる場所と虫の組み合わせはゲーム用のもので、実際にその場所にいる虫とはかぎりません。ゲームの中でそだつ速さも、本物よりずっと速くしてあります。</div>
     <div class="tbtns">${has ? '<button type="button" class="tbtn pri" id="btnCont">つづきから</button>' : ''}<button type="button" class="tbtn ${has ? '' : 'pri'}" id="btnNew">${has ? 'はじめから' : 'はじめる'}</button></div>
-    <div class="vrow"><button type="button" class="verbtn" id="btnVer"><span class="gver">ver ${GAME_VER}</span>　こうしん情報 ▸</button><button type="button" class="verbtn" id="btnFuri">${furiLabel()}</button><button type="button" class="verbtn" id="btnPriv">プライバシーについて</button></div>
+    <div class="vrow"><button type="button" class="verbtn" id="btnVer"><span class="gver">ver ${GAME_VER}</span>　こうしん情報 ▸</button><button type="button" class="verbtn" id="btnFuri">${furiLabel()}</button><button type="button" class="verbtn" id="btnPriv">プライバシーについて</button>${rotMode ? '<button type="button" class="verbtn" id="btnRot">↻ 向きを反対に</button>' : ''}</div>
   </div>`;
   view.querySelector('#titleScr').classList.remove('norb');   // 文はふりがなを付けてよい（credit だけ英語）
   $('btnNew').onclick = async ()=>{ if(has && !(await ask('いまのセーブを消して、はじめからにする？\n（そだてている虫も、いなくなります）', 'はじめから', 'やめる'))) return; S = newGame(); save(); start(); };
   if(has) $('btnCont').onclick = ()=>{ S = load(); start(); };
-  $('btnVer').onclick = showChangelog; $('btnPriv').onclick = showPrivacy;
+  $('btnVer').onclick = showChangelog; $('btnPriv').onclick = showPrivacy; if($('btnRot')) $('btnRot').onclick = flipRot;
   $('btnFuri').onclick = ()=>{ setFuri(!furiMode); $('btnFuri').textContent = furiLabel(); };
 }
 async function start(){
@@ -1453,9 +1505,8 @@ function renderHome(){
       <div class="meters"><span>元気</span><span class="bar"><i class="${meterCls(g)}" style="width:${g}%"></i></span></div></div>`;
   }).join('')}</div>
   <h3>もちもの</h3><div class="row">${Object.keys(S.items).filter(k=>S.items[k]>0).map(k=>`<span class="win" style="padding:.2em .6em;font-size:13px">${esc(ITEMS[k].name)} ×${S.items[k]}</span>`).join('') || '<span class="small">なにもない</span>'}</div>
-  <div class="row" style="margin-top:8px"><button type="button" class="btn" id="btnShop">エサ・かざりを買う</button></div>`;
+  `;
   view.querySelectorAll('.case').forEach(el=> el.onclick = ()=>{ const i = +el.dataset.i; if(S.cases[i]){ openCase = i; render(); (scrollTo(0,0), view.scrollTop = 0); } else setTab('out'); });
-  $('btnShop').onclick = ()=> setTab('shop');
 }
 function renderShop(){
   view.innerHTML = `<h2>エサ・道具・かざりを買う</h2><p class="small">どんぐり：<b style="color:var(--sun)">${dg(S.money)}</b>　場所から場所へ歩くともらえるよ。</p>
@@ -1500,9 +1551,8 @@ async function renderObs(){
       <div class="obsTxt win" id="obsTxt">${msgHtml}</div>
     </div>
     <div class="obsR">
-      <div class="obsHud" id="obsHud">${hudHtml()}</div>
-      <div class="obsHead"><h2>${title}</h2><button type="button" class="btn sub" id="btnBack">もどる</button></div>
-      <div class="tools">${Object.keys(TOOLS).map(k=>`<button type="button" class="tbtn ${tool===k?'on':''}" data-tool="${k}" ${k==='esa' && st.k==='pupa' ? 'disabled' : ''}><span class="ic">${TOOLS[k].ic}</span>${TOOLS[k].name}</button>`).join('')}</div>
+      <div class="obsHead"><h2>${title}</h2></div>
+      <div class="tools">${Object.keys(TOOLS).map(k=>`<button type="button" class="tbtn ${tool===k?'on':''}" data-tool="${k}" ${k==='esa' && st.k==='pupa' ? 'disabled' : ''}><span class="ic">${TOOLS[k].ic}</span>${TOOLS[k].name}</button>`).join('')}<button type="button" class="tbtn back" id="btnBack"><span class="ic">↩</span>もどる</button></div>
       ${tool === 'kazari' ? `<div class="decoPick" id="decoPick">${ownDeco.map(k=>`<button type="button" class="pk ${decoSel===k?'on':''}" data-deco="${k}"><svg viewBox="0 0 100 100">${ITEMS[k].cat==='mat' ? `<rect x="10" y="40" width="80" height="45" rx="6" fill="${MATS[k].fill}"/>` : decoSVG(k)}</svg>${esc(ITEMS[k].name)}<small>×${S.items[k]}</small></button>`).join('')}</div>` : ''}
       <div class="guide small" id="guide">${guide}</div>
       <div class="meters">${st.k !== 'pupa' ? m('おなか', c.hunger) : ''}${m('しめりけ', c.wet, `<b class="band" style="left:${band[0]}%;width:${band[1]-band[0]}%"></b>`)}${m('きれいさ', c.clean)}${m('元気', g)}</div>
@@ -1517,6 +1567,8 @@ async function renderObs(){
           <button type="button" class="btn sub" id="aRelease">もとの場所にかえす<small>${st.k === 'adult' ? 'ごほうびがもらえる' : 'いつでもできる'}</small></button>
         </div></div>
     </div></div>`;
+  document.querySelectorAll('body > .drawer, body > .drawerTab').forEach(e=>e.remove());   // 前に出していたものはけす
+  document.body.appendChild(view.querySelector('#drawerTab')); document.body.appendChild(view.querySelector('#drawer'));
   const setDrawer = on=>{ obsSession.drawer = on; $('drawer').classList.toggle('open', on); $('drawerTab').classList.toggle('hide', on); };
   $('drawerTab').onclick = ()=> setDrawer(true); $('drawerClose').onclick = ()=> setDrawer(false); setDrawer(!!obsSession.drawer);
   $('btnBack').onclick = ()=>{ openCase = null; obsSession = null; render(); };   // 大そうじのとちゅうでも、もどれば虫はケースにいる（big は obsSession ごと消える）
@@ -1529,7 +1581,7 @@ async function renderObs(){
   const toolIc = ()=> tool === 'big' ? ((obsSession.big||{step:1}).step === 2 ? '🧹' : '🤏') : tool === 'kazari' ? (decoSel ? `<svg viewBox="0 0 100 100">${decoSVG(decoSel)}</svg>` : '') : ({yubi:'👆', fukin:'🧽', kiri:'🧴', esa:FOOD_IC[foodKey] || '🍽', furu:'✋'})[tool];
   // 道具は、ボタンを押すとケースの右下に出てくる。それをつかんで動かして使う。hot は「きく場所」（きりふきの口、指の先）
   const HOT = {yubi:{x:-8, y:-36}, fukin:{x:0, y:0}, kiri:{x:-22, y:-42}, esa:{x:0, y:0}, kazari:{x:0, y:10}, big:{x:-6, y:30}, furu:{x:0, y:0}};
-  const restPos = ()=>{ const r = sceneEl.getBoundingClientRect(), k = (parseFloat(getComputedStyle($('toolObj')).fontSize) || 84) / 84; return {x:r.width - 56*k, y:r.height - 54*k}; };
+  const restPos = ()=>{ const r = sceneEl.getBoundingClientRect(), k = (parseFloat(getComputedStyle($('toolObj')).fontSize) || 84) / 84; return {x:56*k, y:r.height - 54*k}; };
   const objPos = {x:0, y:0};
   const setObj = (x, y, cls='')=>{ objPos.x = x; objPos.y = y; toolObj.style.left = x + 'px'; toolObj.style.top = y + 'px'; toolObj.className = 'toolObj norb ' + cls; };
   const showTool = ()=>{ if(tool === 'furu' || (tool === 'big' && st.k === 'pupa') || (tool === 'esa' && st.k === 'pupa') || (tool === 'kazari' && (!decoSel || ITEMS[decoSel].cat === 'mat'))){ toolObj.hidden = true; return; } const r = restPos(); toolObj.innerHTML = toolIc() + '<span class="hint">つかんで動かす</span>'; toolObj.hidden = false; setObj(r.x, r.y, 'rest'); };
@@ -1551,7 +1603,7 @@ async function renderObs(){
     mini.classList.toggle('hot', !!ok); mini.hidden = false;
   }
   updateMini();
-  const toXYc = (cx, cy)=>{ const pt = svg.createSVGPoint(); pt.x = cx; pt.y = cy; const q = pt.matrixTransform(svg.getScreenCTM().inverse()); return {x:q.x, y:q.y}; };
+  const toXYc = (fx, fy)=>{ const cc = f2c(fx, fy), pt = svg.createSVGPoint(); pt.x = cc.x; pt.y = cc.y; const q = pt.matrixTransform(svg.getScreenCTM().inverse()); return {x:q.x, y:q.y}; };
   const toXY = e=> toXYc(e.clientX, e.clientY);
   const setTxt = t=>{ txtEl.innerHTML = esc(t); };
   const bugPos = sc.p;
@@ -1561,7 +1613,7 @@ async function renderObs(){
     c.stress = Math.min(40, (c.stress||0) + amt); if(!obsSession.annoyed){ obsSession.annoyed = true; c.log.over++; }
     const el = $('bugG'); if(el){ el.classList.remove('jitter'); void el.getBoundingClientRect(); el.classList.add('jitter'); }
     spawnMark('💢'); setTxt(msg); updateMini(); };
-  const spawnMark = t=>{ const r = sceneEl.getBoundingClientRect(), sv = svg.getScreenCTM(); const pt = svg.createSVGPoint(); pt.x = bugPos.x; pt.y = bugPos.y - 10; const q = pt.matrixTransform(sv);
+  const spawnMark = t=>{ const r = sceneEl.getBoundingClientRect(), sv = svg.getScreenCTM(); const pt = svg.createSVGPoint(); pt.x = bugPos.x; pt.y = bugPos.y - 10; const q0 = pt.matrixTransform(sv), q = c2f(q0.x, q0.y);
     const d = document.createElement('div'); d.className = 'mark norb'; d.textContent = t; d.style.left = (q.x - r.left) + 'px'; d.style.top = (q.y - r.top) + 'px'; sceneEl.appendChild(d); setTimeout(()=>d.remove(), 900); };
   // ---- ゆび：葉をめくる・虫にさわる ----
   const touchBug = async ()=>{
@@ -1816,7 +1868,7 @@ async function showResult(c){
   await new Promise(r=>{ p.querySelector('.close').onclick = ()=>{ p.remove(); r(); }; });
   const nm = await askText(`${b.name}に名前をつけよう！`, b.name);
   c.name = (nm || b.name).slice(0, 10); save();
-  await say(`「${c.name}」と名づけた。\nこれから、虫ずもうに出られるよ！（「ずもう」タブ）`);
+  await say(`「${c.name}」と名づけた。\nこれから、虫ずもうに出られるよ！（「すもう」タブ）`);
 }
 // 元気がとても低いままだった虫は、自然にかえる
 async function handleGone(){
@@ -2207,6 +2259,7 @@ function renderOpt(){
     <button type="button" class="btn" id="oVer"><span>こうしん情報</span><span class="v">ver ${GAME_VER}</span></button>
     <button type="button" class="btn" id="oPriv"><span>プライバシーについて</span><span class="v">▸</span></button>
     <button type="button" class="btn" id="oInstall"><span>アプリにする方法</span><span class="v">▸</span></button>
+    <button type="button" class="btn" id="oRot"><span>画面の向きを反対にする<br><small class="small">向きロックをしていて、さかさまに見えるとき</small></span><span class="v">↻</span></button>
     <button type="button" class="btn" id="oTitle"><span>タイトルにもどる</span><span class="v">▸</span></button>
   </div>
   <div class="demoBox" style="margin-top:14px"><h3>デモ用（本番にはありません）</h3>
@@ -2217,6 +2270,7 @@ function renderOpt(){
   $('oAuto').onclick = ()=>{ setAutoSave(!autoSave); renderOpt(); };
   $('oSave').onclick = async ()=>{ save(); await say('セーブした。'); };
   $('oVer').onclick = showChangelog; $('oPriv').onclick = showPrivacy; $('oInstall').onclick = showInstall;
+  $('oRot').onclick = ()=> flipRot();
   $('oTitle').onclick = ()=>{ save(); S = null; outState = null; render(); };
   view.querySelectorAll('[data-h]').forEach(b=> b.onclick = ()=>{ const h = +b.dataset.h; S.demoOff = h ? (S.demoOff||0) + h*H : 0; if(!h) S.cases.forEach(c=>{ if(c) c.tick = Math.min(c.tick, Date.now()); }); save(); refresh(); setTab('opt'); });
   $('oMoney').onclick = ()=>{ S.money += 50; save(); hud(); };
