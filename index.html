@@ -612,9 +612,12 @@ const SAVE_KEY = KEY_PRE + 'munakata-mushisodate-v1';
 const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
-const GAME_VER = '0.7.6';
-const BUILD = '20261024-1653';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const GAME_VER = '0.7.7';
+const BUILD = '20261024-1714';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
+  {v:'0.7.7', date:'2026-10-24', items:[
+    '観察（試作）：カブトムシの前脚を新しい絵にして、ひざで曲がるようにした。触角そうじは、脚を高く上げてから、すねで触角をなでおろす',
+    '観察（試作）：奥の触角が頭からはなれて浮いていたのを直した']},
   {v:'0.7.6', date:'2026-10-24', items:[
     '観察（大きく見る）画面の試作：カブトムシを部品の絵から組み立てて、呼吸・触角のぴくぴく・前脚での触角そうじ・ゼリーを食べる口・ツノのいかくを動かせるようにした（見本ページの「観察（試作）」から）']},
   {v:'0.7.5', date:'2026-10-24', items:[
@@ -2522,9 +2525,9 @@ addEventListener('keydown', e=>{
    ========================================================= */
 const BUG_PARTS = {
   kabuto: {
-    parts:{body:[41,285,793,640], head:[705,124,305,504], antenna:[841,562,140,68], thigh:[610,596,185,165], shin:[669,632,311,304], mouth:[846,593,60,54]},
-    pv:{neck:[735,578], ant:[850,577], coxa:[632,616], knee:[692,648], mouth:[856,604], breath:[560,880]},
-    far:{ant:[46,-38, -6], leg:[70,-95, -14]},   // 奥がわの触角・前脚：手前の絵を [右へ, 上へ, 回す角度] ずらしてくらくする
+    parts:{body:[41,285,793,640], head:[705,124,305,504], antenna:[841,562,140,68], thigh:[623,600,143,134], shin:[717,689,237,226], mouth:[846,593,60,54]},
+    pv:{neck:[735,578], ant:[850,577], coxa:[640,616], knee:[740,712], mouth:[856,604], breath:[560,880]},
+    far:{ant:[18,-17, -7], leg:[70,-95, -14]},   // 奥がわの触角・前脚：手前の絵を [右へ, 上へ, 回す角度] ずらしてくらくする
     box:'20 90 1000 880', ground:925, jelly:[848,668],
   },
 };
@@ -2580,7 +2583,7 @@ function openZoom(id, opt={}){
     if(act === 'clean'){
       const k = (t - actT)/1000, up = ease(k/0.7) * (1 - ease((k - 3.4)/0.7));
       const strokes = k > .7 && k < 3.4 ? (1 - Math.cos((k - .7) * Math.PI * 2 / .9)) / 2 : 0;   // 3回なでおろす
-      legA = -40 * up - 8 * strokes * up; shinA = -12 * up + 8 * strokes * up; antPress = (10 + 16 * strokes) * up; head += 4 * up;
+      legA = -60 * up - 4 * strokes * up; shinA = 16 * up + 16 * strokes * up; antPress = (10 + 16 * strokes) * up; head += 4 * up;
       if(k > 4.2){ act = null; nextAct = t + 7000 + Math.random()*6000; say(SAY[mood]); }
     }
     if(act === 'threat'){
