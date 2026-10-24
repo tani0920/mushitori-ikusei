@@ -248,7 +248,7 @@ p{margin:.3em 0}
 
 /* お世話の道具と、ケースの中の指の操作 */
 #obs .scene{touch-action:none;cursor:pointer;position:relative}
-.toolObj{position:absolute;left:0;top:0;font-size:60px;line-height:1;transform:translate(-50%,-50%);filter:drop-shadow(0 4px 3px #0009);z-index:3;touch-action:none;cursor:grab;transition:left .3s,top .3s;user-select:none}
+.toolObj{position:absolute;left:0;top:0;font-size:84px;line-height:1;transform:translate(-50%,-50%);filter:drop-shadow(0 4px 3px #0009);z-index:3;touch-action:none;cursor:grab;transition:left .3s,top .3s;user-select:none}
 .toolObj::after{content:'';position:absolute;inset:-14px;border-radius:50%}
 .toolObj.rest{animation:toolPop .45s}
 @keyframes toolPop{0%{transform:translate(-50%,-50%) scale(.3)}70%{transform:translate(-50%,-50%) scale(1.15)}100%{transform:translate(-50%,-50%) scale(1)}}
@@ -257,6 +257,15 @@ p{margin:.3em 0}
 @keyframes wipeIc{from{transform:translate(-50%,-50%) rotate(-14deg) scale(1.08)}to{transform:translate(-50%,-50%) rotate(14deg) scale(1.08)}}
 .toolObj.spray{animation:sprayIc .25s ease-in-out infinite alternate}
 @keyframes sprayIc{from{transform:translate(-50%,-50%) scale(1.08)}to{transform:translate(-50%,-50%) scale(.98)}}
+.toolObj svg{width:1em;height:1em;display:block;filter:drop-shadow(0 2px 2px #0008)}
+.decoIc{display:inline-block;width:44px;height:44px;vertical-align:middle;margin-right:.4em;background:#a9d7ea44;border-radius:6px}
+.decoIc svg{width:100%;height:100%;display:block}
+.decoPick{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.decoPick .pk{font:inherit;font-size:11px;color:var(--ink);background:var(--win);border:2px solid #f7f1df66;border-radius:10px;padding:.2em .4em;cursor:pointer;display:flex;flex-direction:column;align-items:center;min-width:64px;line-height:1.2}
+.decoPick .pk svg{width:40px;height:40px}
+.decoPick .pk.on{background:var(--sun);color:#1b130c;border-color:var(--sun)}
+.binZone{position:absolute;left:6px;bottom:6px;z-index:4;background:#c0392bcc;color:#fff;border:2px dashed #fff;border-radius:10px;padding:.5em 1em;font-size:14px;pointer-events:none}
+.binZone.over{background:#e74c3c;transform:scale(1.1)}
 .toolObj .hint{position:absolute;left:50%;top:-1.1em;transform:translateX(-50%);font-size:11px;white-space:nowrap;background:#14284acc;color:#fff;border-radius:999px;padding:0 .6em;border:1px solid #f7f1df88}
 .ripple{position:absolute;width:40px;height:40px;border-radius:50%;border:3px solid #fff;pointer-events:none;transform:translate(-50%,-50%) scale(.3);animation:ripple .5s ease-out forwards;z-index:2}
 @keyframes ripple{to{transform:translate(-50%,-50%) scale(1.4);opacity:0}}
@@ -269,7 +278,8 @@ p{margin:.3em 0}
 #obs .scene.shake{animation:caseShake .5s}
 @keyframes caseShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px) rotate(-1deg)}40%{transform:translateX(6px) rotate(1deg)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
 .tools{display:flex;gap:6px;margin-top:8px}
-.tools .tbtn{font:inherit;flex:1;font-size:14px;color:var(--ink);background:var(--win);border:2px solid #f7f1df66;border-radius:12px;padding:.45em .1em;cursor:pointer;line-height:1.2;min-height:76px}
+.tools .tbtn{font:inherit;flex:1;font-size:12.5px;letter-spacing:-.02em;color:var(--ink);background:var(--win);border:2px solid #f7f1df66;border-radius:12px;padding:.45em 0;cursor:pointer;line-height:1.2;min-height:76px;white-space:nowrap}
+@media (min-width:480px){ .tools .tbtn{font-size:14px} }
 .tools .tbtn .ic{display:block;font-size:36px;line-height:1.15}
 .tools .tbtn.on{background:var(--sun);color:#1b130c;border-color:var(--sun)}
 .tools .tbtn:disabled{opacity:.4}
@@ -365,9 +375,14 @@ const SAVE_KEY = KEY_PRE + 'munakata-mushisodate-v1';
 const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
-const GAME_VER = '0.3.3';
-const BUILD = '20261024-0814';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const GAME_VER = '0.4.0';
+const BUILD = '20261024-0831';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
+  {v:'0.4.0', date:'2026-10-24', items:[
+    'お店に「かざり」を追加。マット（腐葉土・白い砂・黒土）、枝（クヌギの枝・長い枝・つる）、葉（草のたば・シダ・花）、かくれ家（きりかぶ・かわら・ヤシのから）、小物（水のみ皿・石）',
+    '「かざり」の道具で、買ったかざりをケースに自分で置ける。置いたエサやかざりは、直接つまんで動かせる。左下の「しまう」に入れるともどる',
+    'かくれ家を置くと、虫はそこにかくれる。枝を置くと、カブトやクワガタは夜に枝にのぼる。腐葉土マットはかわきにくい',
+    '道具をさらに大きくした（大人の親指でも見えるように）']},
   {v:'0.3.3', date:'2026-10-24', items:[
     '道具のボタンを押すと、ケースの右下に大きな道具（手・スポンジ・きりふき・エサ）が出てくる。それをつかんで動かして使う',
     'きりふきは、動かしている間は水が出ず、かけたい場所で指を止めたときだけ出る',
@@ -548,7 +563,39 @@ const ITEMS = {
   kusa:    {name:'草',           price:0, desc:'バッタのごはん。にわや公園でとれる'},
   mitsu:   {name:'さとう水',     price:0, desc:'チョウの成虫のごはん。おうちで作れる'},
   wide:    {name:'広いケース',   price:30, desc:'虫がよく動けて、すばやくなる。1ぴきに1つ'},
+  // かざり：買って、自分でケースに置く。置いたあとも指でつまんで動かせる。しまえば、また使える
+  mat_fuyo:{name:'腐葉土マット', price:15, desc:'黒くてふかふかの土。カブト・クワガタの幼虫がよろこぶ。かわきにくい', cat:'mat'},
+  mat_suna:{name:'白い砂',       price:10, desc:'さらさらの砂。見た目が明るい', cat:'mat'},
+  mat_kuro:{name:'黒土',         price:10, desc:'しっとりした黒い土', cat:'mat'},
+  eda_kunugi:{name:'クヌギの枝', price:12, desc:'とまり木。夜、カブトやクワガタがのぼる', cat:'deco'},
+  eda_nagai:{name:'長い枝',      price:12, desc:'ななめにかけると、木のぼりができる', cat:'deco'},
+  eda_tsuru:{name:'つる',        price:10, desc:'くるくるしたつる。チョウやカマキリがつかまる', cat:'deco'},
+  ha_kusa: {name:'草のたば',     price:6,  desc:'バッタやスズムシのかくれ場所。見た目も自然', cat:'deco'},
+  ha_shida:{name:'シダの葉',     price:10, desc:'大きなシダの葉。森のケースになる', cat:'deco'},
+  ha_hana: {name:'花',           price:12, desc:'チョウの成虫がとまる花', cat:'deco'},
+  ie_kabu: {name:'きりかぶ',     price:15, desc:'かくれ家。虫はここにかくれる', cat:'deco', hide:true},
+  ie_kawara:{name:'かわらのかけら', price:10, desc:'かくれ家。クワガタやスズムシがすき', cat:'deco', hide:true},
+  ie_coco: {name:'ヤシのから',   price:15, desc:'かくれ家。まるいおうち', cat:'deco', hide:true},
+  ko_sara: {name:'水のみ皿',     price:8,  desc:'小さな皿。見た目のかざり', cat:'deco'},
+  ko_ishi: {name:'石',           price:6,  desc:'まるい石。見た目のかざり', cat:'deco'},
 };
+const MATS = {mat_fuyo:{fill:'#3b2a18', bits:'#6a4a28'}, mat_suna:{fill:'#d8c9a3', bits:'#b8a070'}, mat_kuro:{fill:'#2a2016', bits:'#1a1008'}};
+function decoSVG(k){   // viewBox 100x100 の中に描く。底が y=70 あたり
+  switch(k){
+    case 'eda_kunugi': return `<path d="M20 70 L80 40" stroke="#6a4a28" stroke-width="9" stroke-linecap="round"/><path d="M52 54 L60 36 M40 60 L34 48" stroke="#6a4a28" stroke-width="5" stroke-linecap="round"/><path d="M22 70 L78 41" stroke="#8a6a3a" stroke-width="3" stroke-linecap="round" opacity=".6"/>`;
+    case 'eda_nagai':  return `<path d="M8 72 L92 28" stroke="#7a5a30" stroke-width="7" stroke-linecap="round"/><path d="M60 45 L66 30" stroke="#7a5a30" stroke-width="4" stroke-linecap="round"/>`;
+    case 'eda_tsuru':  return `<path d="M20 72 C 30 50, 50 60, 50 40 C 50 25, 70 30, 80 20" stroke="#4e8a36" stroke-width="4" fill="none" stroke-linecap="round"/><ellipse cx="46" cy="52" rx="6" ry="3.5" fill="#6cb04a" transform="rotate(-30 46 52)"/><ellipse cx="66" cy="30" rx="6" ry="3.5" fill="#6cb04a" transform="rotate(20 66 30)"/>`;
+    case 'ha_kusa':    return [30,38,46,54,62,70].map((x,i)=>`<path d="M${x} 72 C ${x+2} 58, ${x-3} 48, ${x+(i%2?4:-3)} 36" stroke="#5a9a3a" stroke-width="2.5" fill="none" stroke-linecap="round"/>`).join('');
+    case 'ha_shida':   return `<path d="M50 72 C 50 60, 48 48, 44 30" stroke="#3a7a2a" stroke-width="2.5" fill="none"/>` + [0,1,2,3,4].map(i=>`<path d="M${49-i*1.2} ${62-i*7} C ${36-i*2} ${58-i*7}, ${30-i*2} ${50-i*7}, ${38-i*2} ${48-i*7} Z M${50-i*1.2} ${62-i*7} C ${62-i*2} ${58-i*7}, ${66-i*2} ${50-i*7}, ${58-i*2} ${48-i*7} Z" fill="#5a9a3a"/>`).join('');
+    case 'ha_hana':    return `<path d="M50 72 C 52 60, 50 50, 50 34" stroke="#4e7a36" stroke-width="2.5" fill="none"/><ellipse cx="42" cy="56" rx="7" ry="3.5" fill="#5a9a3a" transform="rotate(-20 42 56)"/>` + [0,60,120,180,240,300].map(a=>`<ellipse cx="50" cy="24" rx="4" ry="8" fill="#f4b63c" transform="rotate(${a} 50 32)"/>`).join('') + `<circle cx="50" cy="32" r="4" fill="#a85a28"/>`;
+    case 'ie_kabu':    return `<path d="M28 72 L30 44 L70 44 L72 72 Z" fill="#6a4a28"/><ellipse cx="50" cy="44" rx="20" ry="7" fill="#c8a060"/><ellipse cx="50" cy="44" rx="12" ry="4" fill="none" stroke="#8a6a3a" stroke-width="1"/><ellipse cx="50" cy="44" rx="5" ry="1.8" fill="none" stroke="#8a6a3a" stroke-width="1"/><path d="M34 60 L36 72 M64 58 L62 72" stroke="#4a3018" stroke-width="2"/>`;
+    case 'ie_kawara':  return `<path d="M24 72 C 24 46, 76 46, 76 72 L66 72 C 66 56, 34 56, 34 72 Z" fill="#6a7078"/><path d="M28 70 C 30 52, 70 52, 72 70" stroke="#8a9098" stroke-width="1.5" fill="none"/>`;
+    case 'ie_coco':    return `<path d="M24 70 C 24 40, 76 40, 76 70 Z" fill="#6a4a28"/><path d="M34 70 C 36 56, 64 56, 66 70 Z" fill="#2a1a0a"/><path d="M30 60 C 40 50, 60 50, 70 60" stroke="#8a6a3a" stroke-width="1.5" fill="none"/>`;
+    case 'ko_sara':    return `<ellipse cx="50" cy="68" rx="20" ry="7" fill="#9ad0f0" stroke="#f7f1df" stroke-width="2"/><ellipse cx="50" cy="66" rx="14" ry="4" fill="#cfe8ff"/>`;
+    case 'ko_ishi':    return `<path d="M30 72 C 26 56, 44 48, 58 50 C 72 52, 76 66, 70 72 Z" fill="#8a8a82"/><path d="M38 60 C 44 54, 54 54, 60 58" stroke="#a8a8a0" stroke-width="2" fill="none"/>`;
+  }
+  return '';
+}
 /* 虫のデータ：名前・絵の形（shape）・色（c）・めずらしさ（rank）・強さのもと（lv）は「むなかた虫とり日記」と同じ。
    plan: 育ちかた。larva=幼虫、pupa=さなぎ、adult=成虫。days はそのすがたでいる日数（成虫はケースでくらす日数のめやす）
    幼虫→幼虫は「脱皮」、幼虫→さなぎは「さなぎになる」、さなぎ→成虫と、さいごの幼虫→成虫は「羽化」
@@ -732,7 +779,7 @@ function newGame(){
   return {v:2, money:30, cases:Array.from({length:CASES}, ()=>null), items:{kyabetsu:2, kusa:1}, dex:{}, yk:{}, visits:{}, last:null, demoOff:0, started:Date.now(), stats:{raised:0, released:0, wins:0, loses:0}, sumo:{}, sumoDay:{}, link:{}};
 }
 function migrate(s){   // 古いセーブ（v1）を v2 のかたちにする
-  s.cases.forEach(c=>{ if(c){ c.dirt = c.dirt || []; c.foods = c.foods || []; c.soak = c.soak || 0; c.hideUntil = c.hideUntil || 0; } });
+  s.cases.forEach(c=>{ if(c){ c.dirt = c.dirt || []; c.foods = c.foods || []; c.soak = c.soak || 0; c.hideUntil = c.hideUntil || 0; c.deco = c.deco || []; c.mat = c.mat || null; } });
   if(s.v >= 2) return s;
   s.v = 2; s.stats = Object.assign({raised:0, released:0, wins:0, loses:0}, s.stats); s.sumo = {}; s.sumoDay = {}; s.link = {};
   s.cases = s.cases.map(c=>{ if(!c || !BUGS[c.bug]) return null; return Object.assign(c, {ind:{hp:1, atk:1, def:1, spd:1, heal:1}, log:newLog(), tot:newLog(), place:'genkan', wide:false, born:(SPOTS.find(sp=>sp.name===c.from)||{key:'any'}).key, bornSlot:'hiru', dirt:[], foods:[], soak:0, hideUntil:0}); });
@@ -765,7 +812,7 @@ function tickCase(c){
   const t = now(); let h = (t - c.tick) / H; if(h <= 0) return; if(h > 24*60) h = 24*60;
   c.tick = t;
   const st = stageOf(c), tough = BORN[c.born] && BORN[c.born].tough;
-  const wetK = (c.place === 'beranda' ? 1.25 : 1) * (tough ? .8 : 1), cleanK = (c.place === 'genkan' ? .85 : 1) * (c.wide ? .9 : 1);
+  const wetK = (c.place === 'beranda' ? 1.25 : 1) * (tough ? .8 : 1) * (c.mat === 'mat_fuyo' ? .8 : 1), cleanK = (c.place === 'genkan' ? .85 : 1) * (c.wide ? .9 : 1);
   c.dirt = c.dirt || []; c.foods = c.foods || []; c.soak = c.soak || 0;
   let left = h;
   while(left > 0){
@@ -1014,6 +1061,8 @@ const SKY = {asa:['#9ad0f0','#e8f4c0'], hiru:['#5aa6d8','#a9d7ea'], yu:['#f0a060
 const soilTopOf = b=> (b.shape === 'beetle' || b.shape === 'stag') ? 52 : 70;
 const HIDE_POS = {soil:{x:30, y:44}, leaf:{x:62, y:34}, grass:{x:22, y:60}};   // かくれ家の位置
 function hideKind(b){ return (b.shape === 'beetle' || b.shape === 'stag') ? 'soil' : b.shape === 'butterfly' ? 'leaf' : 'grass'; }
+const hideSpot = (c, b)=>{ const d = (c.deco||[]).find(d=>ITEMS[d.k].hide); return d ? {x:d.x, y:d.y - 8} : HIDE_POS[hideKind(b)]; };
+const perchSpot = c=>{ const d = (c.deco||[]).find(d=>d.k.startsWith('eda_')); return d ? {x:d.x + 6, y:d.y - 10} : null; };
 function isHiding(c, slot){   // かくれているか：ふられた直後、または おくびょう・のんびり以外でも昼間は少し
   if((c.hideUntil||0) > now()) return true;
   const st = stageOf(c).k; if(st === 'pupa') return false;
@@ -1024,13 +1073,13 @@ function placeBug(c, slot){   // どこに、どんなすがたでいるか
   const b = BUGS[c.bug], st = stageOf(c).k, night = slot === 'yoru', day = slot === 'hiru' || slot === 'asa', ins = instarOf(c);
   const fresh = (c.foods||[]).find(f=>!f.old), hiding = isHiding(c, slot) && st !== 'pupa';
   const pers = c.pers && st === 'adult' ? PERS[c.pers] : null;
-  if(hiding){ const h = HIDE_POS[hideKind(b)]; return {x:h.x, y:h.y + 4, s:.42, o:{instar:ins, sleep:true}, txt: pers === PERS.okubyo ? 'かくれ家のかげに、じっとかくれている。おくびょうなんだ。' : 'かくれ家にかくれている。そっとしておこう。', hidden:true}; }
+  if(hiding){ const h = hideSpot(c, b); return {x:h.x, y:h.y + 4, s:.42, o:{instar:ins, sleep:true}, txt: pers === PERS.okubyo ? 'かくれ家のかげに、じっとかくれている。おくびょうなんだ。' : 'かくれ家にかくれている。そっとしておこう。', hidden:true}; }
   if(fresh && st !== 'pupa' && !(b.shape === 'beetle' || b.shape === 'stag') ){ return {x:fresh.x, y:fresh.y - 6, s:.5, o:{instar:ins}, txt:`置いた${ITEMS[fresh.k].name}を、むしゃむしゃ食べにきた！`, eating:true}; }
   if(fresh && st === 'adult' && (b.shape === 'beetle' || b.shape === 'stag') && (night || slot === 'asa')){ return {x:fresh.x, y:fresh.y - 6, s:.5, o:{instar:ins}, txt:`置いた${ITEMS[fresh.k].name}に、頭をつっこんで食べている！`, eating:true}; }
   if(b.shape === 'beetle' || b.shape === 'stag'){
     if(st === 'larva') return {x:30, y:66, s:.42, o:{instar:ins}, txt:'土の中で、ゆっくり動いている。土の中のくさった葉を食べているよ。'};
     if(st === 'pupa') return {x:60, y:66, s:.42, o:{}, txt:'土の中に、たまごのような部屋を作って、その中でさなぎになっている。ぜったいにこわさないでね。', chamber:true};
-    if(night || slot === 'asa') return {x:50, y:40, s:.5, o:{}, txt:night ? '夜になって土から出てきた！ ' + (fresh ? 'ゼリーをさがしている。' : 'エサをさがしてうろうろしている。') : '朝のうちは、まだ木の上でじっとしている。'};
+    if(night || slot === 'asa'){ const pe = perchSpot(c); return {x:pe ? pe.x : 50, y:pe ? pe.y : 40, s:.5, o:{}, txt:night ? (pe ? '夜になって、枝にのぼってきた！ ' : '夜になって土から出てきた！ ') + (fresh ? 'ゼリーをさがしている。' : 'エサをさがしてうろうろしている。') : '朝のうちは、まだ木の上でじっとしている。'}; }
     return {x:35, y:64, s:.4, o:{sleep:true}, txt:'昼のあいだは、土の中でねている。そっとしておこう。', buried:true};
   }
   if(b.shape === 'butterfly'){
@@ -1074,10 +1123,12 @@ function sceneSVG(c, slot){
       `<g class="leaf" data-hide="1"><path d="M14 ${soilTop} L22 ${soilTop-12} L40 ${soilTop-12} L44 ${soilTop} Z" fill="#8a6a3a"/></g>`;
   const chamber = p.chamber ? `<ellipse cx="${p.x+10}" cy="${p.y+2}" rx="17" ry="12" fill="#2a1a0a"/>` : '';
   const wetA = (c.wet/100)*.35, soak = c.soak || 0;
-  const soil = `<rect x="0" y="${soilTop}" width="100" height="${100-soilTop}" fill="#5a3d22"/><rect id="wetLayer" x="0" y="${soilTop}" width="100" height="${100-soilTop}" fill="#1a0e04" opacity="${wetA.toFixed(2)}"/><rect x="0" y="${soilTop}" width="100" height="2" fill="#6c9a4a"/>
-    ${[[8,80],[24,90],[48,84],[70,78],[88,92],[36,74],[60,94]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.4" fill="#3b2715"/>`).join('')}
+  const M = c.mat && MATS[c.mat];
+  const soil = `<rect x="0" y="${soilTop}" width="100" height="${100-soilTop}" fill="${M ? M.fill : '#5a3d22'}"/><rect id="wetLayer" x="0" y="${soilTop}" width="100" height="${100-soilTop}" fill="#1a0e04" opacity="${wetA.toFixed(2)}"/><rect x="0" y="${soilTop}" width="100" height="2" fill="#6c9a4a"/>
+    ${[[8,80],[24,90],[48,84],[70,78],[88,92],[36,74],[60,94]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.4" fill="${M ? M.bits : '#3b2715'}"/>`).join('')}
     <g id="soakLayer" opacity="${soak > 0 ? Math.min(1, soak/40).toFixed(2) : 0}">${[[20,soilTop+4,14],[58,soilTop+3,18],[86,soilTop+5,10]].map(([x,y,r])=>`<ellipse cx="${x}" cy="${y}" rx="${r}" ry="2.2" fill="#6ab0e0" opacity=".75"/>`).join('')}</g>`;
   const foods = (c.foods||[]).map(foodSVG).join('');
+  const decos = (c.deco||[]).map(d=>`<g class="deco" data-deco="${d.id}" transform="translate(${d.x} ${d.y}) scale(.55) translate(-50 -70)"><g class="${ITEMS[d.k].hide ? 'leaf' : ''}">${decoSVG(d.k)}</g></g>`).join('');
   const bug = `<g id="bugG" transform="translate(${p.x} ${p.y}) scale(${p.s*1.2}) translate(-50 -50)" style="${p.buried ? 'opacity:.55' : p.hidden ? 'opacity:.35' : ''}">${svgBug(c.bug, st, Object.assign({rare:c.rare}, p.o)).replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '')}</g>`;
   const ants = c.trouble === 'ari' ? (c.foods.filter(f=>f.old)[0] ? [[-6,2],[-3,5],[3,6],[7,3],[10,7]].map(([dx,dy])=>`<circle cx="${c.foods.filter(f=>f.old)[0].x+dx}" cy="${c.foods.filter(f=>f.old)[0].y+dy}" r="1" fill="#111"/>`).join('') : '') : '';
   // ガラスのよごれ（こすると消える）：フン・くもり・カビ
@@ -1088,7 +1139,7 @@ function sceneSVG(c, slot){
   const zz = p.o && p.o.sleep && !p.hidden ? `<text class="zz" x="${p.x+8}" y="${p.y-8}" font-size="7" fill="#fff">z</text><text class="zz" x="${p.x+13}" y="${p.y-14}" font-size="5" fill="#fff" style="animation-delay:-1.2s">z</text>` : '';
   const nom = p.eating ? `<text class="zz" x="${p.x+10}" y="${p.y-6}" font-size="5" fill="#fff">もぐもぐ</text>` : '';
   return {svg:`<svg id="sceneSvg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${s1}"/><stop offset="1" stop-color="${s2}"/></linearGradient></defs>
-    <rect width="100" height="100" fill="url(#sky)"/>${stars}${sun}${soil}${chamber}${p.hidden ? bug : ''}${plants}${foods}${ants}${p.hidden ? '' : bug}${zz}${nom}<g id="sprayLayer"></g><g id="dirtLayer">${dirt}</g>${glass}</svg>`, txt:p.txt, p};
+    <rect width="100" height="100" fill="url(#sky)"/>${stars}${sun}${soil}${chamber}${p.hidden ? bug : ''}${plants}${decos}${foods}${ants}${p.hidden ? '' : bug}${zz}${nom}<g id="sprayLayer"></g><g id="dirtLayer">${dirt}</g>${glass}</svg>`, txt:p.txt, p};
 }
 
 /* =========================================================
@@ -1188,14 +1239,14 @@ function renderHome(){
       <div class="meters"><span>元気</span><span class="bar"><i class="${meterCls(g)}" style="width:${g}%"></i></span></div></div>`;
   }).join('')}</div>
   <h3>もちもの</h3><div class="row">${Object.keys(S.items).filter(k=>S.items[k]>0).map(k=>`<span class="win" style="padding:.2em .6em;font-size:13px">${esc(ITEMS[k].name)} ×${S.items[k]}</span>`).join('') || '<span class="small">なにもない</span>'}</div>
-  <div class="row" style="margin-top:8px"><button type="button" class="btn" id="btnShop">どんぐりでエサを買う</button></div>`;
+  <div class="row" style="margin-top:8px"><button type="button" class="btn" id="btnShop">どんぐりでエサ・かざりを買う</button></div>`;
   view.querySelectorAll('.case').forEach(el=> el.onclick = ()=>{ const i = +el.dataset.i; if(S.cases[i]){ openCase = i; render(); scrollTo(0,0); } else setTab('out'); });
   $('btnShop').onclick = renderShop;
 }
 function renderShop(){
-  view.innerHTML = `<h2>エサと道具を買う</h2><p class="small">どんぐり：<b style="color:var(--sun)">${dg(S.money)}</b>　場所から場所へ歩くともらえるよ。</p>
-    <div class="opt">${Object.keys(ITEMS).map(k=>{ const it = ITEMS[k], free = !it.price;
-      return `<button type="button" class="btn" data-k="${k}" ${!free && S.money < it.price ? 'disabled' : ''}><span>${esc(it.name)}<br><small class="small">${esc(it.desc)}</small></span><span class="v">${free ? 'ただ' : dg(it.price)}　×${S.items[k]||0}</span></button>`; }).join('')}</div>
+  view.innerHTML = `<h2>エサ・道具・かざりを買う</h2><p class="small">どんぐり：<b style="color:var(--sun)">${dg(S.money)}</b>　場所から場所へ歩くともらえるよ。</p>
+    ${[['エサと道具', k=>!ITEMS[k].cat], ['かざり（マット）：ケースの土をかえる', k=>ITEMS[k].cat==='mat'], ['かざり：買って、ケースに自分で置く', k=>ITEMS[k].cat==='deco']].map(([ttl, f])=>`<h3>${ttl}</h3><div class="opt">${Object.keys(ITEMS).filter(f).map(k=>{ const it = ITEMS[k], free = !it.price;
+      return `<button type="button" class="btn" data-k="${k}" ${!free && S.money < it.price ? 'disabled' : ''}><span>${it.cat ? `<span class="decoIc">${it.cat==='mat' ? `<svg viewBox="0 0 100 100"><rect x="10" y="50" width="80" height="40" rx="6" fill="${MATS[k].fill}"/><circle cx="30" cy="70" r="3" fill="${MATS[k].bits}"/><circle cx="60" cy="78" r="3" fill="${MATS[k].bits}"/></svg>` : `<svg viewBox="0 0 100 100">${decoSVG(k)}</svg>`}</span>` : ''}${esc(it.name)}<br><small class="small">${esc(it.desc)}</small></span><span class="v">${free ? 'ただ' : dg(it.price)}　×${S.items[k]||0}</span></button>`; }).join('')}</div>`).join('')}
     <div class="row end" style="margin-top:10px"><button type="button" class="btn" id="btnBack">もどる</button></div>`;
   view.querySelectorAll('[data-k]').forEach(b=> b.onclick = ()=>{ const k = b.dataset.k, it = ITEMS[k]; if(S.money < it.price) return; S.money -= it.price; S.items[k] = (S.items[k]||0) + 1; save(); hud(); renderShop(); });
   $('btnBack').onclick = ()=> render();
@@ -1203,8 +1254,8 @@ function renderShop(){
 
 /* ---- 観察（ケースの中）：道具をえらんで、ケースの中を指でさわる ---- */
 const PLACES = {genkan:{name:'げんかん', desc:'すずしくて静か。かいふくがよくなり、のんびりした性格になりやすい'}, heya:{name:'へや', desc:'いつもそばにいる。人なつっこい性格になりやすい'}, beranda:{name:'ベランダの日かげ', desc:'外の空気。まもりが強くなる。ただし、かわきやすい'}};
-const TOOLS = {yubi:{name:'ゆび', ic:'👆'}, fukin:{name:'ふきん', ic:'🧽'}, kiri:{name:'きりふき', ic:'💦'}, esa:{name:'エサ', ic:'🍽'}, furu:{name:'ふる', ic:'🫨'}};
-let tool = 'yubi', obsSession = null;   // obsSession：いまのぞいている間の、さわった回数など
+const TOOLS = {yubi:{name:'ゆび', ic:'👆'}, fukin:{name:'ふきん', ic:'🧽'}, kiri:{name:'きりふき', ic:'💦'}, esa:{name:'エサ', ic:'🍽'}, kazari:{name:'かざり', ic:'🪵'}, furu:{name:'ふる', ic:'🫨'}};
+let tool = 'yubi', obsSession = null, decoSel = null;   // obsSession：いまのぞいている間の、さわった回数など
 function indLine(c){ const f = fighterOf(c); return statLine(f); }
 // 性格ごとの、さわったとき・ふったときの反応
 const REACT = {
@@ -1221,12 +1272,15 @@ async function renderObs(){
   const persTxt = c.pers && st.k === 'adult' ? `${PERS[c.pers].name}なので、${PERS[c.pers].txt}` : '';
   const title = c.name ? `${esc(c.name)}（${esc(b.name)}の${stageLabel(c)}）` : `${esc(b.name)}の${stageLabel(c)}`;
   const dirtN = (c.dirt||[]).length, oldN = (c.foods||[]).filter(f=>f.old).length;
-  const guide = {yubi:'手をつかんで、葉や木にのせるとのぞける。虫にのせるとそっとさわる。', fukin:dirtN || oldN ? `スポンジをつかんで、よごれの上でこすろう（のこり${dirtN + oldN}）` : 'ガラスはきれい。', kiri:'きりふきをつかんで、かけたい場所で指を止めると水が出る。動かしている間は出ない。', esa:st.k === 'pupa' ? 'さなぎは、なにも食べない。' : `エサをつかんで、置きたい場所ではなす（${esc(food.name)}${food.price ? ` ×${S.items[foodKey]||0}` : ''}）`, furu:'ケースをつかんで、左右に動かすとゆれる。何回もゆらすと、虫がおどろくよ。'}[tool];
+  const ownDeco = Object.keys(ITEMS).filter(k=>ITEMS[k].cat && (S.items[k]||0) > 0);
+  const guide = {kazari:ownDeco.length ? (decoSel ? (ITEMS[decoSel].cat === 'mat' ? 'マットは、えらぶとすぐにしきかえる。' : 'かざりをつかんで、置きたい場所ではなす。置いたものは、直接つまんで動かせる。左下の「しまう」に入れるともどる。') : '下から、置きたいかざりをえらぼう。') : 'かざりは、おうちの「どんぐりでエサ・かざりを買う」で買えるよ。',
+    yubi:'手をつかんで、葉や木にのせるとのぞける。虫にのせるとそっとさわる。置いたエサやかざりは、直接つまんで動かせる。', fukin:dirtN || oldN ? `スポンジをつかんで、よごれの上でこすろう（のこり${dirtN + oldN}）` : 'ガラスはきれい。', kiri:'きりふきをつかんで、かけたい場所で指を止めると水が出る。動かしている間は出ない。', esa:st.k === 'pupa' ? 'さなぎは、なにも食べない。' : `エサをつかんで、置きたい場所ではなす（${esc(food.name)}${food.price ? ` ×${S.items[foodKey]||0}` : ''}）`, furu:'ケースをつかんで、左右に動かすとゆれる。何回もゆらすと、虫がおどろくよ。'}[tool];
   const esaGuide = st.k === 'pupa' ? '' : `エサをつかんで、置きたい場所ではなす`;
   view.innerHTML = `<div class="row" style="justify-content:space-between"><h2>${title}</h2><button type="button" class="btn sub" id="btnBack">もどる</button></div>
     <div class="row" style="margin-bottom:6px"><span class="tag born">${esc((BORN[c.born]||BORN.any).name)}</span>${c.bornSlot === 'yoru' ? '<span class="tag">夜型</span>' : ''}<span class="tag">${esc(PLACES[c.place].name)}</span>${c.wide ? '<span class="tag">広いケース</span>' : ''}${c.rare ? '<span class="tag" style="background:#7a5a20">めずらしい色</span>' : ''}</div>
-    <div id="obs"><div class="scene tool-${tool}" id="scene">${sc.svg}<div class="toolObj norb" id="toolObj" hidden></div><div class="mini norb" id="mini" hidden></div></div>
+    <div id="obs"><div class="scene tool-${tool}" id="scene">${sc.svg}<div class="toolObj norb" id="toolObj" hidden></div><div class="binZone norb" id="binZone" hidden>しまう</div><div class="mini norb" id="mini" hidden></div></div>
       <div class="tools">${Object.keys(TOOLS).map(k=>`<button type="button" class="tbtn ${tool===k?'on':''}" data-tool="${k}" ${k==='esa' && st.k==='pupa' ? 'disabled' : ''}><span class="ic">${TOOLS[k].ic}</span>${TOOLS[k].name}</button>`).join('')}</div>
+      ${tool === 'kazari' ? `<div class="decoPick" id="decoPick">${ownDeco.map(k=>`<button type="button" class="pk ${decoSel===k?'on':''}" data-deco="${k}"><svg viewBox="0 0 100 100">${ITEMS[k].cat==='mat' ? `<rect x="10" y="40" width="80" height="45" rx="6" fill="${MATS[k].fill}"/>` : decoSVG(k)}</svg>${esc(ITEMS[k].name)}<small>×${S.items[k]}</small></button>`).join('')}</div>` : ''}
       <div class="guide small" id="guide">${guide}</div>
       <div class="obsTxt win" id="obsTxt">${esc(sc.txt)}${persTxt ? `<br>${esc(persTxt)}` : ''}${c.trouble ? `<br><b class="yk">【${esc(TROUBLE[c.trouble].name)}】</b>${esc(TROUBLE[c.trouble].txt)}` : ''}${(c.soak||0) > 30 ? '<br><b class="yk">【びちゃびちゃ】</b>水をかけすぎて、土に水たまりができている。かわくまで、きりふきはやめよう。' : ''}${c.pending ? '<br><b class="yk">…なんだか、ようすがかわりそう！</b>' : fc ? `<br><b class="yk">【予告】</b>${esc(fc)}` : ''}</div></div>
     <div class="meters" style="margin-top:8px">${st.k !== 'pupa' ? m('おなか', c.hunger) : ''}${m('しめりけ', c.wet, `<b class="band" style="left:${band[0]}%;width:${band[1]-band[0]}%"></b>`)}${m('きれいさ', c.clean)}${m('元気', g)}</div>
@@ -1239,15 +1293,18 @@ async function renderObs(){
     </div>`;
   $('btnBack').onclick = ()=>{ openCase = null; obsSession = null; render(); };
   view.querySelectorAll('[data-tool]').forEach(bt=> bt.onclick = ()=>{ tool = bt.dataset.tool; renderObs(); });
+  view.querySelectorAll('[data-deco]').forEach(bt=> bt.onclick = async ()=>{ const k = bt.dataset.deco;
+    if(ITEMS[k].cat === 'mat'){ if(c.mat === k){ await say('もう、このマットをしいている。'); return; } if(c.mat) S.items[c.mat] = (S.items[c.mat]||0) + 1; S.items[k]--; c.mat = k; c.log.over++; save(); await say(`${ITEMS[k].name}をしきかえた。\n${c.mat === 'mat_fuyo' ? '幼虫がもぐっていった。腐葉土は、かわきにくい。' : 'ケースの見た目がかわった。'}`); decoSel = null; renderObs(); return; }
+    decoSel = decoSel === k ? null : k; renderObs(); });
   const sceneEl = $('scene'), svg = $('sceneSvg'), txtEl = $('obsTxt'), toolObj = $('toolObj'), mini = $('mini');
   const FOOD_IC = {zeri:'🍮', kyabetsu:'🥬', mikan:'🍃', enoki:'🍃', nasu:'🍆', koorogi:'🦗', kusa:'🌿', mitsu:'🥤', wide:'📦'};
-  const toolIc = ()=> ({yubi:'👆', fukin:'🧽', kiri:'🧴', esa:FOOD_IC[foodKey] || '🍽', furu:'✋'})[tool];
+  const toolIc = ()=> tool === 'kazari' ? (decoSel ? `<svg viewBox="0 0 100 100">${decoSVG(decoSel)}</svg>` : '') : ({yubi:'👆', fukin:'🧽', kiri:'🧴', esa:FOOD_IC[foodKey] || '🍽', furu:'✋'})[tool];
   // 道具は、ボタンを押すとケースの右下に出てくる。それをつかんで動かして使う。hot は「きく場所」（きりふきの口、指の先）
-  const HOT = {yubi:{x:-6, y:-26}, fukin:{x:0, y:0}, kiri:{x:-16, y:-30}, esa:{x:0, y:0}, furu:{x:0, y:0}};
-  const restPos = ()=>{ const r = sceneEl.getBoundingClientRect(); return {x:r.width - 48, y:r.height - 46}; };
+  const HOT = {yubi:{x:-8, y:-36}, fukin:{x:0, y:0}, kiri:{x:-22, y:-42}, esa:{x:0, y:0}, kazari:{x:0, y:10}, furu:{x:0, y:0}};
+  const restPos = ()=>{ const r = sceneEl.getBoundingClientRect(); return {x:r.width - 56, y:r.height - 54}; };
   const objPos = {x:0, y:0};
   const setObj = (x, y, cls='')=>{ objPos.x = x; objPos.y = y; toolObj.style.left = x + 'px'; toolObj.style.top = y + 'px'; toolObj.className = 'toolObj norb ' + cls; };
-  const showTool = ()=>{ if(tool === 'furu' || (tool === 'esa' && st.k === 'pupa')){ toolObj.hidden = true; return; } const r = restPos(); toolObj.innerHTML = toolIc() + '<span class="hint">つかんで動かす</span>'; toolObj.hidden = false; setObj(r.x, r.y, 'rest'); };
+  const showTool = ()=>{ if(tool === 'furu' || (tool === 'esa' && st.k === 'pupa') || (tool === 'kazari' && (!decoSel || ITEMS[decoSel].cat === 'mat'))){ toolObj.hidden = true; return; } const r = restPos(); toolObj.innerHTML = toolIc() + '<span class="hint">つかんで動かす</span>'; toolObj.hidden = false; setObj(r.x, r.y, 'rest'); };
   const hotXY = ()=>{ const r = sceneEl.getBoundingClientRect(), h = HOT[tool]; return toXYc(r.left + objPos.x + h.x, r.top + objPos.y + h.y); };
   showTool();
   const ripple = e=>{ const r = sceneEl.getBoundingClientRect(), d = document.createElement('div'); d.className = 'ripple'; d.style.left = (e.clientX - r.left) + 'px'; d.style.top = (e.clientY - r.top) + 'px'; sceneEl.appendChild(d); setTimeout(()=>d.remove(), 520); };
@@ -1277,7 +1334,7 @@ async function renderObs(){
     if(pk === 'okubyo'){ c.hideUntil = now() + 10*60*1000; save(); renderObs(); }
   };
   const peek = async ()=>{
-    const leaf = svg.querySelector('.leaf'); if(leaf){ leaf.classList.remove('flip'); void leaf.getBoundingClientRect(); leaf.classList.add('flip'); }
+    const leaf = svg.querySelector('.deco .leaf') || svg.querySelector('.leaf'); if(leaf){ leaf.classList.remove('flip'); void leaf.getBoundingClientRect(); leaf.classList.add('flip'); }
     if(bugPos.hidden){ c.hideUntil = 0; save(); await wait(500); setTxt('かくれ家をのぞいたら、虫がいた！'); await wait(600); renderObs(); return; }
     setTxt('かくれ家の下には、だれもいない。' + (st.k === 'pupa' ? '' : ' 虫はいま、そとに出ている。'));
   };
@@ -1345,29 +1402,45 @@ async function renderObs(){
   };
   // ---- 指のイベント：道具をつかんで動かす。ふる だけは、ケースそのものをつかむ ----
   let down = false, grab = null, stillT = null, lastMove = 0;
-  const nearObj = e=>{ const r = sceneEl.getBoundingClientRect(); return Math.hypot(e.clientX - r.left - objPos.x, e.clientY - r.top - objPos.y) < 56; };
+  const nearObj = e=>{ if(toolObj.hidden) return false; const r = sceneEl.getBoundingClientRect(); return Math.hypot(e.clientX - r.left - objPos.x, e.clientY - r.top - objPos.y) < 70; };
+  // 置いたエサ・かざりを直接つまんで動かす
+  const binZone = $('binZone'); let dragItem = null;
+  const inBin = e=>{ const r = binZone.getBoundingClientRect(); return e.clientX > r.left - 20 && e.clientX < r.right + 20 && e.clientY > r.top - 20 && e.clientY < r.bottom + 20; };
+  const itemAt = e=>{ const el = e.target.closest && e.target.closest('.food, .deco'); if(!el) return null;
+    if(el.classList.contains('food')){ const f = (c.foods||[]).find(f=>String(f.id) === el.dataset.f); return f && {type:'food', it:f, el}; }
+    const d = (c.deco||[]).find(d=>String(d.id) === el.dataset.deco); return d && {type:'deco', it:d, el}; };
+  const moveItem = e=>{ const q = toXY(e), soilTop = soilTopOf(b); dragItem.it.x = clamp(q.x, 6, 94); dragItem.it.y = dragItem.type === 'food' ? clamp(q.y, 14, soilTop - 2) : clamp(q.y, soilTop - 28, soilTop + 2);
+    const sc = dragItem.type === 'food' ? `scale(${.5 + .5*Math.max(.2, dragItem.it.left)}) translate(-50 -50)` : 'scale(.55) translate(-50 -70)';
+    dragItem.el.setAttribute('transform', `translate(${dragItem.it.x} ${dragItem.it.y}) ${sc}`); if(dragItem.type === 'deco') binZone.classList.toggle('over', inBin(e)); };
   const dragTo = e=>{ const r = sceneEl.getBoundingClientRect(); setObj(clamp(e.clientX - r.left - grab.dx, 8, r.width - 8), clamp(e.clientY - r.top - grab.dy, 8, r.height - 8), 'drag' + (tool === 'fukin' ? ' wipe' : '') + (sprayTimer ? ' spray' : '')); };
   sceneEl.onpointerdown = e=>{ e.preventDefault();
+    const hit = tool !== 'fukin' && tool !== 'furu' && !nearObj(e) && itemAt(e);
+    if(hit){ down = true; dragItem = hit; sceneEl.setPointerCapture(e.pointerId); ripple(e); if(hit.type === 'deco') binZone.hidden = false; return; }
     if(tool === 'furu'){ down = true; sceneEl.setPointerCapture(e.pointerId); ripple(e); furu.x0 = furu.last = e.clientX; furu.n = 0; furu.seg = 0; furu.dir = 0; return; }
     if(!nearObj(e)){ ripple(e); setTxt(`${TOOLS[tool].name}をつかんで、動かしてね。`); return; }
     down = true; sceneEl.setPointerCapture(e.pointerId); const r = sceneEl.getBoundingClientRect(); grab = {dx:e.clientX - r.left - objPos.x, dy:e.clientY - r.top - objPos.y};
     toolObj.querySelector('.hint')?.remove(); dragTo(e); lastMove = Date.now();
     if(tool === 'kiri'){ stillT = setInterval(()=>{ if(Date.now() - lastMove > 280) sprayStart(); }, 60); } };
   sceneEl.onpointermove = e=>{ if(!down) return;
+    if(dragItem){ moveItem(e); return; }
     if(tool === 'furu'){ furuMove(e); return; }
     const r = sceneEl.getBoundingClientRect(), nx = e.clientX - r.left - grab.dx, ny = e.clientY - r.top - grab.dy;
     if(Math.hypot(nx - objPos.x, ny - objPos.y) > 2.5){ lastMove = Date.now(); if(tool === 'kiri') sprayStop(); }
     dragTo(e);
     if(tool === 'fukin'){ const q = hotXY(); wipeAt(q.x, q.y); } };
   sceneEl.onpointerup = sceneEl.onpointercancel = async e=>{ if(!down) return; down = false; clearInterval(stillT); stillT = null;
+    if(dragItem){ const di = dragItem, binned = di.type === 'deco' && inBin(e); dragItem = null; binZone.hidden = true; binZone.classList.remove('over');
+      if(binned){ c.deco = c.deco.filter(d=>d !== di.it); S.items[di.it.k] = (S.items[di.it.k]||0) + 1; save(); setTxt(`${ITEMS[di.it.k].name}をしまった。`); renderObs(); return; }
+      c.log.over += di.type === 'food' ? 0 : 0; save(); renderObs(); setTimeout(()=> setTxt(di.type === 'food' ? 'エサの場所をかえた。' : `${ITEMS[di.it.k].name}の場所をかえた。`), 50); return; }
     if(tool === 'furu'){ await furuEnd(); return; }
     const q = hotXY(); const rp = restPos(); setObj(rp.x, rp.y, '');
     if(tool === 'kiri'){ await sprayEnd(); return; }
     if(tool === 'fukin'){ await wipeDone(); return; }
     if(tool === 'esa'){ await placeFood(q.x, q.y); return; }
+    if(tool === 'kazari'){ if(!decoSel) return; const soilTop = soilTopOf(b); c.deco.push({id:Date.now(), k:decoSel, x:clamp(q.x, 8, 92), y:clamp(q.y, soilTop - 28, soilTop + 2)}); S.items[decoSel]--; if(!(S.items[decoSel] > 0)) decoSel = null; save(); renderObs(); setTimeout(()=> setTxt('かざりを置いた。つまんで動かせるよ。'), 50); await yakusoku('deco', 'かくれ家やとまり木があると、虫は落ちついてくらせる。\n本物の虫かごでも、同じだよ。'); return; }
     // ゆび：手の先がどこにあるか
     if(nearBug(q.x, q.y)){ await touchBug(); return; }
-    const H = HIDE_POS[hideKind(b)];
+    const H = hideSpot(c, b);
     if(Math.hypot(q.x - H.x, q.y - H.y) < 18){ await peek(); return; }
     setTxt(sc.txt); };
   const furuMove = e=>{ const dx = e.clientX - furu.x0, v = e.clientX - furu.last; furu.last = e.clientX;
@@ -1554,7 +1627,7 @@ async function doFind(sp, here, egg, slot){
     const keys = Object.keys(PLACES), pi = await say('おうちの、どこにおく？', {ans:keys.map(k=>`${PLACES[k].name}：${PLACES[k].desc}`)});
     const wide = wi === 1; if(wide) S.items.wide--;
     S.cases[free] = {bug:id, si:0, prog:0, hunger:70, wet:70, clean:100, tick:now(), pending:false, from:sp.name, born:sp.key, bornSlot:slotOf(), since:dayKey(),
-      ind:{hp:1, atk:1, def:1, spd:1, heal:1}, log:newLog(), tot:newLog(), place:keys[pi], wide, trouble:null, dirt:[], foods:[], soak:0, hideUntil:0};
+      ind:{hp:1, atk:1, def:1, spd:1, heal:1}, log:newLog(), tot:newLog(), place:keys[pi], wide, trouble:null, dirt:[], foods:[], soak:0, hideUntil:0, deco:[], mat:null};
     save(); hud();
     await say(`${b.name}の${id === 'kinkabuto' ? 'たまご' : '幼虫'}を、${free+1}ばんめのケース（${PLACES[keys[pi]].name}）に入れた。\n「${BORN[sp.key].name}」の虫だ。`);
     await yakusoku('take', '虫をつれてかえるときは、いきをしやすいように、ふたにあなをあけたケースに。\n日なたにおくと、あつくて弱ってしまうよ。');
