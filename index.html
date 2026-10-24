@@ -264,6 +264,17 @@ p{margin:.3em 0}
 .decoPick .pk{font:inherit;font-size:11px;color:var(--ink);background:var(--win);border:2px solid #f7f1df66;border-radius:10px;padding:.2em .4em;cursor:pointer;display:flex;flex-direction:column;align-items:center;min-width:64px;line-height:1.2}
 .decoPick .pk svg{width:40px;height:40px}
 .decoPick .pk.on{background:var(--sun);color:#1b130c;border-color:var(--sun)}
+.refuge{position:absolute;right:6px;top:6px;z-index:4;width:34%;max-width:120px;aspect-ratio:4/3;background:#a9d7ea66;border:3px solid #f7f1dfaa;border-radius:8px;display:flex;flex-direction:column;align-items:center;font-size:10px;color:#fff;text-shadow:1px 1px 0 #000}
+.refuge .rb{flex:1;width:70%}
+.refuge .rb svg{width:100%;height:100%}
+.refuge.on{border-color:var(--sun);box-shadow:0 0 0 3px #f4b63c66}
+.refuge.over{background:#f4b63c88;transform:scale(1.06)}
+.carry{position:absolute;width:90px;height:90px;transform:translate(-50%,-50%);pointer-events:none;z-index:5;filter:drop-shadow(0 6px 4px #0008)}
+.carry svg{width:100%;height:100%}
+#bugG.press{animation:press .9s linear forwards}
+@keyframes press{to{opacity:.6}}
+#bugG.jitter{animation:jitter .15s linear 4}
+@keyframes jitter{0%,100%{transform:translate(0,0)}25%{transform:translate(2px,-1px)}75%{transform:translate(-2px,1px)}}
 .binZone{position:absolute;left:6px;bottom:6px;z-index:4;background:#c0392bcc;color:#fff;border:2px dashed #fff;border-radius:10px;padding:.5em 1em;font-size:14px;pointer-events:none}
 .binZone.over{background:#e74c3c;transform:scale(1.1)}
 .toolObj .hint{position:absolute;left:50%;top:-1.1em;transform:translateX(-50%);font-size:11px;white-space:nowrap;background:#14284acc;color:#fff;border-radius:999px;padding:0 .6em;border:1px solid #f7f1df88}
@@ -331,6 +342,61 @@ p{margin:.3em 0}
 #arena .fighter.act{transform:translateY(-14px) scale(1.06)}
 #arena .fighter.mine.act{transform:translateY(-14px) scale(1.06)}
 #arena .fighter.down{transform:rotate(90deg) translateY(20px);opacity:.7}
+#arena .fighter.enter{animation:enterL .9s cubic-bezier(.2,.8,.3,1) both}
+#arena .fighter.mine.enter{animation-name:enterR}
+@keyframes enterL{from{transform:translateX(160%)}to{transform:translateX(0)}}
+@keyframes enterR{from{transform:translateX(-160%)}to{transform:translateX(0)}}
+#arena .fighter.lunge{animation:lungeL .38s ease-in-out}
+#arena .fighter.mine.lunge{animation-name:lungeR}
+@keyframes lungeL{30%{transform:translateX(-46px) scale(1.05)}100%{transform:translateX(0)}}
+@keyframes lungeR{30%{transform:translateX(46px) scale(1.05)}100%{transform:translateX(0)}}
+#arena .fighter.fly{animation:flyUp .7s ease-out}
+@keyframes flyUp{20%{transform:translateY(-70px) rotate(-30deg)}60%{transform:translateY(-40px) rotate(20deg)}100%{transform:translateY(0) rotate(0)}}
+#arena .fighter.out{animation:outL 1s ease-in forwards}
+#arena .fighter.mine.out{animation-name:outR}
+@keyframes outL{to{transform:translate(220px,-60px) rotate(220deg);opacity:0}}
+@keyframes outR{to{transform:translate(-220px,-60px) rotate(-220deg);opacity:0}}
+#arena .fighter.shield svg{filter:drop-shadow(0 0 10px #ffe27a) drop-shadow(0 0 4px #fff)}
+#arena .fighter.heal svg{filter:drop-shadow(0 0 10px #5ccf6a)}
+#arena .fighter.dizzy{animation:dizzy 1.2s ease-in-out infinite}
+@keyframes dizzy{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+/* 性格のくせ（待っているときの動き） */
+#arena .fighter.idle-yancha svg{animation:idleHop 1.1s ease-in-out infinite}
+@keyframes idleHop{0%,70%,100%{transform:translateY(0)}80%{transform:translateY(-14px)}}
+#arena .fighter.mine.idle-yancha svg{animation:idleHopM 1.1s ease-in-out infinite}
+@keyframes idleHopM{0%,70%,100%{transform:scaleX(-1) translateY(0)}80%{transform:scaleX(-1) translateY(-14px)}}
+#arena .fighter.idle-okubyo svg{animation:idleTremble .25s linear infinite}
+@keyframes idleTremble{0%,100%{transform:translateX(0)}50%{transform:translateX(2px)}}
+#arena .fighter.mine.idle-okubyo svg{animation:idleTrembleM .25s linear infinite}
+@keyframes idleTrembleM{0%,100%{transform:scaleX(-1) translateX(0)}50%{transform:scaleX(-1) translateX(2px)}}
+#arena .fighter.idle-nonbiri svg{animation:idleBreath 3.2s ease-in-out infinite}
+@keyframes idleBreath{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+#arena .fighter.mine.idle-nonbiri svg{animation:idleBreathM 3.2s ease-in-out infinite}
+@keyframes idleBreathM{0%,100%{transform:scaleX(-1) scale(1)}50%{transform:scaleX(-1) scale(1.04)}}
+#arena .fighter.idle-makezu svg{animation:idleLean 1.6s ease-in-out infinite}
+@keyframes idleLean{0%,100%{transform:rotate(0)}50%{transform:rotate(-8deg) translateX(-6px)}}
+#arena .fighter.mine.idle-makezu svg{animation:idleLeanM 1.6s ease-in-out infinite}
+@keyframes idleLeanM{0%,100%{transform:scaleX(-1) rotate(0)}50%{transform:scaleX(-1) rotate(-8deg) translateX(-6px)}}
+#arena .fighter.idle-kuishinbo svg{animation:idleChew .5s ease-in-out infinite}
+@keyframes idleChew{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.95)}}
+#arena .fighter.mine.idle-kuishinbo svg{animation:idleChewM .5s ease-in-out infinite}
+@keyframes idleChewM{0%,100%{transform:scaleX(-1) scaleY(1)}50%{transform:scaleX(-1) scaleY(.95)}}
+#arena .fighter.idle-hitonatsu svg{animation:idleWag 1.4s ease-in-out infinite}
+@keyframes idleWag{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+#arena .fighter.mine.idle-hitonatsu svg{animation:idleWagM 1.4s ease-in-out infinite}
+@keyframes idleWagM{0%,100%{transform:scaleX(-1) rotate(-3deg)}50%{transform:scaleX(-1) rotate(3deg)}}
+/* 粒・音符・ハート・紙ふぶき */
+#arena .pt{position:absolute;pointer-events:none;font-size:22px;line-height:1;animation:ptUp 1.1s ease-out forwards;z-index:3}
+@keyframes ptUp{0%{opacity:0;transform:translate(0,0) scale(.6)}20%{opacity:1}100%{opacity:0;transform:translate(var(--dx,0),-70px) scale(1.2)}}
+#arena .pt.dot{width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 6px #ffe27a}
+#arena .pt.dust{width:7px;height:7px;border-radius:50%;background:#f0e060}
+#arena .pt.conf{width:9px;height:14px;background:var(--c,#f4b63c);animation:confFall 1.6s linear forwards}
+@keyframes confFall{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(var(--dx,0),160px) rotate(540deg)}}
+#arena .flash{position:absolute;inset:0;background:#fff;animation:flash .5s ease-out forwards;pointer-events:none;z-index:4}
+@keyframes flash{0%{opacity:.95}100%{opacity:0}}
+#arena .banner{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:clamp(22px,7vw,36px);color:var(--sun);text-shadow:3px 3px 0 #5a2a10,-1px -1px 0 #fff4;letter-spacing:.12em;white-space:nowrap;animation:pop .5s;z-index:5;pointer-events:none}
+#arena .gyoji{position:absolute;left:50%;bottom:16%;transform:translateX(-50%);font-size:34px;pointer-events:none;filter:drop-shadow(0 3px 2px #0008)}
+#arena .crowd{position:absolute;left:0;right:0;top:34%;text-align:center;font-size:14px;color:#fff;text-shadow:1px 1px 0 #000;pointer-events:none;animation:cheerUp 1.2s forwards}
 #arena .info{position:absolute;top:0;background:#14284acc;border:2px solid var(--edge);border-radius:8px;padding:.3em .6em;font-size:12px;color:#fff;max-width:48%}
 #arena .info.l{left:0}#arena .info.r{right:0}
 #arena .info .bar{width:100%;height:8px;margin-top:2px}
@@ -375,9 +441,15 @@ const SAVE_KEY = KEY_PRE + 'munakata-mushisodate-v1';
 const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
-const GAME_VER = '0.4.0';
-const BUILD = '20261024-0831';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const GAME_VER = '0.5.0';
+const BUILD = '20261024-0914';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
+  {v:'0.5.0', date:'2026-10-24', items:[
+    '「大そうじ」の道具：虫を長おし（1びょう）してそっとつまみ、右上のひなんケースへ。土を指でなでて3回で新しい土に。虫をつまんでもどす。長おしせずに動かすと「力を入れすぎ」で虫がじたばたする',
+    '大そうじをしないと3日で土がよごれて、きれいさが80までしか上がらなくなる。おうちのケースにも「大そうじ」と出る',
+    '虫ずもうの演出：東西から入場、行司、「はっけよい」「のこった！」。つっこみは相手に向かってとびかかり、大わざで相手が宙を舞う。りんぷんは粉が舞い、鳴き声のわざは音符、うっとりはハート、ふんばりや反撃のかまえは光る',
+    '待っているときの動きに性格が出る：やんちゃはとびはねる、おくびょうはふるえる、のんびりはゆっくり息をする、まけずぎらいは前にかたむく、食いしんぼうはもぐもぐ、人なつっこいはからだをふる',
+    '負けた虫は土俵の外へ飛んでいく。おうえんで紙ふぶきと歓声']},
   {v:'0.4.0', date:'2026-10-24', items:[
     'お店に「かざり」を追加。マット（腐葉土・白い砂・黒土）、枝（クヌギの枝・長い枝・つる）、葉（草のたば・シダ・花）、かくれ家（きりかぶ・かわら・ヤシのから）、小物（水のみ皿・石）',
     '「かざり」の道具で、買ったかざりをケースに自分で置ける。置いたエサやかざりは、直接つまんで動かせる。左下の「しまう」に入れるともどる',
@@ -824,7 +896,8 @@ function tickCase(c){
     c.foods.forEach(f=>{ f.age += d; if(f.age > 36 && !f.old){ f.old = true; c.clean = clamp(c.clean - 8, 0, 100); } });
     c.soak = Math.max(0, c.soak - 100/12*d);   // 水たまりは半日でひく
     c.wet = clamp(c.wet - 100/WET_H*d*wetK + (c.soak > 0 ? 100/WET_H*d*wetK : 0), 0, 100);   // びちゃびちゃの間はかわかない
-    c.clean = clamp(c.clean - 100/CLEAN_H*d*cleanK, 0, 100);
+    c.soilAge = (c.soilAge||0) + d;   // 大そうじしてからの時間。3日をこえると土がよごれて、きれいさが80までしか上がらなくなる
+    c.clean = clamp(c.clean - 100/CLEAN_H*d*cleanK, 0, c.soilAge > 72 ? Math.max(80, c.clean - 100/CLEAN_H*d*cleanK) : 100);
     // よごれ：きれいさがへるぶんだけ、ガラスや土によごれがふえる
     const want = Math.round((100 - c.clean)/12.5);
     while(c.dirt.length < want) c.dirt.push({x:8 + Math.random()*84, y:10 + Math.random()*80, hp:3, k:Math.random() < .6 ? 'fun' : 'kumori'});
@@ -848,7 +921,7 @@ const meterCls = v=> v < 30 ? 'low' : v < 60 ? 'mid' : '';
 const instarOf = c=> BUGS[c.bug].plan.slice(0, c.si).filter(s=>s.k==='larva').length;
 const stageLabel = c=>{ const st = stageOf(c), n = instarOf(c); return st.k === 'larva' && n ? `${STAGE_NAME.larva}・${n+1}回目` : STAGE_NAME[st.k]; };
 const daysLeft = c=> Math.max(0, Math.ceil((stageOf(c).days*24 - c.prog)/24));
-const needs = c=>{ const st = stageOf(c), a = []; if(c.trouble) a.push(TROUBLE[c.trouble].name); if(st.k !== 'pupa' && c.hunger < 40 && !(c.foods||[]).some(f=>!f.old)) a.push('おなか'); if(c.wet < 40) a.push('しめりけ'); if((c.soak||0) > 30) a.push('びちゃびちゃ'); if(c.clean < 40 || (c.foods||[]).some(f=>f.old)) a.push('そうじ'); return a; };
+const needs = c=>{ const st = stageOf(c), a = []; if(c.trouble) a.push(TROUBLE[c.trouble].name); if((c.soilAge||0) > 72 && st.k !== 'pupa') a.push('大そうじ'); if(st.k !== 'pupa' && c.hunger < 40 && !(c.foods||[]).some(f=>!f.old)) a.push('おなか'); if(c.wet < 40) a.push('しめりけ'); if((c.soak||0) > 30) a.push('びちゃびちゃ'); if(c.clean < 40 || (c.foods||[]).some(f=>f.old)) a.push('そうじ'); return a; };
 /* 予告：次のすがたまで1日をきったら、何が起きそうかを教える */
 function forecast(c){
   if(c.pending) return null;
@@ -1109,7 +1182,7 @@ function foodSVG(f){
   if(f.k === 'koorogi') return g(`<ellipse cx="50" cy="52" rx="12" ry="7" fill="${col||'#5a4a3a'}"/><path d="M60 50 L72 40 M40 56 L30 66" stroke="${col||'#5a4a3a'}" stroke-width="2"/>`);
   return g(`<ellipse cx="50" cy="54" rx="16" ry="6" fill="${col||'#9ad0f0'}" stroke="#f7f1df" stroke-width="1.5"/>`);   // さとう水の皿
 }
-function sceneSVG(c, slot){
+function sceneSVG(c, slot, o={}){
   const b = BUGS[c.bug], st = stageOf(c).k, soilKind = b.shape === 'beetle' || b.shape === 'stag', [s1, s2] = SKY[slot], p = placeBug(c, slot);
   const stars = slot === 'yoru' ? [[10,8],[30,14],[55,6],[80,12],[92,20],[68,18]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r=".6" fill="#fff"/>`).join('') : '';
   const sun = slot === 'yoru' ? `<circle cx="84" cy="14" r="5" fill="#fff6c0"/>` : slot === 'yu' ? `<circle cx="84" cy="22" r="6" fill="#ff8040"/>` : `<circle cx="84" cy="12" r="6" fill="#ffe27a"/>`;
@@ -1122,6 +1195,7 @@ function sceneSVG(c, slot){
   else plants = [12,22,30,62,72,84,92].map((x,i)=>`<path d="M${x} ${soilTop} C ${x+2} ${soilTop-14}, ${x-4} ${soilTop-22}, ${x+(i%2?3:-2)} ${soilTop-30}" stroke="#5a9a3a" stroke-width="2" fill="none"/>`).join('') +
       `<g class="leaf" data-hide="1"><path d="M14 ${soilTop} L22 ${soilTop-12} L40 ${soilTop-12} L44 ${soilTop} Z" fill="#8a6a3a"/></g>`;
   const chamber = p.chamber ? `<ellipse cx="${p.x+10}" cy="${p.y+2}" rx="17" ry="12" fill="#2a1a0a"/>` : '';
+  const mess = (c.soilAge||0) > 72 && st !== 'pupa' ? [[12,1],[30,3],[47,1.5],[66,2.5],[82,1],[58,4],[22,5]].map(([x,dy])=>`<ellipse cx="${x}" cy="${soilTop + dy}" rx="2.6" ry="1.3" fill="#2a1a0a" opacity=".85"/>`).join('') + `<path d="M36 ${soilTop-1} q3 -3 6 0 M72 ${soilTop-1} q3 -3 6 0" stroke="#8a7a40" stroke-width="1.2" fill="none"/>` : '';
   const wetA = (c.wet/100)*.35, soak = c.soak || 0;
   const M = c.mat && MATS[c.mat];
   const soil = `<rect x="0" y="${soilTop}" width="100" height="${100-soilTop}" fill="${M ? M.fill : '#5a3d22'}"/><rect id="wetLayer" x="0" y="${soilTop}" width="100" height="${100-soilTop}" fill="#1a0e04" opacity="${wetA.toFixed(2)}"/><rect x="0" y="${soilTop}" width="100" height="2" fill="#6c9a4a"/>
@@ -1129,7 +1203,7 @@ function sceneSVG(c, slot){
     <g id="soakLayer" opacity="${soak > 0 ? Math.min(1, soak/40).toFixed(2) : 0}">${[[20,soilTop+4,14],[58,soilTop+3,18],[86,soilTop+5,10]].map(([x,y,r])=>`<ellipse cx="${x}" cy="${y}" rx="${r}" ry="2.2" fill="#6ab0e0" opacity=".75"/>`).join('')}</g>`;
   const foods = (c.foods||[]).map(foodSVG).join('');
   const decos = (c.deco||[]).map(d=>`<g class="deco" data-deco="${d.id}" transform="translate(${d.x} ${d.y}) scale(.55) translate(-50 -70)"><g class="${ITEMS[d.k].hide ? 'leaf' : ''}">${decoSVG(d.k)}</g></g>`).join('');
-  const bug = `<g id="bugG" transform="translate(${p.x} ${p.y}) scale(${p.s*1.2}) translate(-50 -50)" style="${p.buried ? 'opacity:.55' : p.hidden ? 'opacity:.35' : ''}">${svgBug(c.bug, st, Object.assign({rare:c.rare}, p.o)).replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '')}</g>`;
+  const bug = `<g id="bugG" style="${p.buried ? 'opacity:.55' : p.hidden ? 'opacity:.35' : ''}"><g transform="translate(${p.x} ${p.y}) scale(${p.s*1.2}) translate(-50 -50)">${svgBug(c.bug, st, Object.assign({rare:c.rare}, p.o)).replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '')}</g></g>`;
   const ants = c.trouble === 'ari' ? (c.foods.filter(f=>f.old)[0] ? [[-6,2],[-3,5],[3,6],[7,3],[10,7]].map(([dx,dy])=>`<circle cx="${c.foods.filter(f=>f.old)[0].x+dx}" cy="${c.foods.filter(f=>f.old)[0].y+dy}" r="1" fill="#111"/>`).join('') : '') : '';
   // ガラスのよごれ（こすると消える）：フン・くもり・カビ
   const dirt = (c.dirt||[]).map((d,i)=> d.k === 'kabi' ? `<g class="dirt" data-d="${i}" opacity="${(d.hp/3).toFixed(2)}"><circle cx="${d.x}" cy="${d.y}" r="4" fill="#eee" opacity=".8"/><circle cx="${d.x-2}" cy="${d.y+1}" r="2.5" fill="#fff"/><circle cx="${d.x+2}" cy="${d.y-1}" r="2" fill="#ddd"/></g>`
@@ -1139,7 +1213,7 @@ function sceneSVG(c, slot){
   const zz = p.o && p.o.sleep && !p.hidden ? `<text class="zz" x="${p.x+8}" y="${p.y-8}" font-size="7" fill="#fff">z</text><text class="zz" x="${p.x+13}" y="${p.y-14}" font-size="5" fill="#fff" style="animation-delay:-1.2s">z</text>` : '';
   const nom = p.eating ? `<text class="zz" x="${p.x+10}" y="${p.y-6}" font-size="5" fill="#fff">もぐもぐ</text>` : '';
   return {svg:`<svg id="sceneSvg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${s1}"/><stop offset="1" stop-color="${s2}"/></linearGradient></defs>
-    <rect width="100" height="100" fill="url(#sky)"/>${stars}${sun}${soil}${chamber}${p.hidden ? bug : ''}${plants}${decos}${foods}${ants}${p.hidden ? '' : bug}${zz}${nom}<g id="sprayLayer"></g><g id="dirtLayer">${dirt}</g>${glass}</svg>`, txt:p.txt, p};
+    <rect width="100" height="100" fill="url(#sky)"/>${stars}${sun}${soil}${mess}${chamber}${p.hidden || o.noBug ? '' : ''}${p.hidden && !o.noBug ? bug : ''}${plants}${decos}${foods}${ants}${p.hidden || o.noBug ? '' : bug}${zz}${nom}<g id="sprayLayer"></g><g id="dirtLayer">${dirt}</g>${glass}</svg>`, txt:p.txt, p};
 }
 
 /* =========================================================
@@ -1254,7 +1328,7 @@ function renderShop(){
 
 /* ---- 観察（ケースの中）：道具をえらんで、ケースの中を指でさわる ---- */
 const PLACES = {genkan:{name:'げんかん', desc:'すずしくて静か。かいふくがよくなり、のんびりした性格になりやすい'}, heya:{name:'へや', desc:'いつもそばにいる。人なつっこい性格になりやすい'}, beranda:{name:'ベランダの日かげ', desc:'外の空気。まもりが強くなる。ただし、かわきやすい'}};
-const TOOLS = {yubi:{name:'ゆび', ic:'👆'}, fukin:{name:'ふきん', ic:'🧽'}, kiri:{name:'きりふき', ic:'💦'}, esa:{name:'エサ', ic:'🍽'}, kazari:{name:'かざり', ic:'🪵'}, furu:{name:'ふる', ic:'🫨'}};
+const TOOLS = {yubi:{name:'ゆび', ic:'👆'}, fukin:{name:'ふきん', ic:'🧽'}, kiri:{name:'きりふき', ic:'💦'}, esa:{name:'エサ', ic:'🍽'}, kazari:{name:'かざり', ic:'🪵'}, big:{name:'大そうじ', ic:'🧹'}, furu:{name:'ふる', ic:'🫨'}};
 let tool = 'yubi', obsSession = null, decoSel = null;   // obsSession：いまのぞいている間の、さわった回数など
 function indLine(c){ const f = fighterOf(c); return statLine(f); }
 // 性格ごとの、さわったとき・ふったときの反応
@@ -1266,19 +1340,21 @@ async function renderObs(){
   const c = S.cases[openCase]; if(!c){ openCase = null; render(); return; }
   if(!obsSession || obsSession.i !== openCase) obsSession = {i:openCase, touches:0, sprayed:false};
   const furu = {n:0, x0:0, last:0, dir:0, seg:0};   // 「ふる」：つかんでゆらした回数
-  const b = BUGS[c.bug], st = stageOf(c), slot = slotOf(), sc = sceneSVG(c, slot), g = genkiOf(c), fc = forecast(c), band = WET_BAND[b.shape];
+  const big = obsSession.big;   // 大そうじのとちゅう：{step:1 虫をひなんケースへ, 2 土を入れかえる, 3 虫をもどす}
+  const b = BUGS[c.bug], st = stageOf(c), slot = slotOf(), sc = sceneSVG(c, slot, {noBug: big && big.step >= 1 && big.step <= 3}), g = genkiOf(c), fc = forecast(c), band = WET_BAND[b.shape];
   const foodKey = st.k === 'adult' ? b.foodAdult : b.food, food = ITEMS[foodKey], haveFood = food.price === 0 || (S.items[foodKey]||0) > 0;
   const m = (lbl, v, extra='')=> `<span>${lbl}</span><span class="bar">${extra}<i class="${meterCls(v)}" style="width:${v}%"></i></span>`;
   const persTxt = c.pers && st.k === 'adult' ? `${PERS[c.pers].name}なので、${PERS[c.pers].txt}` : '';
   const title = c.name ? `${esc(c.name)}（${esc(b.name)}の${stageLabel(c)}）` : `${esc(b.name)}の${stageLabel(c)}`;
   const dirtN = (c.dirt||[]).length, oldN = (c.foods||[]).filter(f=>f.old).length;
   const ownDeco = Object.keys(ITEMS).filter(k=>ITEMS[k].cat && (S.items[k]||0) > 0);
-  const guide = {kazari:ownDeco.length ? (decoSel ? (ITEMS[decoSel].cat === 'mat' ? 'マットは、えらぶとすぐにしきかえる。' : 'かざりをつかんで、置きたい場所ではなす。置いたものは、直接つまんで動かせる。左下の「しまう」に入れるともどる。') : '下から、置きたいかざりをえらぼう。') : 'かざりは、おうちの「どんぐりでエサ・かざりを買う」で買えるよ。',
+  const bigGuide = st.k === 'pupa' ? 'さなぎの間は、大そうじはできない。' : !big ? ((c.soilAge||0) > 72 ? '土がよごれてきた。まず、虫を長おしして そっとつまみ、右上のひなんケースへ。' : 'まだ大そうじはいらない（3日に1回くらい）。やるなら、虫を長おしして そっとつまみ、右上のひなんケースへ。') : big.step === 1 ? '虫を長おし（1びょう）して、そっとつまんで、右上のひなんケースへ運ぼう。' : big.step === 2 ? `土を指でなでて、新しい土に入れかえよう（あと${3 - big.pass}回）` : 'ひなんケースの虫をつまんで、ケースにもどそう。';
+  const guide = {big:bigGuide, kazari:ownDeco.length ? (decoSel ? (ITEMS[decoSel].cat === 'mat' ? 'マットは、えらぶとすぐにしきかえる。' : 'かざりをつかんで、置きたい場所ではなす。置いたものは、直接つまんで動かせる。左下の「しまう」に入れるともどる。') : '下から、置きたいかざりをえらぼう。') : 'かざりは、おうちの「どんぐりでエサ・かざりを買う」で買えるよ。',
     yubi:'手をつかんで、葉や木にのせるとのぞける。虫にのせるとそっとさわる。置いたエサやかざりは、直接つまんで動かせる。', fukin:dirtN || oldN ? `スポンジをつかんで、よごれの上でこすろう（のこり${dirtN + oldN}）` : 'ガラスはきれい。', kiri:'きりふきをつかんで、かけたい場所で指を止めると水が出る。動かしている間は出ない。', esa:st.k === 'pupa' ? 'さなぎは、なにも食べない。' : `エサをつかんで、置きたい場所ではなす（${esc(food.name)}${food.price ? ` ×${S.items[foodKey]||0}` : ''}）`, furu:'ケースをつかんで、左右に動かすとゆれる。何回もゆらすと、虫がおどろくよ。'}[tool];
   const esaGuide = st.k === 'pupa' ? '' : `エサをつかんで、置きたい場所ではなす`;
   view.innerHTML = `<div class="row" style="justify-content:space-between"><h2>${title}</h2><button type="button" class="btn sub" id="btnBack">もどる</button></div>
     <div class="row" style="margin-bottom:6px"><span class="tag born">${esc((BORN[c.born]||BORN.any).name)}</span>${c.bornSlot === 'yoru' ? '<span class="tag">夜型</span>' : ''}<span class="tag">${esc(PLACES[c.place].name)}</span>${c.wide ? '<span class="tag">広いケース</span>' : ''}${c.rare ? '<span class="tag" style="background:#7a5a20">めずらしい色</span>' : ''}</div>
-    <div id="obs"><div class="scene tool-${tool}" id="scene">${sc.svg}<div class="toolObj norb" id="toolObj" hidden></div><div class="binZone norb" id="binZone" hidden>しまう</div><div class="mini norb" id="mini" hidden></div></div>
+    <div id="obs"><div class="scene tool-${tool}" id="scene">${sc.svg}<div class="toolObj norb" id="toolObj" hidden></div><div class="binZone norb" id="binZone" hidden>しまう</div>${tool === 'big' && st.k !== 'pupa' ? `<div class="refuge norb ${big && big.step >= 1 ? 'on' : ''}" id="refuge"><small>ひなんケース</small><div class="rb" id="refugeBug">${big && big.step >= 2 ? svgBug(c.bug, st.k, {instar:instarOf(c), scale:.9}) : ''}</div></div>` : ''}<div class="mini norb" id="mini" hidden></div></div>
       <div class="tools">${Object.keys(TOOLS).map(k=>`<button type="button" class="tbtn ${tool===k?'on':''}" data-tool="${k}" ${k==='esa' && st.k==='pupa' ? 'disabled' : ''}><span class="ic">${TOOLS[k].ic}</span>${TOOLS[k].name}</button>`).join('')}</div>
       ${tool === 'kazari' ? `<div class="decoPick" id="decoPick">${ownDeco.map(k=>`<button type="button" class="pk ${decoSel===k?'on':''}" data-deco="${k}"><svg viewBox="0 0 100 100">${ITEMS[k].cat==='mat' ? `<rect x="10" y="40" width="80" height="45" rx="6" fill="${MATS[k].fill}"/>` : decoSVG(k)}</svg>${esc(ITEMS[k].name)}<small>×${S.items[k]}</small></button>`).join('')}</div>` : ''}
       <div class="guide small" id="guide">${guide}</div>
@@ -1291,8 +1367,8 @@ async function renderObs(){
       <button type="button" class="btn sub" id="aLook">じっくり見る<small>ずかんでしらべる</small></button>
       <button type="button" class="btn sub" id="aRelease">もとの場所にかえす<small>${st.k === 'adult' ? 'ごほうびがもらえる' : 'いつでもできる'}</small></button>
     </div>`;
-  $('btnBack').onclick = ()=>{ openCase = null; obsSession = null; render(); };
-  view.querySelectorAll('[data-tool]').forEach(bt=> bt.onclick = ()=>{ tool = bt.dataset.tool; renderObs(); });
+  $('btnBack').onclick = ()=>{ openCase = null; obsSession = null; render(); };   // 大そうじのとちゅうでも、もどれば虫はケースにいる（big は obsSession ごと消える）
+  view.querySelectorAll('[data-tool]').forEach(bt=> bt.onclick = async ()=>{ if(obsSession.big && bt.dataset.tool !== 'big'){ obsSession.big = null; await say('大そうじをとちゅうでやめた。虫はケースにもどした。'); } tool = bt.dataset.tool; renderObs(); });
   view.querySelectorAll('[data-deco]').forEach(bt=> bt.onclick = async ()=>{ const k = bt.dataset.deco;
     if(ITEMS[k].cat === 'mat'){ if(c.mat === k){ await say('もう、このマットをしいている。'); return; } if(c.mat) S.items[c.mat] = (S.items[c.mat]||0) + 1; S.items[k]--; c.mat = k; c.log.over++; save(); await say(`${ITEMS[k].name}をしきかえた。\n${c.mat === 'mat_fuyo' ? '幼虫がもぐっていった。腐葉土は、かわきにくい。' : 'ケースの見た目がかわった。'}`); decoSel = null; renderObs(); return; }
     decoSel = decoSel === k ? null : k; renderObs(); });
@@ -1304,7 +1380,7 @@ async function renderObs(){
   const restPos = ()=>{ const r = sceneEl.getBoundingClientRect(); return {x:r.width - 56, y:r.height - 54}; };
   const objPos = {x:0, y:0};
   const setObj = (x, y, cls='')=>{ objPos.x = x; objPos.y = y; toolObj.style.left = x + 'px'; toolObj.style.top = y + 'px'; toolObj.className = 'toolObj norb ' + cls; };
-  const showTool = ()=>{ if(tool === 'furu' || (tool === 'esa' && st.k === 'pupa') || (tool === 'kazari' && (!decoSel || ITEMS[decoSel].cat === 'mat'))){ toolObj.hidden = true; return; } const r = restPos(); toolObj.innerHTML = toolIc() + '<span class="hint">つかんで動かす</span>'; toolObj.hidden = false; setObj(r.x, r.y, 'rest'); };
+  const showTool = ()=>{ if(tool === 'furu' || tool === 'big' || (tool === 'esa' && st.k === 'pupa') || (tool === 'kazari' && (!decoSel || ITEMS[decoSel].cat === 'mat'))){ toolObj.hidden = true; return; } const r = restPos(); toolObj.innerHTML = toolIc() + '<span class="hint">つかんで動かす</span>'; toolObj.hidden = false; setObj(r.x, r.y, 'rest'); };
   const hotXY = ()=>{ const r = sceneEl.getBoundingClientRect(), h = HOT[tool]; return toXYc(r.left + objPos.x + h.x, r.top + objPos.y + h.y); };
   showTool();
   const ripple = e=>{ const r = sceneEl.getBoundingClientRect(), d = document.createElement('div'); d.className = 'ripple'; d.style.left = (e.clientX - r.left) + 'px'; d.style.top = (e.clientY - r.top) + 'px'; sceneEl.appendChild(d); setTimeout(()=>d.remove(), 520); };
@@ -1413,7 +1489,50 @@ async function renderObs(){
     const sc = dragItem.type === 'food' ? `scale(${.5 + .5*Math.max(.2, dragItem.it.left)}) translate(-50 -50)` : 'scale(.55) translate(-50 -70)';
     dragItem.el.setAttribute('transform', `translate(${dragItem.it.x} ${dragItem.it.y}) ${sc}`); if(dragItem.type === 'deco') binZone.classList.toggle('over', inBin(e)); };
   const dragTo = e=>{ const r = sceneEl.getBoundingClientRect(); setObj(clamp(e.clientX - r.left - grab.dx, 8, r.width - 8), clamp(e.clientY - r.top - grab.dy, 8, r.height - 8), 'drag' + (tool === 'fukin' ? ' wipe' : '') + (sprayTimer ? ' spray' : '')); };
+  // ---- 大そうじ：虫を長おしでつまむ → ひなんケース → 土をなでる → もどす ----
+  const refuge = $('refuge'), bugG = $('bugG');
+  const inRefuge = e=>{ if(!refuge) return false; const r = refuge.getBoundingClientRect(); return e.clientX > r.left - 10 && e.clientX < r.right + 10 && e.clientY > r.top - 10 && e.clientY < r.bottom + 10; };
+  let holdT = null, holding = false, carry = null;   // carry: {el} 指についてくる虫
+  const startBig = ()=>{ obsSession.big = {step:1, pass:0, lastX:null, cover:0}; renderObs(); };
+  const carryStart = (e, fromRefuge)=>{ holding = true; carry = document.createElement('div'); carry.className = 'carry norb'; carry.innerHTML = svgBug(c.bug, st.k, {instar:instarOf(c)}); sceneEl.appendChild(carry); carryMove(e); if(fromRefuge) $('refugeBug').innerHTML = ''; else { const bg = $('bugG'); if(bg){ bg.classList.remove('press'); bg.style.opacity = 0; } } setTxt('そっとつまんだ。ゆっくり運ぼう。'); };
+  const carryMove = e=>{ if(!carry) return; const r = sceneEl.getBoundingClientRect(); carry.style.left = (e.clientX - r.left) + 'px'; carry.style.top = (e.clientY - r.top - 30) + 'px'; if(refuge) refuge.classList.toggle('over', inRefuge(e)); };
+  const bigDown = e=>{
+    const bg = obsSession.big;
+    if(!bg || bg.step === 1){   // 虫を長おし
+      if(!nearBug(toXY(e).x, toXY(e).y)){ ripple(e); setTxt('虫のところを、長おししてつまもう。'); return; }
+      down = true; sceneEl.setPointerCapture(e.pointerId); if(!bg) startBig_quiet();
+      holdT = setTimeout(()=>{ holdT = null; carryStart(e, false); }, 900);
+      const bugEl = $('bugG'); if(bugEl) bugEl.classList.add('press');
+      return;
+    }
+    if(bg.step === 2){ down = true; sceneEl.setPointerCapture(e.pointerId); bg.lastX = e.clientX; bg.cover = 0; return; }
+    if(bg.step === 3){ if(!inRefuge(e)){ ripple(e); setTxt('ひなんケースの虫をつまんで、もどそう。'); return; } down = true; sceneEl.setPointerCapture(e.pointerId); holdT = setTimeout(()=>{ holdT = null; carryStart(e, true); }, 500); return; }
+  };
+  const startBig_quiet = ()=>{ obsSession.big = {step:1, pass:0, lastX:null, cover:0}; };
+  const bigMove = e=>{
+    const bg = obsSession.big; if(!bg) return;
+    if(holding){ carryMove(e); return; }
+    if(holdT && (bg.step === 1 || bg.step === 3)){   // 長おしする前に動かした＝力を入れすぎ
+      clearTimeout(holdT); holdT = null; down = false; c.log.over++; save();
+      const bugEl = $('bugG'); if(bugEl){ bugEl.classList.remove('press'); bugEl.classList.add('jitter'); setTimeout(()=>bugEl.classList.remove('jitter'), 600); }
+      setTxt('力を入れすぎ！ 虫がじたばたした。長おしして、そっとつまもう。'); return;
+    }
+    if(bg.step === 2){ const q = toXY(e), soilTop = soilTopOf(b); if(q.y < soilTop - 4) return; const dx = Math.abs(e.clientX - (bg.lastX ?? e.clientX)); bg.lastX = e.clientX; bg.cover += dx;
+      const wl = $('wetLayer'); if(wl) wl.setAttribute('opacity', (.35 * Math.max(0, 1 - bg.cover/400)).toFixed(2));
+      if(bg.cover > 220){ bg.cover = 0; bg.pass++; $('guide').textContent = bg.pass >= 3 ? '新しい土になった！ ひなんケースの虫をつまんで、もどそう。' : `土を指でなでて、新しい土に入れかえよう（あと${3 - bg.pass}回）`; if(bg.pass >= 3){ bg.step = 3; finishSoil(); } } }
+  };
+  const finishSoil = ()=>{ c.soilAge = 0; c.clean = 100; c.dirt = []; c.foods = c.foods.filter(f=>!f.old); c.soak = 0; if(c.trouble){ c.trouble = null; } save(); renderObs(); setTimeout(()=> setTxt('ふかふかの新しい土になった！ ひなんケースの虫を、そっともどしてあげよう。'), 50); };
+  const bigUp = async e=>{
+    const bg = obsSession.big; down = false;
+    if(holdT){ clearTimeout(holdT); holdT = null; const bugEl = $('bugG'); if(bugEl) bugEl.classList.remove('press'); if(bg && bg.step === 1) setTxt('長おし（1びょう）してから、動かそう。'); return; }
+    if(!holding) return; holding = false; if(carry){ carry.remove(); carry = null; } if(refuge) refuge.classList.remove('over');
+    if(bg.step === 1){ if(inRefuge(e)){ bg.step = 2; save(); renderObs(); setTimeout(()=> setTxt('ひなんケースに入れた。これで、土を入れかえられる。'), 50); await yakusoku('bigclean', '虫は、力を入れずに、そっと持とうね。\n大そうじの間は、ひなんケースで待っていてもらおう。'); }
+      else { const bugEl = $('bugG'); if(bugEl) bugEl.style.opacity = ''; setTxt('ケースの中にもどした。ひなんケースまで運ぼう。'); } return; }
+    if(bg.step === 3){ if(inRefuge(e)){ $('refugeBug').innerHTML = svgBug(c.bug, st.k, {instar:instarOf(c), scale:.9}); setTxt('まだひなんケースの中。ケースにもどそう。'); return; }
+      obsSession.big = null; c.log.clean += 2; c.hideUntil = 0; save(); renderObs(); setTimeout(()=> setTxt('大そうじ、おつかれさま！ 虫も新しい土によろこんでいる。'), 50); await yakusoku('bigdone', '大そうじは、3日に1回くらい。\n土やマットは、虫の家そのもの。きれいな家で、元気に育つよ。'); }
+  };
   sceneEl.onpointerdown = e=>{ e.preventDefault();
+    if(tool === 'big'){ if(st.k === 'pupa'){ ripple(e); setTxt('さなぎの間は、大そうじはできない。'); return; } bigDown(e); return; }
     const hit = tool !== 'fukin' && tool !== 'furu' && !nearObj(e) && itemAt(e);
     if(hit){ down = true; dragItem = hit; sceneEl.setPointerCapture(e.pointerId); ripple(e); if(hit.type === 'deco') binZone.hidden = false; return; }
     if(tool === 'furu'){ down = true; sceneEl.setPointerCapture(e.pointerId); ripple(e); furu.x0 = furu.last = e.clientX; furu.n = 0; furu.seg = 0; furu.dir = 0; return; }
@@ -1422,13 +1541,14 @@ async function renderObs(){
     toolObj.querySelector('.hint')?.remove(); dragTo(e); lastMove = Date.now();
     if(tool === 'kiri'){ stillT = setInterval(()=>{ if(Date.now() - lastMove > 280) sprayStart(); }, 60); } };
   sceneEl.onpointermove = e=>{ if(!down) return;
+    if(tool === 'big'){ bigMove(e); return; }
     if(dragItem){ moveItem(e); return; }
     if(tool === 'furu'){ furuMove(e); return; }
     const r = sceneEl.getBoundingClientRect(), nx = e.clientX - r.left - grab.dx, ny = e.clientY - r.top - grab.dy;
     if(Math.hypot(nx - objPos.x, ny - objPos.y) > 2.5){ lastMove = Date.now(); if(tool === 'kiri') sprayStop(); }
     dragTo(e);
     if(tool === 'fukin'){ const q = hotXY(); wipeAt(q.x, q.y); } };
-  sceneEl.onpointerup = sceneEl.onpointercancel = async e=>{ if(!down) return; down = false; clearInterval(stillT); stillT = null;
+  sceneEl.onpointerup = sceneEl.onpointercancel = async e=>{ if(!down) return; if(tool === 'big'){ await bigUp(e); return; } down = false; clearInterval(stillT); stillT = null;
     if(dragItem){ const di = dragItem, binned = di.type === 'deco' && inBin(e); dragItem = null; binZone.hidden = true; binZone.classList.remove('over');
       if(binned){ c.deco = c.deco.filter(d=>d !== di.it); S.items[di.it.k] = (S.items[di.it.k]||0) + 1; save(); setTxt(`${ITEMS[di.it.k].name}をしまった。`); renderObs(); return; }
       c.log.over += di.type === 'food' ? 0 : 0; save(); renderObs(); setTimeout(()=> setTxt(di.type === 'food' ? 'エサの場所をかえた。' : `${ITEMS[di.it.k].name}の場所をかえた。`), 50); return; }
@@ -1627,7 +1747,7 @@ async function doFind(sp, here, egg, slot){
     const keys = Object.keys(PLACES), pi = await say('おうちの、どこにおく？', {ans:keys.map(k=>`${PLACES[k].name}：${PLACES[k].desc}`)});
     const wide = wi === 1; if(wide) S.items.wide--;
     S.cases[free] = {bug:id, si:0, prog:0, hunger:70, wet:70, clean:100, tick:now(), pending:false, from:sp.name, born:sp.key, bornSlot:slotOf(), since:dayKey(),
-      ind:{hp:1, atk:1, def:1, spd:1, heal:1}, log:newLog(), tot:newLog(), place:keys[pi], wide, trouble:null, dirt:[], foods:[], soak:0, hideUntil:0, deco:[], mat:null};
+      ind:{hp:1, atk:1, def:1, spd:1, heal:1}, log:newLog(), tot:newLog(), place:keys[pi], wide, trouble:null, dirt:[], foods:[], soak:0, hideUntil:0, deco:[], mat:null, soilAge:0};
     save(); hud();
     await say(`${b.name}の${id === 'kinkabuto' ? 'たまご' : '幼虫'}を、${free+1}ばんめのケース（${PLACES[keys[pi]].name}）に入れた。\n「${BORN[sp.key].name}」の虫だ。`);
     await yakusoku('take', '虫をつれてかえるときは、いきをしやすいように、ふたにあなをあけたケースに。\n日なたにおくと、あつくて弱ってしまうよ。');
@@ -1688,16 +1808,30 @@ async function sumoBattle(r, c){
   await say(`${r.name}「${r.hi}」`);
   const A = document.createElement('div'); A.id = 'arena';
   const info = (f, side)=> `<div class="info ${side}"><b>${esc(f.name)}</b> <small>${f.t.name}</small><span class="bar"><i id="hp-${side}" style="width:100%"></i></span><small id="hpn-${side}">${f.hp}/${f.maxhp}</small></div>`;
-  A.innerHTML = `<div class="ring"><div class="dohyo"></div>${info(me,'l')}${info(op,'r')}<div class="vs norb">VS</div>
-      <div class="fighter mine" id="f-l">${svgBest(me.id, {rare:c.rare})}</div><div class="fighter" id="f-r">${svgBest(op.id)}</div></div>
+  A.innerHTML = `<div class="ring"><div class="dohyo"></div>${info(me,'l')}${info(op,'r')}<div class="vs norb" hidden>VS</div><div class="gyoji norb">🪭</div>
+      <div class="fighter mine enter" id="f-l">${svgBest(me.id, {rare:c.rare})}</div><div class="fighter enter" id="f-r">${svgBest(op.id)}</div></div>
     <div class="log" id="blog"></div><div class="ctl"><button type="button" class="btn sub" id="bCheer">おうえん！</button><button type="button" class="btn" id="bFast">はやおくり</button></div>`;
   document.body.appendChild(A);
   let fast = false, cheer = 0; $('bFast').onclick = ()=>{ fast = true; $('bFast').disabled = true; };
-  $('bCheer').onclick = e=>{ cheer++; const s = document.createElement('span'); s.className = 'cheer norb'; s.textContent = pick(['がんばれ！','いけー！','負けるな！']); s.style.left = (20 + Math.random()*40) + '%'; s.style.bottom = '30%'; A.querySelector('.ring').appendChild(s); setTimeout(()=>s.remove(), 1000); };
+  $('bCheer').onclick = e=>{ cheer++; const s = document.createElement('span'); s.className = 'cheer norb'; s.textContent = pick(['がんばれ！','いけー！','負けるな！']); s.style.left = (20 + Math.random()*40) + '%'; s.style.bottom = '30%'; A.querySelector('.ring').appendChild(s); setTimeout(()=>s.remove(), 1000); spawn(me, 'conf', 6); };
   const logEl = $('blog');
   const logLine = async (t, cls='')=>{ const d = document.createElement('div'); d.className = cls; d.textContent = t; logEl.appendChild(d); logEl.scrollTop = 1e6; await wait(fast ? 90 : 700); };
   const drawHp = f=>{ const side = f === me ? 'l' : 'r'; $('hp-'+side).style.width = Math.max(0, f.hp/f.maxhp*100) + '%'; $('hp-'+side).className = f.hp/f.maxhp < .3 ? 'low' : ''; $('hpn-'+side).textContent = `${Math.max(0,Math.round(f.hp))}/${f.maxhp}`; };
-  const fx = (f, cls)=>{ const el = $('f-' + (f === me ? 'l' : 'r')); el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); setTimeout(()=>el.classList.remove(cls), 450); };
+  const elOf = f=> $('f-' + (f === me ? 'l' : 'r'));
+  const fx = (f, cls, ms=450)=>{ const el = elOf(f); el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); setTimeout(()=>el.classList.remove(cls), ms); };
+  const ring = A.querySelector('.ring');
+  // 粒や音符を、その虫のまわりに出す
+  const spawn = (f, kind, n=6)=>{ const el = elOf(f), rr = ring.getBoundingClientRect(), r = el.getBoundingClientRect();
+    for(let i=0;i<n;i++){ const d = document.createElement('span'); d.className = 'pt ' + kind + ' norb';
+      d.textContent = kind === 'note' ? '♪' : kind === 'heart' ? '💛' : kind === 'heal' ? '✦' : kind === 'star' ? '✨' : kind === 'zzz' ? '💤' : '';
+      if(kind === 'heal') d.style.color = '#8f8'; if(kind === 'conf') d.style.setProperty('--c', pick(['#f4b63c','#e8553e','#5ccf6a','#4a8ad8','#fff']));
+      d.style.left = (r.left - rr.left + r.width*(.2 + Math.random()*.6)) + 'px'; d.style.top = (r.top - rr.top + r.height*(kind === 'conf' ? -.2 : .1 + Math.random()*.5)) + 'px';
+      d.style.setProperty('--dx', (Math.random()*60 - 30) + 'px'); d.style.animationDelay = (Math.random()*.25) + 's';
+      ring.appendChild(d); setTimeout(()=>d.remove(), 1800); } };
+  const flash = ()=>{ const d = document.createElement('div'); d.className = 'flash'; ring.appendChild(d); setTimeout(()=>d.remove(), 600); };
+  const banner = async (t, ms)=>{ const d = document.createElement('div'); d.className = 'banner norb'; d.textContent = t; ring.appendChild(d); await wait(ms); d.remove(); };
+  const idle = f=>{ const el = elOf(f); [...el.classList].filter(k=>k.startsWith('idle-')).forEach(k=>el.classList.remove(k)); const k = Object.keys(PERS).find(k=>PERS[k] === f.pers) || 'futsu'; el.classList.add('idle-' + k); };
+  const slow = ms=> wait(fast ? Math.min(ms, 90) : ms);
   // 行動をえらぶ（性格の重み＋状況）
   function choose(f, o){
     if(f.charm > 0){ f.charm--; return 'charm'; }
@@ -1717,42 +1851,53 @@ async function sumoBattle(r, c){
   }
   async function act(f, o, a){
     const my = f === me, cls = my ? 'my' : '', nm = f.name;
-    f.open = 1; f.guard = false; f.counter = false;
-    if(a === 'charm'){ await logLine(`${nm}は うっとりして 動けない！`, cls); return; }
-    if(a === 'guard'){ f.guard = true; f.lastGuard = true; const h = Math.round(f.maxhp * f.heal); f.hp = Math.min(f.maxhp, f.hp + h); drawHp(f); await logLine(`${nm}は ふんばった！ HPが${h}かいふく`, cls); return; }
+    f.open = 1; f.guard = false; f.counter = false; elOf(f).classList.remove('shield');
+    if(a === 'charm'){ elOf(f).classList.add('dizzy'); spawn(f, 'heart', 3); await logLine(`${nm}は うっとりして 動けない！`, cls); elOf(f).classList.remove('dizzy'); return; }
+    if(a === 'guard'){ f.guard = true; f.lastGuard = true; const h = Math.round(f.maxhp * f.heal); f.hp = Math.min(f.maxhp, f.hp + h); drawHp(f); elOf(f).classList.add('shield'); if(h > 0) spawn(f, 'heal', 3); await logLine(`${nm}は ふんばった！ HPが${h}かいふく`, cls); return; }
     f.lastGuard = false;
     const mv = a === 'sp' ? (f.moves[1] || f.moves[0]) : null;
-    fx(f, 'act');
+    const song = mv && /ソング|リーン|合唱|音量/.test(mv.name), dustMv = mv && (mv.blind && !song);
+    const hitFx = async (big)=>{ fx(o, 'hit'); if(big) fx(o, 'fly', 700); await slow(big ? 420 : 200); };
     if(mv){
       await logLine(`${nm}の ${mv.name}！`, cls);
       f.open = mv.open;
-      if(mv.heal){ const h = Math.round(f.maxhp*mv.heal); f.hp = Math.min(f.maxhp, f.hp + h); drawHp(f); await logLine(`${nm}の HPが${h}かいふくした`, cls); return; }
-      if(mv.counter){ f.guard = true; f.counter = true; }
+      if(mv.heal){ const h = Math.round(f.maxhp*mv.heal); f.hp = Math.min(f.maxhp, f.hp + h); drawHp(f); fx(f, 'heal', 900); spawn(f, 'heal', 8); await logLine(`${nm}の HPが${h}かいふくした`, cls); return; }
+      if(mv.counter){ f.guard = true; f.counter = true; elOf(f).classList.add('shield'); }
+      if(song){ spawn(f, 'note', 8); if(f.id === 'genji') flash(); }
+      if(dustMv){ spawn(o, 'dust', 14); }
+      if(mv.name === 'ピカピカフラッシュ') flash();
       const hits = mv.hits || 1; let any = false;
       for(let i=0;i<hits;i++){
+        if(mv.mult > 0 && !mv.counter){ fx(f, 'lunge', 380); await slow(220); }
         const acc = mv.acc * (f.blind > 0 ? .5 : 1); if(f.blind > 0) f.blind--;
-        if(Math.random() > acc){ await logLine(`…${o.name}は ひらりとかわした！`); continue; }
-        if(mv.mult > 0){ const d = dmg(f, o, mv.mult, mv.pierce); o.hp -= d; drawHp(o); fx(o, 'hit'); any = true; await logLine(`${o.name}の HPが${d}へった！`, cls); }
+        if(Math.random() > acc){ fx(o, 'act', 300); await logLine(`…${o.name}は ひらりとかわした！`); continue; }
+        if(mv.mult > 0){ const d = dmg(f, o, mv.mult, mv.pierce); o.hp -= d; drawHp(o); any = true; await hitFx(mv.mult >= 1.7); await logLine(`${o.name}の HPが${d}へった！`, cls); }
         if(o.hp <= 0) return;
       }
       if(any || mv.mult === 0){
-        if(mv.blind){ o.blind = mv.blind; await logLine(`${o.name}は 目がくらんで、攻撃が当たりにくくなった`, cls); }
+        if(mv.blind){ o.blind = mv.blind; spawn(o, 'star', 4); await logLine(`${o.name}は 目がくらんで、攻撃が当たりにくくなった`, cls); }
         if(mv.weaken){ o.weak = Math.min(o.weak, mv.weaken); await logLine(`${o.name}の ちからが下がった`, cls); }
-        if(mv.charm){ o.charm = mv.charm; await logLine(`${o.name}は うっとりした！`, cls); }
+        if(mv.charm){ o.charm = mv.charm; spawn(o, 'heart', 6); await logLine(`${o.name}は うっとりした！`, cls); }
       }
       if(mv.counter) await logLine(`${nm}は ふんばりながら かまえている`, cls);
       return;
     }
     const acc = .9 * (f.blind > 0 ? .5 : 1); if(f.blind > 0) f.blind--;
     await logLine(`${nm}の つっこみ！`, cls);
-    if(Math.random() > acc){ await logLine(`…${o.name}は ひらりとかわした！`); return; }
-    const d = dmg(f, o, 1, false); o.hp -= d; drawHp(o); fx(o, 'hit'); await logLine(`${o.name}の HPが${d}へった！`, cls);
-    if(o.counter && o.hp > 0){ const cd = Math.round(dmg(o, f, .6, false)); f.hp -= cd; drawHp(f); fx(f, 'hit'); await logLine(`${o.name}の はんげき！ ${nm}の HPが${cd}へった`, my ? '' : 'my'); }
+    fx(f, 'lunge', 380); await slow(220);
+    if(Math.random() > acc){ fx(o, 'act', 300); await logLine(`…${o.name}は ひらりとかわした！`); return; }
+    const d = dmg(f, o, 1, false); o.hp -= d; drawHp(o); await hitFx(false); await logLine(`${o.name}の HPが${d}へった！`, cls);
+    if(o.counter && o.hp > 0){ const cd = Math.round(dmg(o, f, .6, false)); f.hp -= cd; drawHp(f); fx(o, 'lunge', 380); await slow(200); fx(f, 'hit'); await logLine(`${o.name}の はんげき！ ${nm}の HPが${cd}へった`, my ? '' : 'my'); }
   }
-  await logLine(`${me.name} 対 ${op.name}！ はっけよい、のこった！`, 'ko');
+  // 入場
+  await slow(950); A.querySelector('.vs').hidden = false; idle(me); idle(op);
+  await logLine(`東、${op.name}。西、${me.name}（${(BORN[c.born]||BORN.any).name}）。`, 'ko');
+  await banner('はっけよい', fast ? 200 : 900); await banner('のこった！', fast ? 200 : 700);
+  await logLine(`はっけよい、のこった！`, 'ko');
   let round = 0, winner = null;
   while(round++ < 30){
-    if(cheer > 0 && round === 2){ const k = c.pers === 'hitonatsu' ? .08 : .04; me.atk *= 1 + k*Math.min(cheer, 3); await logLine(`おうえんで ${me.name}は はりきっている！`, 'my'); }
+    if(cheer > 0 && round === 2){ const k = c.pers === 'hitonatsu' ? .08 : .04; me.atk *= 1 + k*Math.min(cheer, 3); spawn(me, 'conf', 16); const cr = document.createElement('div'); cr.className = 'crowd norb'; cr.textContent = 'わー！ がんばれー！'; ring.appendChild(cr); setTimeout(()=>cr.remove(), 1300); await logLine(`おうえんで ${me.name}は はりきっている！`, 'my'); }
+    if(me.pers === PERS.makezu && me.hp/me.maxhp < .3 && !me.leanSaid){ me.leanSaid = 1; await logLine(`${me.name}は まけずぎらい。ピンチで 前に出た！`, 'my'); }
     const am = choose(me, op), ao = choose(op, me);
     const mf = am === 'sp' && me.moves[1] && me.moves[1].first, of = ao === 'sp' && op.moves[1] && op.moves[1].first;
     const first = mf !== of ? (mf ? me : op) : (me.spd === op.spd ? (Math.random() < .5 ? me : op) : (me.spd > op.spd ? me : op));
@@ -1762,9 +1907,10 @@ async function sumoBattle(r, c){
   }
   if(!winner) winner = me.hp/me.maxhp >= op.hp/op.maxhp ? me : op;
   const won = winner === me, loser = won ? op : me;
-  $('f-' + (loser === me ? 'l' : 'r')).classList.add('down');
+  elOf(loser).classList.add('out'); if(won) spawn(me, 'conf', 20);
   await logLine(won ? `${op.name}は 土俵の外へ！ ${me.name}の勝ち！` : `${me.name}は 土俵の外へ… ${op.name}の勝ち。`, 'ko');
-  await wait(fast ? 300 : 1200);
+  await banner(won ? 'かち！' : 'まけ…', fast ? 300 : 1200);
+  await wait(fast ? 200 : 600);
   const ok = document.createElement('button'); ok.type = 'button'; ok.className = 'btn pri'; ok.textContent = 'つぎへ'; A.querySelector('.ctl').innerHTML = ''; A.querySelector('.ctl').appendChild(ok);
   await new Promise(r=> ok.onclick = r); A.remove();
   // 結果：勝因・敗因を育て方にむすびつける
