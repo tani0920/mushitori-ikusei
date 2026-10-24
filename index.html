@@ -488,7 +488,7 @@ html.land #app{max-width:none;padding:max(4px,var(--st)) 0 max(6px,var(--sb)) 0;
 html.land #view{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 /* 日付・時間・どんぐりは、どの画面でも右上に1行 */
 html.land #hud{position:fixed;top:max(4px,var(--st));right:calc(10px + var(--sr));z-index:65;font-size:14px;gap:12px;flex-wrap:nowrap;white-space:nowrap;background:#1e2f24ee;border-radius:999px;padding:0 .7em;min-height:24px}
-html.land body:not(.obsMode) #view{padding-top:28px}
+html.land #view{padding-top:28px;overflow-x:hidden}
 html.land body.title #hud{display:none}
 html.land body.title #view{padding-top:0}
 /* タイトル：横画面で1画面に */
@@ -508,11 +508,11 @@ html.land #msgLayer{padding-bottom:12px;padding-left:90px}
 html.land #msgLayer .win{font-size:17px}
 html.land .saveMark{bottom:10px}
 /* 飼育ケースの画面 */
-html.land .obsGrid{display:grid;grid-template-columns:auto minmax(290px,1fr);gap:10px;align-items:start}
+html.land .obsGrid{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:start}
 html.land .obsL{display:flex;flex-direction:column;gap:6px}
-html.land #obs .scene{height:calc(var(--H) - 98px - var(--st) - var(--sb));width:auto;aspect-ratio:4/3;max-width:calc(var(--W) * .62)}
-html.land #obs .obsTxt{font-size:15px;line-height:1.5;padding:.35em .7em;max-height:76px;overflow-y:auto;max-width:calc((var(--H) - 98px) * 4 / 3)}
-html.land .obsR{max-height:calc(var(--H) - 8px - var(--st) - var(--sb));overflow-y:auto;padding:28px 34px 0 0}
+html.land #obs .scene{height:calc(var(--H) - 128px - var(--st) - var(--sb));width:auto;aspect-ratio:4/3;max-width:calc(var(--W) * .5)}
+html.land #obs .obsTxt{font-size:15px;line-height:1.5;padding:.35em .7em;max-height:76px;overflow-y:auto;max-width:calc((var(--H) - 128px) * 4 / 3)}
+html.land .obsR{max-height:calc(var(--H) - 38px - var(--st) - var(--sb));overflow-y:auto;overflow-x:hidden;padding:0 4px 0 0;min-width:0}
 html.land .obsR .obsHead h2{font-size:16px}
 html.land .obsR .tools{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:4px}
 html.land .obsR .tools .tbtn{min-height:56px;font-size:12px}
@@ -560,7 +560,7 @@ html.land #arena .ctl{grid-column:2;margin-top:0}
 <div id="app">
   <header><h1>むなかた虫そだて</h1><small>デモ <span class="gver"></span></small></header>
   <div id="hud" hidden></div>
-  <div id="view"></div><!-- メイン画面（#view） -->
+  <div id="view"></div><!-- 中央画面（#view） -->
 </div>
 <!-- 左メニュー（#tabs）：そと・すもう・おみせ・ずかん・その他（たて画面のPCでは下にならび、おうちもここ） -->
 <div id="tabs" hidden>
@@ -594,16 +594,19 @@ const SAVE_KEY = KEY_PRE + 'munakata-mushisodate-v1';
 const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
-const GAME_VER = '0.7.1';
-const BUILD = '20261024-1410';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const GAME_VER = '0.7.2';
+const BUILD = '20261024-1419';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
+  {v:'0.7.2', date:'2026-10-24', items:[
+    '飼育ケースの画面で、中央画面が横にずれる（右の道具ボタンがはみ出す）のを直した。虫かごを少し小さくした',
+    '虫かごを、右上の日付・時間と重ならない高さまで下げた']},
   {v:'0.7.1', date:'2026-10-24', items:[
-    'メイン画面を、右メニューのすぐ手前まで広げた（右がわの余白を2回分とっていたのを直した）']},
+    '中央画面を、右メニューのすぐ手前まで広げた（右がわの余白を2回分とっていたのを直した）']},
   {v:'0.7.0', date:'2026-10-24', items:[
     '虫かごは、はじめは1つ。おみせで買って、3つまでふやせる。3つあるときは、とりかえ（中の虫はそのまま）',
     '虫かごの種類：ふつうの虫かご・広い虫かご（すばやさが育つ）・あみ戸の虫かご（よごれにくく カビにくい、かわきやすい）・木の飼育箱（しめりけを保ち、育ちがよい）・観察ケースDX（広くて、よごれにくく、育ちもよい）',
     '「ケースのこと」から、あいている べつの虫かごにうつせる（前の「広いケースにうつす」のかわり）',
-    'おうちの一覧は1行に3つ。虫かごの種類とおき場所がひと目でわかる。メイン画面の「もちもの」はけした（右メニューの「もちもの」で見られる）',
+    'おうちの一覧は1行に3つ。虫かごの種類とおき場所がひと目でわかる。中央画面の「もちもの」はけした（右メニューの「もちもの」で見られる）',
     '「かう」を「おみせ」にした',
     'タイトル画面の右と下が切れないようにした（iPhoneの角やノッチのところをよけた）',
     '右メニューのパネルが、とじているときに少し見えていたのを直した']},
