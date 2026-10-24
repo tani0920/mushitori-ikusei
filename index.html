@@ -228,6 +228,10 @@ p{margin:.3em 0}
 @keyframes hop{0%,80%,100%{transform:translateY(0)}87%{transform:translateY(-6px)}94%{transform:translateY(0)}}
 .bug.sleep *{animation:none!important}
 .bug.sleep .body{animation:breath 4s ease-in-out infinite!important}
+/* ChatGPT でかいた絵（画像）の虫：おなかが、ゆっくりふくらんだりしぼんだりする（呼吸） */
+.bug .art{transform-box:fill-box;transform-origin:50% 100%;animation:artBreath 3.2s ease-in-out infinite}
+.bug.sleep .art{animation:artBreath 5.5s ease-in-out infinite!important;filter:saturate(.75) brightness(.9)}
+@keyframes artBreath{0%,100%{transform:scale(1,1)}50%{transform:scale(1.008,1.018)}}
 .note{animation:note 1.6s linear infinite;opacity:0}
 .note.b{animation-delay:-.8s}
 @keyframes note{0%{transform:translate(0,0);opacity:0}20%{opacity:1}100%{transform:translate(6px,-22px);opacity:0}}
@@ -595,9 +599,11 @@ const SAVE_KEY = KEY_PRE + 'munakata-mushisodate-v1';
 const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
-const GAME_VER = '0.7.3';
-const BUILD = '20261024-1435';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const GAME_VER = '0.7.4';
+const BUILD = '20261024-1536';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
+  {v:'0.7.4', date:'2026-10-24', items:[
+    'カブトムシの成虫が、新しい絵になった（はじめての手がきの絵）。ゆっくり呼吸している']},
   {v:'0.7.3', date:'2026-10-24', items:[
     '右メニューのパネルを開いたとき、右に出ていたよけいな余白をなくして、はばをせまくした',
     '「おうち」のタグを「虫かご」という名前にした',
@@ -1267,10 +1273,16 @@ const statLine = f=> `${f.t.name}タイプ　たいりょく${f.maxhp}　ちか�
 /* =========================================================
    虫の絵（パーツ分けした2DのSVG）。viewBox は 100x100。色は虫とり日記と同じ c[] を使う
    ========================================================= */
+/* 絵ができた虫は、SVG のかわりに画像を使う。img/bugs/名前.webp（tools/img_prep.py で作る）。100x100 の箱いっぱいに置く */
+const BUG_IMG = {
+  kabuto: {adult:'kabuto_adult_genki'},
+};
 function svgBug(id, stage, o={}){
   const b = BUGS[id], cls = ['bug', o.rest ? 'rest' : '', o.sleep ? 'sleep' : '', o.cls||''].join(' ');
   let inner = '';
-  if(stage === 'larva') inner = larvaSVG(id, b, o);
+  const img = (BUG_IMG[id] || {})[stage];
+  if(img) inner = `<image class="art" href="img/bugs/${img}.webp" width="100" height="100"/>`;
+  else if(stage === 'larva') inner = larvaSVG(id, b, o);
   else if(stage === 'pupa') inner = pupaSVG(id, b);
   else inner = adultSVG(id, b, o);
   if(o.rare) inner += `<circle cx="50" cy="50" r="46" fill="none" stroke="#ffe27a" stroke-width="1.5" opacity=".7" class="glow"/>`;
