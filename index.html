@@ -446,9 +446,14 @@ const SAVE_KEY = KEY_PRE + 'munakata-mushisodate-v1';
 const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
-const GAME_VER = '0.5.1';
-const BUILD = '20261024-0953';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const GAME_VER = '0.5.2';
+const BUILD = '20261024-1205';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
+  {v:'0.5.2', date:'2026-10-24', items:[
+    'ずかんで、羽化させていない虫の成虫のすがたを見せないようにした。幼虫で見つけたら幼虫の絵、見つけていない虫は幼虫のかげ',
+    '見つけたばかりの幼虫は、なんの虫かわからない（「なぞのいもむし」「なぞの白い幼虫」など）。1回脱皮して大きくなると「わかった！」となる',
+    '同じ虫を羽化させたことがあると、見つけたときにすぐわかる。同じなかまを3回羽化させると「観察眼」がついて、なかまの幼虫はみんなすぐわかる（ずかんに観察眼のようすが出る）',
+    'どんぐりの表示を「40 D」のように、数字と単位のあいだをあけた（0とDを見まちがえないように）']},
   {v:'0.5.1', date:'2026-10-24', items:[
     '大そうじも道具で行うようにした。🤏（手）をつかんで虫の上で止めるとそっとつまめる。すばやくぶつけると虫がいやがる。土は🧹（ほうき）で左右になでて入れかえる。なでると土がとびちる',
     'きりふきは、かけた場所だけがしめるようにした（ケースを5つに分けている）。一か所にかけつづけると、そこに水たまりができる。左上のメーターに、場所ごとのしめりけが5本の棒で出る',
@@ -626,7 +631,7 @@ const hhmm = (t=now())=>{ const d = new Date(t); return `${d.getHours()}:${Strin
 const SLOT_NAMES = {asa:'朝', hiru:'昼', yu:'夕方', yoru:'夜'};
 const SLOT_ICON = {asa:'🌅', hiru:'☀️', yu:'🌇', yoru:'🌙'};
 function slotOf(t=now()){ const h = new Date(t).getHours(); return h < 5 ? 'yoru' : h < 10 ? 'asa' : h < 16 ? 'hiru' : h < 19 ? 'yu' : 'yoru'; }
-const dg = n=> `${n}D`;   // どんぐり（虫とり日記と同じ、子どものための地域のお金）
+const dg = n=> `${n} D`;   // どんぐり（虫とり日記と同じ、子どものための地域のお金）。単位は D。数字の0と見まちがえないよう、あいだをあける
 
 /* =========================================================
    虫のデータ
@@ -749,6 +754,19 @@ const BUGS = {
     desc:'「ジージー」と鳴く、茶色いはねのセミ。宗像の夏の音といえばこれ。', info:'はねの先まで約5.5〜6cm。7〜9月。', real:'幼虫は土の中で数年そだつ。', care:'成虫は木のしるをすうので、飼うのはむずかしい。', find:''},
 };
 const STAGE_NAME = {larva:'幼虫', pupa:'さなぎ', adult:'成虫'};
+/* 見わけ：幼虫のうちは、なんの虫かわからない。1回脱皮して大きくなるとわかる。
+   同じ虫を羽化させたことがあると、見つけたときにすぐわかる。同じなかま（グループ）を3回羽化させると「観察眼」がついて、なかまの幼虫はみんなすぐわかる */
+const GROUP = {butterfly:{name:'いもむし', who:'チョウのなかま', find:'葉のうらに、いもむしがいた！ なんのチョウの幼虫だろう？'},
+  beetle:{name:'白い幼虫', who:'カブトムシかクワガタのなかま', find:'土の中から、白くて太い幼虫が出てきた！ なんの幼虫だろう？'},
+  grass:{name:'バッタのなかまの幼虫', who:'バッタのなかま', find:'草むらで、小さな幼虫がピョンとはねた！ なんのバッタかな？'},
+  mantis:{name:'カマキリのなかまの幼虫', who:'カマキリのなかま', find:'草のかげで、カマをかまえた小さな幼虫をみつけた！'},
+  cricket:{name:'鳴く虫のなかまの幼虫', who:'鳴く虫のなかま', find:'草の根もとで、黒くて小さな幼虫をみつけた！ なんの虫だろう？'}};
+const groupOf = id=> ({stag:'beetle'})[BUGS[id].shape] || BUGS[id].shape;
+const eyeOf = g=> Object.keys(BUGS).filter(id=> groupOf(id) === g && S.dex[id] && S.dex[id].adult).reduce((a,id)=> a + (S.dex[id].raisedN||1), 0);
+function knowsAtFind(id){ const b = BUGS[id]; if(b.watch || b.link) return 'link'; if(S.dex[id] && S.dex[id].adult) return 'raised'; if(GROUP[groupOf(id)] && eyeOf(groupOf(id)) >= 3) return 'eye'; return null; }
+const caseKnown = c=> c.known !== false;   // 古いセーブは わかっていることにする
+const dispName = c=> caseKnown(c) ? (c.name || BUGS[c.bug].name) : 'なぞの' + GROUP[groupOf(c.bug)].name;
+const speciesName = c=> caseKnown(c) ? BUGS[c.bug].name : '？？？';
 const WET_BAND = {beetle:[70,95], stag:[70,95], butterfly:[40,70], grass:[45,75], mantis:[45,75], cricket:[60,85], cicada:[40,70], firefly:[60,90]};   // ちょうどいいしめりけ
 /* 虫ずもうのタイプ（虫とり日記と同じ値）：ちから・まもり（受けるダメージの倍率）・たいりょく・かいふく（ふんばるで回復する割合） */
 const TYPES = {
@@ -1326,7 +1344,7 @@ function renderHome(){
     return `<div class="case" data-i="${i}">
       <div class="pic" style="background:linear-gradient(${SKY[slot][0]},${SKY[slot][1]} 60%,#5a3d22 61%)">${svgBug(c.bug, st.k, {instar:ins, scale:.8, rare:c.rare, sleep:(placeBug(c, slot).o||{}).sleep})}
         ${c.pending ? '<span class="ev norb">！</span>' : fc ? '<span class="ev norb">予告</span>' : ''}${nd.length ? `<span class="alert">${nd.join('・')}</span>` : ''}</div>
-      <div class="nm">${esc(c.name || b.name)}${c.name ? ` <small class="small">${esc(b.name)}</small>` : ''}</div><div class="st">${stageLabel(c)}${c.pending ? '　なにかおこりそう…' : st.k === 'adult' ? `　${c.size}mm・${esc(PERS[c.pers||'futsu'].name)}` : `　あと${daysLeft(c)}日くらい`}</div>
+      <div class="nm">${esc(dispName(c))}${c.name ? ` <small class="small">${esc(b.name)}</small>` : ''}</div><div class="st">${stageLabel(c)}${c.pending ? '　なにかおこりそう…' : st.k === 'adult' ? `　${c.size}mm・${esc(PERS[c.pers||'futsu'].name)}` : `　あと${daysLeft(c)}日くらい`}</div>
       <div class="meters"><span>元気</span><span class="bar"><i class="${meterCls(g)}" style="width:${g}%"></i></span></div></div>`;
   }).join('')}</div>
   <h3>もちもの</h3><div class="row">${Object.keys(S.items).filter(k=>S.items[k]>0).map(k=>`<span class="win" style="padding:.2em .6em;font-size:13px">${esc(ITEMS[k].name)} ×${S.items[k]}</span>`).join('') || '<span class="small">なにもない</span>'}</div>
@@ -1362,7 +1380,7 @@ async function renderObs(){
   const foodKey = st.k === 'adult' ? b.foodAdult : b.food, food = ITEMS[foodKey], haveFood = food.price === 0 || (S.items[foodKey]||0) > 0;
   const m = (lbl, v, extra='')=> `<span>${lbl}</span><span class="bar">${extra}<i class="${meterCls(v)}" style="width:${v}%"></i></span>`;
   const persTxt = c.pers && st.k === 'adult' ? `${PERS[c.pers].name}なので、${PERS[c.pers].txt}` : '';
-  const title = c.name ? `${esc(c.name)}（${esc(b.name)}の${stageLabel(c)}）` : `${esc(b.name)}の${stageLabel(c)}`;
+  const title = c.name ? `${esc(c.name)}（${esc(b.name)}の${stageLabel(c)}）` : caseKnown(c) ? `${esc(b.name)}の${stageLabel(c)}` : `なぞの${esc(GROUP[groupOf(c.bug)].name)}（${stageLabel(c)}）`;
   const dirtN = (c.dirt||[]).length, oldN = (c.foods||[]).filter(f=>f.old).length;
   const ownDeco = Object.keys(ITEMS).filter(k=>ITEMS[k].cat && (S.items[k]||0) > 0);
   const bigGuide = st.k === 'pupa' ? 'さなぎの間は、大そうじはできない。' : (!big || big.step === 1) ? ((c.soilAge||0) > 72 || big ? '' : 'まだ大そうじはいらない（3日に1回くらい）。') + '🤏をつかんで虫の上で止めると、そっとつまめる。右上のひなんケースへ運ぼう。すばやくぶつけると虫がいやがる。' : big.step === 2 ? `🧹をつかんで、土の上を左右に動かして入れかえよう（あと${3 - big.pass}回）` : '🤏をひなんケースの上で止めて虫をつまみ、ケースの中へもどそう。';
@@ -1611,9 +1629,9 @@ async function renderObs(){
     if(i >= keys.length) return; if(keys[i] !== c.place){ c.place = keys[i]; c.log.over++; save(); }   // うごかすと、少しおどろく
     renderObs();
   };
-  $('aLook').onclick = ()=> showDexDetail(c.bug);
+  $('aLook').onclick = ()=> caseKnown(c) ? showDexDetail(c.bug) : say(`まだ、なんの虫かわからない。${GROUP[groupOf(c.bug)].who}みたいだ。\n脱皮して大きくなったら、もう一度見てみよう。`);
   $('aRelease').onclick = async ()=>{
-    const adult = st.k === 'adult', nm = c.name || b.name;
+    const adult = st.k === 'adult', nm = dispName(c);
     if(!(await ask(adult ? `${nm}は、りっぱな成虫になった。\nみつけた場所（${esc(c.from)}）に、かえしてあげる？\n（かえすと、虫ずもうには出られなくなるよ）` : `${nm}を、まだとちゅうだけど、みつけた場所（${esc(c.from)}）にかえす？`, 'かえす', 'やめる'))) return;
     S.cases[openCase] = null;
     if(adult){ S.money += 50; S.stats.released++; const d = S.dex[c.bug]; d.raised = dayKey(); d.released = (d.released||0) + 1; await say(`${nm}は、${c.from}の空へ元気に飛んでいった！\nさいごまでそだてたごほうびに、どんぐり ${dg(50)} をもらった。`); }
@@ -1636,7 +1654,8 @@ async function playEvent(c){
   const L = document.createElement('div'); L.id = 'evLayer';
   const oldSvg = svgBug(c.bug, cur.k, {instar:ins}), newSvg = svgBug(c.bug, nx.k, {instar:ins+1, rare:c.rare, cls: kind === 'emerge' ? 'ev-emerge' : ''});
   const ttl = {molt:'脱皮した！', pupate:'さなぎになった！', emerge:'羽化した！'}[kind];
-  const cap = {molt:`${b.name}の幼虫は、古い皮をぬいで\nひとまわり大きくなった！`, pupate:`${b.name}の幼虫は、じっと動かなくなって…\nさなぎになった！`, emerge:`${b.name}の成虫が出てきた！\nはねが、ゆっくりひろがっていく…`}[kind];
+  const nm0 = caseKnown(c) ? b.name + 'の幼虫' : 'なぞの' + GROUP[groupOf(c.bug)].name;
+  const cap = {molt:`${nm0}は、古い皮をぬいで\nひとまわり大きくなった！`, pupate:`${b.name}の幼虫は、じっと動かなくなって…\nさなぎになった！`, emerge:`${b.name}の成虫が出てきた！\nはねが、ゆっくりひろがっていく…`}[kind];
   L.innerHTML = `<div class="stage"><div class="ly ${kind === 'emerge' ? 'ev-crack' : 'ev-old'}">${oldSvg}</div><div class="ly ev-new">${newSvg}</div>${kind === 'emerge' ? [20,45,70,30,60,80].map((x,i)=>`<i class="spark" style="left:${x}%;top:${40+(i%3)*15}%;animation-delay:${1.5+i*.2}s"></i>`).join('') : ''}</div><div class="ttl norb" hidden>${ttl}</div><div class="cap" hidden>${esc(cap).replace(/\n/g,'<br>')}</div>`;
   document.body.appendChild(L);
   await wait(kind === 'emerge' ? 3800 : 2600);
@@ -1646,10 +1665,11 @@ async function playEvent(c){
   // 次のすがたへ
   c.si++; c.prog = 0; c.pending = false; c.tick = now(); if(nx.k === 'pupa') c.hunger = 100;
   const bonus = {molt:10, pupate:20, emerge:30}[kind]; S.money += bonus; S.stats[kind] = (S.stats[kind]||0) + 1;
-  if(kind === 'emerge'){ const d = S.dex[c.bug]; d.adult = dayKey(); d.born = Object.assign(d.born||{}, {[c.born]:1}); if(!d.best || c.size > d.best) d.best = c.size; S.stats.raised++; }
+  if(kind === 'emerge'){ c.known = true; const d = S.dex[c.bug]; d.known = 1; d.raisedN = (d.adult ? (d.raisedN||1) + 1 : 1); d.adult = dayKey(); d.born = Object.assign(d.born||{}, {[c.born]:1}); if(!d.best || c.size > d.best) d.best = c.size; S.stats.raised++; }
   save();
   const learned = kind === 'molt' && ins === 0 ? `\n【わざ】「${MOVES[b.shape].name}」をおぼえた！` : kind === 'pupate' || (kind === 'molt' && ins >= 1) ? '\n体の中で、得意わざが育っているみたい…' : '';
   await say(`${ttl}　どんぐり ${dg(bonus)} をもらった。${learned}`);
+  if(!caseKnown(c)){ c.known = true; S.dex[c.bug].known = 1; save(); await say(`【わかった！】\n大きくなって、もようや形がはっきりしてきた。\nこの幼虫は、${b.name}の幼虫だ！ ずかんに登録。`); }
   if(kind === 'molt') await yakusoku('molt', '脱皮したばかりの虫は、体がやわらかい。\nしばらくは、さわらないでそっと見ていよう。');
   if(kind === 'pupate') await yakusoku('pupate', 'さなぎの中では、体がまるごと作りかえられている。\nゆらしたり、さわったりしないでね。');
   if(kind === 'emerge'){ await yakusoku('emerge', '羽化したばかりのはねは、まだやわらかい。\nはねがかわいてかたくなるまで、そっとしておこう。'); await showResult(c); }
@@ -1680,7 +1700,7 @@ async function showResult(c){
 async function handleGone(){
   for(let i=0;i<S.cases.length;i++){ const c = S.cases[i]; if(!c || !c.gone) continue;
     S.cases[i] = null; save();
-    await say(`${c.name || BUGS[c.bug].name}は、元気がなくなって、ケースから出ていってしまった…。\nお世話が足りなかったみたい。\n【そだてのやくそく】\n飼うときめたら、毎日、エサとしめりけとそうじを見てあげよう。`);
+    await say(`${dispName(c)}は、元気がなくなって、ケースから出ていってしまった…。\nお世話が足りなかったみたい。\n【そだてのやくそく】\n飼うときめたら、毎日、エサとしめりけとそうじを見てあげよう。`);
     render();
   }
 }
@@ -1750,11 +1770,14 @@ async function doFind(sp, here, egg, slot){
   if(egg){ id = 'kinkabuto'; S.link.kinEgg = 1; }
   else { const pool = []; here.forEach(b=>{ const w = {1:5, 2:3, 3:2, 4:1, 5:1}[BUGS[b].rank] * (BUGS[b].time.includes(slot) ? 2 : 1); for(let i=0;i<w;i++) pool.push(b); }); for(let i=0;i<4;i++) pool.push(null); id = pick(pool); }
   if(!id){ box.innerHTML = `<p>…今回は、みつからなかった。</p><p class="small">虫は、きみのことをよく見ている。もう一度、しずかにさがしてみよう。</p><button type="button" class="btn" id="btnAgain">もどる</button>`; $('btnAgain').onclick = renderSpot; return; }
-  const b = BUGS[id], first = !S.dex[id], odd = !b.time.includes(slot) && !b.link;
-  S.dex[id] = S.dex[id] || {found:dayKey(), where:sp.name}; save();
+  const b = BUGS[id], odd = !b.time.includes(slot) && !b.link, know = knowsAtFind(id), G = GROUP[groupOf(id)];
+  const first = !S.dex[id];
+  S.dex[id] = S.dex[id] || {found:dayKey(), where:sp.name}; if(know) S.dex[id].known = 1; save();
+  const findTxt = know === 'link' || know === 'raised' ? b.find : know === 'eye' ? `${G.find.replace(/ ?なん.*$|！$/, '！')}\n…観察眼で、すぐにわかった！ これは${b.name}の幼虫だ！` : G.find;
+  const whoTxt = know ? '' : `<br><small>まだ、なんの虫かわからない。${G.who}みたいだ。育てて大きくなると、わかるかも。</small>`;
   const oddTxt = odd ? `<br><b class="yk">【めずらしい】</b>こんな時間に会えるなんて！ ${esc(b.name)}は、ほんとうは${b.time.map(t=>SLOT_NAMES[t]).join('や')}に活動する虫なんだ。いまは、かくれてねむっているところを見つけたんだね。` : '';
   box.innerHTML = `<div class="found"><span class="ex norb">！</span><div class="pic">${b.watch ? svgBest(id) : svgBug(id, 'larva', {instar:0})}</div>
-    <div class="win" style="width:100%">${esc(b.find)}${oddTxt}${first ? '<br><b class="yk">はじめてみつけた！ ずかんに登録。</b>' : ''}</div>
+    <div class="win" style="width:100%">${fmtMsg(findTxt)}${whoTxt}${know ? oddTxt : ''}${first && know ? '<br><b class="yk">はじめてみつけた！ ずかんに登録。</b>' : first ? '<br><b class="yk">ずかんに「？？？」で登録。</b>' : ''}</div>
     <div class="row" id="foundBtns"></div></div>`;
   const btns = $('foundBtns');
   if(b.watch){
@@ -1777,7 +1800,8 @@ async function doFind(sp, here, egg, slot){
     S.cases[free] = {bug:id, si:0, prog:0, hunger:70, wet:70, clean:100, tick:now(), pending:false, from:sp.name, born:sp.key, bornSlot:slotOf(), since:dayKey(),
       ind:{hp:1, atk:1, def:1, spd:1, heal:1}, log:newLog(), tot:newLog(), place:keys[pi], wide, trouble:null, dirt:[], foods:[], soak:0, hideUntil:0, deco:[], mat:null, soilAge:0, wetZ:Array(WZ).fill(70), soakZ:Array(WZ).fill(0), stress:0};
     save(); hud();
-    await say(`${b.name}の${id === 'kinkabuto' ? 'たまご' : '幼虫'}を、${free+1}ばんめのケース（${PLACES[keys[pi]].name}）に入れた。\n「${BORN[sp.key].name}」の虫だ。`);
+    const nc = S.cases[free]; nc.known = !!know;
+    await say(`${know ? b.name + 'の' + (id === 'kinkabuto' ? 'たまご' : '幼虫') : 'なぞの' + G.name}を、${free+1}ばんめのケース（${PLACES[keys[pi]].name}）に入れた。\n「${BORN[sp.key].name}」の虫だ。`);
     await yakusoku('take', '虫をつれてかえるときは、いきをしやすいように、ふたにあなをあけたケースに。\n日なたにおくと、あつくて弱ってしまうよ。');
     renderSpot();
   };
@@ -1788,15 +1812,28 @@ function renderDex(){
   const ids = Object.keys(BUGS).filter(id=>!BUGS[id].npc), n = ids.filter(id=>S.dex[id]).length, r = ids.filter(id=>S.dex[id] && S.dex[id].adult).length;
   view.innerHTML = `<h2>こん虫ずかん</h2><p class="small">みつけた ${n} / ${ids.length}　羽化させた ${r}</p>
     <div class="dexGrid">${ids.map(id=>{ const d = S.dex[id], b = BUGS[id];
-      return `<div class="d ${d ? '' : 'no'}" data-id="${id}">${svgBest(id, {cls: d ? '' : 'sil'})}<div>${d ? esc(b.name) : '？？？'}</div>${d ? `<span class="mk">${d.raised ? '★そだててかえした' : d.adult ? '羽化した' : '見つけた'}</span>` : ''}</div>`; }).join('')}</div>`;
+      return `<div class="d ${d ? '' : 'no'}" data-id="${id}">${dexPic(id)}<div>${d && d.known ? esc(b.name) : '？？？'}</div>${d ? `<span class="mk">${d.raised ? '★そだててかえした' : d.adult ? '羽化した' : d.known ? '幼虫を見つけた' : 'なぞの幼虫'}</span>` : ''}</div>`; }).join('')}</div>
+    <p class="small">観察眼：${Object.keys(GROUP).map(g=>`${GROUP[g].who} ${Math.min(3, eyeOf(g))}/3`).join('　')}<br>（同じなかまを3回羽化させると、幼虫を見ただけでわかるようになる）</p>`;
   view.querySelectorAll('.d').forEach(el=> el.onclick = ()=> showDexDetail(el.dataset.id));
 }
+// ずかんの絵：羽化させた虫は成虫、見つけただけなら幼虫、見つけていなければ かげ
+function dexPic(id){ const b = BUGS[id], d = S.dex[id]; if(!d) return svgBug(id, b.watch ? 'adult' : 'larva', {cls:'sil', instar:1}); if(d.adult || b.watch) return svgBest(id); return svgBug(id, 'larva', {instar: d.known ? 1 : 0}); }
 function showDexDetail(id){
   const b = BUGS[id], d = S.dex[id];
+  if(d && !d.adult && !b.watch){   // 成虫はまだ見ていない
+    const G = GROUP[groupOf(id)];
+    return openPanel(d.known ? b.name : '？？？', `<div class="paper"><div class="pic">${dexPic(id)}</div>
+      ${d.known ? `<p>${esc(b.name)}の幼虫。成虫になったら、どんなすがたになるのかな？</p>
+      <table><tr><td>みつかる場所</td><td>${b.spots.includes('any') ? 'どこでも' : b.spots.map(k=>SPOTS.find(s=>s.key===k).name).join('・')}</td></tr>
+        <tr><td>ごはん（幼虫）</td><td>${esc(ITEMS[b.food].name)}</td></tr><tr><td>飼いかた</td><td>${esc(b.care)}</td></tr>
+        <tr><td>きろく</td><td>${esc(d.found)} に ${esc(d.where)} でみつけた</td></tr></table>`
+      : `<p>まだ、なんの幼虫かわからない。${esc(G.who)}みたいだ。</p><p>育てて1回脱皮すると、もようや形がはっきりして、なんの虫かわかるよ。</p><table><tr><td>きろく</td><td>${esc(d.found)} に ${esc(d.where)} でみつけた</td></tr></table>`}
+      <p class="small" style="color:#7a5a20">成虫のすがたは、羽化させるとずかんにのる。</p></div>`);
+  }
   const stages = b.watch ? '' : b.plan.filter(s=>s.k!=='adult').map((s,i)=> `${STAGE_NAME[s.k]}${s.k==='larva' ? i+1 : ''} ${s.days}日`).join(' → ') + ' → 成虫';
   const bornList = d && d.born ? Object.keys(d.born).map(k=>`<span class="born">${esc(BORN[k].name)}</span>`).join(' ') : '';
   openPanel(d ? b.name : '？？？', `<div class="paper">
-    <div class="pic">${svgBest(id, {cls: d ? '' : 'sil'})}</div>
+    <div class="pic">${dexPic(id)}</div>
     ${d ? `<p>${esc(b.desc)}</p>
     <table><tr><td>本物の大きさ・季節</td><td>${esc(b.info||'')}</td></tr>
       <tr><td>みつかる場所</td><td>${b.link ? '虫とり日記で出会った人だけ、宗像大社で' : b.spots.includes('any') ? 'どこでも' : b.spots.map(k=>SPOTS.find(s=>s.key===k).name).join('・')}</td></tr>
