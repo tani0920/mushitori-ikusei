@@ -103,9 +103,14 @@ p{margin:.3em 0}
 #tabs button{position:relative}
 
 /* おうち：飼育ケースの一覧 */
-.cases{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+.cases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:stretch}
+.case .boxLine{display:flex;justify-content:space-between;font-size:13px;color:var(--sun);border-bottom:1px solid #f7f1df33;padding-bottom:3px}
+.case .placeTag{position:absolute;left:4px;bottom:4px;background:#14284acc;color:#fff;font-size:11px;border-radius:999px;padding:0 .55em}
+.case .emptyBody{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:.2em}
+.case.buy{border-style:dashed;opacity:.85;min-height:180px;color:var(--sun)}
+.boxIc{display:inline-flex;align-items:center;justify-content:center;font-size:28px;background:transparent}
 .case{background:var(--win);border:3px solid var(--edge);border-radius:8px;padding:.5em;cursor:pointer;display:flex;flex-direction:column;gap:.3em;box-shadow:0 0 0 2px var(--win)}
-.case.empty{opacity:.75;border-style:dashed;justify-content:center;align-items:center;min-height:180px;color:var(--mute)}
+.case.empty{opacity:.8;border-style:dashed;min-height:180px;color:var(--mute)}
 .case .pic{height:110px;border-radius:6px;overflow:hidden;position:relative}
 .case .pic svg{width:100%;height:100%}
 .case .nm{font-size:15px;color:#fff}
@@ -450,7 +455,8 @@ html:not(.land) #rtabs [data-t=home]{display:none}
 .itemList .it i svg{width:40px;height:40px}
 .itemList .it small{color:var(--mute)}
 .drawer{position:fixed;right:calc(var(--rtw) + var(--sr,0px));top:0;bottom:0;z-index:80;width:var(--dw);background:#14284af4;border-left:3px solid var(--edge);box-shadow:-6px 0 16px #000a;padding:max(10px,env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 12px 12px;overflow-y:auto;transform:translateX(calc(100% + var(--rtw) + 12px));transition:transform .28s ease}
-.drawer.open{transform:translateX(0)}
+.drawer:not(.open){visibility:hidden;transition:transform .28s ease,visibility 0s .28s}
+.drawer.open{transform:translateX(0);visibility:visible}
 .drawer .dHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;color:var(--sun)}
 .drawer .acts{margin-top:8px;grid-template-columns:1fr}
 
@@ -470,7 +476,9 @@ html.land body{height:var(--H);min-height:0;overflow:hidden;overscroll-behavior:
 html.land body.title{padding-right:0;background:#4e7a36}
 html.land body.title{padding-left:0}
 html.land body.title #app{padding:0}
-html.land body.title #titleScr{height:var(--H);border:0;border-radius:0}
+html.land body.title #titleScr{height:var(--H);border:0;border-radius:0;justify-content:space-evenly;gap:0;padding:max(8px,var(--st)) calc(4% + var(--sr)) max(10px,var(--sb)) calc(4% + var(--sl));overflow:hidden}
+html.land #titleScr .credit{right:calc(.8em + var(--sr));top:max(.6em,var(--st))}
+html.land #titleScr .sun{right:calc(9% + var(--sr))}
 html.land #tabs{left:0;top:0;bottom:0;right:auto;width:calc(74px + var(--sl));flex-direction:column;justify-content:stretch;border-top:0;border-right:2px solid var(--edge);padding:max(6px,var(--st)) 6px max(6px,var(--sb)) max(6px,var(--sl))}
 html.land #tabs button{max-width:none;flex:1;font-size:12px;padding:.2em 0}
 html.land #tabs button .ic{font-size:22px}
@@ -485,15 +493,17 @@ html.land body.title #hud{display:none}
 html.land body.title #view{padding-top:0}
 /* タイトル：横画面で1画面に */
 html.land #titleScr{min-height:0;height:calc(var(--H) - 12px);justify-content:center;gap:.2em;padding:2% 4%}
-html.land #titleScr .t1{font-size:calc(var(--H) * .036)}
-html.land #titleScr .t2{font-size:calc(var(--H) * .09);margin:0}
+html.land #titleScr .t1{font-size:calc(var(--H) * .032)}
+html.land #titleScr .t2{font-size:calc(var(--H) * .085);margin:0;line-height:1.05}
 html.land #titleScr .t2 br{display:none}
-html.land #titleScr .hero{width:auto;height:calc(var(--H) * .24);margin:0}
+html.land #titleScr .hero{width:auto;height:calc(var(--H) * .2);margin:0}
 html.land #titleScr .hero svg{height:100%;width:auto}
-html.land #titleScr .t3{font-size:calc(var(--H) * .034)}
-html.land #titleScr .t4{font-size:calc(var(--H) * .027);margin-top:.3em;padding:.2em .8em}
-html.land #titleScr .tbtns{margin-top:.3em}
-html.land #titleScr .vrow{margin-top:.3em}
+html.land #titleScr .t3{font-size:calc(var(--H) * .032);line-height:1.5}
+html.land #titleScr .t4{font-size:calc(var(--H) * .025);margin-top:0;padding:.2em .8em;line-height:1.4}
+html.land #titleScr .tbtns{margin-top:0}
+html.land #titleScr .tbtn{font-size:calc(var(--H) * .042);padding:.25em 1.2em}
+html.land #titleScr .vrow{margin-top:0}
+html.land #titleScr .verbtn{font-size:calc(var(--H) * .03)}
 html.land #msgLayer{padding-bottom:12px;padding-left:90px}
 html.land #msgLayer .win{font-size:17px}
 html.land .saveMark{bottom:10px}
@@ -516,7 +526,7 @@ html.land .decoPick .pk{min-width:56px;font-size:11px}
 html.land .decoPick .pk svg{width:32px;height:32px}
 html.land{--dw:min(400px,calc(var(--W) * .5))}
 html.land .drawer{padding:max(10px,var(--st)) calc(12px + var(--sr)) 12px 14px}
-/* 左はしのタグ：そと・すもう・かう・ずかん・その他（おうちは右のタグ） */
+/* 左はしのタグ：そと・すもう・おみせ・ずかん・その他（おうちは右のタグ） */
 html.land #tabs{left:0;top:0;bottom:0;right:auto;width:calc(76px + var(--sl));flex-direction:column;justify-content:flex-start;gap:8px;background:transparent;border:0;padding:calc(max(6px,var(--st)) + 30px) 0 max(6px,var(--sb)) var(--sl)}
 html.land #tabs [data-t=home]{display:none}
 html.land #tabs button{max-width:none;flex:none;width:72px;min-height:62px;font-size:12px;padding:.3em 0;background:var(--win);border:2px solid #f7f1df88;border-left:0;border-radius:0 12px 12px 0;box-shadow:2px 2px 6px #0008}
@@ -535,6 +545,8 @@ html.land .opt .btn{font-size:16px}
 html.land .opt .btn small{font-size:13.5px}
 html.land .case .nm{font-size:17px}
 html.land .case .st,html.land .case .meters{font-size:14px}
+html.land .case .boxLine{font-size:14px}
+html.land .case .placeTag{font-size:12.5px}
 html.land .dexGrid .d{font-size:14px}
 html.land .rival{font-size:16px}
 html.land .drawer{font-size:16px}
@@ -550,12 +562,12 @@ html.land #arena .ctl{grid-column:2;margin-top:0}
   <div id="hud" hidden></div>
   <div id="view"></div><!-- メイン画面（#view） -->
 </div>
-<!-- 左メニュー（#tabs）：そと・すもう・かう・ずかん・その他（たて画面のPCでは下にならび、おうちもここ） -->
+<!-- 左メニュー（#tabs）：そと・すもう・おみせ・ずかん・その他（たて画面のPCでは下にならび、おうちもここ） -->
 <div id="tabs" hidden>
   <button type="button" data-t="home"><span class="ic">🏠</span>おうち</button>
   <button type="button" data-t="out"><span class="ic">🌳</span>そと</button>
   <button type="button" data-t="sumo"><span class="ic">🏟</span>すもう</button>
-  <button type="button" data-t="shop"><span class="ic">🛒</span>かう</button>
+  <button type="button" data-t="shop"><span class="ic">🏪</span>おみせ</button>
   <button type="button" data-t="dex"><span class="ic">📖</span>ずかん</button>
   <button type="button" data-t="opt"><span class="ic">⚙</span>その他</button>
 </div>
@@ -573,7 +585,7 @@ html.land #arena .ctl{grid-column:2;margin-top:0}
 /* =========================================================
    設定（ここをいじるとバランス調整できる）
    ========================================================= */
-const CASES = 3;                 // 飼育ケースの数
+const MAX_BOXES = 3;             // 虫かご（飼育ケース）は最大3つまで。はじめは1つ
 const FINDS_PER_VISIT = 3;       // 1日に1つの場所でさがせる回数
 const HUNGER_H = 48, WET_H = 60, CLEAN_H = 96;   // 満タンから0になるまでの時間（時間）
 const WEAK_H = 72;               // 元気がとても低いまま、この時間がたつと、虫は自然にかえる
@@ -582,9 +594,17 @@ const SAVE_KEY = KEY_PRE + 'munakata-mushisodate-v1';
 const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
-const GAME_VER = '0.6.4';
-const BUILD = '20261024-1344';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const GAME_VER = '0.7.0';
+const BUILD = '20261024-1401';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
+  {v:'0.7.0', date:'2026-10-24', items:[
+    '虫かごは、はじめは1つ。おみせで買って、3つまでふやせる。3つあるときは、とりかえ（中の虫はそのまま）',
+    '虫かごの種類：ふつうの虫かご・広い虫かご（すばやさが育つ）・あみ戸の虫かご（よごれにくく カビにくい、かわきやすい）・木の飼育箱（しめりけを保ち、育ちがよい）・観察ケースDX（広くて、よごれにくく、育ちもよい）',
+    '「ケースのこと」から、あいている べつの虫かごにうつせる（前の「広いケースにうつす」のかわり）',
+    'おうちの一覧は1行に3つ。虫かごの種類とおき場所がひと目でわかる。メイン画面の「もちもの」はけした（右メニューの「もちもの」で見られる）',
+    '「かう」を「おみせ」にした',
+    'タイトル画面の右と下が切れないようにした（iPhoneの角やノッチのところをよけた）',
+    '右メニューのパネルが、とじているときに少し見えていたのを直した']},
   {v:'0.6.4', date:'2026-10-24', items:[
     'タイトル画面を、画面いっぱいの背景にした',
     '右メニュー（おうち・もちもの・ケースのこと）を細いタグにもどした。タグは右はしから動かず、パネルはタグの左に出る。同じタグでとじる',
@@ -850,7 +870,6 @@ const ITEMS = {
   koorogi: {name:'エサ用コオロギ', price:4, desc:'オオカマキリのごはん（生きた虫しか食べない）'},
   kusa:    {name:'草',           price:0, desc:'バッタのごはん。にわや公園でとれる'},
   mitsu:   {name:'さとう水',     price:0, desc:'チョウの成虫のごはん。おうちで作れる'},
-  wide:    {name:'広いケース',   price:30, desc:'虫がよく動けて、すばやくなる。1ぴきに1つ'},
   // かざり：買って、自分でケースに置く。置いたあとも指でつまんで動かせる。しまえば、また使える
   mat_fuyo:{name:'腐葉土マット', price:15, desc:'黒くてふかふかの土。カブト・クワガタの幼虫がよろこぶ。かわきにくい', cat:'mat'},
   mat_suna:{name:'白い砂',       price:10, desc:'さらさらの砂。見た目が明るい', cat:'mat'},
@@ -867,6 +886,17 @@ const ITEMS = {
   ko_sara: {name:'水のみ皿',     price:8,  desc:'小さな皿。見た目のかざり', cat:'deco'},
   ko_ishi: {name:'石',           price:6,  desc:'まるい石。見た目のかざり', cat:'deco'},
 };
+/* 虫かごの種類：おみせで買う。高いものほど、よごれにくい・育ちがよい など
+   clean：よごれやすさ（小さいほどよごれにくい）／wet：かわきやすさ／grow：育つ速さ／spd：広くてすばやさが育つ／kabi：カビの出やすさ */
+const BOXES = {
+  futsu:{name:'ふつうの虫かご', ic:'🧺', price:20, clean:1,   wet:1,   grow:1,    kabi:1,  spd:false, desc:'ふつうのプラスチックの虫かご。'},
+  wide: {name:'広い虫かご',     ic:'📦', price:40, clean:.95, wet:1,   grow:1,    kabi:1,  spd:true,  desc:'よく動けて、すばやさが育つ。'},
+  ami:  {name:'あみ戸の虫かご', ic:'🪟', price:55, clean:.75, wet:1.2, grow:1,    kabi:.4, spd:false, desc:'風が通って、よごれにくく カビにくい。でも、かわきやすい。'},
+  ki:   {name:'木の飼育箱',     ic:'🪵', price:75, clean:.85, wet:.8,  grow:1.12, kabi:.8, spd:false, desc:'しめりけを保って、育ちがよい。'},
+  dx:   {name:'観察ケースDX',   ic:'💎', price:130, clean:.6, wet:.9,  grow:1.15, kabi:.5, spd:true,  desc:'広くて、よごれにくく、育ちもよい。いちばん高い。'},
+};
+const boxIdx = c=> S.cases.indexOf(c);
+const boxOf = c=> BOXES[(S.boxes||[])[boxIdx(c)]] || BOXES.futsu;
 const MATS = {mat_fuyo:{fill:'#3b2a18', bits:'#6a4a28'}, mat_suna:{fill:'#d8c9a3', bits:'#b8a070'}, mat_kuro:{fill:'#2a2016', bits:'#1a1008'}};
 function decoSVG(k){   // viewBox 100x100 の中に描く。底が y=70 あたり
   switch(k){
@@ -1078,9 +1108,10 @@ function getPos(){
    ========================================================= */
 let S = null;
 function newGame(){
-  return {v:2, money:30, cases:Array.from({length:CASES}, ()=>null), items:{kyabetsu:2, kusa:1}, dex:{}, yk:{}, visits:{}, last:null, demoOff:0, started:Date.now(), stats:{raised:0, released:0, wins:0, loses:0}, sumo:{}, sumoDay:{}, link:{}};
+  return {v:2, money:30, boxes:['futsu'], cases:[null], items:{kyabetsu:2, kusa:1}, dex:{}, yk:{}, visits:{}, last:null, demoOff:0, started:Date.now(), stats:{raised:0, released:0, wins:0, loses:0}, sumo:{}, sumoDay:{}, link:{}};
 }
 function migrate(s){   // 古いセーブ（v1）を v2 のかたちにする
+  if(!s.boxes){ s.boxes = s.cases.map(c=> c && c.wide ? 'wide' : 'futsu'); if(s.items && s.items.wide){ delete s.items.wide; } }   // 虫かごの種類ができる前のセーブ
   s.cases.forEach(c=>{ if(c){ ensureZ(c); c.dirt = c.dirt || []; c.foods = c.foods || []; c.soak = c.soak || 0; c.hideUntil = c.hideUntil || 0; c.deco = c.deco || []; c.mat = c.mat || null; } });
   if(s.v >= 2) return s;
   s.v = 2; s.stats = Object.assign({raised:0, released:0, wins:0, loses:0}, s.stats); s.sumo = {}; s.sumoDay = {}; s.link = {};
@@ -1120,7 +1151,7 @@ function tickCase(c){
   const t = now(); let h = (t - c.tick) / H; if(h <= 0) return; if(h > 24*60) h = 24*60;
   c.tick = t;
   const st = stageOf(c), tough = BORN[c.born] && BORN[c.born].tough;
-  const wetK = (c.place === 'beranda' ? 1.25 : 1) * (tough ? .8 : 1) * (c.mat === 'mat_fuyo' ? .8 : 1), cleanK = (c.place === 'genkan' ? .85 : 1) * (c.wide ? .9 : 1);
+  const wetK = (c.place === 'beranda' ? 1.25 : 1) * (tough ? .8 : 1) * (c.mat === 'mat_fuyo' ? .8 : 1) * boxOf(c).wet, cleanK = (c.place === 'genkan' ? .85 : 1) * boxOf(c).clean, BX = boxOf(c);
   c.dirt = c.dirt || []; c.foods = c.foods || []; ensureZ(c);
   let left = h;
   while(left > 0){
@@ -1141,11 +1172,11 @@ function tickCase(c){
     while(c.dirt.length < want) c.dirt.push({x:8 + Math.random()*84, y:10 + Math.random()*80, hp:3, k:Math.random() < .6 ? 'fun' : 'kumori'});
     const g = genkiOf(c);
     c.log.hours += d; if(g < 30) c.log.lowH += d;
-    if(!c.pending){ const sp = g >= 60 ? 1 : g >= 30 ? .5 : 0; c.prog += d*sp; if(c.prog >= st.days*24){ c.prog = st.days*24; c.pending = true; } }
+    if(!c.pending){ const sp = (g >= 60 ? 1 : g >= 30 ? .5 : 0) * BX.grow; c.prog += d*sp; if(c.prog >= st.days*24){ c.prog = st.days*24; c.pending = true; } }
     if(g < 15){ c.weak = (c.weak||0) + d; if(c.weak >= WEAK_H && !c.gone) c.gone = true; } else c.weak = 0;
     // トラブル：しめりすぎ＋よごれ → カビ。おなかすき＋よごれ → アリ（1時間ごとに少しの確率）
     if(!c.trouble && st.k !== 'adult' || !c.trouble){
-      if((c.soak > 30 || c.wet > 85) && c.clean < 60 && Math.random() < (c.soak > 30 ? .05 : .02)*d){ c.trouble = 'kabi'; for(let i=0;i<3;i++) c.dirt.push({x:15 + Math.random()*70, y:60 + Math.random()*25, hp:3, k:'kabi'}); }
+      if((c.soak > 30 || c.wet > 85) && c.clean < 60 && Math.random() < (c.soak > 30 ? .05 : .02)*d*BX.kabi){ c.trouble = 'kabi'; for(let i=0;i<3;i++) c.dirt.push({x:15 + Math.random()*70, y:60 + Math.random()*25, hp:3, k:'kabi'}); }
       else if(c.foods.some(f=>f.old) && c.clean < 70 && Math.random() < .04*d){ c.trouble = 'ari'; }
     }
   }
@@ -1178,7 +1209,7 @@ function applyGrowth(c){
   const feedRate = L.feed/days, fullRate = L.feed ? L.feedFull/L.feed : 0;
   ind.atk += clamp(feedRate*.02, 0, .04) + (fullRate > .5 ? .02 : 0);
   ind.hp  += clamp(feedRate*.01, 0, .02) + (L.lowH < 6 ? .02 : 0);
-  ind.spd += (c.wide ? .04 : .01) + (c.place === 'heya' ? .01 : 0);
+  ind.spd += (boxOf(c).spd ? .04 : .01) + (c.place === 'heya' ? .01 : 0);
   ind.def += (c.place === 'beranda' ? .04 : .01) + (L.lowH > 24 && L.lowH < 72 ? .01 : 0);
   ind.heal += clamp(L.clean/days*.015, 0, .03) + (c.place === 'genkan' ? .02 : 0);
   for(const k in L) T[k] += L[k];
@@ -1193,7 +1224,7 @@ function finalize(c){
   // 性格：世話の傾向と生まれで点をつけて、いちばん高いもの
   const days = Math.max(1, T.hours/24), sc = {futsu:1};
   sc.kuishinbo = (T.feed ? T.feedFull/T.feed : 0)*3 + T.feed/days;
-  sc.yancha = (c.wide ? 2.5 : 0) + (c.place === 'heya' ? .5 : 0);
+  sc.yancha = (boxOf(c).spd ? 2.5 : 0) + (c.place === 'heya' ? .5 : 0);
   sc.nonbiri = (c.place === 'genkan' ? 2 : 0) + clamp(T.clean/days, 0, 1.5);
   sc.gaman = T.lowH > 24 ? 2.5 : T.lowH > 12 ? 1 : 0;
   sc.okubyo = T.over >= 6 ? 3 : T.over >= 3 ? 1.5 : 0;
@@ -1512,7 +1543,7 @@ function renderItems(){
   const own = Object.keys(ITEMS).filter(k=> (S.items[k]||0) > 0);
   const ic = k=> ITEMS[k].cat === 'mat' ? `<svg viewBox="0 0 100 100"><rect x="10" y="40" width="80" height="45" rx="6" fill="${MATS[k].fill}"/></svg>` : ITEMS[k].cat ? `<svg viewBox="0 0 100 100">${decoSVG(k)}</svg>` : `<span>${({zeri:'🍮', kyabetsu:'🥬', mikan:'🍃', enoki:'🍃', nasu:'🍆', koorogi:'🦗', kusa:'🌿', mitsu:'🥤', wide:'📦'})[k] || '・'}</span>`;
   $('itemsBody').innerHTML = (own.length ? `<div class="itemList">${own.map(k=>`<div class="it"><i>${ic(k)}</i><div><b>${esc(ITEMS[k].name)}</b> ×${S.items[k]}<br><small>${esc(ITEMS[k].desc)}</small></div></div>`).join('')}</div>` : '<p>なにももっていない。</p>')
-    + `<div class="row" style="margin-top:10px"><button type="button" class="btn pri" id="itemsShop">🛒 かうへ</button></div>`;
+    + `<div class="row" style="margin-top:10px"><button type="button" class="btn pri" id="itemsShop">🏪 おみせへ</button></div>`;
   $('itemsShop').onclick = ()=>{ setSide(null); setTab('shop'); };
 }
 $('rtItems').onclick = ()=> setSide(sidePanel === 'items' ? null : 'items');
@@ -1564,28 +1595,44 @@ async function start(){
 /* ---- おうち ---- */
 function renderHome(){
   const slot = slotOf();
-  view.innerHTML = `<h2>おうちの飼育ケース</h2><div class="cases">${S.cases.map((c,i)=>{
-    if(!c) return `<div class="case empty" data-i="${i}"><div>（からっぽ）</div><div class="small">そとで虫をみつけて、つれてかえろう</div></div>`;
+  const boxLine = i=>{ const B = BOXES[S.boxes[i]]; return `<div class="boxLine"><span>${B.ic} ${esc(B.name)}</span></div>`; };
+  view.innerHTML = `<h2>おうちの虫かご <small class="small">${S.boxes.length} / ${MAX_BOXES}こ</small></h2><div class="cases">${S.cases.map((c,i)=>{
+    if(!c) return `<div class="case empty" data-i="${i}">${boxLine(i)}<div class="emptyBody"><div>（からっぽ）</div><div class="small">そとで虫をみつけて、つれてかえろう</div></div></div>`;
     const b = BUGS[c.bug], st = stageOf(c), nd = needs(c), g = genkiOf(c), ins = instarOf(c), fc = forecast(c);
     return `<div class="case" data-i="${i}">
+      ${boxLine(i)}
       <div class="pic" style="background:linear-gradient(${SKY[slot][0]},${SKY[slot][1]} 60%,#5a3d22 61%)">${svgBug(c.bug, st.k, {instar:ins, scale:.8, rare:c.rare, sleep:(placeBug(c, slot).o||{}).sleep})}
-        ${c.pending ? '<span class="ev norb">！</span>' : fc ? '<span class="ev norb">予告</span>' : ''}${nd.length ? `<span class="alert">${nd.join('・')}</span>` : ''}</div>
-      <div class="nm">${esc(dispName(c))}${c.name ? ` <small class="small">${esc(b.name)}</small>` : ''}</div><div class="st">${stageLabel(c)}${c.pending ? '　なにかおこりそう…' : st.k === 'adult' ? `　${c.size}mm・${esc(PERS[c.pers||'futsu'].name)}` : `　あと${daysLeft(c)}日くらい`}</div>
+        ${c.pending ? '<span class="ev norb">！</span>' : fc ? '<span class="ev norb">予告</span>' : ''}${nd.length ? `<span class="alert">${nd.join('・')}</span>` : ''}
+        <span class="placeTag norb">${PLACE_IC[c.place]} ${esc(PLACES[c.place].name)}</span></div>
+      <div class="nm">${esc(dispName(c))}</div>
+      <div class="st">${c.name ? esc(b.name) + '・' : ''}${stageLabel(c)}</div>
+      <div class="st">${c.pending ? 'なにかおこりそう…' : st.k === 'adult' ? `${c.size}mm・${esc(PERS[c.pers||'futsu'].name)}` : `あと${daysLeft(c)}日くらい`}</div>
       <div class="meters"><span>元気</span><span class="bar"><i class="${meterCls(g)}" style="width:${g}%"></i></span></div></div>`;
-  }).join('')}</div>
-  <h3>もちもの</h3><div class="row">${Object.keys(S.items).filter(k=>S.items[k]>0).map(k=>`<span class="win" style="padding:.2em .6em;font-size:13px">${esc(ITEMS[k].name)} ×${S.items[k]}</span>`).join('') || '<span class="small">なにもない</span>'}</div>
-  `;
-  view.querySelectorAll('.case').forEach(el=> el.onclick = ()=>{ const i = +el.dataset.i; if(S.cases[i]){ openCase = i; render(); (scrollTo(0,0), view.scrollTop = 0); } else setTab('out'); });
+  }).join('')}${S.boxes.length < MAX_BOXES ? `<div class="case buy" id="buyBox"><div class="emptyBody"><div style="font-size:30px">＋</div><div>虫かごをふやす</div><div class="small">おみせで買える</div></div></div>` : ''}</div>`;
+  view.querySelectorAll('.case[data-i]').forEach(el=> el.onclick = ()=>{ const i = +el.dataset.i; if(S.cases[i]){ openCase = i; render(); (scrollTo(0,0), view.scrollTop = 0); } else setTab('out'); });
+  if($('buyBox')) $('buyBox').onclick = ()=> setTab('shop');
 }
 function renderShop(){
-  view.innerHTML = `<h2>エサ・道具・かざりを買う</h2><p class="small">どんぐり：<b style="color:var(--sun)">${dg(S.money)}</b>　場所から場所へ歩くともらえるよ。</p>
-    ${[['エサと道具', k=>!ITEMS[k].cat], ['かざり（マット）：ケースの土をかえる', k=>ITEMS[k].cat==='mat'], ['かざり：買って、ケースに自分で置く', k=>ITEMS[k].cat==='deco']].map(([ttl, f])=>`<h3>${ttl}</h3><div class="opt">${Object.keys(ITEMS).filter(f).map(k=>{ const it = ITEMS[k], free = !it.price;
+  const boxShop = `<h3>虫かご（いま ${S.boxes.length} / ${MAX_BOXES}こ）</h3><div class="opt">${Object.keys(BOXES).map(k=>{ const B = BOXES[k];
+    return `<button type="button" class="btn" data-box="${k}" ${S.money < B.price ? 'disabled' : ''}><span><span class="decoIc boxIc">${B.ic}</span>${esc(B.name)}<br><small class="small">${esc(B.desc)}${B.grow > 1 ? `　育ち +${Math.round((B.grow-1)*100)}%` : ''}${B.clean < 1 ? `　よごれにくさ +${Math.round((1-B.clean)*100)}%` : ''}</small></span><span class="v">${dg(B.price)}　もっている ×${S.boxes.filter(x=>x===k).length}</span></button>`; }).join('')}</div>`;
+  view.innerHTML = `<h2>おみせ</h2><p class="small">どんぐり：<b style="color:var(--sun)">${dg(S.money)}</b>　場所から場所へ歩くともらえるよ。</p>
+    ${boxShop}
+    ${[['エサ', k=>!ITEMS[k].cat], ['かざり（マット）：ケースの土をかえる', k=>ITEMS[k].cat==='mat'], ['かざり：買って、ケースに自分で置く', k=>ITEMS[k].cat==='deco']].map(([ttl, f])=>`<h3>${ttl}</h3><div class="opt">${Object.keys(ITEMS).filter(f).map(k=>{ const it = ITEMS[k], free = !it.price;
       return `<button type="button" class="btn" data-k="${k}" ${!free && S.money < it.price ? 'disabled' : ''}><span>${it.cat ? `<span class="decoIc">${it.cat==='mat' ? `<svg viewBox="0 0 100 100"><rect x="10" y="50" width="80" height="40" rx="6" fill="${MATS[k].fill}"/><circle cx="30" cy="70" r="3" fill="${MATS[k].bits}"/><circle cx="60" cy="78" r="3" fill="${MATS[k].bits}"/></svg>` : `<svg viewBox="0 0 100 100">${decoSVG(k)}</svg>`}</span>` : ''}${esc(it.name)}<br><small class="small">${esc(it.desc)}</small></span><span class="v">${free ? 'ただ' : dg(it.price)}　×${S.items[k]||0}</span></button>`; }).join('')}</div>`).join('')}
     `;
+  view.querySelectorAll('[data-box]').forEach(bt=> bt.onclick = async ()=>{ const k = bt.dataset.box, B = BOXES[k]; if(S.money < B.price) return;
+    let at = -1;
+    if(S.boxes.length >= MAX_BOXES){
+      const i = await say(`虫かごは${MAX_BOXES}こまで。どの虫かごと とりかえる？\n（中の虫は、そのまま新しい虫かごにうつる）`, {ans:S.boxes.map((x,j)=>`${j+1}ばん：${BOXES[x].ic} ${BOXES[x].name}${S.cases[j] ? '（' + dispName(S.cases[j]) + '）' : '（からっぽ）'}`).concat(['やめる'])});
+      if(i >= S.boxes.length) return; at = i;
+    }
+    S.money -= B.price; if(at < 0){ S.boxes.push(k); S.cases.push(null); } else S.boxes[at] = k;
+    save(); hud(); await say(`${B.name}を買った！${at < 0 ? `\n虫かごが ${S.boxes.length}こ になった。` : `\n${at+1}ばんの虫かごを とりかえた。`}`); const y = view.scrollTop; renderShop(); view.scrollTop = y; });
   view.querySelectorAll('[data-k]').forEach(b=> b.onclick = ()=>{ const k = b.dataset.k, it = ITEMS[k]; if(S.money < it.price) return; S.money -= it.price; S.items[k] = (S.items[k]||0) + 1; save(); hud(); const y = scrollY, vy = view.scrollTop; renderShop(); scrollTo(0, y); view.scrollTop = vy; });
 }
 
 /* ---- 観察（ケースの中）：道具をえらんで、ケースの中を指でさわる ---- */
+const PLACE_IC = {genkan:'🚪', heya:'🛏', beranda:'🌿'};
 const PLACES = {genkan:{name:'げんかん', desc:'すずしくて静か。かいふくがよくなり、のんびりした性格になりやすい'}, heya:{name:'へや', desc:'いつもそばにいる。人なつっこい性格になりやすい'}, beranda:{name:'ベランダの日かげ', desc:'外の空気。まもりが強くなる。ただし、かわきやすい'}};
 const TOOLS = {yubi:{name:'ゆび', ic:'👆'}, fukin:{name:'ふきん', ic:'🧽'}, kiri:{name:'きりふき', ic:'💦'}, esa:{name:'エサ', ic:'🍽'}, kazari:{name:'かざり', ic:'🪵'}, big:{name:'大そうじ', ic:'🧹'}, furu:{name:'ふる', ic:'🫨'}};
 let tool = 'yubi', obsSession = null, decoSel = null;   // obsSession：いまのぞいている間の、さわった回数など
@@ -1608,11 +1655,11 @@ async function renderObs(){
   const dirtN = (c.dirt||[]).length, oldN = (c.foods||[]).filter(f=>f.old).length;
   const ownDeco = Object.keys(ITEMS).filter(k=>ITEMS[k].cat && (S.items[k]||0) > 0);
   const bigGuide = st.k === 'pupa' ? 'さなぎの間は、大そうじはできない。' : (!big || big.step === 1) ? ((c.soilAge||0) > 72 || big ? '' : 'まだ大そうじはいらない（3日に1回くらい）。') + '🤏をつかんで虫の上で止めると、そっとつまめる。右上のひなんケースへ運ぼう。すばやくぶつけると虫がいやがる。' : big.step === 2 ? `🧹をつかんで、土の上を左右に動かして入れかえよう（あと${3 - big.pass}回）` : '🤏をひなんケースの上で止めて虫をつまみ、ケースの中へもどそう。';
-  const guide = {big:bigGuide, kazari:ownDeco.length ? (decoSel ? (ITEMS[decoSel].cat === 'mat' ? 'マットは、えらぶとすぐにしきかえる。' : 'かざりをつかんで、置きたい場所ではなす。置いたものは、直接つまんで動かせる。左下の「しまう」に入れるともどる。') : '下から、置きたいかざりをえらぼう。') : 'かざりは、「かう」で買えるよ。',
+  const guide = {big:bigGuide, kazari:ownDeco.length ? (decoSel ? (ITEMS[decoSel].cat === 'mat' ? 'マットは、えらぶとすぐにしきかえる。' : 'かざりをつかんで、置きたい場所ではなす。置いたものは、直接つまんで動かせる。左下の「しまう」に入れるともどる。') : '下から、置きたいかざりをえらぼう。') : 'かざりは、「おみせ」で買えるよ。',
     yubi:'手をつかんで、葉や木にのせるとのぞける。虫にのせるとそっとさわる。置いたエサやかざりは、直接つまんで動かせる。', fukin:dirtN || oldN ? `スポンジをつかんで、よごれの上でこすろう（のこり${dirtN + oldN}）` : 'ガラスはきれい。', kiri:'きりふきをつかんで、かけたい場所で指を止めると水が出る。ケースぜんたいに少しずつ。左上の5本の棒が、場所ごとのしめりけ。', esa:st.k === 'pupa' ? 'さなぎは、なにも食べない。' : `エサをつかんで、置きたい場所ではなす（${esc(food.name)}${food.price ? ` ×${S.items[foodKey]||0}` : ''}）`, furu:'ケースをつかんで、左右に動かすとゆれる。何回もゆらすと、虫がおどろくよ。'}[tool];
   const esaGuide = st.k === 'pupa' ? '' : `エサをつかんで、置きたい場所ではなす`;
   const bornTag = `<span class="tag born">${esc((BORN[c.born]||BORN.any).name)}</span>${c.bornSlot === 'yoru' ? ' <span class="tag">夜型</span>' : ''}`;
-  const tags = `<span class="tag">${esc(PLACES[c.place].name)}</span>${c.wide ? '<span class="tag">広いケース</span>' : ''}${c.rare ? '<span class="tag" style="background:#7a5a20">めずらしい色</span>' : ''}`;
+  const BX = boxOf(c), tags = `<span class="tag">${BX.ic} ${esc(BX.name)}</span><span class="tag">${PLACE_IC[c.place]} ${esc(PLACES[c.place].name)}</span>${c.rare ? '<span class="tag" style="background:#7a5a20">めずらしい色</span>' : ''}`;
   const msgHtml = `${esc(sc.txt)}${persTxt ? `<br>${esc(persTxt)}` : ''}${c.trouble ? `<br><b class="yk">【${esc(TROUBLE[c.trouble].name)}】</b>${esc(TROUBLE[c.trouble].txt)}` : ''}${(c.soak||0) > 30 ? '<br><b class="yk">【びちゃびちゃ】</b>水をかけすぎて、土に水たまりができている。かわくまで、きりふきはやめよう。' : ''}${c.pending ? '<br><b class="yk">…なんだか、ようすがかわりそう！</b>' : fc ? `<br><b class="yk">【予告】</b>${esc(fc)}` : ''}`;
   // 左：ケース（＋メッセージ）／右：見出し・道具・ステータス・引き出し。横画面では1画面におさまる。たて画面（PCのせまい窓など）では上から順にならぶ
   view.innerHTML = `<div class="obsGrid" id="obs">
@@ -1632,7 +1679,7 @@ async function renderObs(){
         <div class="acts">
           <button type="button" class="btn sub" id="aPlace">おき場所をかえる<small>いま：${esc(PLACES[c.place].name)}</small></button>
           <button type="button" class="btn sub" id="aLook">じっくり見る<small>ずかんでしらべる</small></button>
-          ${c.wide ? '' : `<button type="button" class="btn sub" id="aWide">広いケースにうつす<small>${(S.items.wide||0) > 0 ? `もっている ×${S.items.wide}` : dg(ITEMS.wide.price) + 'で買える'}</small></button>`}
+          ${S.cases.some((x,j)=>!x && S.boxes[j] !== S.boxes[boxIdx(c)]) ? '<button type="button" class="btn sub" id="aWide">べつの虫かごにうつす<small>あいている虫かごへ</small></button>' : ''}
           <button type="button" class="btn sub" id="aRelease">もとの場所にかえす<small>${st.k === 'adult' ? 'ごほうびがもらえる' : 'いつでもできる'}</small></button>
         </div></div>
     </div></div>`;
@@ -1747,7 +1794,7 @@ async function renderObs(){
   // ---- エサ：置く ----
   const placeFood = async (x, y)=>{
     if(st.k === 'pupa') return;
-    if(!haveFood){ await say(`「${food.name}」がない！\n「かう」で買えるよ。`); return; }
+    if(!haveFood){ await say(`「${food.name}」がない！\n「おみせ」で買えるよ。`); return; }
     const fresh = (c.foods||[]).filter(f=>!f.old).length;
     if(fresh >= 2){ c.log.over++; save(); await say('もうエサが置いてある。\n置きすぎると、古くなってアリがくるよ。食べたら、また置こう。'); return; }
     const soilTop = soilTopOf(b); y = clamp(y, 14, soilTop - 2); x = clamp(x, 8, 92);   // 土の中には置けない
@@ -1869,8 +1916,11 @@ async function renderObs(){
   };
   if($('aWide')) $('aWide').onclick = async ()=>{
     if(st.k === 'pupa'){ await say('さなぎの間は、うつさないほうがいい。羽化してからにしよう。'); return; }
-    if(!(S.items.wide > 0)){ if(S.money < ITEMS.wide.price){ await say(`どんぐりが足りない…（いま ${dg(S.money)}）`); return; } if(!(await ask(`広いケースを ${dg(ITEMS.wide.price)} で買って、うつす？`, '買ってうつす', 'やめる'))) return; S.money -= ITEMS.wide.price; S.items.wide = (S.items.wide||0) + 1; }
-    S.items.wide--; c.wide = true; c.log.over++; save(); hud(); await say('広いケースにうつした！\nのびのび動けるので、これからは すばやさが育ちやすくなる。'); renderObs(); };
+    const from = boxIdx(c), opts = S.cases.map((x,j)=> !x && S.boxes[j] !== S.boxes[from] ? j : -1).filter(j=>j >= 0);
+    const i = await say('どの虫かごにうつす？', {ans:opts.map(j=>`${j+1}ばん：${BOXES[S.boxes[j]].ic} ${BOXES[S.boxes[j]].name}（${BOXES[S.boxes[j]].desc}）`).concat(['やめる'])});
+    if(i >= opts.length) return;
+    const to = opts[i]; S.cases[to] = c; S.cases[from] = null; c.log.over++; openCase = to; save();
+    await say(`${BOXES[S.boxes[to]].name}にうつした！`); renderObs(); };
   $('aLook').onclick = ()=> caseKnown(c) ? showDexDetail(c.bug) : say(`まだ、なんの虫かわからない。${GROUP[groupOf(c.bug)].who}みたいだ。\n脱皮して大きくなったら、もう一度見てみよう。`);
   $('aRelease').onclick = async ()=>{
     const adult = st.k === 'adult', nm = dispName(c);
@@ -2107,24 +2157,21 @@ async function doFind(sp, here, egg, slot){
     $('bWatch').onclick = async ()=>{ await say(`${b.name}は、きれいな川の水と、エサのカワニナがないと育たない。\nつかまえずに、光るようすを見ていよう。`); await yakusoku('watch', '飼えない虫や、ぐあいの悪そうな虫は、見るだけにしよう。\n「つかまえない」も、虫とのいいつきあいかたなんだ。'); renderSpot(); };
     return;
   }
-  const free = S.cases.findIndex(c=>!c);
-  btns.innerHTML = `<button type="button" class="btn pri" id="bTake" ${free < 0 ? 'disabled' : ''}>つれてかえる</button><button type="button" class="btn" id="bLeave">そっとしておく</button>${free < 0 ? '<div class="small">ケースがいっぱい。おうちで虫をかえしてからにしよう。</div>' : ''}`;
+  const frees = S.cases.map((c,j)=> c ? -1 : j).filter(j=>j >= 0), free0 = frees.length ? frees[0] : -1;
+  btns.innerHTML = `<button type="button" class="btn pri" id="bTake" ${free0 < 0 ? 'disabled' : ''}>つれてかえる</button><button type="button" class="btn" id="bLeave">そっとしておく</button>${free0 < 0 ? `<div class="small">あいている虫かごがない。おうちで虫をかえすか、おみせで虫かごを買おう（${S.boxes.length}/${MAX_BOXES}こ）。</div>` : ''}`;
   $('bLeave').onclick = ()=> renderSpot();
   $('bTake').onclick = async ()=>{
     const foodKey = b.food, food = ITEMS[foodKey];
-    if(food.price && !(S.items[foodKey]||0)) await say(`つれてかえるなら、ごはんの「${food.name}」がいるよ。\n「かう」で買っておこう。（いまのどんぐり：${dg(S.money)}）`);
-    // ケースとおき場所をえらぶ（育て方のはじまり）
-    const hasWide = (S.items.wide||0) > 0;
-    const wp = ITEMS.wide.price, wi = await say('どのケースに入れる？\n（広いケースだと、よく動けて すばやくなる）', {ans:['ふつうのケース', hasWide ? '広いケース' : `広いケースを買って入れる（${dg(wp)}）`, 'やめる']});
-    if(wi === 2) return;
-    if(wi === 1 && !hasWide){ if(S.money < wp){ await say(`どんぐりが足りない…（いま ${dg(S.money)}）\nふつうのケースに入れて、あとで広いケースにうつすこともできるよ。`); return; } S.money -= wp; S.items.wide = (S.items.wide||0) + 1; hud(); }
+    if(food.price && !(S.items[foodKey]||0)) await say(`つれてかえるなら、ごはんの「${food.name}」がいるよ。\n「おみせ」で買っておこう。（いまのどんぐり：${dg(S.money)}）`);
+    // 虫かごとおき場所をえらぶ（育て方のはじまり）
+    let free = free0;
+    if(frees.length > 1){ const wi = await say('どの虫かごに入れる？', {ans:frees.map(j=>`${j+1}ばん：${BOXES[S.boxes[j]].ic} ${BOXES[S.boxes[j]].name}（${BOXES[S.boxes[j]].desc}）`).concat(['やめる'])}); if(wi >= frees.length) return; free = frees[wi]; }
     const keys = Object.keys(PLACES), pi = await say('おうちの、どこにおく？', {ans:keys.map(k=>`${PLACES[k].name}：${PLACES[k].desc}`)});
-    const wide = wi === 1; if(wide) S.items.wide--;
     S.cases[free] = {bug:id, si:0, prog:0, hunger:70, wet:70, clean:100, tick:now(), pending:false, from:sp.name, born:sp.key, bornSlot:slotOf(), since:dayKey(),
-      ind:{hp:1, atk:1, def:1, spd:1, heal:1}, log:newLog(), tot:newLog(), place:keys[pi], wide, trouble:null, dirt:[], foods:[], soak:0, hideUntil:0, deco:[], mat:null, soilAge:0, wetZ:Array(WZ).fill(70), soakZ:Array(WZ).fill(0), stress:0};
+      ind:{hp:1, atk:1, def:1, spd:1, heal:1}, log:newLog(), tot:newLog(), place:keys[pi], trouble:null, dirt:[], foods:[], soak:0, hideUntil:0, deco:[], mat:null, soilAge:0, wetZ:Array(WZ).fill(70), soakZ:Array(WZ).fill(0), stress:0};
     save(); hud();
     const nc = S.cases[free]; nc.known = !!know;
-    await say(`${know ? b.name + 'の' + (id === 'kinkabuto' ? 'たまご' : '幼虫') : 'なぞの' + G.name}を、${free+1}ばんめのケース（${PLACES[keys[pi]].name}）に入れた。\n「${BORN[sp.key].name}」の虫だ。`);
+    await say(`${know ? b.name + 'の' + (id === 'kinkabuto' ? 'たまご' : '幼虫') : 'なぞの' + G.name}を、${free+1}ばんの${BOXES[S.boxes[free]].name}（${PLACES[keys[pi]].name}）に入れた。\n「${BORN[sp.key].name}」の虫だ。`);
     await yakusoku('take', '虫をつれてかえるときは、いきをしやすいように、ふたにあなをあけたケースに。\n日なたにおくと、あつくて弱ってしまうよ。');
     renderSpot();
   };
