@@ -228,6 +228,11 @@ p{margin:.3em 0}
 @keyframes hop{0%,80%,100%{transform:translateY(0)}87%{transform:translateY(-6px)}94%{transform:translateY(0)}}
 .bug.sleep *{animation:none!important}
 .bug.sleep .body{animation:breath 4s ease-in-out infinite!important}
+#mihonBar{position:fixed;right:calc(var(--sr,0px) + 76px);bottom:max(4px,var(--sb,0px));z-index:9000;display:flex;flex-wrap:wrap;gap:4px;align-items:center;justify-content:center;max-width:calc(50vw - 100px);background:rgba(20,30,20,.88);color:#fff;border:1px solid #f4b63c;border-radius:10px;padding:4px 8px;font-size:12px}
+#mihonBar b{color:#f4b63c;margin-right:4px}
+#mihonBar i{width:6px}
+#mihonBar button{font:inherit;color:#fff;background:#2a3a2a;border:1px solid #5a6a5a;border-radius:6px;padding:3px 7px}
+#mihonBar button.on{background:#f4b63c;color:#222;border-color:#f4b63c}
 /* ChatGPT でかいた絵（画像）の虫：おなかが、ゆっくりふくらんだりしぼんだりする（呼吸） */
 .bug .art{transform-box:fill-box;transform-origin:50% 100%;animation:artBreath 3.2s ease-in-out infinite}
 .bug.sleep .art{animation:artBreath 5.5s ease-in-out infinite!important;filter:saturate(.75) brightness(.9)}
@@ -599,9 +604,13 @@ const SAVE_KEY = KEY_PRE + 'munakata-mushisodate-v1';
 const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
-const GAME_VER = '0.7.4';
-const BUILD = '20261024-1536';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const GAME_VER = '0.7.5';
+const BUILD = '20261024-1551';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
+  {v:'0.7.5', date:'2026-10-24', items:[
+    'カブトムシの成虫の絵を、水彩の新しい絵にした',
+    '絵になった虫は、夜に床を歩きまわったり、向きをかえたり、頭を下げてあたりを見たりするようになった',
+    '絵をたしかめるための見本ページを作った（アドレスの最後に ?mihon=kabuto）']},
   {v:'0.7.4', date:'2026-10-24', items:[
     'カブトムシの成虫が、新しい絵になった（はじめての手がきの絵）。ゆっくり呼吸している']},
   {v:'0.7.3', date:'2026-10-24', items:[
@@ -1135,7 +1144,7 @@ function migrate(s){   // 古いセーブ（v1）を v2 のかたちにする
   return s;
 }
 const newLog = ()=> ({feed:0, feedFull:0, wet:0, clean:0, over:0, lowH:0, hours:0});
-function save(){ if(QS.has('demo')) return;   // 確認用のURL（?demo=…）で遊んだときは、ほんとうのセーブを上書きしない
+function save(){ if(QS.has('demo') || QS.has('mihon')) return;   // 確認用のURL（?demo=…）で遊んだときは、ほんとうのセーブを上書きしない
   try{ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); const m = $('saveMark'); m.classList.add('on'); setTimeout(()=>m.classList.remove('on'), 900); }catch(e){} }
 function load(){ try{ const j = JSON.parse(localStorage.getItem(SAVE_KEY)); return j && j.v ? migrate(j) : null; }catch(e){ return null; } }
 function clearSave(){ try{ localStorage.removeItem(SAVE_KEY); }catch(e){} }
@@ -1273,6 +1282,49 @@ const statLine = f=> `${f.t.name}タイプ　たいりょく${f.maxhp}　ちか�
 /* =========================================================
    虫の絵（パーツ分けした2DのSVG）。viewBox は 100x100。色は虫とり日記と同じ c[] を使う
    ========================================================= */
+/* 絵（画像）の虫の動き。1枚の絵のまま、位置・向き・かたむきだけを動かす。
+   床にいるとき（p.walk）は歩きまわる。枝の上などでは、向きをかえたり、頭を下げてあたりを見たりするだけ。ねている・かくれている・食べているときは動かない */
+let moverId = 0, moverMem = null;
+function startMover(p, id, stage){
+  const my = ++moverId, el = $('bugMove');
+  if(!el || !(BUG_IMG[id]||{})[stage] || p.hidden || p.buried || p.eating || (p.o && p.o.sleep)) return;
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const x0 = p.x, key = `${openCase}:${id}:${stage}:${x0}:${p.y}`, half = p.s*.85*46, lo = half + 2, hi = 100 - half - 2;
+  const mem = moverMem && moverMem.key === key ? moverMem : null;   // 道具を使って画面がかきなおされても、いた場所と向きをおぼえておく
+  let x = mem ? mem.x : x0, face = mem ? mem.face : (Math.random() < .5 ? 1 : -1), shown = face, mode = 'idle', tx = x, phase = 0, leanT = 0, last = performance.now();
+  let until = last + 800 + Math.random()*1500;
+  const feetY = p.y + p.s*.85*36;   // 脚のあたり。ここを軸にかたむける
+  const step = t=>{
+    if(my !== moverId || !el.isConnected) return;
+    const dt = Math.min(.05, Math.max(0, (t - last)/1000)); last = t;
+    if(mode === 'idle' && t > until){
+      const r = Math.random();
+      if(p.walk && r < .55){   // 歩く
+        tx = lo + Math.random()*(hi - lo); if(Math.abs(tx - x) < 10) tx = x + (tx > x ? 12 : -12);
+        tx = Math.max(lo, Math.min(hi, tx)); face = tx > x ? 1 : -1; mode = 'walk';
+      }
+      else if(r < .78){ face = -face; until = t + 1500 + Math.random()*2500; }   // 向きをかえる
+      else { leanT = t; until = t + 1800 + Math.random()*2500; }   // 頭を下げて、あたりを見る
+    }
+    shown += Math.sign(face - shown) * Math.min(Math.abs(face - shown), dt * 5);   // くるっと向きをかえる
+    const turned = Math.abs(shown - face) < .02;
+    if(mode === 'walk' && turned){
+      const d = tx - x, v = 6 * dt;   // 1秒に 6（ケースのはばが 100）
+      if(Math.abs(d) <= v){ x = tx; mode = 'idle'; until = t + 1500 + Math.random()*3500; }
+      else x += Math.sign(d) * v;
+      phase += dt * 10;
+    }
+    const walking = mode === 'walk' && turned;
+    const bob = walking ? -Math.abs(Math.sin(phase)) * .5 : 0, tilt = walking ? Math.sin(phase) * 1.2 : 0;
+    const look = leanT && t - leanT < 1600 ? Math.sin((t - leanT)/1600*Math.PI) * 5 * Math.sign(shown || 1) : 0;
+    el.setAttribute('transform', `translate(${x.toFixed(2)} ${bob.toFixed(2)}) rotate(${(tilt + look).toFixed(2)} 0 ${feetY}) scale(${shown.toFixed(3)} 1) translate(${-x0} 0)`);
+    p.x = x;   // さわる・水がかかる の当たりも、虫といっしょに動く
+    moverMem = {key, x, face};
+    requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
 /* 絵ができた虫は、SVG のかわりに画像を使う。img/bugs/名前.webp（tools/img_prep.py で作る）。100x100 の箱いっぱいに置く */
 const BUG_IMG = {
   kabuto: {adult:'kabuto_adult_genki'},
@@ -1443,7 +1495,7 @@ function placeBug(c, slot){   // どこに、どんなすがたでいるか
   if(b.shape === 'beetle' || b.shape === 'stag'){
     if(st === 'larva') return {x:30, y:66, s:.42, o:{instar:ins}, txt:'土の中で、ゆっくり動いている。土の中のくさった葉を食べているよ。'};
     if(st === 'pupa') return {x:60, y:66, s:.42, o:{}, txt:'土の中に、たまごのような部屋を作って、その中でさなぎになっている。ぜったいにこわさないでね。', chamber:true};
-    if(night || slot === 'asa'){ const pe = perchSpot(c); return {x:pe ? pe.x : 50, y:pe ? pe.y : 40, s:.5, o:{}, txt:night ? (pe ? '夜になって、枝にのぼってきた！ ' : '夜になって土から出てきた！ ') + (fresh ? 'ゼリーをさがしている。' : 'エサをさがしてうろうろしている。') : '朝のうちは、まだ木の上でじっとしている。'}; }
+    if(night || slot === 'asa'){ const pe = perchSpot(c); return {x:pe ? pe.x : 50, y:pe ? pe.y : 40, s:.5, o:{}, perch:!!pe, walk:night && !pe, txt:night ? (pe ? '夜になって、枝にのぼってきた！ ' : '夜になって土から出てきた！ ') + (fresh ? 'ゼリーをさがしている。' : 'エサをさがしてうろうろしている。') : '朝のうちは、まだ木の上でじっとしている。'}; }
     return {x:35, y:64, s:.4, o:{sleep:true}, txt:'昼のあいだは、土の中でねている。そっとしておこう。', buried:true};
   }
   if(b.shape === 'butterfly'){
@@ -1495,7 +1547,7 @@ function sceneSVG(c, slot, o={}){
     <g id="soakLayer">${c.soakZ.map((v,z)=>`<ellipse class="sz" cx="${z*20+10}" cy="${soilTop+3}" rx="9" ry="2.3" fill="#6ab0e0" opacity="${(v > 0 ? Math.min(.85, v/40) : 0).toFixed(2)}"/>`).join('')}</g>`;
   const foods = (c.foods||[]).map(foodSVG).join('');
   const decos = (c.deco||[]).map(d=>`<g class="deco" data-deco="${d.id}" transform="translate(${d.x} ${d.y}) scale(.55) translate(-50 -70)"><g class="${ITEMS[d.k].hide ? 'leaf' : ''}">${decoSVG(d.k)}</g></g>`).join('');
-  const bug = `<g id="bugG" style="${p.buried ? 'opacity:.55' : p.hidden ? 'opacity:.35' : ''}"><g transform="translate(${p.x} ${p.y}) scale(${p.s*.85}) translate(-50 -50)">${svgBug(c.bug, st, Object.assign({rare:c.rare}, p.o)).replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '')}</g></g>`;
+  const bug = `<g id="bugG" style="${p.buried ? 'opacity:.55' : p.hidden ? 'opacity:.35' : ''}"><g id="bugMove"><g transform="translate(${p.x} ${p.y}) scale(${p.s*.85}) translate(-50 -50)">${svgBug(c.bug, st, Object.assign({rare:c.rare}, p.o)).replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '')}</g></g></g>`;
   const ants = c.trouble === 'ari' ? (c.foods.filter(f=>f.old)[0] ? [[-6,2],[-3,5],[3,6],[7,3],[10,7]].map(([dx,dy])=>`<circle cx="${c.foods.filter(f=>f.old)[0].x+dx}" cy="${c.foods.filter(f=>f.old)[0].y+dy}" r="1" fill="#111"/>`).join('') : '') : '';
   // ガラスのよごれ（こすると消える）：フン・くもり・カビ
   const dirt = (c.dirt||[]).map((d,i)=> d.k === 'kabi' ? `<g class="dirt" data-d="${i}" opacity="${(d.hp/3).toFixed(2)}"><circle cx="${d.x}" cy="${d.y}" r="4" fill="#eee" opacity=".8"/><circle cx="${d.x-2}" cy="${d.y+1}" r="2.5" fill="#fff"/><circle cx="${d.x+2}" cy="${d.y-1}" r="2" fill="#ddd"/></g>`
@@ -1745,6 +1797,7 @@ async function renderObs(){
   const toXY = e=> toXYc(e.clientX, e.clientY);
   const setTxt = t=>{ txtEl.innerHTML = esc(t); };
   const bugPos = sc.p;
+  startMover(bugPos, c.bug, st.k);
   const nearBug = (x, y)=> !bugPos.hidden && Math.hypot(x - bugPos.x, y - bugPos.y) < 14;
   let annoyT = 0;
   const annoy = (amt, msg)=>{ const t = Date.now(); if(t - annoyT < 500) return; annoyT = t;
@@ -2452,8 +2505,35 @@ addEventListener('keydown', e=>{
   if(openCase !== null){ openCase = null; render(); }
 });
 
+/* 見本ページ：?mihon=kabuto のように開くと、その虫が入ったケースをすぐ見られる（絵をたしかめる用。セーブには何ものこらない）
+   &st=larva / pupa / adult ですがた、上のボタンで時間・すがた・枝・エサをかえられる */
+function startMihon(){
+  const id = BUGS[QS.get('mihon')] && BUGS[QS.get('mihon')].plan ? QS.get('mihon') : 'kabuto', b = BUGS[id];
+  const M = {st:QS.get('st') || 'adult', slot:'yoru', eda:false, esa:false};
+  const HOUR = {asa:7, hiru:13, yu:17, yoru:22};
+  S = newGame(); S.yk.hello = 1; S.boxes = ['wide']; S.dex[id] = {found:dayKey(), where:'見本', known:1, adult:dayKey()};
+  const build = ()=>{
+    const si = Math.max(0, b.plan.map(x=>x.k).lastIndexOf(M.st));
+    const c = {bug:id, si, prog:0, hunger:80, wet:60, clean:95, tick:now(), pending:false, from:'宗像大社', born:'taisha', bornSlot:'yoru', since:dayKey(), ind:{hp:1,atk:1,def:1,spd:1,heal:1}, log:newLog(), tot:newLog(), place:'genkan', trouble:null, dirt:[], foods:[], soak:0, hideUntil:0, deco:M.eda ? [{id:1, k:'eda_nagai', x:60, y:50}] : [], mat:'mat_fuyo', soilAge:10, known:true, pers:'futsu', name:'みほん', size:b.size[1], sex:'オス', moves:[b.shape]};
+    S.demoOff = 0; S.demoOff = ((HOUR[M.slot] - new Date(now()).getHours() + 24) % 24) * 3600e3;
+    if(M.esa) c.foods = [{id:1, k:b.foodAdult && M.st === 'adult' ? b.foodAdult : b.food, x:30, y:soilTopOf(b) - 2, left:1}];
+    S.cases = [c]; obsSession = null; openCase = 0; render(); hud(); bar();
+  };
+  const bar = ()=>{
+    let el = $('mihonBar'); if(!el){ el = document.createElement('div'); el.id = 'mihonBar'; el.className = 'norb'; document.body.appendChild(el); }
+    const btn = (k, v, lbl)=> `<button type="button" class="${M[k] === v ? 'on' : ''}" data-k="${k}" data-v="${v}">${lbl}</button>`;
+    const sts = [...new Set(b.plan.map(x=>x.k))];
+    el.innerHTML = `<b>見本：${esc(b.name)}</b>` + sts.map(k=>btn('st', k, STAGE_NAME[k])).join('') + '<i></i>' +
+      [['asa','朝'],['hiru','昼'],['yu','夕'],['yoru','夜']].map(([k,l])=>btn('slot', k, l)).join('') + '<i></i>' +
+      btn('eda', !M.eda, M.eda ? '枝をとる' : '枝をおく') + btn('esa', !M.esa, M.esa ? 'エサをとる' : 'エサをおく');
+    el.querySelectorAll('button').forEach(x=> x.onclick = ()=>{ const v = x.dataset.v; M[x.dataset.k] = v === 'true' ? true : v === 'false' ? false : v; build(); });
+  };
+  $('tabs').hidden = false; $('rtabs').hidden = false;
+  build();
+}
+
 /* 起動 */
-render();
+if(QS.has('mihon')) startMihon(); else render();
 setInterval(()=>{ if(S && !$('msgLayer') && !$('evLayer')){ tickAll(); hud(); if(openCase === null && tab === 'home') render(); } }, 60*1000);   // 1分ごとに、おなかなどをへらす
 </script>
 </html>
