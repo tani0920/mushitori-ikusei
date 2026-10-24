@@ -247,7 +247,19 @@ p{margin:.3em 0}
 @keyframes spark{0%{opacity:0;transform:scale(.2)}30%{opacity:1}100%{opacity:0;transform:translateY(-40px) scale(1.2)}}
 
 /* お世話の道具と、ケースの中の指の操作 */
-#obs .scene{touch-action:none;cursor:pointer}
+#obs .scene{touch-action:none;cursor:pointer;position:relative}
+.curIc{position:absolute;left:0;top:0;pointer-events:none;font-size:38px;line-height:1;transform:translate(-50%,-70%);filter:drop-shadow(0 3px 2px #0008);transition:opacity .15s;z-index:3}
+.curIc.wipe{animation:wipeIc .35s ease-in-out infinite alternate}
+@keyframes wipeIc{from{transform:translate(-50%,-70%) rotate(-14deg)}to{transform:translate(-50%,-70%) rotate(14deg)}}
+.curIc.spray{animation:sprayIc .25s ease-in-out infinite alternate}
+@keyframes sprayIc{from{transform:translate(-50%,-70%) scale(1)}to{transform:translate(-50%,-70%) scale(.92)}}
+.ripple{position:absolute;width:40px;height:40px;border-radius:50%;border:3px solid #fff;pointer-events:none;transform:translate(-50%,-50%) scale(.3);animation:ripple .5s ease-out forwards;z-index:2}
+@keyframes ripple{to{transform:translate(-50%,-50%) scale(1.4);opacity:0}}
+.mini{position:absolute;left:6px;top:6px;z-index:4;background:#14284acc;color:#fff;border:2px solid #f7f1df88;border-radius:8px;padding:.25em .6em;font-size:12px;min-width:46%;pointer-events:none;line-height:1.4}
+.mini .bar{height:10px;margin-top:2px}
+.mini .ok{color:var(--sun)}
+.mini .ng{color:#ff9a8a}
+.mini.hot{border-color:var(--sun);box-shadow:0 0 0 2px #f4b63c66}
 #obs .scene.tool-fukin{cursor:grab}
 #obs .scene.shake{animation:caseShake .5s}
 @keyframes caseShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px) rotate(-1deg)}40%{transform:translateX(6px) rotate(1deg)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
@@ -348,9 +360,12 @@ const SAVE_KEY = KEY_PRE + 'munakata-mushisodate-v1';
 const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
-const GAME_VER = '0.3.0';
-const BUILD = '20261024-0440';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const GAME_VER = '0.3.1';
+const BUILD = '20261024-0749';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
+  {v:'0.3.1', date:'2026-10-24', items:[
+    'さわっている場所に、道具のアイコン（ゆび・ふきん・きりふき・エサ）がついてくるようにした。さわった場所に波紋が出る',
+    'ケースの中の左上に小さなメーターを出した。きりふきなら「しめりけ」と帯、ふきんなら「きれいさ」とのこり。スクロールしなくても、ちょうどいいかがわかる']},
   {v:'0.3.0', date:'2026-10-24', items:[
     'お世話をボタンから「指の操作」にした。育てることは虫とさわること、というコンセプトに合わせて、ボタンのお世話はなくした',
     'ふきん：ガラスについたフンやくもりを指でこすると消える。虫の上をこすると、さわりすぎになる',
@@ -1197,7 +1212,7 @@ async function renderObs(){
   const guide = {yubi:'葉や木をタップするとのぞける。虫をそっとタップしてもいい。', fukin:dirtN || oldN ? `よごれを指でこすって、きれいにしよう（のこり${dirtN + oldN}）` : 'ガラスはきれい。', kiri:'画面を押しているあいだ、水が出る。「ちょうどいい」の帯で止めよう。', esa:st.k === 'pupa' ? 'さなぎは、なにも食べない。' : `エサを置きたい場所をタップ（${esc(food.name)}${food.price ? ` ×${S.items[foodKey]||0}` : ''}）`}[tool];
   view.innerHTML = `<div class="row" style="justify-content:space-between"><h2>${title}</h2><button type="button" class="btn sub" id="btnBack">もどる</button></div>
     <div class="row" style="margin-bottom:6px"><span class="tag born">${esc((BORN[c.born]||BORN.any).name)}</span>${c.bornSlot === 'yoru' ? '<span class="tag">夜型</span>' : ''}<span class="tag">${esc(PLACES[c.place].name)}</span>${c.wide ? '<span class="tag">広いケース</span>' : ''}${c.rare ? '<span class="tag" style="background:#7a5a20">めずらしい色</span>' : ''}</div>
-    <div id="obs"><div class="scene tool-${tool}" id="scene">${sc.svg}</div>
+    <div id="obs"><div class="scene tool-${tool}" id="scene">${sc.svg}<div class="curIc norb" id="curIc" hidden></div><div class="mini norb" id="mini" hidden></div></div>
       <div class="tools">${Object.keys(TOOLS).map(k=>`<button type="button" class="tbtn ${tool===k?'on':''}" data-tool="${k}" ${k==='esa' && st.k==='pupa' ? 'disabled' : ''}><span class="ic">${TOOLS[k].ic}</span>${TOOLS[k].name}</button>`).join('')}<button type="button" class="tbtn" id="aShake"><span class="ic">🫨</span>ふる</button></div>
       <div class="guide small" id="guide">${guide}</div>
       <div class="obsTxt win" id="obsTxt">${esc(sc.txt)}${persTxt ? `<br>${esc(persTxt)}` : ''}${c.trouble ? `<br><b class="yk">【${esc(TROUBLE[c.trouble].name)}】</b>${esc(TROUBLE[c.trouble].txt)}` : ''}${(c.soak||0) > 30 ? '<br><b class="yk">【びちゃびちゃ】</b>水をかけすぎて、土に水たまりができている。かわくまで、きりふきはやめよう。' : ''}${c.pending ? '<br><b class="yk">…なんだか、ようすがかわりそう！</b>' : fc ? `<br><b class="yk">【予告】</b>${esc(fc)}` : ''}</div></div>
@@ -1211,7 +1226,25 @@ async function renderObs(){
     </div>`;
   $('btnBack').onclick = ()=>{ openCase = null; obsSession = null; render(); };
   view.querySelectorAll('[data-tool]').forEach(bt=> bt.onclick = ()=>{ tool = bt.dataset.tool; renderObs(); });
-  const sceneEl = $('scene'), svg = $('sceneSvg'), txtEl = $('obsTxt');
+  const sceneEl = $('scene'), svg = $('sceneSvg'), txtEl = $('obsTxt'), curIc = $('curIc'), mini = $('mini');
+  const FOOD_IC = {zeri:'🍮', kyabetsu:'🥬', mikan:'🍃', enoki:'🍃', nasu:'🍆', koorogi:'🦗', kusa:'🌿', mitsu:'🥤', wide:'📦'};
+  const toolIc = ()=> ({yubi:'👆', fukin:'🧽', kiri:'🧴', esa:FOOD_IC[foodKey] || '🍽'})[tool];
+  let icHideT = null;
+  const moveIc = (e, cls='')=>{ const r = sceneEl.getBoundingClientRect(); curIc.style.left = (e.clientX - r.left) + 'px'; curIc.style.top = (e.clientY - r.top) + 'px'; curIc.textContent = toolIc(); curIc.className = 'curIc norb ' + cls; curIc.hidden = false; clearTimeout(icHideT); };
+  const hideIc = (ms=250)=>{ clearTimeout(icHideT); icHideT = setTimeout(()=>{ curIc.hidden = true; }, ms); };
+  const ripple = e=>{ const r = sceneEl.getBoundingClientRect(), d = document.createElement('div'); d.className = 'ripple'; d.style.left = (e.clientX - r.left) + 'px'; d.style.top = (e.clientY - r.top) + 'px'; sceneEl.appendChild(d); setTimeout(()=>d.remove(), 520); };
+  // ケースの中に重ねる小さなメーター：道具に合わせて、いま大事な数字だけ見せる（スマホでスクロールしなくてもわかるように）
+  function updateMini(flash){
+    let lbl, v, extra = '', note = '', ok = false;
+    if(tool === 'kiri'){ lbl = 'しめりけ'; v = c.wet; extra = `<b class="band" style="left:${band[0]}%;width:${band[1]-band[0]}%"></b>`;
+      note = (c.soak||0) > 30 ? '<span class="ng">かけすぎ！ びちゃびちゃ</span>' : c.wet > band[1] ? '<span class="ng">すこし多い</span>' : c.wet >= band[0] ? '<span class="ok">ちょうどいい！</span>' : 'まだ少ない'; ok = c.wet >= band[0] && c.wet <= band[1] && !((c.soak||0) > 30); }
+    else if(tool === 'fukin'){ lbl = 'きれいさ'; v = c.clean; const n = (c.dirt||[]).filter(d=>d.hp > 0).length + (c.foods||[]).filter(f=>f.old && f.left > 0).length; note = n ? `のこり ${n}` : '<span class="ok">ぴかぴか！</span>'; ok = !n; }
+    else if(tool === 'esa'){ lbl = 'おなか'; v = c.hunger; const n = (c.foods||[]).filter(f=>!f.old).length; note = n ? `エサ ${n}こ置いてある` : 'エサがない'; }
+    else { lbl = '元気'; v = genkiOf(c); note = `さわった ${obsSession.touches}回`; }
+    mini.innerHTML = `${lbl} <span>${Math.round(v)}</span>　${note}<span class="bar">${extra}<i class="${meterCls(v)}" style="width:${v}%"></i></span>`;
+    mini.classList.toggle('hot', !!ok); mini.hidden = false;
+  }
+  updateMini();
   const toXY = e=>{ const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; const q = pt.matrixTransform(svg.getScreenCTM().inverse()); return {x:q.x, y:q.y}; };
   const setTxt = t=>{ txtEl.innerHTML = esc(t); };
   const bugPos = sc.p;
@@ -1234,6 +1267,7 @@ async function renderObs(){
     (c.dirt||[]).forEach((d, i)=>{ if(Math.hypot(x - d.x, y - d.y) < 9 && d.hp > 0){ d.hp -= .5; hit = true; const el = svg.querySelector(`.dirt[data-d="${i}"]`); if(el) el.setAttribute('opacity', (Math.max(0, d.hp)/3*(d.k==='kumori'?.55:1)).toFixed(2)); } });
     (c.foods||[]).forEach(f=>{ if(f.old && Math.hypot(x - f.x, y - f.y) < 10){ f.left -= .2; hit = true; const el = svg.querySelector(`.food[data-f="${f.id}"]`); if(el) el.setAttribute('opacity', Math.max(0, f.left).toFixed(2)); } });
     if(nearBug(x, y) && !obsSession.wipedBug){ obsSession.wipedBug = true; obsSession.touches++; c.log.over++; }
+    if(hit) updateMini();
     return hit;
   };
   const wipeDone = async ()=>{
@@ -1253,8 +1287,8 @@ async function renderObs(){
       if(c.wet < 100) c.wet = Math.min(100, c.wet + 3); else c.soak = Math.min(100, (c.soak||0) + 4);
       const wl = $('wetLayer'); if(wl) wl.setAttribute('opacity', ((c.wet/100)*.35).toFixed(2));
       const sl = $('soakLayer'); if(sl) sl.setAttribute('opacity', (c.soak > 0 ? Math.min(1, c.soak/40) : 0).toFixed(2));
-      const bar = view.querySelector('.meters .bar:nth-of-type(1) i, .meters span.bar i'); refreshWetBar();
-      const sp = $('sprayLayer'); if(sp){ for(let i=0;i<4;i++){ const d = document.createElementNS('http://www.w3.org/2000/svg','circle'); d.setAttribute('cx', x + (Math.random()*16-8)); d.setAttribute('cy', y + (Math.random()*16-8)); d.setAttribute('r', (.6+Math.random()*.8).toFixed(1)); d.setAttribute('fill', '#cfe8ff'); d.setAttribute('class', 'drop'); sp.appendChild(d); setTimeout(()=>d.remove(), 500); } }
+      refreshWetBar(); updateMini();
+      const sp = $('sprayLayer'); if(sp){ for(let i=0;i<4;i++){ const d = document.createElementNS('http://www.w3.org/2000/svg','circle'); d.setAttribute('cx', x + (Math.random()*18-9)); d.setAttribute('cy', y + 2 + (Math.random()*14-4)); d.setAttribute('r', (.6+Math.random()*.8).toFixed(1)); d.setAttribute('fill', '#cfe8ff'); d.setAttribute('class', 'drop'); sp.appendChild(d); setTimeout(()=>d.remove(), 500); } }
     }, 120);
   };
   const refreshWetBar = ()=>{ const bars = [...view.querySelectorAll('.meters .bar')]; const idx = st.k !== 'pupa' ? 1 : 0; const i = bars[idx] && bars[idx].querySelector('i'); if(i){ i.style.width = c.wet + '%'; i.className = meterCls(c.wet); } };
@@ -1289,10 +1323,12 @@ async function renderObs(){
   // ---- 指のイベント ----
   let down = false, moved = false;
   sceneEl.onpointerdown = e=>{ e.preventDefault(); down = true; moved = false; sceneEl.setPointerCapture(e.pointerId); const q = toXY(e);
+    ripple(e); moveIc(e, tool === 'fukin' ? 'wipe' : tool === 'kiri' ? 'spray' : '');
     if(tool === 'kiri') sprayStart(q.x, q.y);
     if(tool === 'fukin') wipeAt(q.x, q.y); };
-  sceneEl.onpointermove = e=>{ if(!down) return; const q = toXY(e); moved = true; if(tool === 'fukin') wipeAt(q.x, q.y); };
-  sceneEl.onpointerup = sceneEl.onpointercancel = async e=>{ if(!down) return; down = false; const q = toXY(e);
+  sceneEl.onpointermove = e=>{ moveIc(e, down ? (tool === 'fukin' ? 'wipe' : tool === 'kiri' ? 'spray' : '') : ''); if(!down){ if(e.pointerType !== 'mouse') hideIc(600); return; } const q = toXY(e); moved = true; if(tool === 'fukin') wipeAt(q.x, q.y); };
+  sceneEl.onpointerleave = ()=> hideIc(100);
+  sceneEl.onpointerup = sceneEl.onpointercancel = async e=>{ if(!down) return; down = false; hideIc(350); const q = toXY(e);
     if(tool === 'kiri'){ await sprayEnd(); return; }
     if(tool === 'fukin'){ await wipeDone(); return; }
     if(tool === 'esa'){ await placeFood(q.x, q.y); return; }
