@@ -18,6 +18,18 @@ const h1 = await pos(); await page.waitForTimeout(2500); const h2 = await pos();
 console.log('昼（土の中でねる）:', h1, h2, h1 === h2 ? '→ 動かない（OK）' : '→ 動いた！');
 if (h1 !== h2) errors.push('ねているのに動いた');
 await page.screenshot({ path: `${SHOTS}/k-mihon-hiru.png` });
+// 虫めがね：枝にとまったカブトムシの触角にかざすと、くわしいようすが文に出る
+await page.click('#mihonBar [data-v=yoru]'); await page.waitForTimeout(500);
+if (!(await page.$('#mihonBar [data-k=eda][data-v=false]'))) { await page.click('#mihonBar [data-k=eda]'); await page.waitForTimeout(600); }
+await page.click('[data-tool=megane]'); await page.waitForTimeout(400);
+const o = await page.evaluate(() => { const r = document.getElementById('toolObj').getBoundingClientRect(); return {x:r.left + r.width/2, y:r.top + r.height/2}; });
+const a = await page.evaluate(() => { const r = document.querySelector('#bugG [data-r=ant]').getBoundingClientRect(); return {x:r.left + r.width/2, y:r.top + r.height/2}; });
+await page.mouse.move(o.x, o.y); await page.mouse.down();
+for (let i = 1; i <= 10; i++) { await page.mouse.move(o.x + (a.x - o.x)*i/10, o.y + (a.y - o.y)*i/10); await page.waitForTimeout(30); }
+await page.mouse.up(); await page.waitForTimeout(700);
+const lt = await page.$eval('#obsTxt', e => e.textContent);
+console.log('虫めがね:', lt.slice(0, 40)); if (!/虫めがねで見ると…触角/.test(lt)) errors.push('虫めがねで触角が見えない');
+await page.screenshot({ path: `${SHOTS}/k-megane.png` });
 // 観察（試作）：部品を組み立てて動かす画面
 await page.click('#mihonZoom'); await page.waitForTimeout(800);
 const n = await page.evaluate(() => [...document.querySelectorAll('.zoomL image')].filter(i => i.getBBox().width > 0).length);

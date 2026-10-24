@@ -274,6 +274,10 @@ p{margin:.3em 0}
 .toolObj{position:absolute;left:0;top:0;font-size:84px;line-height:1;transform:translate(-50%,-50%);filter:drop-shadow(0 4px 3px #0009);z-index:3;touch-action:none;cursor:grab;transition:left .3s,top .3s;user-select:none}
 .toolObj::after{content:'';position:absolute;inset:-14px;border-radius:50%}
 .toolObj.rest{animation:toolPop .45s}
+.toolObj .lens{position:relative;width:1.35em;height:1.35em;border-radius:50%;overflow:hidden;border:.07em solid #c8a050;box-shadow:0 0 0 .025em #5a3a10,inset 0 0 .12em #0008;background:#000}
+.toolObj .lens svg{width:100%;height:100%;display:block}
+.toolObj .lens::after{content:'';position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 30% 25%,#fff6 0,#fff0 35%);pointer-events:none}
+.toolObj:has(.lens)::after{content:'';position:absolute;left:78%;top:78%;width:.18em;height:.55em;background:#8a5a20;border-radius:.06em;transform:rotate(-45deg);transform-origin:top center;z-index:-1}
 @keyframes toolPop{0%{transform:translate(-50%,-50%) scale(.3)}70%{transform:translate(-50%,-50%) scale(1.15)}100%{transform:translate(-50%,-50%) scale(1)}}
 .toolObj.drag{transition:none;transform:translate(-50%,-50%) scale(1.08);cursor:grabbing}
 .toolObj.wipe{animation:wipeIc .35s ease-in-out infinite alternate}
@@ -612,9 +616,12 @@ const SAVE_KEY = KEY_PRE + 'munakata-mushisodate-v1';
 const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
-const GAME_VER = '0.7.7';
-const BUILD = '20261024-1714';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const GAME_VER = '0.8.0';
+const BUILD = '20261024-1744';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
+  {v:'0.8.0', date:'2026-10-24', items:[
+    '新しい道具「虫めがね」：ケースの上で動かすと、レンズの中だけ大きく見える。虫の上でじっと見ていると、触角のそうじ・口でなめるようす・おなかの呼吸などが見つかる',
+    'カブトムシの成虫は、ケースの中でも部品の絵で動くようになった（呼吸・触角のぴくぴく・触角そうじ・さわるとツノでいかく）']},
   {v:'0.7.7', date:'2026-10-24', items:[
     '観察（試作）：カブトムシの前脚を新しい絵にして、ひざで曲がるようにした。触角そうじは、脚を高く上げてから、すねで触角をなでおろす',
     '観察（試作）：奥の触角が頭からはなれて浮いていたのを直した']},
@@ -1297,7 +1304,7 @@ const statLine = f=> `${f.t.name}タイプ　たいりょく${f.maxhp}　ちか�
    ========================================================= */
 /* 絵（画像）の虫の動き。1枚の絵のまま、位置・向き・かたむきだけを動かす。
    床にいるとき（p.walk）は歩きまわる。枝の上などでは、向きをかえたり、頭を下げてあたりを見たりするだけ。ねている・かくれている・食べているときは動かない */
-let moverId = 0, moverMem = null;
+let moverId = 0, moverMem = null, moverWalking = false, rigCtl = null;   // rigCtl：ケースの中の部品の虫（リグ）
 function startMover(p, id, stage){
   const my = ++moverId, el = $('bugMove');
   if(!el || !(BUG_IMG[id]||{})[stage] || p.hidden || p.buried || p.eating || (p.o && p.o.sleep)) return;
@@ -1312,7 +1319,7 @@ function startMover(p, id, stage){
     const dt = Math.min(.05, Math.max(0, (t - last)/1000)); last = t;
     if(mode === 'idle' && t > until){
       const r = Math.random();
-      if(p.walk && r < .55){   // 歩く
+      if(p.walk && r < .55 && !(rigCtl && rigCtl.act)){   // 歩く（触角そうじの間は歩かない）
         tx = lo + Math.random()*(hi - lo); if(Math.abs(tx - x) < 10) tx = x + (tx > x ? 12 : -12);
         tx = Math.max(lo, Math.min(hi, tx)); face = tx > x ? 1 : -1; mode = 'walk';
       }
@@ -1327,7 +1334,7 @@ function startMover(p, id, stage){
       else x += Math.sign(d) * v;
       phase += dt * 10;
     }
-    const walking = mode === 'walk' && turned;
+    const walking = mode === 'walk' && turned; moverWalking = mode === 'walk';
     const bob = walking ? -Math.abs(Math.sin(phase)) * .5 : 0, tilt = walking ? Math.sin(phase) * 1.2 : 0;
     const look = leanT && t - leanT < 1600 ? Math.sin((t - leanT)/1600*Math.PI) * 5 * Math.sign(shown || 1) : 0;
     el.setAttribute('transform', `translate(${x.toFixed(2)} ${bob.toFixed(2)}) rotate(${(tilt + look).toFixed(2)} 0 ${feetY}) scale(${shown.toFixed(3)} 1) translate(${-x0} 0)`);
@@ -1346,7 +1353,8 @@ function svgBug(id, stage, o={}){
   const b = BUGS[id], cls = ['bug', o.rest ? 'rest' : '', o.sleep ? 'sleep' : '', o.cls||''].join(' ');
   let inner = '';
   const img = (BUG_IMG[id] || {})[stage];
-  if(img) inner = `<image class="art" href="img/bugs/${img}.webp" width="100" height="100"/>`;
+  if(o.rig && stage === 'adult' && BUG_PARTS[id]) inner = `<g class="rig" transform="${rigFit(id)}">${rigSVG(id)}</g>`;   // ケースの中は、部品の絵で組み立てて動かす
+  else if(img) inner = `<image class="art" href="img/bugs/${img}.webp" width="100" height="100"/>`;
   else if(stage === 'larva') inner = larvaSVG(id, b, o);
   else if(stage === 'pupa') inner = pupaSVG(id, b);
   else inner = adultSVG(id, b, o);
@@ -1560,7 +1568,7 @@ function sceneSVG(c, slot, o={}){
     <g id="soakLayer">${c.soakZ.map((v,z)=>`<ellipse class="sz" cx="${z*20+10}" cy="${soilTop+3}" rx="9" ry="2.3" fill="#6ab0e0" opacity="${(v > 0 ? Math.min(.85, v/40) : 0).toFixed(2)}"/>`).join('')}</g>`;
   const foods = (c.foods||[]).map(foodSVG).join('');
   const decos = (c.deco||[]).map(d=>`<g class="deco" data-deco="${d.id}" transform="translate(${d.x} ${d.y}) scale(.55) translate(-50 -70)"><g class="${ITEMS[d.k].hide ? 'leaf' : ''}">${decoSVG(d.k)}</g></g>`).join('');
-  const bug = `<g id="bugG" style="${p.buried ? 'opacity:.55' : p.hidden ? 'opacity:.35' : ''}"><g id="bugMove"><g transform="translate(${p.x} ${p.y}) scale(${p.s*.85}) translate(-50 -50)">${svgBug(c.bug, st, Object.assign({rare:c.rare}, p.o)).replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '')}</g></g></g>`;
+  const bug = `<g id="bugG" style="${p.buried ? 'opacity:.55' : p.hidden ? 'opacity:.35' : ''}"><g id="bugMove"><g transform="translate(${p.x} ${p.y}) scale(${p.s*.85}) translate(-50 -50)">${svgBug(c.bug, st, Object.assign({rare:c.rare, rig:true}, p.o)).replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '')}</g></g></g>`;
   const ants = c.trouble === 'ari' ? (c.foods.filter(f=>f.old)[0] ? [[-6,2],[-3,5],[3,6],[7,3],[10,7]].map(([dx,dy])=>`<circle cx="${c.foods.filter(f=>f.old)[0].x+dx}" cy="${c.foods.filter(f=>f.old)[0].y+dy}" r="1" fill="#111"/>`).join('') : '') : '';
   // ガラスのよごれ（こすると消える）：フン・くもり・カビ
   const dirt = (c.dirt||[]).map((d,i)=> d.k === 'kabi' ? `<g class="dirt" data-d="${i}" opacity="${(d.hp/3).toFixed(2)}"><circle cx="${d.x}" cy="${d.y}" r="4" fill="#eee" opacity=".8"/><circle cx="${d.x-2}" cy="${d.y+1}" r="2.5" fill="#fff"/><circle cx="${d.x+2}" cy="${d.y-1}" r="2" fill="#ddd"/></g>`
@@ -1569,8 +1577,8 @@ function sceneSVG(c, slot, o={}){
   const glass = `<rect x="1" y="1" width="98" height="98" fill="none" stroke="#f7f1df88" stroke-width="2" rx="2"/><path d="M4 4 L4 30" stroke="#fff" stroke-width="1" opacity=".5"/>`;
   const zz = p.o && p.o.sleep && !p.hidden ? `<text class="zz" x="${p.x+8}" y="${p.y-8}" font-size="7" fill="#fff">z</text><text class="zz" x="${p.x+13}" y="${p.y-14}" font-size="5" fill="#fff" style="animation-delay:-1.2s">z</text>` : '';
   const nom = p.eating ? `<text class="zz" x="${p.x+10}" y="${p.y-6}" font-size="5" fill="#fff">もぐもぐ</text>` : '';
-  return {svg:`<svg id="sceneSvg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${s1}"/><stop offset="1" stop-color="${s2}"/></linearGradient></defs>
-    <rect width="100" height="100" fill="url(#sky)"/>${stars}${sun}${soil}${mess}${chamber}${p.hidden || o.noBug ? '' : ''}${p.hidden && !o.noBug ? bug : ''}${plants}${decos}${foods}${ants}${p.hidden || o.noBug ? '' : bug}${zz}${nom}<g id="sprayLayer"></g><g id="dirtLayer">${dirt}</g>${glass}</svg>`, txt:p.txt, p};
+  return {svg:`<svg id="sceneSvg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${s1}"/><stop offset="1" stop-color="${s2}"/></linearGradient></defs><g id="sceneMain">
+    <rect width="100" height="100" fill="url(#sky)"/>${stars}${sun}${soil}${mess}${chamber}${p.hidden || o.noBug ? '' : ''}${p.hidden && !o.noBug ? bug : ''}${plants}${decos}${foods}${ants}${p.hidden || o.noBug ? '' : bug}${zz}${nom}<g id="sprayLayer"></g><g id="dirtLayer">${dirt}</g>${glass}</g></svg>`, txt:p.txt, p};
 }
 
 /* =========================================================
@@ -1722,8 +1730,8 @@ function renderShop(){
 /* ---- 観察（ケースの中）：道具をえらんで、ケースの中を指でさわる ---- */
 const PLACE_IC = {genkan:'🚪', heya:'🛏', beranda:'🌿'};
 const PLACES = {genkan:{name:'げんかん', desc:'すずしくて静か。かいふくがよくなり、のんびりした性格になりやすい'}, heya:{name:'へや', desc:'いつもそばにいる。人なつっこい性格になりやすい'}, beranda:{name:'ベランダの日かげ', desc:'外の空気。まもりが強くなる。ただし、かわきやすい'}};
-const TOOLS = {yubi:{name:'ゆび', ic:'👆'}, fukin:{name:'ふきん', ic:'🧽'}, kiri:{name:'きりふき', ic:'💦'}, esa:{name:'エサ', ic:'🍽'}, kazari:{name:'かざり', ic:'🪵'}, big:{name:'大そうじ', ic:'🧹'}, furu:{name:'ふる', ic:'🫨'}};
-let tool = 'yubi', obsSession = null, decoSel = null;   // obsSession：いまのぞいている間の、さわった回数など
+const TOOLS = {yubi:{name:'ゆび', ic:'👆'}, megane:{name:'虫めがね', ic:'🔍'}, fukin:{name:'ふきん', ic:'🧽'}, kiri:{name:'きりふき', ic:'💦'}, esa:{name:'エサ', ic:'🍽'}, kazari:{name:'かざり', ic:'🪵'}, big:{name:'大そうじ', ic:'🧹'}, furu:{name:'ふる', ic:'🫨'}};
+let tool = 'yubi', obsSession = null, decoSel = null, lensLook = ()=>{};   // obsSession：いまのぞいている間の、さわった回数など
 function indLine(c){ const f = fighterOf(c); return statLine(f); }
 // 性格ごとの、さわったとき・ふったときの反応
 const REACT = {
@@ -1744,7 +1752,7 @@ async function renderObs(){
   const ownDeco = Object.keys(ITEMS).filter(k=>ITEMS[k].cat && (S.items[k]||0) > 0);
   const bigGuide = st.k === 'pupa' ? 'さなぎの間は、大そうじはできない。' : (!big || big.step === 1) ? ((c.soilAge||0) > 72 || big ? '' : 'まだ大そうじはいらない（3日に1回くらい）。') + '🤏をつかんで虫の上で止めると、そっとつまめる。右上のひなんケースへ運ぼう。すばやくぶつけると虫がいやがる。' : big.step === 2 ? `🧹をつかんで、土の上を左右に動かして入れかえよう（あと${3 - big.pass}回）` : '🤏をひなんケースの上で止めて虫をつまみ、ケースの中へもどそう。';
   const guide = {big:bigGuide, kazari:ownDeco.length ? (decoSel ? (ITEMS[decoSel].cat === 'mat' ? 'マットは、えらぶとすぐにしきかえる。' : 'かざりをつかんで、置きたい場所ではなす。置いたものは、直接つまんで動かせる。左下の「しまう」に入れるともどる。') : '下から、置きたいかざりをえらぼう。') : 'かざりは、「おみせ」で買えるよ。',
-    yubi:'手をつかんで、葉や木にのせるとのぞける。虫にのせるとそっとさわる。置いたエサやかざりは、直接つまんで動かせる。', fukin:dirtN || oldN ? `スポンジをつかんで、よごれの上でこすろう（のこり${dirtN + oldN}）` : 'ガラスはきれい。', kiri:'きりふきをつかんで、かけたい場所で指を止めると水が出る。ケースぜんたいに少しずつ。左上の5本の棒が、場所ごとのしめりけ。', esa:st.k === 'pupa' ? 'さなぎは、なにも食べない。' : `エサをつかんで、置きたい場所ではなす（${esc(food.name)}${food.price ? ` ×${S.items[foodKey]||0}` : ''}）`, furu:'ケースをつかんで、左右に動かすとゆれる。何回もゆらすと、虫がおどろくよ。'}[tool];
+    yubi:'手をつかんで、葉や木にのせるとのぞける。虫にのせるとそっとさわる。置いたエサやかざりは、直接つまんで動かせる。', fukin:dirtN || oldN ? `スポンジをつかんで、よごれの上でこすろう（のこり${dirtN + oldN}）` : 'ガラスはきれい。', kiri:'きりふきをつかんで、かけたい場所で指を止めると水が出る。ケースぜんたいに少しずつ。左上の5本の棒が、場所ごとのしめりけ。', esa:st.k === 'pupa' ? 'さなぎは、なにも食べない。' : `エサをつかんで、置きたい場所ではなす（${esc(food.name)}${food.price ? ` ×${S.items[foodKey]||0}` : ''}）`, furu:'ケースをつかんで、左右に動かすとゆれる。何回もゆらすと、虫がおどろくよ。', megane:'虫めがねをつかんで、見たいところに動かすと、大きく見える。虫の上で、じっと見てみよう。'}[tool];
   const esaGuide = st.k === 'pupa' ? '' : `エサをつかんで、置きたい場所ではなす`;
   const bornTag = `<span class="tag born">${esc((BORN[c.born]||BORN.any).name)}</span>${c.bornSlot === 'yoru' ? ' <span class="tag">夜型</span>' : ''}`;
   const BX = boxOf(c), tags = `<span class="tag">${BX.ic} ${esc(BX.name)}</span><span class="tag">${PLACE_IC[c.place]} ${esc(PLACES[c.place].name)}</span>${c.rare ? '<span class="tag" style="background:#7a5a20">めずらしい色</span>' : ''}`;
@@ -1781,12 +1789,33 @@ async function renderObs(){
     decoSel = decoSel === k ? null : k; renderObs(); });
   const sceneEl = $('scene'), svg = $('sceneSvg'), txtEl = $('obsTxt'), toolObj = $('toolObj'), mini = $('mini');
   const FOOD_IC = {zeri:'🍮', kyabetsu:'🥬', mikan:'🍃', enoki:'🍃', nasu:'🍆', koorogi:'🦗', kusa:'🌿', mitsu:'🥤', wide:'📦'};
-  const toolIc = ()=> tool === 'big' ? ((obsSession.big||{step:1}).step === 2 ? '🧹' : '🤏') : tool === 'kazari' ? (decoSel ? `<svg viewBox="0 0 100 100">${decoSVG(decoSel)}</svg>` : '') : ({yubi:'👆', fukin:'🧽', kiri:'🧴', esa:FOOD_IC[foodKey] || '🍽', furu:'✋'})[tool];
+  const toolIc = ()=> tool === 'big' ? ((obsSession.big||{step:1}).step === 2 ? '🧹' : '🤏') : tool === 'kazari' ? (decoSel ? `<svg viewBox="0 0 100 100">${decoSVG(decoSel)}</svg>` : '') : tool === 'megane' ? '<div class="lens"><svg viewBox="0 0 10 10"><use href="#sceneMain"/></svg></div>' : ({yubi:'👆', fukin:'🧽', kiri:'🧴', esa:FOOD_IC[foodKey] || '🍽', furu:'✋'})[tool];
   // 道具は、ボタンを押すとケースの右下に出てくる。それをつかんで動かして使う。hot は「きく場所」（きりふきの口、指の先）
-  const HOT = {yubi:{x:-8, y:-36}, fukin:{x:0, y:0}, kiri:{x:-22, y:-42}, esa:{x:0, y:0}, kazari:{x:0, y:10}, big:{x:-6, y:30}, furu:{x:0, y:0}};
+  const HOT = {yubi:{x:-8, y:-36}, fukin:{x:0, y:0}, kiri:{x:-22, y:-42}, esa:{x:0, y:0}, kazari:{x:0, y:10}, big:{x:-6, y:30}, furu:{x:0, y:0}, megane:{x:0, y:0}};
   const restPos = ()=>{ const r = sceneEl.getBoundingClientRect(), k = (parseFloat(getComputedStyle($('toolObj')).fontSize) || 84) / 84; return {x:56*k, y:r.height - 54*k}; };
   const objPos = {x:0, y:0};
-  const setObj = (x, y, cls='')=>{ objPos.x = x; objPos.y = y; toolObj.style.left = x + 'px'; toolObj.style.top = y + 'px'; toolObj.className = 'toolObj norb ' + cls; };
+  const setObj = (x, y, cls='')=>{ objPos.x = x; objPos.y = y; toolObj.style.left = x + 'px'; toolObj.style.top = y + 'px'; toolObj.className = 'toolObj norb ' + cls; if(tool === 'megane') requestAnimationFrame(lensAt); };
+  // 虫めがね：レンズの中に、ケース（sceneMain）を 2.5 倍でうつす。虫の上にかざすと、くわしいようすが文に出る
+  const LENS_Z = 2.5;
+  const lensAt = ()=>{ const lens = toolObj.querySelector('.lens svg'); if(!lens) return;
+    const q = hotXY(), D = lens.getBoundingClientRect().width / (objPos.drag ? 1.08 : 1) || 100, k = Math.max(sceneEl.clientWidth, sceneEl.clientHeight) / 100, w = D / (k * LENS_Z);
+    lens.setAttribute('viewBox', `${(q.x - w/2).toFixed(2)} ${(q.y - w/2).toFixed(2)} ${w.toFixed(2)} ${w.toFixed(2)}`); lensLook(); };
+  let lensSaid = '';
+  const LOOK = {clean:'虫めがねで見ると…前脚で、触角をそうじしている！ においをよく感じるために、だいじなことなんだ。', eat:'虫めがねで見ると…オレンジ色のブラシのような口で、ゼリーをなめている！', nemui:'虫めがねで見ると…おなかが、ゆっくりふくらんだりしぼんだりしている。息をしているんだ。', genki:'虫めがねで見ると…触角の先が、ひだのようにひらいている。ぴくぴく動かして、においをさぐっているよ。', threat:'虫めがねで見ると…ツノをもちあげて、こっちをにらんでいる！'};
+  lensLook = ()=>{ if(tool !== 'megane' || !toolObj.isConnected || toolObj.hidden) return;
+    const q = hotXY(), r = (bugPos.s || .5) * .85 * 40, on = !bugPos.hidden && Math.hypot(q.x - bugPos.x, q.y - bugPos.y) < r;
+    let key = on ? (rigCtl ? (rigCtl.act || rigCtl.mood) : 'plain') : '';
+    if(on && rigCtl){   // そのようすが見える部分（触角・口・おなか）に、レンズが重なっているときだけ
+      const part = {clean:'ant', genki:'ant', threat:'head', eat:'mouth', nemui:'body'}[key], el = part && svg.querySelector(`#bugG [data-r="${part}"]`);
+      const lr = toolObj.querySelector('.lens').getBoundingClientRect(), pr = el && el.getBoundingClientRect();
+      if(pr && Math.hypot(pr.left + pr.width/2 - (lr.left + lr.width/2), pr.top + pr.height/2 - (lr.top + lr.height/2)) > lr.width * .55 + Math.min(pr.width, pr.height) * .3) key = 'plain';
+    }
+    if(on && bugPos.buried) key = 'buried';
+    if(!key || key === lensSaid) return; lensSaid = key;
+    const d = S.dex[c.bug]; let first = false;
+    if(d && rigCtl && LOOK[key]){ d.mi = d.mi || {}; if(!d.mi[key]){ d.mi[key] = 1; first = true; save(); } }
+    setTxt(key === 'plain' ? '虫めがねで見ると…からだのもようや、こまかい毛まで、よく見える！' : key === 'buried' ? '虫めがねで見ると…土の中に、虫のからだが少しだけ見える。ねているみたい。' : LOOK[key] + (first ? '（はじめて見た！）' : ''));
+  };
   const showTool = ()=>{ if(tool === 'furu' || (tool === 'big' && st.k === 'pupa') || (tool === 'esa' && st.k === 'pupa') || (tool === 'kazari' && (!decoSel || ITEMS[decoSel].cat === 'mat'))){ toolObj.hidden = true; return; } const r = restPos(); toolObj.innerHTML = toolIc() + '<span class="hint">つかんで動かす</span>'; toolObj.hidden = false; setObj(r.x, r.y, 'rest'); };
   const hk = ()=> (parseFloat(getComputedStyle(toolObj).fontSize) || 84) / 84;
   const hotXY = ()=>{ const r = sceneEl.getBoundingClientRect(), h0 = HOT[tool], h = {x:h0.x*hk(), y:h0.y*hk()}; return toXYc(r.left + objPos.x + h.x, r.top + objPos.y + h.y); };
@@ -1811,6 +1840,9 @@ async function renderObs(){
   const setTxt = t=>{ txtEl.innerHTML = esc(t); };
   const bugPos = sc.p;
   startMover(bugPos, c.bug, st.k);
+  const rigEl = svg.querySelector('#bugG .rig');
+  rigCtl = rigEl ? rigRun(rigEl, c.bug, {mood:bugPos.o && bugPos.o.sleep ? 'nemui' : bugPos.eating ? 'eat' : 'genki', auto:!bugPos.hidden && !bugPos.buried, hold:()=> moverWalking, onAct:()=> lensLook()}) : null;
+  { const lt = setInterval(()=>{ if(!svg.isConnected) clearInterval(lt); else lensLook(); }, 400); }   // 虫が虫めがねの下に来たときも
   const nearBug = (x, y)=> !bugPos.hidden && Math.hypot(x - bugPos.x, y - bugPos.y) < 14;
   let annoyT = 0;
   const annoy = (amt, msg)=>{ const t = Date.now(); if(t - annoyT < 500) return; annoyT = t;
@@ -1822,6 +1854,7 @@ async function renderObs(){
   // ---- ゆび：葉をめくる・虫にさわる ----
   const touchBug = async ()=>{
     obsSession.touches++; const pk = c.pers && st.k === 'adult' ? c.pers : 'futsu';
+    if(rigCtl && rigCtl.mood !== 'eat') rigCtl.start('threat');
     setTxt(REACT.touch[pk]);
     if(obsSession.touches >= 3){ c.log.over++; c.hideUntil = now() + 10*60*1000; save(); await say('さわりすぎ！ 虫がつかれてしまう。\n【そだてのやくそく】\n虫は、見るのが基本。さわるのは、ちょっとだけ。'); renderObs(); return; }
     if(pk === 'okubyo'){ c.hideUntil = now() + 10*60*1000; save(); renderObs(); }
@@ -1973,6 +2006,7 @@ async function renderObs(){
       if(binned){ c.deco = c.deco.filter(d=>d !== di.it); S.items[di.it.k] = (S.items[di.it.k]||0) + 1; save(); setTxt(`${ITEMS[di.it.k].name}をしまった。`); renderObs(); return; }
       c.log.over += di.type === 'food' ? 0 : 0; save(); renderObs(); setTimeout(()=> setTxt(di.type === 'food' ? 'エサの場所をかえた。' : `${ITEMS[di.it.k].name}の場所をかえた。`), 50); return; }
     if(tool === 'furu'){ await furuEnd(); return; }
+    if(tool === 'megane'){ setObj(objPos.x, objPos.y, ''); return; }   // 虫めがねは、はなした場所にのこる
     const q = hotXY(); const rp = restPos(); setObj(rp.x, rp.y, '');
     if(tool === 'kiri'){ await sprayEnd(); return; }
     if(tool === 'fukin'){ await wipeDone(); return; }
@@ -2529,82 +2563,92 @@ const BUG_PARTS = {
     pv:{neck:[735,578], ant:[850,577], coxa:[640,616], knee:[740,712], mouth:[856,604], breath:[560,880]},
     far:{ant:[18,-17, -7], leg:[70,-95, -14]},   // 奥がわの触角・前脚：手前の絵を [右へ, 上へ, 回す角度] ずらしてくらくする
     box:'20 90 1000 880', ground:925, jelly:[848,668],
+    fit:[46,128,961,794],   // 全身の絵で、虫がいる範囲（1枚絵の kabuto_adult_genki と同じ大きさにそろえる）
   },
 };
-function openZoom(id, opt={}){
-  const P = BUG_PARTS[id]; if(!P) return;
-  document.querySelectorAll('.zoomL').forEach(e=>e.remove());
-  const dir = `img/bugs/parts/${id}/`, R = P.parts, V = P.pv;
-  const im = (k, cls='')=> `<image class="${cls}" href="${dir}${k}.webp" x="${R[k][0]}" y="${R[k][1]}" width="${R[k][2]}" height="${R[k][3]}"/>`;
-  const leg = (far)=> `<g id="${far ? 'zLegF' : 'zLeg'}"${far ? ' filter="url(#zFar)"' : ''}><g class="thigh">${im('thigh')}</g><g class="shinG">${im('shin')}</g></g>`;
-  const [jx, jy] = P.jelly;
-  const svg = `<svg viewBox="${P.box}" preserveAspectRatio="xMidYMid meet">
-    <defs><filter id="zFar"><feColorMatrix type="matrix" values=".62 0 0 0 0  0 .58 0 0 0  0 0 .55 0 0  0 0 0 1 0"/></filter>
-      <linearGradient id="zSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#22324a"/><stop offset="1" stop-color="#3a4a3a"/></linearGradient></defs>
-    <rect x="-200" y="0" width="1400" height="${P.ground}" fill="url(#zSky)"/>
-    <rect x="-200" y="${P.ground}" width="1400" height="300" fill="#4a3220"/>
-    ${[[80,950],[260,980],[520,960],[760,990],[930,955]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="14" ry="6" fill="#3a2516"/>`).join('')}
-    <g id="zBug">
-      <g id="zFarSide">${leg(true)}</g>
-      <g id="zBody">${im('body')}</g>
-      ${leg(false)}
-    <g id="zJelly" style="display:none"><rect x="${jx}" y="${jy}" width="125" height="${P.ground - jy}" rx="10" fill="#f0e0b0" opacity=".9"/><rect x="${jx+6}" y="${jy+8}" width="113" height="46" rx="6" fill="#e8a040"/></g>
-      <g id="zHead"><g id="zAntF" filter="url(#zFar)">${im('antenna')}</g><g id="zMouth">${im('mouth')}</g>${im('head')}<g id="zAnt">${im('antenna')}</g></g>
-    </g></svg>`;
-  const L = document.createElement('div'); L.className = 'full zoomL norb';
-  const btns = [['genki','げんき'],['eat','食べる'],['nemui','ねむい']];
-  L.innerHTML = `<div class="zt"><b>観察（試作）：${esc(BUGS[id].name)}</b>${btns.map(([k,l])=>`<button type="button" data-m="${k}">${l}</button>`).join('')}<button type="button" data-a="clean">触角そうじ</button><button type="button" data-x="1">とじる</button></div>${svg}<div class="zs" id="zSay"></div>`;
-  document.body.appendChild(L);
-  const $z = q=> L.querySelector(q), g = {
-    bug:$z('#zBug'), body:$z('#zBody'), head:$z('#zHead'), ant:$z('#zAnt'), antF:$z('#zAntF'), mouth:$z('#zMouth'),
-    leg:$z('#zLeg'), shin:$z('#zLeg .shinG'), legF:$z('#zLegF'), shinF:$z('#zLegF .shinG'), jelly:$z('#zJelly')};
-  let mood = opt.mood || 'genki', act = null, actT = 0, nextAct = performance.now() + 2500, twitch = {a:0, to:0, t:0}, twF = {a:0, to:0, t:0}, startle = 0;
-  const say = t=> { $z('#zSay').textContent = t; };
-  const SAY = {genki:'触角をぴんと立てて、あたりのにおいをさぐっている。', eat:'ブラシのような口で、ゼリーをなめている。', nemui:'触角をさげて、じっとしている。おなかがゆっくり動いている。'};
-  const setMood = m=>{ mood = m; act = null; L.querySelectorAll('[data-m]').forEach(b=> b.classList.toggle('on', b.dataset.m === m)); g.jelly.style.display = m === 'eat' ? '' : 'none'; say(SAY[m]); };
-  L.querySelectorAll('[data-m]').forEach(b=> b.onclick = ()=> setMood(b.dataset.m));
-  $z('[data-a=clean]').onclick = ()=>{ if(mood === 'eat') setMood('genki'); act = 'clean'; actT = performance.now(); say('前脚で、触角をそうじしている。においをよく感じるために、だいじなこと。'); };
-  $z('[data-x]').onclick = ()=> L.remove();
-  $z('svg').addEventListener('pointerdown', ()=>{ startle = performance.now(); if(mood !== 'eat'){ act = 'threat'; actT = startle; say('びくっ！ ツノをもちあげて、こっちをいかくしている。'); } });
-  setMood(mood);
+/* 部品の絵の虫（リグ）。全身の絵（1024x1024）の座標のまま組み立てる。どの部品も data-r で見つける */
+function rigSVG(id){
+  const P = BUG_PARTS[id], dir = `img/bugs/parts/${id}/`, R = P.parts;
+  const im = k=> `<image href="${dir}${k}.webp" x="${R[k][0]}" y="${R[k][1]}" width="${R[k][2]}" height="${R[k][3]}"/>`;
+  const leg = far=> `<g data-r="${far ? 'legF' : 'leg'}"${far ? ' filter="url(#rigFar)"' : ''}>${im('thigh')}<g data-r="${far ? 'shinF' : 'shin'}">${im('shin')}</g></g>`;
+  return `<filter id="rigFar"><feColorMatrix type="matrix" values=".62 0 0 0 0  0 .58 0 0 0  0 0 .55 0 0  0 0 0 1 0"/></filter>
+    <g data-r="bug">${leg(true)}<g data-r="body">${im('body')}</g>${leg(false)}
+    <g data-r="head"><g data-r="antF" filter="url(#rigFar)">${im('antenna')}</g><g data-r="mouth">${im('mouth')}</g>${im('head')}<g data-r="ant">${im('antenna')}</g></g></g>`;
+}
+/* ケースなどの 100x100 の箱に入れるときの変形（1枚絵と同じ大きさ・位置になる） */
+function rigFit(id){ const [x, y, w, h] = BUG_PARTS[id].fit, k = 92 / Math.max(w, h); return `translate(${50 - (x + w/2)*k} ${50 - (y + h/2)*k}) scale(${k})`; }
+/* リグを動かす。ctl.mood（genki / eat / nemui）を外からかえられる。ctl.act に 'clean'（触角そうじ）・'threat'（いかく）が入る。
+   ctl.auto=true なら、げんきなときに自分から触角そうじをする。ctl.hold() が true の間は、自分からは始めない（歩いているときなど） */
+function rigRun(root, id, ctl={}){
+  const P = BUG_PARTS[id], V = P.pv, q = k=> root.querySelector(`[data-r="${k}"]`);
+  const g = {bug:q('bug'), body:q('body'), head:q('head'), ant:q('ant'), antF:q('antF'), mouth:q('mouth'), leg:q('leg'), shin:q('shin'), legF:q('legF'), shinF:q('shinF')};
+  Object.assign(ctl, {mood:ctl.mood || 'genki', act:null, actT:0, nextAct:performance.now() + 2500 + Math.random()*4000, startle:0});
+  ctl.start = (a, t=performance.now())=>{ ctl.act = a; ctl.actT = t; if(a === 'threat') ctl.startle = t; ctl.onAct && ctl.onAct(a); };
+  const tw = [{a:0, to:0, t:0}, {a:0, to:0, t:0}];
   const rot = (el, deg, [x, y], extra='')=> el.setAttribute('transform', `${extra} rotate(${deg.toFixed(2)} ${x} ${y})`);
   const ease = t=> t < 0 ? 0 : t > 1 ? 1 : t*t*(3 - 2*t);
   const [fax, fay, far] = P.far.ant, [flx, fly, flr] = P.far.leg;
   const step = t=>{
-    if(!L.isConnected) return;
-    const sec = t/1000;
-    // 呼吸：おなかがゆっくりふくらむ（ねむいときはもっとゆっくり）
-    const br = Math.sin(sec * Math.PI * 2 / (mood === 'nemui' ? 5.5 : 3.2)), [bx, by] = V.breath;
+    if(!root.isConnected || ctl.stopped) return;
+    const sec = t/1000, mood = ctl.mood;
+    const br = Math.sin(sec * Math.PI * 2 / (mood === 'nemui' ? 5.5 : 3.2)), [bx, by] = V.breath;   // 呼吸：おなかがゆっくりふくらむ
     g.body.setAttribute('transform', `translate(${bx} ${by}) scale(${1 + br*.004} ${1 + br*.012}) translate(${-bx} ${-by})`);
-    // ときどき自分から触角そうじ（げんきなとき）
-    if(!act && mood === 'genki' && t > nextAct){ act = 'clean'; actT = t; say('前脚で、触角をそうじしている。においをよく感じるために、だいじなこと。'); }
+    if(!ctl.act && ctl.auto && mood === 'genki' && t > ctl.nextAct && !(ctl.hold && ctl.hold())) ctl.start('clean', t);
     let head = mood === 'nemui' ? 6 : mood === 'eat' ? 13 + Math.sin(sec*5)*1.6 : Math.sin(sec*.7)*1.2;
     let antBase = mood === 'nemui' ? 22 : mood === 'eat' ? 8 : -4, legA = 0, shinA = 0, antPress = 0;
-    if(act === 'clean'){
-      const k = (t - actT)/1000, up = ease(k/0.7) * (1 - ease((k - 3.4)/0.7));
-      const strokes = k > .7 && k < 3.4 ? (1 - Math.cos((k - .7) * Math.PI * 2 / .9)) / 2 : 0;   // 3回なでおろす
+    if(ctl.act === 'clean'){   // 前脚を上げて、すねで触角を3回なでおろす
+      const k = (t - ctl.actT)/1000, up = ease(k/0.7) * (1 - ease((k - 3.4)/0.7));
+      const strokes = k > .7 && k < 3.4 ? (1 - Math.cos((k - .7) * Math.PI * 2 / .9)) / 2 : 0;
       legA = -60 * up - 4 * strokes * up; shinA = 16 * up + 16 * strokes * up; antPress = (10 + 16 * strokes) * up; head += 4 * up;
-      if(k > 4.2){ act = null; nextAct = t + 7000 + Math.random()*6000; say(SAY[mood]); }
+      if(k > 4.2){ ctl.act = null; ctl.nextAct = t + 7000 + Math.random()*8000; ctl.onAct && ctl.onAct(null); }
     }
-    if(act === 'threat'){
-      const k = (t - actT)/1000, up = ease(k/0.25) * (1 - ease((k - 1.4)/0.5));
+    if(ctl.act === 'threat'){   // ツノを持ち上げて、いかく
+      const k = (t - ctl.actT)/1000, up = ease(k/0.25) * (1 - ease((k - 1.4)/0.5));
       head -= 16 * up; antBase -= 14 * up;
-      if(k > 2){ act = null; say(SAY[mood]); }
+      if(k > 2){ ctl.act = null; ctl.onAct && ctl.onAct(null); }
     }
-    // 触角のぴくぴく
-    for(const tw of [twitch, twF]){ if(t > tw.t){ tw.to = (Math.random() - .5) * (mood === 'nemui' ? 3 : 12); tw.t = t + 300 + Math.random() * (mood === 'nemui' ? 4000 : 1400); } tw.a += (tw.to - tw.a) * .12; }
+    for(const w of tw){ if(t > w.t){ w.to = (Math.random() - .5) * (mood === 'nemui' ? 3 : 12); w.t = t + 300 + Math.random() * (mood === 'nemui' ? 4000 : 1400); } w.a += (w.to - w.a) * .12; }   // 触角のぴくぴく
     rot(g.head, head, V.neck);
-    rot(g.ant, antBase + antPress + twitch.a, V.ant);
-    rot(g.antF, antBase + twF.a + far, V.ant, `translate(${fax} ${fay})`);
-    const mo = mood === 'eat' ? (Math.sin(sec*5) + 1) / 2 : 0, [mx, my] = V.mouth;
+    rot(g.ant, antBase + antPress + tw[0].a, V.ant);
+    rot(g.antF, antBase + tw[1].a + far, V.ant, `translate(${fax} ${fay})`);
+    const mo = mood === 'eat' ? (Math.sin(sec*5) + 1) / 2 : 0, [mx, my] = V.mouth;   // 口のブラシを出し入れ
     g.mouth.setAttribute('transform', `translate(${mo*5} ${mo*7}) translate(${mx} ${my}) scale(${1 + mo*.25}) translate(${-mx} ${-my})`);
     rot(g.leg, legA, V.coxa); rot(g.shin, shinA, V.knee);
-    rot(g.legF, flr + legA*.15, V.coxa, `translate(${flx} ${fly})`); rot(g.shinF, 0, V.knee);
-    const s = startle && t - startle < 300 ? Math.sin((t - startle)/300*Math.PI) : 0;
-    g.bug.setAttribute('transform', `translate(500 900) scale(${1 - s*.03}) translate(-500 -900)`);
+    rot(g.legF, flr + legA*.15, V.coxa, `translate(${flx} ${fly})`);
+    const sh = ctl.startle && t - ctl.startle < 300 ? Math.sin((t - ctl.startle)/300*Math.PI) : 0;   // びくっ
+    g.bug.setAttribute('transform', `translate(500 900) scale(${1 - sh*.03}) translate(-500 -900)`);
     requestAnimationFrame(step);
   };
   requestAnimationFrame(step);
+  return ctl;
+}
+/* 観察（試作）：リグを画面いっぱいに出す。見本ページから開く */
+function openZoom(id, opt={}){
+  const P = BUG_PARTS[id]; if(!P) return;
+  document.querySelectorAll('.zoomL').forEach(e=>e.remove());
+  const [jx, jy] = P.jelly;
+  const svg = `<svg viewBox="${P.box}" preserveAspectRatio="xMidYMid meet">
+    <defs><linearGradient id="zSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#22324a"/><stop offset="1" stop-color="#3a4a3a"/></linearGradient></defs>
+    <rect x="-200" y="0" width="1400" height="${P.ground}" fill="url(#zSky)"/>
+    <rect x="-200" y="${P.ground}" width="1400" height="300" fill="#4a3220"/>
+    ${[[80,950],[260,980],[520,960],[760,990],[930,955]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="14" ry="6" fill="#3a2516"/>`).join('')}
+    <g id="zRig">${rigSVG(id)}</g>
+    <g id="zJelly" style="display:none"><rect x="${jx}" y="${jy}" width="125" height="${P.ground - jy}" rx="10" fill="#f0e0b0" opacity=".9"/><rect x="${jx+6}" y="${jy+8}" width="113" height="46" rx="6" fill="#e8a040"/></g></svg>`;
+  const L = document.createElement('div'); L.className = 'full zoomL norb';
+  const btns = [['genki','げんき'],['eat','食べる'],['nemui','ねむい']];
+  L.innerHTML = `<div class="zt"><b>観察（試作）：${esc(BUGS[id].name)}</b>${btns.map(([k,l])=>`<button type="button" data-m="${k}">${l}</button>`).join('')}<button type="button" data-a="clean">触角そうじ</button><button type="button" data-x="1">とじる</button></div>${svg}<div class="zs" id="zSay"></div>`;
+  document.body.appendChild(L);
+  const $z = q=> L.querySelector(q), say = t=> { $z('#zSay').textContent = t; };
+  const SAY = {genki:'触角をぴんと立てて、あたりのにおいをさぐっている。', eat:'ブラシのような口で、ゼリーをなめている。', nemui:'触角をさげて、じっとしている。おなかがゆっくり動いている。'};
+  // ゼリーは口の前に出したいので、頭より前にかさねる（体と前脚のうしろ）
+  const rig = $z('#zRig'); rig.querySelector('[data-r="bug"]').insertBefore($z('#zJelly'), rig.querySelector('[data-r="head"]'));
+  const ctl = rigRun(rig, id, {mood:opt.mood || 'genki', auto:true, onAct:a=> say(a === 'clean' ? '前脚で、触角をそうじしている。においをよく感じるために、だいじなこと。' : a === 'threat' ? 'びくっ！ ツノをもちあげて、こっちをいかくしている。' : SAY[ctl.mood])});
+  const setMood = m=>{ ctl.mood = m; ctl.act = null; L.querySelectorAll('[data-m]').forEach(b=> b.classList.toggle('on', b.dataset.m === m)); $z('#zJelly').style.display = m === 'eat' ? '' : 'none'; say(SAY[m]); };
+  L.querySelectorAll('[data-m]').forEach(b=> b.onclick = ()=> setMood(b.dataset.m));
+  $z('[data-a=clean]').onclick = ()=>{ if(ctl.mood === 'eat') setMood('genki'); ctl.start('clean'); };
+  $z('[data-x]').onclick = ()=> L.remove();
+  $z('svg').addEventListener('pointerdown', ()=>{ if(ctl.mood !== 'eat') ctl.start('threat'); });
+  setMood(ctl.mood);
 }
 
 /* 見本ページ：?mihon=kabuto のように開くと、その虫が入ったケースをすぐ見られる（絵をたしかめる用。セーブには何ものこらない）
