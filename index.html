@@ -431,11 +431,16 @@ p{margin:.3em 0}
 .obsHead h2{margin:0;font-size:16px;line-height:1.3}
 .obsR .meters{margin-top:6px}
 .obsR .info{margin:.3em 0}
-.drawer{margin-top:6px;background:#14284a88;border:2px solid #f7f1df55;border-radius:10px;padding:.3em .6em}
-.drawer summary{cursor:pointer;font-size:14px;color:var(--sun);list-style:none;padding:.3em 0}
-.drawer summary::-webkit-details-marker{display:none}
-.drawer[open] summary{border-bottom:1px solid #f7f1df33;margin-bottom:6px}
-.drawer .acts{margin-top:6px}
+.obsHud{display:none;flex-wrap:wrap;gap:2px 12px;font-size:13px;font-variant-numeric:tabular-nums}
+.obsHud .money{color:var(--sun)}
+/* 「ケースのこと」：右はしのタグをタップすると、右から左へスライドして出てくる */
+.drawerTab{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:70;writing-mode:vertical-rl;font:inherit;font-size:14px;letter-spacing:.15em;color:#1b130c;background:var(--sun);border:2px solid #fff;border-right:0;border-radius:10px 0 0 10px;padding:.8em .35em;cursor:pointer;box-shadow:-2px 2px 6px #0008;transition:transform .25s}
+.drawerTab.hide{transform:translate(110%,-50%)}
+.drawer{position:fixed;right:0;top:0;bottom:0;z-index:80;width:min(380px,46vw);background:#14284af4;border-left:3px solid var(--edge);box-shadow:-6px 0 16px #000a;padding:max(10px,env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 12px 12px;overflow-y:auto;transform:translateX(105%);transition:transform .28s ease}
+.drawer.open{transform:translateX(0)}
+.drawer .dHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;color:var(--sun)}
+.drawer .acts{margin-top:8px;grid-template-columns:1fr}
+@media (orientation:portrait){ .drawer{width:min(380px,86vw)} }
 #rotate{display:none}
 /* ===== 横画面：1画面でぜんぶ見える ===== */
 @media (orientation:landscape) and (min-width:600px){
@@ -444,19 +449,35 @@ p{margin:.3em 0}
   #tabs button{max-width:none;flex:1;font-size:12px;padding:.2em 0}
   #tabs button .ic{font-size:22px}
   #tabs button .badge{transform:translate(1.2em,-2.6em)}
-  #app{max-width:none;padding-block:4px 6px;gap:4px}
+  html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+  #app{max-width:none;padding-block:4px 6px;gap:4px;height:100dvh;display:flex;flex-direction:column}
+  #view{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+  /* タイトル：横画面で1画面に */
+  #titleScr{min-height:0;height:calc(100dvh - 12px);justify-content:center;gap:.2em;padding:2% 4%}
+  #titleScr .t1{font-size:3.6vh}
+  #titleScr .t2{font-size:9vh;margin:0}
+  #titleScr .t2 br{display:none}
+  #titleScr .hero{width:auto;height:24vh;margin:0}
+  #titleScr .hero svg{height:100%;width:auto}
+  #titleScr .t3{font-size:3vh}
+  #titleScr .t4{font-size:2.4vh;margin-top:.3em;padding:.2em .8em}
+  #titleScr .tbtns{margin-top:.3em}
+  #titleScr .vrow{margin-top:.3em}
   #msgLayer{padding-bottom:12px;padding-left:90px}
   .saveMark{bottom:10px}
   .obsGrid{display:grid;grid-template-columns:auto minmax(280px,1fr);gap:10px;align-items:start}
   .obsL{display:flex;flex-direction:column;gap:6px}
-  #obs .scene{height:calc(100dvh - 128px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));width:auto;aspect-ratio:4/3;max-width:62vw}
-  #obs .obsTxt{font-size:13px;line-height:1.5;padding:.35em .7em;max-height:66px;overflow-y:auto;max-width:calc((100dvh - 128px) * 4 / 3)}
-  .obsR{max-height:calc(100dvh - 40px - env(safe-area-inset-top,0px));overflow-y:auto;padding-right:2px}
+  #obs .scene{height:calc(100dvh - 96px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));width:auto;aspect-ratio:4/3;max-width:64vw}
+  #obs .obsTxt{font-size:13px;line-height:1.5;padding:.35em .7em;max-height:66px;overflow-y:auto;max-width:calc((100dvh - 96px) * 4 / 3)}
+  .obsR{max-height:calc(100dvh - 12px - env(safe-area-inset-top,0px));overflow-y:auto;padding-right:30px}
+  body.obsMode #hud{display:none}
+  body.obsMode .obsHud{display:flex}
   .obsR .tools{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:4px}
   .obsR .tools .tbtn{min-height:56px;font-size:12px}
   .obsR .tools .tbtn .ic{font-size:26px}
   .obsR .guide{font-size:11.5px;line-height:1.45;margin-top:4px}
-  .obsR .meters{font-size:12px;gap:1px 8px}
+  .obsR .meters{font-size:10.5px;gap:0 6px;width:72%;line-height:1.35}
+  .obsR .meters .bar{height:6px}
   .obsR .info{font-size:11.5px;line-height:1.45}
   .toolObj{font-size:64px}
   .decoPick .pk{min-width:56px;font-size:10px}
@@ -510,9 +531,15 @@ const SAVE_KEY = KEY_PRE + 'munakata-mushisodate-v1';
 const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
-const GAME_VER = '0.6.0';
-const BUILD = '20261024-1226';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const GAME_VER = '0.6.1';
+const BUILD = '20261024-1243';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
+  {v:'0.6.1', date:'2026-10-24', items:[
+    '「ケースのこと」を、右はしのタグにした。タップすると右から左へスライドして出てくる',
+    '飼育ケースの画面で、日付・時間・どんぐりを右の列の上にうつして、そのぶん虫かごとメッセージを大きくした',
+    '元気などのバーを小さくした（2/3くらい）',
+    '横画面では、ページそのものがスワイプで動かないようにした',
+    'タイトル画面も横画面で1画面におさまるようにした']},
   {v:'0.6.0', date:'2026-10-24', items:[
     'スマホ・タブレットは横画面であそぶようにした。たてにしているときは「よこにしてね」と出る（Androidのホーム画面アプリでは横に固定）',
     '横画面では、タブを左にならべ、飼育ケースの画面を1画面におさめた。左にケース、右に道具・ステータス、その下の「ケースのこと」を開くと、おき場所・じっくり見る・広いケース・かえす',
@@ -1361,18 +1388,21 @@ async function yakusoku(key, text){ if(S.yk[key]) return; S.yk[key] = 1; await s
 let tab = 'home', openCase = null;
 const view = $('view');
 function refresh(){ tickAll(); handleGone(); hud(); render(); }
+const hudHtml = ()=>{ const slot = slotOf(); return `<span class="slot">${SLOT_ICON[slot]} ${SLOT_NAMES[slot]}</span><span>${dateStr()} ${hhmm()}</span><span class="money">どんぐり ${dg(S.money)}</span>`; };
 function hud(){
   if(!S){ $('hud').hidden = true; return; }
   $('hud').hidden = false;
   const slot = slotOf();
-  $('hud').innerHTML = `<span class="slot">${SLOT_ICON[slot]} ${SLOT_NAMES[slot]}</span><span>${dateStr()} ${hhmm()}</span><span class="money">どんぐり ${dg(S.money)}</span>`;
+  $('hud').innerHTML = hudHtml(); const oh = $('obsHud'); if(oh) oh.innerHTML = hudHtml();
+  document.body.classList.toggle('obsMode', openCase !== null);
   const n = S.cases.filter(c=>c && (c.pending || needs(c).length)).length;
   const hb = document.querySelector('#tabs [data-t=home]'); hb.querySelector('.badge')?.remove();
   if(n){ const s = document.createElement('span'); s.className = 'badge norb'; s.textContent = n; hb.appendChild(s); }
 }
-function setTab(t){ tab = t; openCase = null; document.querySelectorAll('#tabs button').forEach(b=> b.classList.toggle('on', b.dataset.t === t)); render(); scrollTo(0,0); }
+function setTab(t){ tab = t; openCase = null; document.querySelectorAll('#tabs button').forEach(b=> b.classList.toggle('on', b.dataset.t === t)); render(); (scrollTo(0,0), view.scrollTop = 0); }
 document.querySelectorAll('#tabs button').forEach(b=> b.onclick = ()=> setTab(b.dataset.t));
 function render(){
+  document.body.classList.toggle('obsMode', !!S && openCase !== null);
   if(!S){ renderTitle(); return; }
   if(openCase !== null){ renderObs(); return; }
   ({home:renderHome, out:renderOut, sumo:renderSumo, shop:renderShop, dex:renderDex, opt:renderOpt})[tab]();
@@ -1424,7 +1454,7 @@ function renderHome(){
   }).join('')}</div>
   <h3>もちもの</h3><div class="row">${Object.keys(S.items).filter(k=>S.items[k]>0).map(k=>`<span class="win" style="padding:.2em .6em;font-size:13px">${esc(ITEMS[k].name)} ×${S.items[k]}</span>`).join('') || '<span class="small">なにもない</span>'}</div>
   <div class="row" style="margin-top:8px"><button type="button" class="btn" id="btnShop">エサ・かざりを買う</button></div>`;
-  view.querySelectorAll('.case').forEach(el=> el.onclick = ()=>{ const i = +el.dataset.i; if(S.cases[i]){ openCase = i; render(); scrollTo(0,0); } else setTab('out'); });
+  view.querySelectorAll('.case').forEach(el=> el.onclick = ()=>{ const i = +el.dataset.i; if(S.cases[i]){ openCase = i; render(); (scrollTo(0,0), view.scrollTop = 0); } else setTab('out'); });
   $('btnShop').onclick = ()=> setTab('shop');
 }
 function renderShop(){
@@ -1432,7 +1462,7 @@ function renderShop(){
     ${[['エサと道具', k=>!ITEMS[k].cat], ['かざり（マット）：ケースの土をかえる', k=>ITEMS[k].cat==='mat'], ['かざり：買って、ケースに自分で置く', k=>ITEMS[k].cat==='deco']].map(([ttl, f])=>`<h3>${ttl}</h3><div class="opt">${Object.keys(ITEMS).filter(f).map(k=>{ const it = ITEMS[k], free = !it.price;
       return `<button type="button" class="btn" data-k="${k}" ${!free && S.money < it.price ? 'disabled' : ''}><span>${it.cat ? `<span class="decoIc">${it.cat==='mat' ? `<svg viewBox="0 0 100 100"><rect x="10" y="50" width="80" height="40" rx="6" fill="${MATS[k].fill}"/><circle cx="30" cy="70" r="3" fill="${MATS[k].bits}"/><circle cx="60" cy="78" r="3" fill="${MATS[k].bits}"/></svg>` : `<svg viewBox="0 0 100 100">${decoSVG(k)}</svg>`}</span>` : ''}${esc(it.name)}<br><small class="small">${esc(it.desc)}</small></span><span class="v">${free ? 'ただ' : dg(it.price)}　×${S.items[k]||0}</span></button>`; }).join('')}</div>`).join('')}
     `;
-  view.querySelectorAll('[data-k]').forEach(b=> b.onclick = ()=>{ const k = b.dataset.k, it = ITEMS[k]; if(S.money < it.price) return; S.money -= it.price; S.items[k] = (S.items[k]||0) + 1; save(); hud(); const y = scrollY; renderShop(); scrollTo(0, y); });
+  view.querySelectorAll('[data-k]').forEach(b=> b.onclick = ()=>{ const k = b.dataset.k, it = ITEMS[k]; if(S.money < it.price) return; S.money -= it.price; S.items[k] = (S.items[k]||0) + 1; save(); hud(); const y = scrollY, vy = view.scrollTop; renderShop(); scrollTo(0, y); view.scrollTop = vy; });
 }
 
 /* ---- 観察（ケースの中）：道具をえらんで、ケースの中を指でさわる ---- */
@@ -1470,22 +1500,25 @@ async function renderObs(){
       <div class="obsTxt win" id="obsTxt">${msgHtml}</div>
     </div>
     <div class="obsR">
+      <div class="obsHud" id="obsHud">${hudHtml()}</div>
       <div class="obsHead"><h2>${title}</h2><button type="button" class="btn sub" id="btnBack">もどる</button></div>
       <div class="tools">${Object.keys(TOOLS).map(k=>`<button type="button" class="tbtn ${tool===k?'on':''}" data-tool="${k}" ${k==='esa' && st.k==='pupa' ? 'disabled' : ''}><span class="ic">${TOOLS[k].ic}</span>${TOOLS[k].name}</button>`).join('')}</div>
       ${tool === 'kazari' ? `<div class="decoPick" id="decoPick">${ownDeco.map(k=>`<button type="button" class="pk ${decoSel===k?'on':''}" data-deco="${k}"><svg viewBox="0 0 100 100">${ITEMS[k].cat==='mat' ? `<rect x="10" y="40" width="80" height="45" rx="6" fill="${MATS[k].fill}"/>` : decoSVG(k)}</svg>${esc(ITEMS[k].name)}<small>×${S.items[k]}</small></button>`).join('')}</div>` : ''}
       <div class="guide small" id="guide">${guide}</div>
       <div class="meters">${st.k !== 'pupa' ? m('おなか', c.hunger) : ''}${m('しめりけ', c.wet, `<b class="band" style="left:${band[0]}%;width:${band[1]-band[0]}%"></b>`)}${m('きれいさ', c.clean)}${m('元気', g)}</div>
       <p class="small info">${SLOT_NAMES[slot]}のようす。${c.pending || st.k === 'adult' ? '' : `このすがたで、あと${daysLeft(c)}日くらい。`}${st.k === 'adult' ? `<br>${esc(indLine(c))}<br>わざ：${c.moves.map(k=>esc(MOVES[k].name)).join('・')}　${c.size}mm ${esc(c.sex||'')}` : ''}</p>
-      <details class="drawer" id="drawer" ${obsSession.drawer ? 'open' : ''}><summary>▸ ケースのこと（おき場所・じっくり見る・かえす）</summary>
+      <button type="button" class="drawerTab norb" id="drawerTab"><span>ケースのこと</span></button>
+      <div class="drawer ${obsSession.drawer ? 'open' : ''}" id="drawer"><div class="dHead"><b>ケースのこと</b><button type="button" class="btn sub" id="drawerClose">とじる ▸</button></div>
         <div class="row">${tags}</div>
         <div class="acts">
           <button type="button" class="btn sub" id="aPlace">おき場所をかえる<small>いま：${esc(PLACES[c.place].name)}</small></button>
           <button type="button" class="btn sub" id="aLook">じっくり見る<small>ずかんでしらべる</small></button>
           ${c.wide ? '' : `<button type="button" class="btn sub" id="aWide">広いケースにうつす<small>${(S.items.wide||0) > 0 ? `もっている ×${S.items.wide}` : dg(ITEMS.wide.price) + 'で買える'}</small></button>`}
           <button type="button" class="btn sub" id="aRelease">もとの場所にかえす<small>${st.k === 'adult' ? 'ごほうびがもらえる' : 'いつでもできる'}</small></button>
-        </div></details>
+        </div></div>
     </div></div>`;
-  $('drawer').ontoggle = e=>{ obsSession.drawer = e.target.open; };
+  const setDrawer = on=>{ obsSession.drawer = on; $('drawer').classList.toggle('open', on); $('drawerTab').classList.toggle('hide', on); };
+  $('drawerTab').onclick = ()=> setDrawer(true); $('drawerClose').onclick = ()=> setDrawer(false); setDrawer(!!obsSession.drawer);
   $('btnBack').onclick = ()=>{ openCase = null; obsSession = null; render(); };   // 大そうじのとちゅうでも、もどれば虫はケースにいる（big は obsSession ごと消える）
   view.querySelectorAll('[data-tool]').forEach(bt=> bt.onclick = async ()=>{ if(obsSession.big && bt.dataset.tool !== 'big'){ obsSession.big = null; await say('大そうじをとちゅうでやめた。虫はケースにもどした。'); } tool = bt.dataset.tool; renderObs(); });
   view.querySelectorAll('[data-deco]').forEach(bt=> bt.onclick = async ()=>{ const k = bt.dataset.deco;
