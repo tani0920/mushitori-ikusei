@@ -282,6 +282,11 @@ p{margin:.3em 0}
 @keyframes ripple{to{transform:translate(-50%,-50%) scale(1.4);opacity:0}}
 .mini{position:absolute;left:6px;top:6px;z-index:4;background:#14284acc;color:#fff;border:2px solid #f7f1df88;border-radius:8px;padding:.25em .6em;font-size:12px;min-width:46%;pointer-events:none;line-height:1.4}
 .mini .bar{height:10px;margin-top:2px}
+.mini .zones{display:flex;gap:3px;height:22px;align-items:flex-end;margin-top:3px}
+.mini .zones i{flex:1;background:var(--sun);border-radius:2px 2px 0 0}
+.mini .zones i.ok{background:var(--ok)}.mini .zones i.hi{background:#6ab0e0}.mini .zones i.soak{background:#2a6ad8}.mini .zones i.lo{background:var(--sun)}
+.mark{position:absolute;font-size:26px;pointer-events:none;transform:translate(-50%,-100%);animation:ptUp2 .9s ease-out forwards;z-index:5}
+@keyframes ptUp2{from{opacity:1;transform:translate(-50%,-100%)}to{opacity:0;transform:translate(-30%,-200%)}}
 .mini .ok{color:var(--sun)}
 .mini .ng{color:#ff9a8a}
 .mini.hot{border-color:var(--sun);box-shadow:0 0 0 2px #f4b63c66}
@@ -441,9 +446,13 @@ const SAVE_KEY = KEY_PRE + 'munakata-mushisodate-v1';
 const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
-const GAME_VER = '0.5.0';
-const BUILD = '20261024-0914';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const GAME_VER = '0.5.1';
+const BUILD = '20261024-0953';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
+  {v:'0.5.1', date:'2026-10-24', items:[
+    '大そうじも道具で行うようにした。🤏（手）をつかんで虫の上で止めるとそっとつまめる。すばやくぶつけると虫がいやがる。土は🧹（ほうき）で左右になでて入れかえる。なでると土がとびちる',
+    'きりふきは、かけた場所だけがしめるようにした（ケースを5つに分けている）。一か所にかけつづけると、そこに水たまりができる。左上のメーターに、場所ごとのしめりけが5本の棒で出る',
+    '虫に水をかけつづけたり、ふきんで虫をこすったりすると、虫がいやがって（💢）元気が少しへる。いやがりは数時間でおさまる']},
   {v:'0.5.0', date:'2026-10-24', items:[
     '「大そうじ」の道具：虫を長おし（1びょう）してそっとつまみ、右上のひなんケースへ。土を指でなでて3回で新しい土に。虫をつまんでもどす。長おしせずに動かすと「力を入れすぎ」で虫がじたばたする',
     '大そうじをしないと3日で土がよごれて、きれいさが80までしか上がらなくなる。おうちのケースにも「大そうじ」と出る',
@@ -851,7 +860,7 @@ function newGame(){
   return {v:2, money:30, cases:Array.from({length:CASES}, ()=>null), items:{kyabetsu:2, kusa:1}, dex:{}, yk:{}, visits:{}, last:null, demoOff:0, started:Date.now(), stats:{raised:0, released:0, wins:0, loses:0}, sumo:{}, sumoDay:{}, link:{}};
 }
 function migrate(s){   // 古いセーブ（v1）を v2 のかたちにする
-  s.cases.forEach(c=>{ if(c){ c.dirt = c.dirt || []; c.foods = c.foods || []; c.soak = c.soak || 0; c.hideUntil = c.hideUntil || 0; c.deco = c.deco || []; c.mat = c.mat || null; } });
+  s.cases.forEach(c=>{ if(c){ ensureZ(c); c.dirt = c.dirt || []; c.foods = c.foods || []; c.soak = c.soak || 0; c.hideUntil = c.hideUntil || 0; c.deco = c.deco || []; c.mat = c.mat || null; } });
   if(s.v >= 2) return s;
   s.v = 2; s.stats = Object.assign({raised:0, released:0, wins:0, loses:0}, s.stats); s.sumo = {}; s.sumoDay = {}; s.link = {};
   s.cases = s.cases.map(c=>{ if(!c || !BUGS[c.bug]) return null; return Object.assign(c, {ind:{hp:1, atk:1, def:1, spd:1, heal:1}, log:newLog(), tot:newLog(), place:'genkan', wide:false, born:(SPOTS.find(sp=>sp.name===c.from)||{key:'any'}).key, bornSlot:'hiru', dirt:[], foods:[], soak:0, hideUntil:0}); });
@@ -879,13 +888,19 @@ function readDiary(){ try{ const j = JSON.parse(localStorage.getItem((window.DEM
    世話のしかたは log に記録して、すがたがかわるときにステータスへ変える
    ========================================================= */
 function stageOf(c){ return BUGS[c.bug].plan[c.si]; }
-function genkiOf(c){ const st = stageOf(c); const g = st.k === 'pupa' ? (c.wet*2 + c.clean)/3 : (c.hunger + c.wet + c.clean)/3; return Math.round(clamp(g - (c.trouble ? 20 : 0) - ((c.soak||0) > 30 ? 15 : 0), 0, 100)); }
+/* しめりけは、ケースを左から5つに分けて持つ（WZ）。きりふきは かけた場所だけがしめる。一か所にかけつづけると、そこに水たまりができる */
+const WZ = 5;
+function ensureZ(c){ if(!c.wetZ || c.wetZ.length !== WZ) c.wetZ = Array(WZ).fill(c.wet ?? 70); if(!c.soakZ || c.soakZ.length !== WZ) c.soakZ = Array(WZ).fill(0); c.stress = c.stress || 0; }
+function syncWet(c){ c.wet = c.wetZ.reduce((a,v)=>a+v, 0)/WZ; c.soak = Math.max(...c.soakZ); }
+const wetUneven = c=> Math.max(...c.wetZ) - Math.min(...c.wetZ);
+/* いやがり（stress）：虫に水をかけつづけたり、ふきんでこすったりすると たまる。元気がその分へり、数時間でもどる */
+function genkiOf(c){ const st = stageOf(c); const g = st.k === 'pupa' ? (c.wet*2 + c.clean)/3 : (c.hunger + c.wet + c.clean)/3; return Math.round(clamp(g - (c.trouble ? 20 : 0) - ((c.soak||0) > 30 ? 15 : 0) - (c.stress||0), 0, 100)); }
 function tickCase(c){
   const t = now(); let h = (t - c.tick) / H; if(h <= 0) return; if(h > 24*60) h = 24*60;
   c.tick = t;
   const st = stageOf(c), tough = BORN[c.born] && BORN[c.born].tough;
   const wetK = (c.place === 'beranda' ? 1.25 : 1) * (tough ? .8 : 1) * (c.mat === 'mat_fuyo' ? .8 : 1), cleanK = (c.place === 'genkan' ? .85 : 1) * (c.wide ? .9 : 1);
-  c.dirt = c.dirt || []; c.foods = c.foods || []; c.soak = c.soak || 0;
+  c.dirt = c.dirt || []; c.foods = c.foods || []; ensureZ(c);
   let left = h;
   while(left > 0){
     const d = Math.min(1, left); left -= d;
@@ -894,8 +909,10 @@ function tickCase(c){
     const fresh = c.foods.filter(f=>!f.old);
     if(st.k !== 'pupa' && fresh.length && c.hunger < 100){ const f = fresh[0]; const eat = Math.min(30*d, 100 - c.hunger, f.left*100); c.hunger += eat; f.left -= eat/100; if(f.left <= 0.02) c.foods.splice(c.foods.indexOf(f), 1); }
     c.foods.forEach(f=>{ f.age += d; if(f.age > 36 && !f.old){ f.old = true; c.clean = clamp(c.clean - 8, 0, 100); } });
-    c.soak = Math.max(0, c.soak - 100/12*d);   // 水たまりは半日でひく
-    c.wet = clamp(c.wet - 100/WET_H*d*wetK + (c.soak > 0 ? 100/WET_H*d*wetK : 0), 0, 100);   // びちゃびちゃの間はかわかない
+    c.stress = Math.max(0, (c.stress||0) - 8*d);   // いやがりは数時間でおさまる
+    for(let z=0; z<WZ; z++){ c.soakZ[z] = Math.max(0, c.soakZ[z] - 100/12*d);   // 水たまりは半日でひく
+      c.wetZ[z] = clamp(c.wetZ[z] - (c.soakZ[z] > 0 ? 0 : 100/WET_H*d*wetK), 0, 100); }   // 水たまりのところは かわかない
+    syncWet(c);
     c.soilAge = (c.soilAge||0) + d;   // 大そうじしてからの時間。3日をこえると土がよごれて、きれいさが80までしか上がらなくなる
     c.clean = clamp(c.clean - 100/CLEAN_H*d*cleanK, 0, c.soilAge > 72 ? Math.max(80, c.clean - 100/CLEAN_H*d*cleanK) : 100);
     // よごれ：きれいさがへるぶんだけ、ガラスや土によごれがふえる
@@ -1196,11 +1213,11 @@ function sceneSVG(c, slot, o={}){
       `<g class="leaf" data-hide="1"><path d="M14 ${soilTop} L22 ${soilTop-12} L40 ${soilTop-12} L44 ${soilTop} Z" fill="#8a6a3a"/></g>`;
   const chamber = p.chamber ? `<ellipse cx="${p.x+10}" cy="${p.y+2}" rx="17" ry="12" fill="#2a1a0a"/>` : '';
   const mess = (c.soilAge||0) > 72 && st !== 'pupa' ? [[12,1],[30,3],[47,1.5],[66,2.5],[82,1],[58,4],[22,5]].map(([x,dy])=>`<ellipse cx="${x}" cy="${soilTop + dy}" rx="2.6" ry="1.3" fill="#2a1a0a" opacity=".85"/>`).join('') + `<path d="M36 ${soilTop-1} q3 -3 6 0 M72 ${soilTop-1} q3 -3 6 0" stroke="#8a7a40" stroke-width="1.2" fill="none"/>` : '';
-  const wetA = (c.wet/100)*.35, soak = c.soak || 0;
+  ensureZ(c);
   const M = c.mat && MATS[c.mat];
-  const soil = `<rect x="0" y="${soilTop}" width="100" height="${100-soilTop}" fill="${M ? M.fill : '#5a3d22'}"/><rect id="wetLayer" x="0" y="${soilTop}" width="100" height="${100-soilTop}" fill="#1a0e04" opacity="${wetA.toFixed(2)}"/><rect x="0" y="${soilTop}" width="100" height="2" fill="#6c9a4a"/>
+  const soil = `<rect x="0" y="${soilTop}" width="100" height="${100-soilTop}" fill="${M ? M.fill : '#5a3d22'}"/><g id="wetLayer">${c.wetZ.map((v,z)=>`<rect class="wz" x="${z*20}" y="${soilTop}" width="20.5" height="${100-soilTop}" fill="#1a0e04" opacity="${(v/100*.4).toFixed(2)}"/>`).join('')}</g><rect x="0" y="${soilTop}" width="100" height="2" fill="#6c9a4a"/>
     ${[[8,80],[24,90],[48,84],[70,78],[88,92],[36,74],[60,94]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.4" fill="${M ? M.bits : '#3b2715'}"/>`).join('')}
-    <g id="soakLayer" opacity="${soak > 0 ? Math.min(1, soak/40).toFixed(2) : 0}">${[[20,soilTop+4,14],[58,soilTop+3,18],[86,soilTop+5,10]].map(([x,y,r])=>`<ellipse cx="${x}" cy="${y}" rx="${r}" ry="2.2" fill="#6ab0e0" opacity=".75"/>`).join('')}</g>`;
+    <g id="soakLayer">${c.soakZ.map((v,z)=>`<ellipse class="sz" cx="${z*20+10}" cy="${soilTop+3}" rx="9" ry="2.3" fill="#6ab0e0" opacity="${(v > 0 ? Math.min(.85, v/40) : 0).toFixed(2)}"/>`).join('')}</g>`;
   const foods = (c.foods||[]).map(foodSVG).join('');
   const decos = (c.deco||[]).map(d=>`<g class="deco" data-deco="${d.id}" transform="translate(${d.x} ${d.y}) scale(.55) translate(-50 -70)"><g class="${ITEMS[d.k].hide ? 'leaf' : ''}">${decoSVG(d.k)}</g></g>`).join('');
   const bug = `<g id="bugG" style="${p.buried ? 'opacity:.55' : p.hidden ? 'opacity:.35' : ''}"><g transform="translate(${p.x} ${p.y}) scale(${p.s*1.2}) translate(-50 -50)">${svgBug(c.bug, st, Object.assign({rare:c.rare}, p.o)).replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '')}</g></g>`;
@@ -1348,9 +1365,9 @@ async function renderObs(){
   const title = c.name ? `${esc(c.name)}（${esc(b.name)}の${stageLabel(c)}）` : `${esc(b.name)}の${stageLabel(c)}`;
   const dirtN = (c.dirt||[]).length, oldN = (c.foods||[]).filter(f=>f.old).length;
   const ownDeco = Object.keys(ITEMS).filter(k=>ITEMS[k].cat && (S.items[k]||0) > 0);
-  const bigGuide = st.k === 'pupa' ? 'さなぎの間は、大そうじはできない。' : !big ? ((c.soilAge||0) > 72 ? '土がよごれてきた。まず、虫を長おしして そっとつまみ、右上のひなんケースへ。' : 'まだ大そうじはいらない（3日に1回くらい）。やるなら、虫を長おしして そっとつまみ、右上のひなんケースへ。') : big.step === 1 ? '虫を長おし（1びょう）して、そっとつまんで、右上のひなんケースへ運ぼう。' : big.step === 2 ? `土を指でなでて、新しい土に入れかえよう（あと${3 - big.pass}回）` : 'ひなんケースの虫をつまんで、ケースにもどそう。';
+  const bigGuide = st.k === 'pupa' ? 'さなぎの間は、大そうじはできない。' : (!big || big.step === 1) ? ((c.soilAge||0) > 72 || big ? '' : 'まだ大そうじはいらない（3日に1回くらい）。') + '🤏をつかんで虫の上で止めると、そっとつまめる。右上のひなんケースへ運ぼう。すばやくぶつけると虫がいやがる。' : big.step === 2 ? `🧹をつかんで、土の上を左右に動かして入れかえよう（あと${3 - big.pass}回）` : '🤏をひなんケースの上で止めて虫をつまみ、ケースの中へもどそう。';
   const guide = {big:bigGuide, kazari:ownDeco.length ? (decoSel ? (ITEMS[decoSel].cat === 'mat' ? 'マットは、えらぶとすぐにしきかえる。' : 'かざりをつかんで、置きたい場所ではなす。置いたものは、直接つまんで動かせる。左下の「しまう」に入れるともどる。') : '下から、置きたいかざりをえらぼう。') : 'かざりは、おうちの「どんぐりでエサ・かざりを買う」で買えるよ。',
-    yubi:'手をつかんで、葉や木にのせるとのぞける。虫にのせるとそっとさわる。置いたエサやかざりは、直接つまんで動かせる。', fukin:dirtN || oldN ? `スポンジをつかんで、よごれの上でこすろう（のこり${dirtN + oldN}）` : 'ガラスはきれい。', kiri:'きりふきをつかんで、かけたい場所で指を止めると水が出る。動かしている間は出ない。', esa:st.k === 'pupa' ? 'さなぎは、なにも食べない。' : `エサをつかんで、置きたい場所ではなす（${esc(food.name)}${food.price ? ` ×${S.items[foodKey]||0}` : ''}）`, furu:'ケースをつかんで、左右に動かすとゆれる。何回もゆらすと、虫がおどろくよ。'}[tool];
+    yubi:'手をつかんで、葉や木にのせるとのぞける。虫にのせるとそっとさわる。置いたエサやかざりは、直接つまんで動かせる。', fukin:dirtN || oldN ? `スポンジをつかんで、よごれの上でこすろう（のこり${dirtN + oldN}）` : 'ガラスはきれい。', kiri:'きりふきをつかんで、かけたい場所で指を止めると水が出る。ケースぜんたいに少しずつ。左上の5本の棒が、場所ごとのしめりけ。', esa:st.k === 'pupa' ? 'さなぎは、なにも食べない。' : `エサをつかんで、置きたい場所ではなす（${esc(food.name)}${food.price ? ` ×${S.items[foodKey]||0}` : ''}）`, furu:'ケースをつかんで、左右に動かすとゆれる。何回もゆらすと、虫がおどろくよ。'}[tool];
   const esaGuide = st.k === 'pupa' ? '' : `エサをつかんで、置きたい場所ではなす`;
   view.innerHTML = `<div class="row" style="justify-content:space-between"><h2>${title}</h2><button type="button" class="btn sub" id="btnBack">もどる</button></div>
     <div class="row" style="margin-bottom:6px"><span class="tag born">${esc((BORN[c.born]||BORN.any).name)}</span>${c.bornSlot === 'yoru' ? '<span class="tag">夜型</span>' : ''}<span class="tag">${esc(PLACES[c.place].name)}</span>${c.wide ? '<span class="tag">広いケース</span>' : ''}${c.rare ? '<span class="tag" style="background:#7a5a20">めずらしい色</span>' : ''}</div>
@@ -1374,13 +1391,13 @@ async function renderObs(){
     decoSel = decoSel === k ? null : k; renderObs(); });
   const sceneEl = $('scene'), svg = $('sceneSvg'), txtEl = $('obsTxt'), toolObj = $('toolObj'), mini = $('mini');
   const FOOD_IC = {zeri:'🍮', kyabetsu:'🥬', mikan:'🍃', enoki:'🍃', nasu:'🍆', koorogi:'🦗', kusa:'🌿', mitsu:'🥤', wide:'📦'};
-  const toolIc = ()=> tool === 'kazari' ? (decoSel ? `<svg viewBox="0 0 100 100">${decoSVG(decoSel)}</svg>` : '') : ({yubi:'👆', fukin:'🧽', kiri:'🧴', esa:FOOD_IC[foodKey] || '🍽', furu:'✋'})[tool];
+  const toolIc = ()=> tool === 'big' ? ((obsSession.big||{step:1}).step === 2 ? '🧹' : '🤏') : tool === 'kazari' ? (decoSel ? `<svg viewBox="0 0 100 100">${decoSVG(decoSel)}</svg>` : '') : ({yubi:'👆', fukin:'🧽', kiri:'🧴', esa:FOOD_IC[foodKey] || '🍽', furu:'✋'})[tool];
   // 道具は、ボタンを押すとケースの右下に出てくる。それをつかんで動かして使う。hot は「きく場所」（きりふきの口、指の先）
-  const HOT = {yubi:{x:-8, y:-36}, fukin:{x:0, y:0}, kiri:{x:-22, y:-42}, esa:{x:0, y:0}, kazari:{x:0, y:10}, furu:{x:0, y:0}};
+  const HOT = {yubi:{x:-8, y:-36}, fukin:{x:0, y:0}, kiri:{x:-22, y:-42}, esa:{x:0, y:0}, kazari:{x:0, y:10}, big:{x:-6, y:30}, furu:{x:0, y:0}};
   const restPos = ()=>{ const r = sceneEl.getBoundingClientRect(); return {x:r.width - 56, y:r.height - 54}; };
   const objPos = {x:0, y:0};
   const setObj = (x, y, cls='')=>{ objPos.x = x; objPos.y = y; toolObj.style.left = x + 'px'; toolObj.style.top = y + 'px'; toolObj.className = 'toolObj norb ' + cls; };
-  const showTool = ()=>{ if(tool === 'furu' || tool === 'big' || (tool === 'esa' && st.k === 'pupa') || (tool === 'kazari' && (!decoSel || ITEMS[decoSel].cat === 'mat'))){ toolObj.hidden = true; return; } const r = restPos(); toolObj.innerHTML = toolIc() + '<span class="hint">つかんで動かす</span>'; toolObj.hidden = false; setObj(r.x, r.y, 'rest'); };
+  const showTool = ()=>{ if(tool === 'furu' || (tool === 'big' && st.k === 'pupa') || (tool === 'esa' && st.k === 'pupa') || (tool === 'kazari' && (!decoSel || ITEMS[decoSel].cat === 'mat'))){ toolObj.hidden = true; return; } const r = restPos(); toolObj.innerHTML = toolIc() + '<span class="hint">つかんで動かす</span>'; toolObj.hidden = false; setObj(r.x, r.y, 'rest'); };
   const hotXY = ()=>{ const r = sceneEl.getBoundingClientRect(), h = HOT[tool]; return toXYc(r.left + objPos.x + h.x, r.top + objPos.y + h.y); };
   showTool();
   const ripple = e=>{ const r = sceneEl.getBoundingClientRect(), d = document.createElement('div'); d.className = 'ripple'; d.style.left = (e.clientX - r.left) + 'px'; d.style.top = (e.clientY - r.top) + 'px'; sceneEl.appendChild(d); setTimeout(()=>d.remove(), 520); };
@@ -1388,12 +1405,13 @@ async function renderObs(){
   function updateMini(flash){
     let lbl, v, extra = '', note = '', ok = false;
     if(tool === 'kiri'){ lbl = 'しめりけ'; v = c.wet; extra = `<b class="band" style="left:${band[0]}%;width:${band[1]-band[0]}%"></b>`;
-      note = (c.soak||0) > 30 ? '<span class="ng">かけすぎ！ びちゃびちゃ</span>' : c.wet > band[1] ? '<span class="ng">すこし多い</span>' : c.wet >= band[0] ? '<span class="ok">ちょうどいい！</span>' : 'まだ少ない'; ok = c.wet >= band[0] && c.wet <= band[1] && !((c.soak||0) > 30); }
+      note = (c.soak||0) > 30 ? '<span class="ng">水たまり！ びちゃびちゃ</span>' : wetUneven(c) > 35 ? '<span class="ng">かたよっている</span>' : c.wet > band[1] ? '<span class="ng">すこし多い</span>' : c.wet >= band[0] ? '<span class="ok">ちょうどいい！</span>' : 'まだ少ない'; ok = c.wet >= band[0] && c.wet <= band[1] && !((c.soak||0) > 30); }
     else if(tool === 'fukin'){ lbl = 'きれいさ'; v = c.clean; const n = (c.dirt||[]).filter(d=>d.hp > 0).length + (c.foods||[]).filter(f=>f.old && f.left > 0).length; note = n ? `のこり ${n}` : '<span class="ok">ぴかぴか！</span>'; ok = !n; }
     else if(tool === 'esa'){ lbl = 'おなか'; v = c.hunger; const n = (c.foods||[]).filter(f=>!f.old).length; note = n ? `エサ ${n}こ置いてある` : 'エサがない'; }
     else if(tool === 'furu'){ lbl = '元気'; v = genkiOf(c); note = furu.n ? `ゆらした ${furu.n}回` : 'そっとね'; }
     else { lbl = '元気'; v = genkiOf(c); note = `さわった ${obsSession.touches}回`; }
-    mini.innerHTML = `${lbl} <span>${Math.round(v)}</span>　${note}<span class="bar">${extra}<i class="${meterCls(v)}" style="width:${v}%"></i></span>`;
+    const zones = tool === 'kiri' ? `<span class="zones">${c.wetZ.map((w,z)=>`<i class="${c.soakZ[z] > 30 ? 'soak' : w > band[1] ? 'hi' : w >= band[0] ? 'ok' : 'lo'}" style="height:${Math.max(8, w)}%"></i>`).join('')}</span>` : '';
+    mini.innerHTML = `${lbl} <span>${Math.round(v)}</span>　${note}<span class="bar">${extra}<i class="${meterCls(v)}" style="width:${v}%"></i></span>${zones}`;
     mini.classList.toggle('hot', !!ok); mini.hidden = false;
   }
   updateMini();
@@ -1402,6 +1420,13 @@ async function renderObs(){
   const setTxt = t=>{ txtEl.innerHTML = esc(t); };
   const bugPos = sc.p;
   const nearBug = (x, y)=> !bugPos.hidden && Math.hypot(x - bugPos.x, y - bugPos.y) < 14;
+  let annoyT = 0;
+  const annoy = (amt, msg)=>{ const t = Date.now(); if(t - annoyT < 500) return; annoyT = t;
+    c.stress = Math.min(40, (c.stress||0) + amt); if(!obsSession.annoyed){ obsSession.annoyed = true; c.log.over++; }
+    const el = $('bugG'); if(el){ el.classList.remove('jitter'); void el.getBoundingClientRect(); el.classList.add('jitter'); }
+    spawnMark('💢'); setTxt(msg); updateMini(); };
+  const spawnMark = t=>{ const r = sceneEl.getBoundingClientRect(), sv = svg.getScreenCTM(); const pt = svg.createSVGPoint(); pt.x = bugPos.x; pt.y = bugPos.y - 10; const q = pt.matrixTransform(sv);
+    const d = document.createElement('div'); d.className = 'mark norb'; d.textContent = t; d.style.left = (q.x - r.left) + 'px'; d.style.top = (q.y - r.top) + 'px'; sceneEl.appendChild(d); setTimeout(()=>d.remove(), 900); };
   // ---- ゆび：葉をめくる・虫にさわる ----
   const touchBug = async ()=>{
     obsSession.touches++; const pk = c.pers && st.k === 'adult' ? c.pers : 'futsu';
@@ -1419,7 +1444,7 @@ async function renderObs(){
     let hit = false;
     (c.dirt||[]).forEach((d, i)=>{ if(Math.hypot(x - d.x, y - d.y) < 9 && d.hp > 0){ d.hp -= .5; hit = true; const el = svg.querySelector(`.dirt[data-d="${i}"]`); if(el) el.setAttribute('opacity', (Math.max(0, d.hp)/3*(d.k==='kumori'?.55:1)).toFixed(2)); } });
     (c.foods||[]).forEach(f=>{ if(f.old && Math.hypot(x - f.x, y - f.y) < 10){ f.left -= .2; hit = true; const el = svg.querySelector(`.food[data-f="${f.id}"]`); if(el) el.setAttribute('opacity', Math.max(0, f.left).toFixed(2)); } });
-    if(nearBug(x, y) && !obsSession.wipedBug){ obsSession.wipedBug = true; obsSession.touches++; c.log.over++; }
+    if(nearBug(x, y)) annoy(4, 'ふきんが虫にあたっている！ いやがって、元気が少しへった。虫のまわりは、よけてふこう。');
     if(hit) updateMini();
     return hit;
   };
@@ -1428,7 +1453,7 @@ async function renderObs(){
     c.dirt = (c.dirt||[]).filter(d=>d.hp > 0); c.foods = (c.foods||[]).filter(f=>!(f.old && f.left <= 0));
     const after = c.dirt.length + c.foods.filter(f=>f.old).length, removed = before - after;
     if(removed > 0){ c.clean = clamp(c.clean + removed*12.5, 0, 100); if(after === 0) c.clean = 100; }
-    if(after === 0 && c.trouble && before > 0){ const tr = TROUBLE[c.trouble]; c.trouble = null; if(tr === TROUBLE.kabi){ c.soak = 0; c.wet = Math.min(c.wet, 60); } c.log.clean++; save(); await say(tr.fix); await yakusoku('trouble', 'トラブルは、早く気づけば小さいうちに直せる。\n毎日ちょっとのぞくのが、いちばんのお世話。'); renderObs(); return; }
+    if(after === 0 && c.trouble && before > 0){ const tr = TROUBLE[c.trouble]; c.trouble = null; if(tr === TROUBLE.kabi){ c.soakZ = Array(WZ).fill(0); c.wetZ = c.wetZ.map(v=>Math.min(v, 60)); syncWet(c); } c.log.clean++; save(); await say(tr.fix); await yakusoku('trouble', 'トラブルは、早く気づけば小さいうちに直せる。\n毎日ちょっとのぞくのが、いちばんのお世話。'); renderObs(); return; }
     if(after === 0 && before > 0){ c.log.clean++; save(); await yakusoku('clean', 'フンや古いエサは、こまめにとってあげよう。\n虫のそばをこするときは、そっとね。'); renderObs(); return; }
     if(removed > 0){ save(); renderObs(); }
   };
@@ -1438,10 +1463,12 @@ async function renderObs(){
     if(sprayTimer) return; if(!sprayed){ sprayStartWet = c.wet; sprayed = true; obsSession.sprayed = true; }
     toolObj.classList.add('spray');
     sprayTimer = setInterval(()=>{
-      const {x, y} = hotXY();
-      if(c.wet < 100) c.wet = Math.min(100, c.wet + 3); else c.soak = Math.min(100, (c.soak||0) + 4);
-      const wl = $('wetLayer'); if(wl) wl.setAttribute('opacity', ((c.wet/100)*.35).toFixed(2));
-      const sl = $('soakLayer'); if(sl) sl.setAttribute('opacity', (c.soak > 0 ? Math.min(1, c.soak/40) : 0).toFixed(2));
+      const {x, y} = hotXY(), z = clamp(Math.floor(x/20), 0, WZ-1);
+      [[z, 6], [z-1, 1.5], [z+1, 1.5]].forEach(([k, a])=>{ if(k < 0 || k >= WZ) return; if(c.wetZ[k] < 100) c.wetZ[k] = Math.min(100, c.wetZ[k] + a); else if(a > 2) c.soakZ[k] = Math.min(100, c.soakZ[k] + 7); });
+      syncWet(c);
+      const wl = $('wetLayer'); if(wl) wl.querySelectorAll('.wz').forEach((r,k)=> r.setAttribute('opacity', (c.wetZ[k]/100*.4).toFixed(2)));
+      const sl = $('soakLayer'); if(sl) sl.querySelectorAll('.sz').forEach((e,k)=> e.setAttribute('opacity', (c.soakZ[k] > 0 ? Math.min(.85, c.soakZ[k]/40) : 0).toFixed(2)));
+      if(Math.hypot(x - bugPos.x, (y + 8) - bugPos.y) < 16 && !bugPos.hidden) annoy(3, '虫に水がかかっている！ いやがって、元気が少しへった。虫には直接かけないでね。');
       refreshWetBar(); updateMini();
       const sp = $('sprayLayer'); if(sp){ for(let i=0;i<4;i++){ const d = document.createElementNS('http://www.w3.org/2000/svg','circle'); d.setAttribute('cx', x + (Math.random()*18-9)); d.setAttribute('cy', y + 2 + (Math.random()*14-4)); d.setAttribute('r', (.6+Math.random()*.8).toFixed(1)); d.setAttribute('fill', '#cfe8ff'); d.setAttribute('class', 'drop'); sp.appendChild(d); setTimeout(()=>d.remove(), 500); } }
     }, 120);
@@ -1453,12 +1480,13 @@ async function renderObs(){
     if(c.wet - sprayStartWet < 3 && !(c.soak > 0)) return;
     c.log.wet++;
     let t;
-    if((c.soak||0) > 30){ c.log.over++; t = 'かけすぎ！ 土に水たまりができて、びちゃびちゃになった。かわくまで待とう。カビが出やすくなる。'; }
+    if((c.soak||0) > 30){ c.log.over++; t = '一か所にかけすぎ！ そこに水たまりができた。かわくまで待とう。カビが出やすくなる。きりふきは、ケースぜんたいに少しずつ。'; }
+    else if(wetUneven(c) > 35){ t = 'しめっているところと、かわいているところがある。ぜんたいに、まんべんなくかけよう。'; }
     else if(c.wet > band[1]){ t = 'すこし多いかな。' + (b.shape === 'butterfly' ? 'チョウの幼虫は、しめりすぎると弱りやすい。' : 'これ以上はかけないでおこう。'); }
     else if(c.wet >= band[0]){ t = 'ちょうどいい！ ' + (b.shape === 'beetle' || b.shape === 'stag' ? '土が、にぎると固まるくらいのしめりけ。' : '葉や草が、しっとりしたくらい。'); }
     else t = 'まだ少したりないかも。もう少しだけかけてみよう。';
     save(); setTxt(t);
-    if(!S.yk.wet){ await yakusoku('wet', 'きりふきは「しっとり」くらいでちょうどいい。びしょびしょにしないでね。\n虫によって、ちょうどいいしめりけはちがう。帯を見て止めよう。'); renderObs(); }
+    if(!S.yk.wet){ await yakusoku('wet', 'きりふきは「しっとり」くらいでちょうどいい。びしょびしょにしないでね。\nケースぜんたいに、少しずつ。虫には直接かけない。'); renderObs(); }
   };
   // ---- エサ：置く ----
   const placeFood = async (x, y)=>{
@@ -1494,46 +1522,45 @@ async function renderObs(){
   const inRefuge = e=>{ if(!refuge) return false; const r = refuge.getBoundingClientRect(); return e.clientX > r.left - 10 && e.clientX < r.right + 10 && e.clientY > r.top - 10 && e.clientY < r.bottom + 10; };
   let holdT = null, holding = false, carry = null;   // carry: {el} 指についてくる虫
   const startBig = ()=>{ obsSession.big = {step:1, pass:0, lastX:null, cover:0}; renderObs(); };
-  const carryStart = (e, fromRefuge)=>{ holding = true; carry = document.createElement('div'); carry.className = 'carry norb'; carry.innerHTML = svgBug(c.bug, st.k, {instar:instarOf(c)}); sceneEl.appendChild(carry); carryMove(e); if(fromRefuge) $('refugeBug').innerHTML = ''; else { const bg = $('bugG'); if(bg){ bg.classList.remove('press'); bg.style.opacity = 0; } } setTxt('そっとつまんだ。ゆっくり運ぼう。'); };
-  const carryMove = e=>{ if(!carry) return; const r = sceneEl.getBoundingClientRect(); carry.style.left = (e.clientX - r.left) + 'px'; carry.style.top = (e.clientY - r.top - 30) + 'px'; if(refuge) refuge.classList.toggle('over', inRefuge(e)); };
-  const bigDown = e=>{
-    const bg = obsSession.big;
-    if(!bg || bg.step === 1){   // 虫を長おし
-      if(!nearBug(toXY(e).x, toXY(e).y)){ ripple(e); setTxt('虫のところを、長おししてつまもう。'); return; }
-      down = true; sceneEl.setPointerCapture(e.pointerId); if(!bg) startBig_quiet();
-      holdT = setTimeout(()=>{ holdT = null; carryStart(e, false); }, 900);
-      const bugEl = $('bugG'); if(bugEl) bugEl.classList.add('press');
-      return;
-    }
-    if(bg.step === 2){ down = true; sceneEl.setPointerCapture(e.pointerId); bg.lastX = e.clientX; bg.cover = 0; return; }
-    if(bg.step === 3){ if(!inRefuge(e)){ ripple(e); setTxt('ひなんケースの虫をつまんで、もどそう。'); return; } down = true; sceneEl.setPointerCapture(e.pointerId); holdT = setTimeout(()=>{ holdT = null; carryStart(e, true); }, 500); return; }
+  const carryStart = (e, fromRefuge)=>{ holding = true; carry = document.createElement('div'); carry.className = 'carry norb'; carry.innerHTML = svgBug(c.bug, st.k, {instar:instarOf(c)}); sceneEl.appendChild(carry); carryMove(e); if(fromRefuge) $('refugeBug').innerHTML = ''; else { const bg = $('bugG'); if(bg){ bg.classList.remove('press'); bg.style.opacity = 0; } } setTxt('そっとつまんだ。右上のひなんケースまで運ぼう。'); };
+  const carryMove = e=>{ if(!carry) return; const r = sceneEl.getBoundingClientRect(); carry.style.left = (e.clientX - r.left) + 'px'; carry.style.top = (e.clientY - r.top + 18) + 'px'; if(refuge) refuge.classList.toggle('over', inRefuge(e)); };
+  // 大そうじは道具で行う：手（🤏）で虫をつまむ → ひなんケース → ほうき（🧹）で土を入れかえ → 手で虫をもどす
+  // 手を虫の上で止めると、そっとつまむ（約1びょう）。手をすばやく虫にぶつけると「力を入れすぎ」
+  const hotClient = ()=>{ const r = sceneEl.getBoundingClientRect(), h = HOT[tool]; return {clientX:r.left + objPos.x + h.x, clientY:r.top + objPos.y + h.y}; };
+  let holdMs = 0, lastT = 0, lastP = null;
+  const bigStep = ()=> (obsSession.big || {step:1}).step;
+  const bigTick = e=>{   // 道具を動かしている間
+    const bg = obsSession.big || (obsSession.big = {step:1, pass:0, lastX:null, cover:0});
+    const hc = hotClient(), q = toXYc(hc.clientX, hc.clientY), t = Date.now(), dt = lastT ? t - lastT : 0;
+    const sp = lastP ? Math.hypot(hc.clientX - lastP.x, hc.clientY - lastP.y) / Math.max(1, dt) : 0; lastT = t; lastP = {x:hc.clientX, y:hc.clientY};
+    if(holding){ carryMove(hc); return; }
+    if(bg.step === 1){
+      if(nearBug(q.x, q.y)){
+        if(sp > 1.8){ holdMs = 0; annoy(5, '力を入れすぎ！ 虫がじたばたして、いやがった。手を虫の上で止めて、そっとつまもう。'); return; }
+        holdMs += dt; const el = $('bugG'); if(el) el.classList.add('press');
+        if(holdMs > 900){ holdMs = 0; carryStart(hc, false); } }
+      else { holdMs = 0; const el = $('bugG'); if(el) el.classList.remove('press'); }
+      return; }
+    if(bg.step === 3){
+      if(inRefuge(hc)){ holdMs += dt; refuge.classList.add('over'); if(holdMs > 500){ holdMs = 0; carryStart(hc, true); } } else { holdMs = 0; refuge.classList.remove('over'); }
+      return; }
+    if(bg.step === 2){ const soilTop = soilTopOf(b); if(q.y < soilTop - 6) return; const dx = Math.abs(hc.clientX - (bg.lastX ?? hc.clientX)); bg.lastX = hc.clientX; bg.cover += dx;
+      if(Math.random() < .35){ const sp2 = $('sprayLayer'); if(sp2){ const d = document.createElementNS('http://www.w3.org/2000/svg','circle'); d.setAttribute('cx', q.x + (Math.random()*10-5)); d.setAttribute('cy', q.y - Math.random()*4); d.setAttribute('r', (.8+Math.random()).toFixed(1)); d.setAttribute('fill', '#3b2715'); d.setAttribute('class', 'drop'); sp2.appendChild(d); setTimeout(()=>d.remove(), 500); } }
+      const fresh = Math.min(1, (bg.pass*220 + bg.cover)/660), wl = $('wetLayer'); if(wl) wl.querySelectorAll('.wz').forEach(r=> r.setAttribute('opacity', (.4*(1 - fresh) + .15*fresh).toFixed(2)));
+      if(bg.cover > 220){ bg.cover = 0; bg.pass++; $('guide').textContent = bg.pass >= 3 ? '新しい土になった！' : `ほうきで土をなでて、新しい土に入れかえよう（あと${3 - bg.pass}回）`; if(bg.pass >= 3){ bg.step = 3; finishSoil(); } } }
   };
-  const startBig_quiet = ()=>{ obsSession.big = {step:1, pass:0, lastX:null, cover:0}; };
-  const bigMove = e=>{
-    const bg = obsSession.big; if(!bg) return;
-    if(holding){ carryMove(e); return; }
-    if(holdT && (bg.step === 1 || bg.step === 3)){   // 長おしする前に動かした＝力を入れすぎ
-      clearTimeout(holdT); holdT = null; down = false; c.log.over++; save();
-      const bugEl = $('bugG'); if(bugEl){ bugEl.classList.remove('press'); bugEl.classList.add('jitter'); setTimeout(()=>bugEl.classList.remove('jitter'), 600); }
-      setTxt('力を入れすぎ！ 虫がじたばたした。長おしして、そっとつまもう。'); return;
-    }
-    if(bg.step === 2){ const q = toXY(e), soilTop = soilTopOf(b); if(q.y < soilTop - 4) return; const dx = Math.abs(e.clientX - (bg.lastX ?? e.clientX)); bg.lastX = e.clientX; bg.cover += dx;
-      const wl = $('wetLayer'); if(wl) wl.setAttribute('opacity', (.35 * Math.max(0, 1 - bg.cover/400)).toFixed(2));
-      if(bg.cover > 220){ bg.cover = 0; bg.pass++; $('guide').textContent = bg.pass >= 3 ? '新しい土になった！ ひなんケースの虫をつまんで、もどそう。' : `土を指でなでて、新しい土に入れかえよう（あと${3 - bg.pass}回）`; if(bg.pass >= 3){ bg.step = 3; finishSoil(); } } }
-  };
-  const finishSoil = ()=>{ c.soilAge = 0; c.clean = 100; c.dirt = []; c.foods = c.foods.filter(f=>!f.old); c.soak = 0; if(c.trouble){ c.trouble = null; } save(); renderObs(); setTimeout(()=> setTxt('ふかふかの新しい土になった！ ひなんケースの虫を、そっともどしてあげよう。'), 50); };
-  const bigUp = async e=>{
-    const bg = obsSession.big; down = false;
-    if(holdT){ clearTimeout(holdT); holdT = null; const bugEl = $('bugG'); if(bugEl) bugEl.classList.remove('press'); if(bg && bg.step === 1) setTxt('長おし（1びょう）してから、動かそう。'); return; }
-    if(!holding) return; holding = false; if(carry){ carry.remove(); carry = null; } if(refuge) refuge.classList.remove('over');
-    if(bg.step === 1){ if(inRefuge(e)){ bg.step = 2; save(); renderObs(); setTimeout(()=> setTxt('ひなんケースに入れた。これで、土を入れかえられる。'), 50); await yakusoku('bigclean', '虫は、力を入れずに、そっと持とうね。\n大そうじの間は、ひなんケースで待っていてもらおう。'); }
-      else { const bugEl = $('bugG'); if(bugEl) bugEl.style.opacity = ''; setTxt('ケースの中にもどした。ひなんケースまで運ぼう。'); } return; }
-    if(bg.step === 3){ if(inRefuge(e)){ $('refugeBug').innerHTML = svgBug(c.bug, st.k, {instar:instarOf(c), scale:.9}); setTxt('まだひなんケースの中。ケースにもどそう。'); return; }
+  const finishSoil = ()=>{ c.soilAge = 0; c.clean = 100; c.dirt = []; c.foods = c.foods.filter(f=>!f.old); c.soakZ = Array(WZ).fill(0); c.wetZ = Array(WZ).fill(WET_BAND[b.shape][0] + 8); syncWet(c); if(c.trouble){ c.trouble = null; } save(); renderObs(); setTimeout(()=> setTxt('ふかふかの新しい土になった！ 🤏で、ひなんケースの虫をそっともどしてあげよう。'), 50); };
+  const bigRelease = async ()=>{   // 道具をはなしたとき
+    const bg = obsSession.big; holdMs = 0; lastT = 0; lastP = null; const el = $('bugG'); if(el) el.classList.remove('press');
+    if(!holding || !bg) return; const hc = hotClient(); holding = false; if(carry){ carry.remove(); carry = null; } if(refuge) refuge.classList.remove('over');
+    if(bg.step === 1){ if(inRefuge(hc)){ bg.step = 2; save(); renderObs(); setTimeout(()=> setTxt('ひなんケースに入れた。ほうきで、土を入れかえよう。'), 50); await yakusoku('bigclean', '虫は、力を入れずに、そっと持とうね。\n大そうじの間は、ひなんケースで待っていてもらおう。'); }
+      else { if(el) el.style.opacity = ''; setTxt('ケースの中にもどしてしまった。ひなんケースまで運ぼう。'); } return; }
+    if(bg.step === 3){ if(inRefuge(hc)){ $('refugeBug').innerHTML = svgBug(c.bug, st.k, {instar:instarOf(c), scale:.9}); setTxt('まだひなんケースの中。ケースの中までもどそう。'); return; }
       obsSession.big = null; c.log.clean += 2; c.hideUntil = 0; save(); renderObs(); setTimeout(()=> setTxt('大そうじ、おつかれさま！ 虫も新しい土によろこんでいる。'), 50); await yakusoku('bigdone', '大そうじは、3日に1回くらい。\n土やマットは、虫の家そのもの。きれいな家で、元気に育つよ。'); }
   };
   sceneEl.onpointerdown = e=>{ e.preventDefault();
-    if(tool === 'big'){ if(st.k === 'pupa'){ ripple(e); setTxt('さなぎの間は、大そうじはできない。'); return; } bigDown(e); return; }
-    const hit = tool !== 'fukin' && tool !== 'furu' && !nearObj(e) && itemAt(e);
+    if(tool === 'big' && st.k === 'pupa'){ ripple(e); setTxt('さなぎの間は、大そうじはできない。'); return; }
+    const hit = tool !== 'fukin' && tool !== 'furu' && tool !== 'big' && !nearObj(e) && itemAt(e);
     if(hit){ down = true; dragItem = hit; sceneEl.setPointerCapture(e.pointerId); ripple(e); if(hit.type === 'deco') binZone.hidden = false; return; }
     if(tool === 'furu'){ down = true; sceneEl.setPointerCapture(e.pointerId); ripple(e); furu.x0 = furu.last = e.clientX; furu.n = 0; furu.seg = 0; furu.dir = 0; return; }
     if(!nearObj(e)){ ripple(e); setTxt(`${TOOLS[tool].name}をつかんで、動かしてね。`); return; }
@@ -1541,14 +1568,15 @@ async function renderObs(){
     toolObj.querySelector('.hint')?.remove(); dragTo(e); lastMove = Date.now();
     if(tool === 'kiri'){ stillT = setInterval(()=>{ if(Date.now() - lastMove > 280) sprayStart(); }, 60); } };
   sceneEl.onpointermove = e=>{ if(!down) return;
-    if(tool === 'big'){ bigMove(e); return; }
     if(dragItem){ moveItem(e); return; }
     if(tool === 'furu'){ furuMove(e); return; }
     const r = sceneEl.getBoundingClientRect(), nx = e.clientX - r.left - grab.dx, ny = e.clientY - r.top - grab.dy;
     if(Math.hypot(nx - objPos.x, ny - objPos.y) > 2.5){ lastMove = Date.now(); if(tool === 'kiri') sprayStop(); }
     dragTo(e);
-    if(tool === 'fukin'){ const q = hotXY(); wipeAt(q.x, q.y); } };
-  sceneEl.onpointerup = sceneEl.onpointercancel = async e=>{ if(!down) return; if(tool === 'big'){ await bigUp(e); return; } down = false; clearInterval(stillT); stillT = null;
+    if(tool === 'fukin'){ const q = hotXY(); wipeAt(q.x, q.y); }
+    if(tool === 'big') bigTick(e); };
+  sceneEl.onpointerup = sceneEl.onpointercancel = async e=>{ if(!down) return; down = false; clearInterval(stillT); stillT = null;
+    if(tool === 'big'){ await bigRelease(); const rp = restPos(); setObj(rp.x, rp.y, ''); showTool(); return; }
     if(dragItem){ const di = dragItem, binned = di.type === 'deco' && inBin(e); dragItem = null; binZone.hidden = true; binZone.classList.remove('over');
       if(binned){ c.deco = c.deco.filter(d=>d !== di.it); S.items[di.it.k] = (S.items[di.it.k]||0) + 1; save(); setTxt(`${ITEMS[di.it.k].name}をしまった。`); renderObs(); return; }
       c.log.over += di.type === 'food' ? 0 : 0; save(); renderObs(); setTimeout(()=> setTxt(di.type === 'food' ? 'エサの場所をかえた。' : `${ITEMS[di.it.k].name}の場所をかえた。`), 50); return; }
@@ -1747,7 +1775,7 @@ async function doFind(sp, here, egg, slot){
     const keys = Object.keys(PLACES), pi = await say('おうちの、どこにおく？', {ans:keys.map(k=>`${PLACES[k].name}：${PLACES[k].desc}`)});
     const wide = wi === 1; if(wide) S.items.wide--;
     S.cases[free] = {bug:id, si:0, prog:0, hunger:70, wet:70, clean:100, tick:now(), pending:false, from:sp.name, born:sp.key, bornSlot:slotOf(), since:dayKey(),
-      ind:{hp:1, atk:1, def:1, spd:1, heal:1}, log:newLog(), tot:newLog(), place:keys[pi], wide, trouble:null, dirt:[], foods:[], soak:0, hideUntil:0, deco:[], mat:null, soilAge:0};
+      ind:{hp:1, atk:1, def:1, spd:1, heal:1}, log:newLog(), tot:newLog(), place:keys[pi], wide, trouble:null, dirt:[], foods:[], soak:0, hideUntil:0, deco:[], mat:null, soilAge:0, wetZ:Array(WZ).fill(70), soakZ:Array(WZ).fill(0), stress:0};
     save(); hud();
     await say(`${b.name}の${id === 'kinkabuto' ? 'たまご' : '幼虫'}を、${free+1}ばんめのケース（${PLACES[keys[pi]].name}）に入れた。\n「${BORN[sp.key].name}」の虫だ。`);
     await yakusoku('take', '虫をつれてかえるときは、いきをしやすいように、ふたにあなをあけたケースに。\n日なたにおくと、あつくて弱ってしまうよ。');
