@@ -230,6 +230,14 @@ p{margin:.3em 0}
 .bug.sleep .body{animation:breath 4s ease-in-out infinite!important}
 #mihonBar{position:fixed;right:calc(var(--sr,0px) + 76px);bottom:max(4px,var(--sb,0px));z-index:9000;display:flex;flex-wrap:wrap;gap:4px;align-items:center;justify-content:center;max-width:calc(50vw - 100px);background:rgba(20,30,20,.88);color:#fff;border:1px solid #f4b63c;border-radius:10px;padding:4px 8px;font-size:12px}
 #mihonBar b{color:#f4b63c;margin-right:4px}
+/* 観察（大きく見る）：部品の絵を組み立てて動かす */
+.full.zoomL{z-index:9500;background:#10180f;overflow:hidden;display:flex;flex-direction:column;padding:max(6px,var(--st,0px)) max(10px,var(--sr,0px)) max(6px,var(--sb,0px)) max(10px,var(--sl,0px))}
+.zoomL .zt{display:flex;align-items:center;gap:6px;flex-wrap:wrap;color:#f7f1df;font-size:13px}
+.zoomL .zt b{color:#f4b63c;margin-right:auto}
+.zoomL .zt button{font:inherit;color:#fff;background:#2a3a2a;border:1px solid #5a6a5a;border-radius:6px;padding:4px 9px}
+.zoomL .zt button.on{background:#f4b63c;color:#222;border-color:#f4b63c}
+.zoomL svg{flex:1;min-height:0;width:100%;touch-action:none}
+.zoomL .zs{color:#f7f1dfcc;font-size:13px;text-align:center;min-height:1.4em}
 #mihonBar i{width:6px}
 #mihonBar button{font:inherit;color:#fff;background:#2a3a2a;border:1px solid #5a6a5a;border-radius:6px;padding:3px 7px}
 #mihonBar button.on{background:#f4b63c;color:#222;border-color:#f4b63c}
@@ -604,9 +612,11 @@ const SAVE_KEY = KEY_PRE + 'munakata-mushisodate-v1';
 const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
-const GAME_VER = '0.7.5';
-const BUILD = '20261024-1551';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const GAME_VER = '0.7.6';
+const BUILD = '20261024-1653';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
+  {v:'0.7.6', date:'2026-10-24', items:[
+    '観察（大きく見る）画面の試作：カブトムシを部品の絵から組み立てて、呼吸・触角のぴくぴく・前脚での触角そうじ・ゼリーを食べる口・ツノのいかくを動かせるようにした（見本ページの「観察（試作）」から）']},
   {v:'0.7.5', date:'2026-10-24', items:[
     'カブトムシの成虫の絵を、水彩の新しい絵にした',
     '絵になった虫は、夜に床を歩きまわったり、向きをかえたり、頭を下げてあたりを見たりするようになった',
@@ -2505,6 +2515,95 @@ addEventListener('keydown', e=>{
   if(openCase !== null){ openCase = null; render(); }
 });
 
+
+/* =========================================================
+   観察（大きく見る）。部品の絵（tools/parts_prep.py で作る）を組み立てて、関節のところで回して動かす。
+   座標は全身の絵（1024x1024）のまま。pv は回す軸（関節）の位置
+   ========================================================= */
+const BUG_PARTS = {
+  kabuto: {
+    parts:{body:[41,285,793,640], head:[705,124,305,504], antenna:[841,562,140,68], thigh:[610,596,185,165], shin:[669,632,311,304], mouth:[846,593,60,54]},
+    pv:{neck:[735,578], ant:[850,577], coxa:[632,616], knee:[692,648], mouth:[856,604], breath:[560,880]},
+    far:{ant:[46,-38, -6], leg:[70,-95, -14]},   // 奥がわの触角・前脚：手前の絵を [右へ, 上へ, 回す角度] ずらしてくらくする
+    box:'20 90 1000 880', ground:925, jelly:[848,668],
+  },
+};
+function openZoom(id, opt={}){
+  const P = BUG_PARTS[id]; if(!P) return;
+  document.querySelectorAll('.zoomL').forEach(e=>e.remove());
+  const dir = `img/bugs/parts/${id}/`, R = P.parts, V = P.pv;
+  const im = (k, cls='')=> `<image class="${cls}" href="${dir}${k}.webp" x="${R[k][0]}" y="${R[k][1]}" width="${R[k][2]}" height="${R[k][3]}"/>`;
+  const leg = (far)=> `<g id="${far ? 'zLegF' : 'zLeg'}"${far ? ' filter="url(#zFar)"' : ''}><g class="thigh">${im('thigh')}</g><g class="shinG">${im('shin')}</g></g>`;
+  const [jx, jy] = P.jelly;
+  const svg = `<svg viewBox="${P.box}" preserveAspectRatio="xMidYMid meet">
+    <defs><filter id="zFar"><feColorMatrix type="matrix" values=".62 0 0 0 0  0 .58 0 0 0  0 0 .55 0 0  0 0 0 1 0"/></filter>
+      <linearGradient id="zSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#22324a"/><stop offset="1" stop-color="#3a4a3a"/></linearGradient></defs>
+    <rect x="-200" y="0" width="1400" height="${P.ground}" fill="url(#zSky)"/>
+    <rect x="-200" y="${P.ground}" width="1400" height="300" fill="#4a3220"/>
+    ${[[80,950],[260,980],[520,960],[760,990],[930,955]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="14" ry="6" fill="#3a2516"/>`).join('')}
+    <g id="zBug">
+      <g id="zFarSide">${leg(true)}</g>
+      <g id="zBody">${im('body')}</g>
+      ${leg(false)}
+    <g id="zJelly" style="display:none"><rect x="${jx}" y="${jy}" width="125" height="${P.ground - jy}" rx="10" fill="#f0e0b0" opacity=".9"/><rect x="${jx+6}" y="${jy+8}" width="113" height="46" rx="6" fill="#e8a040"/></g>
+      <g id="zHead"><g id="zAntF" filter="url(#zFar)">${im('antenna')}</g><g id="zMouth">${im('mouth')}</g>${im('head')}<g id="zAnt">${im('antenna')}</g></g>
+    </g></svg>`;
+  const L = document.createElement('div'); L.className = 'full zoomL norb';
+  const btns = [['genki','げんき'],['eat','食べる'],['nemui','ねむい']];
+  L.innerHTML = `<div class="zt"><b>観察（試作）：${esc(BUGS[id].name)}</b>${btns.map(([k,l])=>`<button type="button" data-m="${k}">${l}</button>`).join('')}<button type="button" data-a="clean">触角そうじ</button><button type="button" data-x="1">とじる</button></div>${svg}<div class="zs" id="zSay"></div>`;
+  document.body.appendChild(L);
+  const $z = q=> L.querySelector(q), g = {
+    bug:$z('#zBug'), body:$z('#zBody'), head:$z('#zHead'), ant:$z('#zAnt'), antF:$z('#zAntF'), mouth:$z('#zMouth'),
+    leg:$z('#zLeg'), shin:$z('#zLeg .shinG'), legF:$z('#zLegF'), shinF:$z('#zLegF .shinG'), jelly:$z('#zJelly')};
+  let mood = opt.mood || 'genki', act = null, actT = 0, nextAct = performance.now() + 2500, twitch = {a:0, to:0, t:0}, twF = {a:0, to:0, t:0}, startle = 0;
+  const say = t=> { $z('#zSay').textContent = t; };
+  const SAY = {genki:'触角をぴんと立てて、あたりのにおいをさぐっている。', eat:'ブラシのような口で、ゼリーをなめている。', nemui:'触角をさげて、じっとしている。おなかがゆっくり動いている。'};
+  const setMood = m=>{ mood = m; act = null; L.querySelectorAll('[data-m]').forEach(b=> b.classList.toggle('on', b.dataset.m === m)); g.jelly.style.display = m === 'eat' ? '' : 'none'; say(SAY[m]); };
+  L.querySelectorAll('[data-m]').forEach(b=> b.onclick = ()=> setMood(b.dataset.m));
+  $z('[data-a=clean]').onclick = ()=>{ if(mood === 'eat') setMood('genki'); act = 'clean'; actT = performance.now(); say('前脚で、触角をそうじしている。においをよく感じるために、だいじなこと。'); };
+  $z('[data-x]').onclick = ()=> L.remove();
+  $z('svg').addEventListener('pointerdown', ()=>{ startle = performance.now(); if(mood !== 'eat'){ act = 'threat'; actT = startle; say('びくっ！ ツノをもちあげて、こっちをいかくしている。'); } });
+  setMood(mood);
+  const rot = (el, deg, [x, y], extra='')=> el.setAttribute('transform', `${extra} rotate(${deg.toFixed(2)} ${x} ${y})`);
+  const ease = t=> t < 0 ? 0 : t > 1 ? 1 : t*t*(3 - 2*t);
+  const [fax, fay, far] = P.far.ant, [flx, fly, flr] = P.far.leg;
+  const step = t=>{
+    if(!L.isConnected) return;
+    const sec = t/1000;
+    // 呼吸：おなかがゆっくりふくらむ（ねむいときはもっとゆっくり）
+    const br = Math.sin(sec * Math.PI * 2 / (mood === 'nemui' ? 5.5 : 3.2)), [bx, by] = V.breath;
+    g.body.setAttribute('transform', `translate(${bx} ${by}) scale(${1 + br*.004} ${1 + br*.012}) translate(${-bx} ${-by})`);
+    // ときどき自分から触角そうじ（げんきなとき）
+    if(!act && mood === 'genki' && t > nextAct){ act = 'clean'; actT = t; say('前脚で、触角をそうじしている。においをよく感じるために、だいじなこと。'); }
+    let head = mood === 'nemui' ? 6 : mood === 'eat' ? 13 + Math.sin(sec*5)*1.6 : Math.sin(sec*.7)*1.2;
+    let antBase = mood === 'nemui' ? 22 : mood === 'eat' ? 8 : -4, legA = 0, shinA = 0, antPress = 0;
+    if(act === 'clean'){
+      const k = (t - actT)/1000, up = ease(k/0.7) * (1 - ease((k - 3.4)/0.7));
+      const strokes = k > .7 && k < 3.4 ? (1 - Math.cos((k - .7) * Math.PI * 2 / .9)) / 2 : 0;   // 3回なでおろす
+      legA = -40 * up - 8 * strokes * up; shinA = -12 * up + 8 * strokes * up; antPress = (10 + 16 * strokes) * up; head += 4 * up;
+      if(k > 4.2){ act = null; nextAct = t + 7000 + Math.random()*6000; say(SAY[mood]); }
+    }
+    if(act === 'threat'){
+      const k = (t - actT)/1000, up = ease(k/0.25) * (1 - ease((k - 1.4)/0.5));
+      head -= 16 * up; antBase -= 14 * up;
+      if(k > 2){ act = null; say(SAY[mood]); }
+    }
+    // 触角のぴくぴく
+    for(const tw of [twitch, twF]){ if(t > tw.t){ tw.to = (Math.random() - .5) * (mood === 'nemui' ? 3 : 12); tw.t = t + 300 + Math.random() * (mood === 'nemui' ? 4000 : 1400); } tw.a += (tw.to - tw.a) * .12; }
+    rot(g.head, head, V.neck);
+    rot(g.ant, antBase + antPress + twitch.a, V.ant);
+    rot(g.antF, antBase + twF.a + far, V.ant, `translate(${fax} ${fay})`);
+    const mo = mood === 'eat' ? (Math.sin(sec*5) + 1) / 2 : 0, [mx, my] = V.mouth;
+    g.mouth.setAttribute('transform', `translate(${mo*5} ${mo*7}) translate(${mx} ${my}) scale(${1 + mo*.25}) translate(${-mx} ${-my})`);
+    rot(g.leg, legA, V.coxa); rot(g.shin, shinA, V.knee);
+    rot(g.legF, flr + legA*.15, V.coxa, `translate(${flx} ${fly})`); rot(g.shinF, 0, V.knee);
+    const s = startle && t - startle < 300 ? Math.sin((t - startle)/300*Math.PI) : 0;
+    g.bug.setAttribute('transform', `translate(500 900) scale(${1 - s*.03}) translate(-500 -900)`);
+    requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
 /* 見本ページ：?mihon=kabuto のように開くと、その虫が入ったケースをすぐ見られる（絵をたしかめる用。セーブには何ものこらない）
    &st=larva / pupa / adult ですがた、上のボタンで時間・すがた・枝・エサをかえられる */
 function startMihon(){
@@ -2525,11 +2624,14 @@ function startMihon(){
     const sts = [...new Set(b.plan.map(x=>x.k))];
     el.innerHTML = `<b>見本：${esc(b.name)}</b>` + sts.map(k=>btn('st', k, STAGE_NAME[k])).join('') + '<i></i>' +
       [['asa','朝'],['hiru','昼'],['yu','夕'],['yoru','夜']].map(([k,l])=>btn('slot', k, l)).join('') + '<i></i>' +
-      btn('eda', !M.eda, M.eda ? '枝をとる' : '枝をおく') + btn('esa', !M.esa, M.esa ? 'エサをとる' : 'エサをおく');
-    el.querySelectorAll('button').forEach(x=> x.onclick = ()=>{ const v = x.dataset.v; M[x.dataset.k] = v === 'true' ? true : v === 'false' ? false : v; build(); });
+      btn('eda', !M.eda, M.eda ? '枝をとる' : '枝をおく') + btn('esa', !M.esa, M.esa ? 'エサをとる' : 'エサをおく') +
+      (BUG_PARTS[id] ? '<i></i><button type="button" id="mihonZoom">観察（試作）</button>' : '');
+    if($('mihonZoom')) $('mihonZoom').onclick = ()=> openZoom(id);
+    el.querySelectorAll('button[data-k]').forEach(x=> x.onclick = ()=>{ const v = x.dataset.v; M[x.dataset.k] = v === 'true' ? true : v === 'false' ? false : v; build(); });
   };
   $('tabs').hidden = false; $('rtabs').hidden = false;
   build();
+  if(QS.get('zoom') !== null && BUG_PARTS[id]) openZoom(id, {mood:QS.get('zoom') || 'genki'});
 }
 
 /* 起動 */
