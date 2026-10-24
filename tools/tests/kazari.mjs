@@ -38,6 +38,7 @@ d = await page.evaluate(() => S.cases[0].deco.find(x => x.k === 'eda_kunugi')); 
 await page.mouse.move(from.x, from.y); await page.mouse.down(); await page.mouse.move(bin.x, bin.y, {steps:8}); await page.mouse.up(); await page.waitForTimeout(400);
 console.log('binned:', await stDeco());
 // エサを置いて動かす
+await click('#decoPick [data-tool=yubi]'); await page.waitForTimeout(200);   // かざりの列から、道具の列にもどる
 await click('[data-tool=esa]'); await page.waitForTimeout(150); await scrollScene(); await page.waitForTimeout(300); o = await objCenter(); t = await toClient(60, 40); await page.mouse.move(o.x, o.y); await page.mouse.down(); await page.mouse.move(t.x, t.y, {steps:6}); await page.mouse.up(); await page.waitForTimeout(300); await tapMsg();
 const f = await page.evaluate(() => S.cases[0].foods[0]); from = await toClient(f.x, f.y); to = await toClient(30, 42); await page.mouse.move(from.x, from.y); await page.mouse.down(); await page.mouse.move(to.x, to.y, {steps:8}); await page.mouse.up(); await page.waitForTimeout(400);
 console.log('food moved:', await stDeco());
