@@ -484,7 +484,7 @@ html.land #tabs button{max-width:none;flex:1;font-size:12px;padding:.2em 0}
 html.land #tabs button .ic{font-size:22px}
 html.land #tabs button .badge{transform:translate(1.2em,-2.6em)}
 html.land header{display:none}
-html.land #app{max-width:none;padding:max(4px,var(--st)) calc(6px + var(--sr)) max(6px,var(--sb)) 0;gap:4px;height:var(--H);display:flex;flex-direction:column}
+html.land #app{max-width:none;padding:max(4px,var(--st)) 0 max(6px,var(--sb)) 0;gap:4px;height:var(--H);display:flex;flex-direction:column}
 html.land #view{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 /* 日付・時間・どんぐりは、どの画面でも右上に1行 */
 html.land #hud{position:fixed;top:max(4px,var(--st));right:calc(10px + var(--sr));z-index:65;font-size:14px;gap:12px;flex-wrap:nowrap;white-space:nowrap;background:#1e2f24ee;border-radius:999px;padding:0 .7em;min-height:24px}
@@ -531,8 +531,8 @@ html.land #tabs{left:0;top:0;bottom:0;right:auto;width:calc(76px + var(--sl));fl
 html.land #tabs [data-t=home]{display:none}
 html.land #tabs button{max-width:none;flex:none;width:72px;min-height:62px;font-size:12px;padding:.3em 0;background:var(--win);border:2px solid #f7f1df88;border-left:0;border-radius:0 12px 12px 0;box-shadow:2px 2px 6px #0008}
 html.land #tabs button.on{background:var(--sun);color:#1b130c;border-color:#fff}
-html.land body{padding-right:calc(var(--rtw) + 6px + var(--sr))}
-html.land #hud{right:calc(var(--rtw) + 10px + var(--sr))}
+html.land body{padding-right:calc(var(--rtw) + 4px + var(--sr))}
+html.land #hud{right:calc(var(--rtw) + 6px + var(--sr))}
 html.land .obsR{padding-right:4px}
 /* スクロールする画面の文字は大きめ */
 html.land body:not(.obsMode) #view{font-size:17px}
@@ -594,9 +594,11 @@ const SAVE_KEY = KEY_PRE + 'munakata-mushisodate-v1';
 const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
-const GAME_VER = '0.7.0';
-const BUILD = '20261024-1401';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const GAME_VER = '0.7.1';
+const BUILD = '20261024-1410';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
+  {v:'0.7.1', date:'2026-10-24', items:[
+    'メイン画面を、右メニューのすぐ手前まで広げた（右がわの余白を2回分とっていたのを直した）']},
   {v:'0.7.0', date:'2026-10-24', items:[
     '虫かごは、はじめは1つ。おみせで買って、3つまでふやせる。3つあるときは、とりかえ（中の虫はそのまま）',
     '虫かごの種類：ふつうの虫かご・広い虫かご（すばやさが育つ）・あみ戸の虫かご（よごれにくく カビにくい、かわきやすい）・木の飼育箱（しめりけを保ち、育ちがよい）・観察ケースDX（広くて、よごれにくく、育ちもよい）',
