@@ -1,2 +1,9 @@
 .claude/
 .DS_Store
+# 公開しない作業用ファイル（このパソコンにだけ置く）
+企画メモ.md
+絵柄ルール.md
+CLAUDE.md
+README.md
+tools/
+img/incoming/
