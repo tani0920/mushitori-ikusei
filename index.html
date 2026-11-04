@@ -357,6 +357,8 @@ html.land .sendL.recv .in{display:flex}
 .tools .tbtn{font:inherit;flex:1;font-size:12.5px;letter-spacing:-.02em;color:var(--ink);background:var(--win);border:2px solid #f7f1df66;border-radius:12px;padding:.45em 0;cursor:pointer;line-height:1.2;min-height:76px;white-space:nowrap}
 @media (min-width:480px){ .tools .tbtn{font-size:14px} }
 .tools .tbtn .ic{display:block;font-size:36px;line-height:1.15}
+.tim{width:1.15em;height:1.15em;display:block;margin:0 auto;object-fit:contain;pointer-events:none;-webkit-user-drag:none;user-select:none}
+.toolObj .tim{width:1em;height:1em}
 .tools .tbtn.on{background:var(--sun);color:#1b130c;border-color:var(--sun)}
 .tools .tbtn.back{background:#ffffff14;border-style:dashed}
 .tools .tbtn:disabled{opacity:.4}
@@ -648,9 +650,15 @@ const SAVE_KEY = KEY_PRE + 'munakata-mushisodate-v1';
 const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
-const GAME_VER = '0.8.2';
-const BUILD = '20261024-1814';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const GAME_VER = '0.9.0';
+const BUILD = '20261105-0047';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
+  {v:'0.9.0', date:'2026-11-05', items:[
+    '虫かごの中が、水彩の絵になった！ へや・げんかん・ベランダのけしきと、4しゅるいの土が、えらんだとおりに見える',
+    'かくれ家が朽ち木に、草も本物らしい草むらの絵になった',
+    '絵になった虫がふえた：カブトムシの幼虫とさなぎ、コクワガタ、スズムシ、ショウリョウバッタ、トノサマバッタ',
+    'カブトムシやクワガタが昼に土の中でねていると、土の中の部屋が見えるようになった',
+    'ゆび・虫めがね・ふきん・きりふきなどの道具も、絵になった']},
   {v:'0.8.2', date:'2026-10-24', items:[
     '虫をおくる：「ケースのこと」の「タブレットやパソコンにおくる」で、虫を小さい虫かごに入れてQRコードを出せる。おくり先のカメラで読みとる（または AirDrop などでリンクをおくる）と、虫がうつる',
     '同じ虫は1回しか受けとれない。おくった端末で「とどいた！」をおすと、そちらの虫かごがあく']},
@@ -1346,7 +1354,7 @@ const statLine = f=> `${f.t.name}タイプ　たいりょく${f.maxhp}　ちか�
 let moverId = 0, moverMem = null, moverWalking = false, rigCtl = null;   // rigCtl：ケースの中の部品の虫（リグ）
 function startMover(p, id, stage){
   const my = ++moverId, el = $('bugMove');
-  if(!el || !(BUG_IMG[id]||{})[stage] || p.hidden || p.buried || p.eating || (p.o && p.o.sleep)) return;
+  if(!el || !(BUG_IMG[id]||{})[stage] || p.hidden || p.under || p.eating || (p.o && p.o.sleep)) return;
   if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const x0 = p.x, key = `${openCase}:${id}:${stage}:${x0}:${p.y}`, half = p.s*.85*46, lo = half + 2, hi = 100 - half - 2;
   const mem = moverMem && moverMem.key === key ? moverMem : null;   // 道具を使って画面がかきなおされても、いた場所と向きをおぼえておく
@@ -1386,14 +1394,18 @@ function startMover(p, id, stage){
 
 /* 絵ができた虫は、SVG のかわりに画像を使う。img/bugs/名前.webp（tools/img_prep.py で作る）。100x100 の箱いっぱいに置く */
 const BUG_IMG = {
-  kabuto: {adult:'kabuto_adult_genki'},
+  kabuto: {adult:'kabuto_adult_genki', larva:'kabuto_larva_genki', pupa:'kabuto_pupa'},
+  kokuwa: {adult:'kokuwa_adult_genki'},
+  suzumushi: {adult:'suzumushi_adult_genki'},
+  shoryo: {adult:'shoryo_adult_genki'},
+  tonosama: {adult:'tonosama_adult_genki'},
 };
 function svgBug(id, stage, o={}){
   const b = BUGS[id], cls = ['bug', o.rest ? 'rest' : '', o.sleep ? 'sleep' : '', o.cls||''].join(' ');
   let inner = '';
   const img = (BUG_IMG[id] || {})[stage];
   if(o.rig && stage === 'adult' && BUG_PARTS[id]) inner = `<g class="rig" transform="${rigFit(id)}">${rigSVG(id)}</g>`;   // ケースの中は、部品の絵で組み立てて動かす
-  else if(img) inner = `<image class="art" href="img/bugs/${img}.webp" width="100" height="100"/>`;
+  else if(img) inner = `<g transform="translate(50 50) scale(${stage === 'larva' && o.instar === 0 ? .7 : 1}) translate(-50 -50)"><image class="art" href="img/bugs/${img}.webp" width="100" height="100"/></g>`;   // 1回目の幼虫は小さく
   else if(stage === 'larva') inner = larvaSVG(id, b, o);
   else if(stage === 'pupa') inner = pupaSVG(id, b);
   else inner = adultSVG(id, b, o);
@@ -1533,9 +1545,37 @@ const svgBest = (id, o={})=> svgBug(id, 'adult', o);
    飼育ケースの断面のシーン（朝・昼・夕方・夜で空と虫のようすがかわる）
    ガラスのよごれ・置いたエサ・水たまり・かくれ家も描く。ここを指でさわってお世話する
    ========================================================= */
-const SKY = {asa:['#9ad0f0','#e8f4c0'], hiru:['#5aa6d8','#a9d7ea'], yu:['#f0a060','#f8d8a0'], yoru:['#0e1a3a','#24345a']};
+const SKY = {asa:['#9ad0f0','#e8f4c0'], hiru:['#5aa6d8','#a9d7ea'], yu:['#f0a060','#f8d8a0'], yoru:['#0e1a3a','#24345a']};   // 虫かご一覧の小さい絵の空
+/* 虫かごの中の絵（img/case/）。うしろから 背景 → 土 の順に重ねる */
+const CASE_BG = {heya:'bg_heya', genkan:'bg_genkan', beranda:'bg_beranda'};
+// 土の絵：幅 130、h は高さ、top は絵の上から表面までの長さ（表面が soilTop に来るようにずらす）、base は絵の下にしく色
+const SOIL_ART = {futsu:{img:'soil_futsu', h:41.5, top:2.37, base:'#6b4426', room:'#3a2414', crumb:'#8a5f3a'}, mat_fuyo:{img:'soil_fuyo', h:40, top:3.55, base:'#3b2418', room:'#1f130c', crumb:'#7a5236'}, mat_kuro:{img:'soil_kuro', h:42, top:2.54, base:'#1c1614', room:'#0d0a08', crumb:'#3a302a'}, mat_suna:{img:'soil_suna', h:37.1, top:1.69, base:'#d9bd8c', room:'#a98c5e', crumb:'#efdcb4'}};
+const CASE_TINT = {asa:['#ffd9a0',.16], yu:['#e8742c',.34], yoru:['#0a1434',.62]};   // 絵は「昼」の1枚。朝・夕方・夜は色をかさねる
+/* 土の中の部屋：placeBug が under:true を返すと、どの虫でもこれで土の中にいるように見せる。
+   虫の大きさに合わせて穴をほり、虫は穴の中だけに見える（はみ出た分は土にかくれる）。
+   buried:true なら、もぐった道と地面のもり上がりも足す。chamber:true なら たまご形の部屋（さなぎ用） */
+function roughBlob(cx, cy, rx, ry, seed=1){
+  const n = 14, P = [...Array(n)].map((_,i)=>{ const t = i/n*Math.PI*2, k = 1 + .09*Math.sin(seed + i*2.4) + .05*Math.sin(seed*2.1 + i*5.3); return [cx + rx*k*Math.cos(t), cy + ry*k*Math.sin(t)]; });
+  const f = v=> v.toFixed(2), mid = (a,b)=> `${f((a[0]+b[0])/2)} ${f((a[1]+b[1])/2)}`;
+  return `M${mid(P[n-1], P[0])} ` + P.map((a,i)=> `Q${f(a[0])} ${f(a[1])} ${mid(a, P[(i+1)%n])}`).join(' ') + 'Z';
+}
+function soilRoom(p, soilTop, A){
+  const VIEW_BOTTOM = 87.5, W = p.chamber ? 44 : 52, H = p.chamber ? 34 : 38;
+  let s = p.s*.85, ry = s*H; const maxRy = (VIEW_BOTTOM - soilTop - 5)/2;
+  if(ry > maxRy){ p.s *= maxRy/ry; s = p.s*.85; ry = maxRy; }   // 土がうすい虫は、虫ごと小さくして、土の中におさめる
+  const rx = s*W, seed = p.x*.37 + 1;
+  p.x = clamp(p.x, rx + 3, 97 - rx); p.y = clamp(p.y, soilTop + ry + 3.5, VIEW_BOTTOM - ry - 1.5);
+  const d = roughBlob(p.x, p.y, rx, ry, seed), ex = p.x + rx*.35;
+  const crumbs = [...Array(9)].map((_,i)=>{ const t = i/9*Math.PI*2 + seed, k = 1.14 + .08*Math.sin(i*3.1 + seed); return `<circle cx="${(p.x + rx*k*Math.cos(t)).toFixed(2)}" cy="${(p.y + ry*k*Math.sin(t)).toFixed(2)}" r="${(.4 + .3*Math.abs(Math.sin(i*1.7))).toFixed(2)}" fill="${A.crumb}"/>`; }).join('');
+  const trail = p.buried ? `<path d="M${ex} ${soilTop} Q${ex + 3} ${(soilTop + p.y - ry)/2} ${ex} ${p.y - ry + 1}" stroke="${A.crumb}" stroke-opacity=".38" stroke-width="${(s*11).toFixed(2)}" stroke-linecap="round" fill="none"/><path d="${roughBlob(ex, soilTop, 6, 1.7, seed + 2)}" fill="${A.crumb}"/>` : '';
+  return {
+    defs:`<clipPath id="roomClip"><path d="${d}"/></clipPath>`,
+    back:`<g pointer-events="none">${trail}<path d="${d}" fill="${A.room}"/></g>`,
+    front:`<g pointer-events="none"><g clip-path="url(#roomClip)"><path d="${d}" fill="#000" opacity=".16"/><ellipse cx="${p.x}" cy="${p.y - ry}" rx="${rx}" ry="${(ry*.55).toFixed(2)}" fill="#000" opacity=".28"/></g><path d="${d}" fill="none" stroke="${A.crumb}" stroke-opacity=".6" stroke-width=".7"/>${crumbs}</g>`
+  };
+}
 const soilTopOf = b=> (b.shape === 'beetle' || b.shape === 'stag') ? 52 : 70;
-const HIDE_POS = {soil:{x:30, y:44}, leaf:{x:62, y:34}, grass:{x:22, y:60}};   // かくれ家の位置
+const HIDE_POS = {soil:{x:50, y:40}, leaf:{x:62, y:34}, grass:{x:22, y:60}};   // かくれ家の位置
 function hideKind(b){ return (b.shape === 'beetle' || b.shape === 'stag') ? 'soil' : b.shape === 'butterfly' ? 'leaf' : 'grass'; }
 const hideSpot = (c, b)=>{ const d = (c.deco||[]).find(d=>ITEMS[d.k].hide); return d ? {x:d.x, y:d.y - 8} : HIDE_POS[hideKind(b)]; };
 const perchSpot = c=>{ const d = (c.deco||[]).find(d=>d.k.startsWith('eda_')); return d ? {x:d.x + 6, y:d.y - 10} : null; };
@@ -1553,10 +1593,10 @@ function placeBug(c, slot){   // どこに、どんなすがたでいるか
   if(fresh && st !== 'pupa' && !(b.shape === 'beetle' || b.shape === 'stag') ){ return {x:fresh.x, y:fresh.y - 6, s:.5, o:{instar:ins}, txt:`置いた${ITEMS[fresh.k].name}を、むしゃむしゃ食べにきた！`, eating:true}; }
   if(fresh && st === 'adult' && (b.shape === 'beetle' || b.shape === 'stag') && (night || slot === 'asa')){ return {x:fresh.x, y:fresh.y - 6, s:.5, o:{instar:ins}, txt:`置いた${ITEMS[fresh.k].name}に、頭をつっこんで食べている！`, eating:true}; }
   if(b.shape === 'beetle' || b.shape === 'stag'){
-    if(st === 'larva') return {x:30, y:66, s:.42, o:{instar:ins}, txt:'土の中で、ゆっくり動いている。土の中のくさった葉を食べているよ。'};
-    if(st === 'pupa') return {x:60, y:66, s:.42, o:{}, txt:'土の中に、たまごのような部屋を作って、その中でさなぎになっている。ぜったいにこわさないでね。', chamber:true};
+    if(st === 'larva') return {x:30, y:66, s:.42, under:true, o:{instar:ins}, txt:'土の中で、ゆっくり動いている。土の中のくさった葉を食べているよ。'};
+    if(st === 'pupa') return {x:60, y:66, s:.42, o:{}, txt:'土の中に、たまごのような部屋を作って、その中でさなぎになっている。ぜったいにこわさないでね。', under:true, chamber:true};
     if(night || slot === 'asa'){ const pe = perchSpot(c); return {x:pe ? pe.x : 50, y:pe ? pe.y : 40, s:.5, o:{}, perch:!!pe, walk:night && !pe, txt:night ? (pe ? '夜になって、枝にのぼってきた！ ' : '夜になって土から出てきた！ ') + (fresh ? 'ゼリーをさがしている。' : 'エサをさがしてうろうろしている。') : '朝のうちは、まだ木の上でじっとしている。'}; }
-    return {x:35, y:64, s:.4, o:{sleep:true}, txt:'昼のあいだは、土の中でねている。そっとしておこう。', buried:true};
+    return {x:35, y:64, s:.4, o:{sleep:true}, txt:'昼のあいだは、土の中でねている。そっとしておこう。', under:true, buried:true};
   }
   if(b.shape === 'butterfly'){
     if(st === 'larva') return {x:60, y:36, s:.4, o:{instar:ins}, txt:day ? '葉のふちから、むしゃむしゃ食べている。フンもたくさん出るよ。' : '葉のうらで、じっとしている。'};
@@ -1569,8 +1609,8 @@ function placeBug(c, slot){   // どこに、どんなすがたでいるか
     return {x:48, y:44, s:.55, o:{instar:ins}, txt:'カマをかまえて、エサの虫をねらっている。目があうと、こっちを見るよ。'};
   }
   if(b.shape === 'cricket'){
-    if(night || slot === 'yu'){ return {x:50, y:46, s:.55, o:{sing: st === 'adult', instar:ins}, txt: st === 'adult' ? 'リーンリーン…。はねをこすりあわせて鳴いている！' : '暗くなってきて、かくれ家から出てきた。'}; }
-    return {x:28, y:56, s:.45, o:{sleep:true, instar:ins}, txt:'昼は、かくれ家の下でじっとしている。暗くて静かな場所がすきなんだ。'};
+    if(night || slot === 'yu'){ return {x:50, y:55, s:.55, o:{sing: st === 'adult', instar:ins}, txt: st === 'adult' ? 'リーンリーン…。はねをこすりあわせて鳴いている！' : '暗くなってきて、かくれ家から出てきた。'}; }
+    return {x:28, y:58, s:.45, behind:true, o:{sleep:true, instar:ins}, txt:'昼は、かくれ家の下でじっとしている。暗くて静かな場所がすきなんだ。'};
   }
   if(night) return {x:40, y:42, s:.5, o:{sleep:true, instar:ins}, txt:'草につかまって、じっとしている。'};
   return {x:50, y:44, s:.55, o:{instar:ins}, txt:'草をかじっている。ときどき、ピョンとはねるよ。'};
@@ -1586,38 +1626,38 @@ function foodSVG(f){
   return g(`<ellipse cx="50" cy="54" rx="16" ry="6" fill="${col||'#9ad0f0'}" stroke="#f7f1df" stroke-width="1.5"/>`);   // さとう水の皿
 }
 function sceneSVG(c, slot, o={}){
-  const b = BUGS[c.bug], st = stageOf(c).k, soilKind = b.shape === 'beetle' || b.shape === 'stag', [s1, s2] = SKY[slot], p = placeBug(c, slot);
+  const b = BUGS[c.bug], st = stageOf(c).k, soilKind = b.shape === 'beetle' || b.shape === 'stag', p = placeBug(c, slot);
   p.y = Math.max(p.y, p.s*.85*50 + 3);   // 虫の頭やツノが、ケースの上で切れないように
-  const stars = slot === 'yoru' ? [[10,8],[30,14],[55,6],[80,12],[92,20],[68,18]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r=".6" fill="#fff"/>`).join('') : '';
-  const sun = slot === 'yoru' ? `<circle cx="84" cy="14" r="5" fill="#fff6c0"/>` : slot === 'yu' ? `<circle cx="84" cy="22" r="6" fill="#ff8040"/>` : `<circle cx="84" cy="12" r="6" fill="#ffe27a"/>`;
   const soilTop = soilTopOf(b), hk = hideKind(b), H = HIDE_POS[hk];
   let plants = '';
   if(b.shape === 'butterfly') plants = `<path d="M40 ${soilTop} C 42 50, 44 40, 50 22" stroke="#4e7a36" stroke-width="2.5" fill="none"/>
       <g class="leaf" data-hide="1"><path d="M50 30 C 62 20, 76 24, 70 36 C 62 40, 54 36, 50 30Z" fill="#6cb04a"/></g><path d="M46 44 C 34 36, 26 40, 30 50 C 38 52, 44 50, 46 44Z" fill="#5a9a3a"/>
       <circle cx="52" cy="22" r="5" fill="#f4b63c"/><circle cx="52" cy="22" r="2" fill="#a85a28"/>`;
-  else if(soilKind) plants = `<g class="leaf" data-hide="1"><path d="M20 50 L36 32 L72 32 L80 50 Z" fill="#6a4a2a"/><path d="M36 32 L72 32 L68 36 L40 36 Z" fill="#8a6a3a"/><path d="M26 44 L30 40 M60 40 L64 36" stroke="#4a3a2a" stroke-width="1"/></g>`;
-  else plants = [12,22,30,62,72,84,92].map((x,i)=>`<path d="M${x} ${soilTop} C ${x+2} ${soilTop-14}, ${x-4} ${soilTop-22}, ${x+(i%2?3:-2)} ${soilTop-30}" stroke="#5a9a3a" stroke-width="2" fill="none"/>`).join('') +
-      `<g class="leaf" data-hide="1"><path d="M14 ${soilTop} L22 ${soilTop-12} L40 ${soilTop-12} L44 ${soilTop} Z" fill="#8a6a3a"/></g>`;
-  const chamber = p.chamber ? `<ellipse cx="${p.x+10}" cy="${p.y+2}" rx="17" ry="12" fill="#2a1a0a"/>` : '';
+  else if(soilKind) plants = `<g class="leaf" data-hide="1"><image href="img/case/hide_kuchiki.webp" x="16" y="${soilTop-34}" width="68" height="36" preserveAspectRatio="xMidYMax meet"/></g>`;
+  else plants = [[6,42,0],[24,50,1],[74,48,0],[94,40,1]].map(([x,h,f])=>`<image href="img/case/grass.webp" width="${h}" height="${h}" transform="translate(${x + (f ? h/2 : -h/2)} ${soilTop + 1 - h}) scale(${f ? -1 : 1} 1)" pointer-events="none"/>`).join('') +
+      `<g class="leaf" data-hide="1"><image href="img/case/hide_kuchiki.webp" x="8" y="${soilTop-16}" width="40" height="18" preserveAspectRatio="xMidYMax meet"/></g>`;
   const mess = (c.soilAge||0) > 72 && st !== 'pupa' ? [[12,1],[30,3],[47,1.5],[66,2.5],[82,1],[58,4],[22,5]].map(([x,dy])=>`<ellipse cx="${x}" cy="${soilTop + dy}" rx="2.6" ry="1.3" fill="#2a1a0a" opacity=".85"/>`).join('') + `<path d="M36 ${soilTop-1} q3 -3 6 0 M72 ${soilTop-1} q3 -3 6 0" stroke="#8a7a40" stroke-width="1.2" fill="none"/>` : '';
   ensureZ(c);
-  const M = c.mat && MATS[c.mat];
-  const soil = `<rect x="0" y="${soilTop}" width="100" height="${100-soilTop}" fill="${M ? M.fill : '#5a3d22'}"/><g id="wetLayer">${c.wetZ.map((v,z)=>`<rect class="wz" x="${z*20}" y="${soilTop}" width="20.5" height="${100-soilTop}" fill="#1a0e04" opacity="${(v/100*.4).toFixed(2)}"/>`).join('')}</g><rect x="0" y="${soilTop}" width="100" height="2" fill="#6c9a4a"/>
-    ${[[8,80],[24,90],[48,84],[70,78],[88,92],[36,74],[60,94]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.4" fill="${M ? M.bits : '#3b2715'}"/>`).join('')}
+  const A = SOIL_ART[c.mat] || SOIL_ART.futsu, bgArt = CASE_BG[c.place] || CASE_BG.heya, tint = CASE_TINT[slot];
+  const room = p.under ? soilRoom(p, soilTop, A) : null;
+  const soilImg = `<image href="img/case/${A.img}.webp" x="-15" y="${soilTop - A.top}" width="130" height="${A.h}" preserveAspectRatio="none"/>`;
+  const soil = `<rect x="0" y="${soilTop + 2}" width="100" height="${98 - soilTop}" fill="${A.base}"/>${soilImg}<g mask="url(#soilMask)"><g id="wetLayer">${c.wetZ.map((v,z)=>`<rect class="wz" x="${z*20}" y="${soilTop - 4}" width="20" height="${104 - soilTop}" shape-rendering="crispEdges" fill="#1a0e04" opacity="${(v/100*.4).toFixed(2)}"/>`).join('')}</g></g>
     <g id="soakLayer">${c.soakZ.map((v,z)=>`<ellipse class="sz" cx="${z*20+10}" cy="${soilTop+3}" rx="9" ry="2.3" fill="#6ab0e0" opacity="${(v > 0 ? Math.min(.85, v/40) : 0).toFixed(2)}"/>`).join('')}</g>`;
   const foods = (c.foods||[]).map(foodSVG).join('');
   const decos = (c.deco||[]).map(d=>`<g class="deco" data-deco="${d.id}" transform="translate(${d.x} ${d.y}) scale(.55) translate(-50 -70)"><g class="${ITEMS[d.k].hide ? 'leaf' : ''}">${decoSVG(d.k)}</g></g>`).join('');
-  const bug = `<g id="bugG" style="${p.buried ? 'opacity:.55' : p.hidden ? 'opacity:.35' : ''}"><g id="bugMove"><g transform="translate(${p.x} ${p.y}) scale(${p.s*.85}) translate(-50 -50)">${svgBug(c.bug, st, Object.assign({rare:c.rare, rig:true}, p.o)).replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '')}</g></g></g>`;
+  const bug0 = `<g id="bugG"><g id="bugMove"><g transform="translate(${p.x} ${p.y}) scale(${p.s*.85}) translate(-50 -50)">${svgBug(c.bug, st, Object.assign({rare:c.rare, rig:true}, p.o)).replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '')}</g></g></g>`;
+  const bug = room ? `<g clip-path="url(#roomClip)">${bug0}</g>${room.front}` : bug0;
   const ants = c.trouble === 'ari' ? (c.foods.filter(f=>f.old)[0] ? [[-6,2],[-3,5],[3,6],[7,3],[10,7]].map(([dx,dy])=>`<circle cx="${c.foods.filter(f=>f.old)[0].x+dx}" cy="${c.foods.filter(f=>f.old)[0].y+dy}" r="1" fill="#111"/>`).join('') : '') : '';
   // ガラスのよごれ（こすると消える）：フン・くもり・カビ
   const dirt = (c.dirt||[]).map((d,i)=> d.k === 'kabi' ? `<g class="dirt" data-d="${i}" opacity="${(d.hp/3).toFixed(2)}"><circle cx="${d.x}" cy="${d.y}" r="4" fill="#eee" opacity=".8"/><circle cx="${d.x-2}" cy="${d.y+1}" r="2.5" fill="#fff"/><circle cx="${d.x+2}" cy="${d.y-1}" r="2" fill="#ddd"/></g>`
     : d.k === 'kumori' ? `<ellipse class="dirt" data-d="${i}" cx="${d.x}" cy="${d.y}" rx="7" ry="5" fill="#cfd8dc" opacity="${(d.hp/3*.55).toFixed(2)}"/>`
     : `<g class="dirt" data-d="${i}" opacity="${(d.hp/3).toFixed(2)}"><circle cx="${d.x}" cy="${d.y}" r="1.6" fill="#3b2715"/><circle cx="${d.x+2.5}" cy="${d.y+1.5}" r="1.2" fill="#3b2715"/><circle cx="${d.x-2}" cy="${d.y+2}" r="1" fill="#3b2715"/></g>`).join('');
-  const glass = `<rect x="1" y="1" width="98" height="98" fill="none" stroke="#f7f1df88" stroke-width="2" rx="2"/><path d="M4 4 L4 30" stroke="#fff" stroke-width="1" opacity=".5"/>`;
+  const glass = `<rect x=".35" y="12.85" width="99.3" height="74.3" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width=".7" rx="1"/><path d="M3 16 L3 38" stroke="#fff" stroke-width=".7" stroke-linecap="round" opacity=".35"/>`;   // 4:3 で見えるのは y=12.5〜87.5
   const zz = p.o && p.o.sleep && !p.hidden ? `<text class="zz" x="${p.x+8}" y="${p.y-8}" font-size="7" fill="#fff">z</text><text class="zz" x="${p.x+13}" y="${p.y-14}" font-size="5" fill="#fff" style="animation-delay:-1.2s">z</text>` : '';
+  const sing = p.o && p.o.sing ? `<text class="zz" x="${p.x+12}" y="${p.y-12}" font-size="5" fill="#fff">リーン</text>` : '';
   const nom = p.eating ? `<text class="zz" x="${p.x+10}" y="${p.y-6}" font-size="5" fill="#fff">もぐもぐ</text>` : '';
-  return {svg:`<svg id="sceneSvg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${s1}"/><stop offset="1" stop-color="${s2}"/></linearGradient></defs><g id="sceneMain">
-    <rect width="100" height="100" fill="url(#sky)"/>${stars}${sun}${soil}${mess}${chamber}${p.hidden || o.noBug ? '' : ''}${p.hidden && !o.noBug ? bug : ''}${plants}${decos}${foods}${ants}${p.hidden || o.noBug ? '' : bug}${zz}${nom}<g id="sprayLayer"></g><g id="dirtLayer">${dirt}</g>${glass}</g></svg>`, txt:p.txt, p};
+  return {svg:`<svg id="sceneSvg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice"><defs><mask id="soilMask" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="-15" y="0" width="130" height="100">${soilImg}</mask>${room ? room.defs : ''}</defs><g id="sceneMain">
+    <image href="img/case/${bgArt}.webp" x="0" y="12.5" width="100" height="75"/>${soil}${room ? room.back : ''}${tint ? `<rect width="100" height="100" fill="${tint[0]}" opacity="${tint[1]}" pointer-events="none"/>` : ''}${mess}${p.hidden || o.noBug ? '' : ''}${(p.hidden || p.behind) && !o.noBug ? bug : ''}${plants}${decos}${foods}${ants}${p.hidden || p.behind || o.noBug ? '' : bug}${zz}${sing}${nom}<g id="sprayLayer"></g><g id="dirtLayer">${dirt}</g>${glass}</g></svg>`, txt:p.txt, p};
 }
 
 /* =========================================================
@@ -1769,7 +1809,8 @@ function renderShop(){
 /* ---- 観察（ケースの中）：道具をえらんで、ケースの中を指でさわる ---- */
 const PLACE_IC = {genkan:'🚪', heya:'🛏', beranda:'🌿'};
 const PLACES = {genkan:{name:'げんかん', desc:'すずしくて静か。かいふくがよくなり、のんびりした性格になりやすい'}, heya:{name:'へや', desc:'いつもそばにいる。人なつっこい性格になりやすい'}, beranda:{name:'ベランダの日かげ', desc:'外の空気。まもりが強くなる。ただし、かわきやすい'}};
-const TOOLS = {yubi:{name:'ゆび', ic:'👆'}, megane:{name:'虫めがね', ic:'🔍'}, fukin:{name:'ふきん', ic:'🧽'}, kiri:{name:'きりふき', ic:'💦'}, esa:{name:'エサ', ic:'🍽'}, kazari:{name:'かざり', ic:'🪵'}, big:{name:'大そうじ', ic:'🧹'}, furu:{name:'ふる', ic:'🫨'}};
+const toolImg = k=> `<img class="tim" src="img/tools/${k}.webp" alt="" draggable="false">`;
+const TOOLS = {yubi:{name:'ゆび', ic:toolImg('yubi')}, megane:{name:'虫めがね', ic:toolImg('megane')}, fukin:{name:'ふきん', ic:toolImg('fukin')}, kiri:{name:'きりふき', ic:toolImg('kiri')}, esa:{name:'エサ', ic:toolImg('esa')}, kazari:{name:'かざり', ic:toolImg('kazari')}, big:{name:'大そうじ', ic:toolImg('houki')}, furu:{name:'ふる', ic:toolImg('furu')}};
 let tool = 'yubi', obsSession = null, decoSel = null, lensLook = ()=>{};   // obsSession：いまのぞいている間の、さわった回数など
 function indLine(c){ const f = fighterOf(c); return statLine(f); }
 // 性格ごとの、さわったとき・ふったときの反応
@@ -1829,7 +1870,7 @@ async function renderObs(){
     decoSel = decoSel === k ? null : k; renderObs(); });
   const sceneEl = $('scene'), svg = $('sceneSvg'), txtEl = $('obsTxt'), toolObj = $('toolObj'), mini = $('mini');
   const FOOD_IC = {zeri:'🍮', kyabetsu:'🥬', mikan:'🍃', enoki:'🍃', nasu:'🍆', koorogi:'🦗', kusa:'🌿', mitsu:'🥤', wide:'📦'};
-  const toolIc = ()=> tool === 'big' ? ((obsSession.big||{step:1}).step === 2 ? '🧹' : '🤏') : tool === 'kazari' ? (decoSel ? `<svg viewBox="0 0 100 100">${decoSVG(decoSel)}</svg>` : '') : tool === 'megane' ? '<div class="lens"><svg viewBox="0 0 10 10"><use href="#sceneMain"/></svg></div>' : ({yubi:'👆', fukin:'🧽', kiri:'🧴', esa:FOOD_IC[foodKey] || '🍽', furu:'✋'})[tool];
+  const toolIc = ()=> tool === 'big' ? ((obsSession.big||{step:1}).step === 2 ? toolImg('houki') : toolImg('tsumamu')) : tool === 'kazari' ? (decoSel ? `<svg viewBox="0 0 100 100">${decoSVG(decoSel)}</svg>` : '') : tool === 'megane' ? '<div class="lens"><svg viewBox="0 0 10 10"><use href="#sceneMain"/></svg></div>' : ({yubi:toolImg('yubi'), fukin:toolImg('fukin'), kiri:toolImg('kiri'), esa:FOOD_IC[foodKey] || toolImg('esa'), furu:''})[tool];
   // 道具は、ボタンを押すとケースの右下に出てくる。それをつかんで動かして使う。hot は「きく場所」（きりふきの口、指の先）
   const HOT = {yubi:{x:-8, y:-36}, fukin:{x:0, y:0}, kiri:{x:-22, y:-42}, esa:{x:0, y:0}, kazari:{x:0, y:10}, big:{x:-6, y:30}, furu:{x:0, y:0}, megane:{x:0, y:0}};
   const restPos = ()=>{ const r = sceneEl.getBoundingClientRect(), k = (parseFloat(getComputedStyle($('toolObj')).fontSize) || 84) / 84; return {x:56*k, y:r.height - 54*k}; };
@@ -2789,7 +2830,7 @@ async function recvBug(t){
 }
 
 /* 見本ページ：?mihon=kabuto のように開くと、その虫が入ったケースをすぐ見られる（絵をたしかめる用。セーブには何ものこらない）
-   &st=larva / pupa / adult ですがた、上のボタンで時間・すがた・枝・エサをかえられる */
+   &st=larva / pupa / adult ですがた、&place=heya などで置き場所、&mat=mat_suna / futsu などで土、上のボタンで時間・すがた・枝・エサをかえられる */
 function startMihon(){
   const id = BUGS[QS.get('mihon')] && BUGS[QS.get('mihon')].plan ? QS.get('mihon') : 'kabuto', b = BUGS[id];
   const M = {st:QS.get('st') || 'adult', slot:'yoru', eda:false, esa:false};
@@ -2797,7 +2838,7 @@ function startMihon(){
   S = newGame(); S.yk.hello = 1; S.boxes = ['wide']; S.dex[id] = {found:dayKey(), where:'見本', known:1, adult:dayKey()};
   const build = ()=>{
     const si = Math.max(0, b.plan.map(x=>x.k).lastIndexOf(M.st));
-    const c = {bug:id, si, prog:0, hunger:80, wet:60, clean:95, tick:now(), pending:false, from:'宗像大社', born:'taisha', bornSlot:'yoru', since:dayKey(), ind:{hp:1,atk:1,def:1,spd:1,heal:1}, log:newLog(), tot:newLog(), place:'genkan', trouble:null, dirt:[], foods:[], soak:0, hideUntil:0, deco:M.eda ? [{id:1, k:'eda_nagai', x:60, y:50}] : [], mat:'mat_fuyo', soilAge:10, known:true, pers:'futsu', name:'みほん', size:b.size[1], sex:'オス', moves:[b.shape]};
+    const c = {bug:id, si, prog:0, hunger:80, wet:60, clean:95, tick:now(), pending:false, from:'宗像大社', born:'taisha', bornSlot:'yoru', since:dayKey(), ind:{hp:1,atk:1,def:1,spd:1,heal:1}, log:newLog(), tot:newLog(), place:QS.get('place') || 'genkan', trouble:null, dirt:[], foods:[], soak:0, hideUntil:0, deco:M.eda ? [{id:1, k:'eda_nagai', x:60, y:50}] : [], mat:QS.has('mat') ? (SOIL_ART[QS.get('mat')] && QS.get('mat') !== 'futsu' ? QS.get('mat') : null) : 'mat_fuyo', soilAge:10, known:true, pers:'futsu', name:'みほん', size:b.size[1], sex:'オス', moves:[b.shape]};
     S.demoOff = 0; S.demoOff = ((HOUR[M.slot] - new Date(now()).getHours() + 24) % 24) * 3600e3;
     if(M.esa) c.foods = [{id:1, k:b.foodAdult && M.st === 'adult' ? b.foodAdult : b.food, x:30, y:soilTopOf(b) - 2, left:1}];
     S.cases = [c]; obsSession = null; openCase = 0; render(); hud(); bar();
