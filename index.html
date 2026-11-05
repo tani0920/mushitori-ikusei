@@ -626,6 +626,7 @@ html.land #arena .ctl{grid-column:2;margin-top:0}
 #placeBg{display:none}
 html.land body.noteUI #placeBg{display:block;position:fixed;inset:0;z-index:-1;background-position:center bottom;background-size:cover;background-repeat:no-repeat;background-color:#d9c4a4}
 #placeBg i{position:absolute;inset:0;display:block}
+#nightRoom{position:absolute;inset:0;width:100%;height:100%;display:block}
 .tabArt{display:none}
 html.land body.noteUI{--note-ink:#4a3320;font-family:"Klee One","Hiragino Maru Gothic ProN","Hiragino Sans",sans-serif;background:#d9c4a4}
 html.land body.obsMode{--toolh:clamp(50px,calc(var(--H) * .085),84px);--nf:clamp(14px,calc(var(--H) * .023),22px);--sih:min(calc((var(--H) - var(--st) - var(--sb) - var(--toolh) - 42px) * .73),calc((var(--W) - 80px - var(--rtw) - var(--sl) - var(--sr)) * .6 / 1.78))}
@@ -689,6 +690,11 @@ html.land body.noteUI:not(.obsMode) .album .ph,html.land body.noteUI:not(.obsMod
 /* 絵が見えるよう、画面ごとにカードの置き場所をかえる。はばは --H ではなく #view のわりあい */
 html.land body.noteUI[data-tab=out] #view{padding-top:calc(var(--H) * .3)}
 html.land body.noteUI[data-tab=spot] #view{padding-top:calc(var(--H) * .22)}
+/* 夜：絵を暗く。カードは少し濃くして、字を読みやすく */
+html.land body.noteUI[data-slot=yoru] .spotPic,html.land body.noteUI[data-night=sky] .caseBox .caseArt{filter:brightness(.62) saturate(.85)}
+html.land body.noteUI[data-night=room] .caseBox .caseArt{filter:brightness(.9) sepia(.15) drop-shadow(0 3px 3px #3a241255)}
+html.land body.noteUI[data-night=sky]:not(.obsMode) #view{--win:#fffaebd6}
+html.land body.noteUI[data-night=sky]:not(.obsMode) #view>h2,html.land body.noteUI[data-night=sky]:not(.obsMode) #view>h3,html.land body.noteUI[data-night=sky]:not(.obsMode) #view>p:not(.win),html.land body.noteUI[data-night=sky]:not(.obsMode) #view>.row>h2{background:#fffaebd6}
 html.land body.noteUI:not(.obsMode) .win,html.land body.noteUI:not(.obsMode) .spot,html.land body.noteUI:not(.obsMode) .rival,html.land body.noteUI:not(.obsMode) .case,html.land body.noteUI:not(.obsMode) .opt .btn,html.land body.noteUI:not(.obsMode) #view>p:not(.win){-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
 html.land body.noteUI:not(.obsMode) .opt .btn .v{white-space:nowrap;margin-left:.6em;flex:none}
 html.land body.noteUI:not(.obsMode) .opt .btn{gap:.4em}
@@ -739,7 +745,7 @@ html.land.tall body.noteUI #rtabs .rt{font-size:15px}
   <div id="view"></div><!-- 中央画面（#view） -->
 </div>
 <!-- 左メニュー（#tabs）：そと・すもう・おみせ・ずかん・その他（たて画面のPCでは下にならび、おうちもここ） -->
-<div id="placeBg"><i></i></div>
+<div id="placeBg"><i></i><svg id="nightRoom" viewBox="0 0 1280 853" preserveAspectRatio="xMidYMax slice" aria-hidden="true"></svg></div>
 <div id="tabs" hidden>
   <button type="button" data-t="home"><span class="ic">🧺</span>虫かご</button>
   <button type="button" data-t="out"><span class="ic">🌳</span><img class="tabArt" src="img/ui/ic_out.webp" alt="" draggable="false">そと</button>
@@ -771,9 +777,14 @@ const SAVE_KEY = KEY_PRE + 'munakata-mushisodate-v1';
 const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
-const GAME_VER = '0.13.0';
-const BUILD = '20261106-0052';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const GAME_VER = '0.14.0';
+const BUILD = '20261106-0148';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
+  {v:'0.14.0', date:'2026-11-06', items:[
+    '「ゆび」の道具がなくなった。虫を直接タップすると、そっとさわれるよ。さわるのは、ちょっとだけね',
+    'ほんとうの時間が夜になると、画面も夜になる。外は暗くなって、へややおみせは明かりがついて、窓の外に星が見えるよ',
+    'ミアレカブトの触角が動くようになった',
+  ]},
   {v:'0.13.0', date:'2026-11-06', items:[
     '成虫がぜんぶ絵になって、動くようになった！ チョウははねをゆっくり開いてとじて、クワガタはアゴを動かして歩くよ',
     'そとの場所にそれぞれ絵がついた。着いたら、その場所のけしきが見える',
@@ -1568,7 +1579,7 @@ const BUG_IMG = {
   abura: {adult:'abura_adult_genki'},
 };
 /* 1枚絵を切り分けて関節で動かす虫（tools/art_cut.py の出力）。座標は 512px の絵のまま。虫を足すときは tools/art_cut.py の RIGS に足して、出力をここへ */
-const ART_RIG = {"kabuto_larva":{"drop":0,"hop":0,"parts":{"tail":{"b":[276,45,215,286],"pv":[295,135],"kind":"tail"},"front":{"b":[26,267,249,158],"pv":[105,295],"kind":"front"},"leg1":{"b":[94,377,48,85],"pv":[122,390],"kind":"leg","ph":0,"parent":"front"},"leg2":{"b":[153,397,45,75],"pv":[175,408],"kind":"leg","ph":2,"parent":"front"},"leg3":{"b":[201,401,40,70],"pv":[220,412],"kind":"leg","ph":4,"parent":"front"},"head":{"b":[231,315,107,110],"pv":[250,372],"kind":"head","parent":"front"},"chew":{"b":[285,387,61,50],"pv":[298,405],"kind":"chew","parent":"head"}}},"kabuto_pupa":{"drop":0,"hop":0,"parts":{"tail":{"b":[20,162,138,222],"pv":[135,270],"kind":"tail"}}},"kokuwa_adult":{"drop":0,"hop":0,"parts":{"legF3":{"b":[20,280,61,45],"pv":[68,292],"kind":"leg","ph":3},"legF1":{"b":[317,293,64,46],"pv":[328,302],"kind":"leg","ph":3},"leg3":{"b":[42,287,136,61],"pv":[160,304],"kind":"leg","ph":0},"leg2":{"b":[159,287,109,63],"pv":[250,304],"kind":"leg","ph":3},"leg1":{"b":[267,285,105,66],"pv":[285,304],"kind":"leg","ph":0},"leg0":{"b":[335,281,155,65],"pv":[352,298],"kind":"leg","ph":3},"ant":{"b":[390,262,98,40],"pv":[400,272],"kind":"ant"},"antF":{"b":[408,161,83,54],"pv":[416,210],"kind":"ant","ph":1.3},"mandU":{"b":[400,207,79,46],"pv":[412,228],"kind":"mand","sgn":-1},"mandL":{"b":[400,247,79,36],"pv":[412,264],"kind":"mand","sgn":1}}},"suzumushi_adult":{"drop":0,"hop":0,"parts":{"leg3":{"b":[232,293,96,99],"pv":[312,308],"kind":"leg","ph":0},"leg2":{"b":[335,297,61,87],"pv":[355,308],"kind":"leg","ph":3},"leg1":{"b":[380,285,76,74],"pv":[392,296],"kind":"leg","ph":0},"ant":{"b":[62,46,381,222],"pv":[428,264],"kind":"ant","amp":0.45},"antF":{"b":[160,249,331,216],"pv":[430,266],"kind":"ant","ph":1.3,"amp":0.45}}},"shoryo_adult":{"drop":0,"hop":1,"parts":{"legF":{"b":[203,297,41,47],"pv":[232,302],"kind":"leg","ph":3},"leg3":{"b":[235,285,63,74],"pv":[285,293],"kind":"leg","ph":0},"leg2":{"b":[300,273,41,88],"pv":[325,283],"kind":"leg","ph":3},"leg1":{"b":[350,257,58,102],"pv":[368,272],"kind":"leg","ph":0},"ant":{"b":[443,153,48,38],"pv":[447,186],"kind":"ant"}}},"tonosama_adult":{"drop":0,"hop":1,"parts":{"leg4":{"b":[202,267,89,96],"pv":[275,280],"kind":"leg","ph":0},"leg3":{"b":[283,277,58,89],"pv":[325,288],"kind":"leg","ph":3},"legF":{"b":[400,278,59,68],"pv":[412,285],"kind":"leg","ph":3},"leg1":{"b":[360,265,67,97],"pv":[378,277],"kind":"leg","ph":0},"ant":{"b":[428,168,63,68],"pv":[437,225],"kind":"ant"}}},"kinkabuto_adult":{"drop":0,"hop":0,"parts":{"head":{"b":[347,103,144,224],"pv":[352,265],"kind":"head","amp":0.5},"leg0":{"b":[20,353,85,55],"pv":[88,356],"kind":"leg","ph":3},"leg1":{"b":[99,353,62,49],"pv":[150,356],"kind":"leg","ph":0},"leg2":{"b":[168,329,85,79],"pv":[238,332],"kind":"leg","ph":3},"leg3":{"b":[257,325,85,76],"pv":[273,328],"kind":"leg","ph":0},"leg4":{"b":[287,320,147,87],"pv":[325,323],"kind":"leg","ph":3}}},"nokogiri_adult":{"drop":0,"hop":0,"parts":{"mandU":{"b":[342,162,139,71],"pv":[350,215],"kind":"mand","sgn":-1},"mandL":{"b":[341,219,150,78],"pv":[350,258],"kind":"mand","sgn":1},"ant":{"b":[290,176,40,45],"pv":[303,212],"kind":"ant"},"antN":{"b":[335,261,66,38],"pv":[340,272],"kind":"ant","ph":1.3},"leg0":{"b":[20,314,46,34],"pv":[55,316],"kind":"leg","ph":3},"leg1":{"b":[49,316,50,33],"pv":[87,319],"kind":"leg","ph":0},"leg2":{"b":[144,317,53,31],"pv":[186,320],"kind":"leg","ph":3},"leg3":{"b":[214,316,43,30],"pv":[221,319],"kind":"leg","ph":0},"leg4":{"b":[255,309,67,40],"pv":[271,312],"kind":"leg","ph":3},"leg5":{"b":[313,299,74,50],"pv":[325,302],"kind":"leg","ph":0}}},"hirata_adult":{"drop":0,"hop":0,"parts":{"mandU":{"b":[358,208,133,43],"pv":[365,232],"kind":"mand","sgn":-1},"mandL":{"b":[356,254,134,37],"pv":[362,268],"kind":"mand","sgn":1},"ant":{"b":[359,179,70,50],"pv":[368,218],"kind":"ant"},"antN":{"b":[352,272,58,39],"pv":[358,282],"kind":"ant","ph":1.3},"leg0":{"b":[20,293,47,33],"pv":[57,296],"kind":"leg","ph":3},"leg1":{"b":[41,294,53,39],"pv":[79,297],"kind":"leg","ph":0},"leg2":{"b":[89,294,92,32],"pv":[132,297],"kind":"leg","ph":3},"leg3":{"b":[159,294,51,39],"pv":[195,297],"kind":"leg","ph":0},"leg4":{"b":[261,301,39,25],"pv":[265,304],"kind":"leg","ph":3},"leg5":{"b":[298,307,64,25],"pv":[311,310],"kind":"leg","ph":0}}},"miyama_adult":{"drop":0,"hop":0,"parts":{"mandU":{"b":[346,183,140,63],"pv":[352,222],"kind":"mand","sgn":-1},"mandL":{"b":[346,237,145,40],"pv":[352,255],"kind":"mand","sgn":1},"ant":{"b":[345,136,74,78],"pv":[358,205],"kind":"ant"},"antN":{"b":[369,253,69,53],"pv":[378,262],"kind":"ant","ph":1.3},"leg0":{"b":[20,319,53,48],"pv":[63,322],"kind":"leg","ph":3},"leg1":{"b":[48,313,144,62],"pv":[155,316],"kind":"leg","ph":0},"leg2":{"b":[162,315,51,60],"pv":[203,318],"kind":"leg","ph":3},"leg3":{"b":[282,321,73,54],"pv":[288,324],"kind":"leg","ph":0},"leg4":{"b":[332,323,86,46],"pv":[341,326],"kind":"leg","ph":3}}},"ookuwa_adult":{"drop":0,"hop":0,"parts":{"mandU":{"b":[366,164,125,58],"pv":[375,195],"kind":"mand","sgn":-1},"mandL":{"b":[361,234,129,46],"pv":[368,255],"kind":"mand","sgn":1},"ant":{"b":[360,123,89,66],"pv":[372,178],"kind":"ant"},"antN":{"b":[355,256,95,64],"pv":[364,266],"kind":"ant","ph":1.3},"leg0":{"b":[20,315,86,71],"pv":[80,318],"kind":"leg","ph":3},"leg1":{"b":[90,320,62,53],"pv":[136,323],"kind":"leg","ph":0},"leg2":{"b":[158,297,87,92],"pv":[237,300],"kind":"leg","ph":3},"leg3":{"b":[292,327,79,60],"pv":[306,330],"kind":"leg","ph":0},"leg4":{"b":[344,327,74,47],"pv":[357,330],"kind":"leg","ph":3}}},"kamakiri_adult":{"drop":0,"hop":0,"parts":{"claw":{"b":[317,211,139,139],"pv":[362,222],"kind":"mand","sgn":1},"head":{"b":[373,190,45,48],"pv":[385,215],"kind":"head"},"ant":{"b":[392,128,92,76],"pv":[402,195],"kind":"ant","parent":"head"},"antN":{"b":[400,151,91,54],"pv":[408,195],"kind":"ant","ph":1.3,"parent":"head"},"leg0":{"b":[54,333,61,51],"pv":[107,336],"kind":"leg","ph":3},"leg1":{"b":[147,321,55,41],"pv":[190,324],"kind":"leg","ph":0},"leg2":{"b":[240,298,69,86],"pv":[278,301],"kind":"leg","ph":3},"leg3":{"b":[301,293,59,70],"pv":[306,296],"kind":"leg","ph":0}}},"monshiro_adult":{"drop":0,"hop":0,"parts":{"wing":{"b":[20,52,322,405],"pv":[320,345],"kind":"wing"},"ant":{"b":[362,206,113,122],"pv":[375,318],"kind":"ant"},"antN":{"b":[369,238,122,92],"pv":[380,318],"kind":"ant","ph":1.3},"leg0":{"b":[160,448,23,10],"pv":[170,451],"kind":"leg","ph":3},"leg1":{"b":[206,402,82,58],"pv":[246,405],"kind":"leg","ph":0},"leg2":{"b":[317,402,24,57],"pv":[327,405],"kind":"leg","ph":3},"leg3":{"b":[371,402,44,53],"pv":[376,405],"kind":"leg","ph":0}}},"ageha_adult":{"drop":0,"hop":0,"parts":{"wing":{"b":[20,36,349,418],"pv":[362,350],"kind":"wing"},"ant":{"b":[384,237,83,121],"pv":[398,348],"kind":"ant"},"antN":{"b":[390,262,101,97],"pv":[402,348],"kind":"ant","ph":1.3},"leg0":{"b":[140,448,40,24],"pv":[170,451],"kind":"leg","ph":3},"leg1":{"b":[221,431,53,43],"pv":[265,434],"kind":"leg","ph":0},"leg2":{"b":[266,425,43,44],"pv":[294,428],"kind":"leg","ph":3},"leg3":{"b":[295,425,40,50],"pv":[321,428],"kind":"leg","ph":0},"leg4":{"b":[355,425,21,42],"pv":[359,428],"kind":"leg","ph":3},"leg5":{"b":[362,425,45,50],"pv":[373,428],"kind":"leg","ph":0},"leg6":{"b":[401,425,37,44],"pv":[406,428],"kind":"leg","ph":3}}},"karasu_adult":{"drop":0,"hop":0,"parts":{"wing":{"b":[20,45,339,411],"pv":[350,350],"kind":"wing"},"ant":{"b":[377,238,89,117],"pv":[388,345],"kind":"ant"},"antN":{"b":[382,258,109,99],"pv":[392,345],"kind":"ant","ph":1.3},"leg0":{"b":[165,447,34,18],"pv":[189,450],"kind":"leg","ph":3},"leg1":{"b":[236,433,39,33],"pv":[268,436],"kind":"leg","ph":0},"leg2":{"b":[304,425,19,41],"pv":[316,428],"kind":"leg","ph":3},"leg3":{"b":[366,425,39,39],"pv":[371,428],"kind":"leg","ph":0},"leg4":{"b":[395,425,47,37],"pv":[400,428],"kind":"leg","ph":3}}},"oomurasaki_adult":{"drop":0,"hop":0,"parts":{"wing":{"b":[20,60,353,375],"pv":[335,335],"kind":"wing"},"ant":{"b":[369,205,91,133],"pv":[382,328],"kind":"ant"},"antN":{"b":[379,244,112,96],"pv":[388,328],"kind":"ant","ph":1.3},"leg0":{"b":[168,423,42,29],"pv":[199,426],"kind":"leg","ph":3},"leg1":{"b":[246,409,27,43],"pv":[262,412],"kind":"leg","ph":0},"leg2":{"b":[306,409,20,25],"pv":[308,412],"kind":"leg","ph":3},"leg3":{"b":[335,409,39,36],"pv":[342,412],"kind":"leg","ph":0},"leg4":{"b":[370,409,25,16],"pv":[375,412],"kind":"leg","ph":3}}}};
+const ART_RIG = {"kabuto_larva":{"drop":0,"hop":0,"parts":{"tail":{"b":[276,45,215,286],"pv":[295,135],"kind":"tail"},"front":{"b":[26,267,249,158],"pv":[105,295],"kind":"front"},"leg1":{"b":[94,377,48,85],"pv":[122,390],"kind":"leg","ph":0,"parent":"front"},"leg2":{"b":[153,397,45,75],"pv":[175,408],"kind":"leg","ph":2,"parent":"front"},"leg3":{"b":[201,401,40,70],"pv":[220,412],"kind":"leg","ph":4,"parent":"front"},"head":{"b":[231,315,107,110],"pv":[250,372],"kind":"head","parent":"front"},"chew":{"b":[285,387,61,50],"pv":[298,405],"kind":"chew","parent":"head"}}},"kabuto_pupa":{"drop":0,"hop":0,"parts":{"tail":{"b":[20,162,138,222],"pv":[135,270],"kind":"tail"}}},"kokuwa_adult":{"drop":0,"hop":0,"parts":{"legF3":{"b":[20,280,61,45],"pv":[68,292],"kind":"leg","ph":3},"legF1":{"b":[317,293,64,46],"pv":[328,302],"kind":"leg","ph":3},"leg3":{"b":[42,287,136,61],"pv":[160,304],"kind":"leg","ph":0},"leg2":{"b":[159,287,109,63],"pv":[250,304],"kind":"leg","ph":3},"leg1":{"b":[267,285,105,66],"pv":[285,304],"kind":"leg","ph":0},"leg0":{"b":[335,281,155,65],"pv":[352,298],"kind":"leg","ph":3},"ant":{"b":[390,262,98,40],"pv":[400,272],"kind":"ant"},"antF":{"b":[408,161,83,54],"pv":[416,210],"kind":"ant","ph":1.3},"mandU":{"b":[400,207,79,46],"pv":[412,228],"kind":"mand","sgn":-1},"mandL":{"b":[400,247,79,36],"pv":[412,264],"kind":"mand","sgn":1}}},"suzumushi_adult":{"drop":0,"hop":0,"parts":{"leg3":{"b":[232,293,96,99],"pv":[312,308],"kind":"leg","ph":0},"leg2":{"b":[335,297,61,87],"pv":[355,308],"kind":"leg","ph":3},"leg1":{"b":[380,285,76,74],"pv":[392,296],"kind":"leg","ph":0},"ant":{"b":[62,46,381,222],"pv":[428,264],"kind":"ant","amp":0.45},"antF":{"b":[160,249,331,216],"pv":[430,266],"kind":"ant","ph":1.3,"amp":0.45}}},"shoryo_adult":{"drop":0,"hop":1,"parts":{"legF":{"b":[203,297,41,47],"pv":[232,302],"kind":"leg","ph":3},"leg3":{"b":[235,285,63,74],"pv":[285,293],"kind":"leg","ph":0},"leg2":{"b":[300,273,41,88],"pv":[325,283],"kind":"leg","ph":3},"leg1":{"b":[350,257,58,102],"pv":[368,272],"kind":"leg","ph":0},"ant":{"b":[443,153,48,38],"pv":[447,186],"kind":"ant"}}},"tonosama_adult":{"drop":0,"hop":1,"parts":{"leg4":{"b":[202,267,89,96],"pv":[275,280],"kind":"leg","ph":0},"leg3":{"b":[283,277,58,89],"pv":[325,288],"kind":"leg","ph":3},"legF":{"b":[400,278,59,68],"pv":[412,285],"kind":"leg","ph":3},"leg1":{"b":[360,265,67,97],"pv":[378,277],"kind":"leg","ph":0},"ant":{"b":[428,168,63,68],"pv":[437,225],"kind":"ant"}}},"kinkabuto_adult":{"drop":0,"hop":0,"parts":{"head":{"b":[347,103,144,224],"pv":[352,265],"kind":"head","amp":0.5},"ant":{"b":[378,269,67,31],"pv":[385,288],"kind":"ant","parent":"head"},"leg0":{"b":[20,353,85,55],"pv":[88,356],"kind":"leg","ph":3},"leg1":{"b":[99,353,62,49],"pv":[150,356],"kind":"leg","ph":0},"leg2":{"b":[168,329,85,79],"pv":[238,332],"kind":"leg","ph":3},"leg3":{"b":[257,325,85,76],"pv":[273,328],"kind":"leg","ph":0},"leg4":{"b":[287,320,147,87],"pv":[325,323],"kind":"leg","ph":3}}},"nokogiri_adult":{"drop":0,"hop":0,"parts":{"mandU":{"b":[342,162,139,71],"pv":[350,215],"kind":"mand","sgn":-1},"mandL":{"b":[341,219,150,78],"pv":[350,258],"kind":"mand","sgn":1},"ant":{"b":[290,176,40,45],"pv":[303,212],"kind":"ant"},"antN":{"b":[335,261,66,38],"pv":[340,272],"kind":"ant","ph":1.3},"leg0":{"b":[20,314,46,34],"pv":[55,316],"kind":"leg","ph":3},"leg1":{"b":[49,316,50,33],"pv":[87,319],"kind":"leg","ph":0},"leg2":{"b":[144,317,53,31],"pv":[186,320],"kind":"leg","ph":3},"leg3":{"b":[214,316,43,30],"pv":[221,319],"kind":"leg","ph":0},"leg4":{"b":[255,309,67,40],"pv":[271,312],"kind":"leg","ph":3},"leg5":{"b":[313,299,74,50],"pv":[325,302],"kind":"leg","ph":0}}},"hirata_adult":{"drop":0,"hop":0,"parts":{"mandU":{"b":[358,208,133,43],"pv":[365,232],"kind":"mand","sgn":-1},"mandL":{"b":[356,254,134,37],"pv":[362,268],"kind":"mand","sgn":1},"ant":{"b":[359,179,70,50],"pv":[368,218],"kind":"ant"},"antN":{"b":[352,272,58,39],"pv":[358,282],"kind":"ant","ph":1.3},"leg0":{"b":[20,293,47,33],"pv":[57,296],"kind":"leg","ph":3},"leg1":{"b":[41,294,53,39],"pv":[79,297],"kind":"leg","ph":0},"leg2":{"b":[89,294,92,32],"pv":[132,297],"kind":"leg","ph":3},"leg3":{"b":[159,294,51,39],"pv":[195,297],"kind":"leg","ph":0},"leg4":{"b":[261,301,39,25],"pv":[265,304],"kind":"leg","ph":3},"leg5":{"b":[298,307,64,25],"pv":[311,310],"kind":"leg","ph":0}}},"miyama_adult":{"drop":0,"hop":0,"parts":{"mandU":{"b":[346,183,140,63],"pv":[352,222],"kind":"mand","sgn":-1},"mandL":{"b":[346,237,145,40],"pv":[352,255],"kind":"mand","sgn":1},"ant":{"b":[345,136,74,78],"pv":[358,205],"kind":"ant"},"antN":{"b":[369,253,69,53],"pv":[378,262],"kind":"ant","ph":1.3},"leg0":{"b":[20,319,53,48],"pv":[63,322],"kind":"leg","ph":3},"leg1":{"b":[48,313,144,62],"pv":[155,316],"kind":"leg","ph":0},"leg2":{"b":[162,315,51,60],"pv":[203,318],"kind":"leg","ph":3},"leg3":{"b":[282,321,73,54],"pv":[288,324],"kind":"leg","ph":0},"leg4":{"b":[332,323,86,46],"pv":[341,326],"kind":"leg","ph":3}}},"ookuwa_adult":{"drop":0,"hop":0,"parts":{"mandU":{"b":[366,164,125,58],"pv":[375,195],"kind":"mand","sgn":-1},"mandL":{"b":[361,234,129,46],"pv":[368,255],"kind":"mand","sgn":1},"ant":{"b":[360,123,89,66],"pv":[372,178],"kind":"ant"},"antN":{"b":[355,256,95,64],"pv":[364,266],"kind":"ant","ph":1.3},"leg0":{"b":[20,315,86,71],"pv":[80,318],"kind":"leg","ph":3},"leg1":{"b":[90,320,62,53],"pv":[136,323],"kind":"leg","ph":0},"leg2":{"b":[158,297,87,92],"pv":[237,300],"kind":"leg","ph":3},"leg3":{"b":[292,327,79,60],"pv":[306,330],"kind":"leg","ph":0},"leg4":{"b":[344,327,74,47],"pv":[357,330],"kind":"leg","ph":3}}},"kamakiri_adult":{"drop":0,"hop":0,"parts":{"claw":{"b":[317,211,139,139],"pv":[362,222],"kind":"mand","sgn":1},"head":{"b":[373,190,45,48],"pv":[385,215],"kind":"head"},"ant":{"b":[392,128,92,76],"pv":[402,195],"kind":"ant","parent":"head"},"antN":{"b":[400,151,91,54],"pv":[408,195],"kind":"ant","ph":1.3,"parent":"head"},"leg0":{"b":[54,333,61,51],"pv":[107,336],"kind":"leg","ph":3},"leg1":{"b":[147,321,55,41],"pv":[190,324],"kind":"leg","ph":0},"leg2":{"b":[240,298,69,86],"pv":[278,301],"kind":"leg","ph":3},"leg3":{"b":[301,293,59,70],"pv":[306,296],"kind":"leg","ph":0}}},"monshiro_adult":{"drop":0,"hop":0,"parts":{"wing":{"b":[20,52,322,405],"pv":[320,345],"kind":"wing"},"ant":{"b":[362,206,113,122],"pv":[375,318],"kind":"ant"},"antN":{"b":[369,238,122,92],"pv":[380,318],"kind":"ant","ph":1.3},"leg0":{"b":[160,448,23,10],"pv":[170,451],"kind":"leg","ph":3},"leg1":{"b":[206,402,82,58],"pv":[246,405],"kind":"leg","ph":0},"leg2":{"b":[317,402,24,57],"pv":[327,405],"kind":"leg","ph":3},"leg3":{"b":[371,402,44,53],"pv":[376,405],"kind":"leg","ph":0}}},"ageha_adult":{"drop":0,"hop":0,"parts":{"wing":{"b":[20,36,349,418],"pv":[362,350],"kind":"wing"},"ant":{"b":[384,237,83,121],"pv":[398,348],"kind":"ant"},"antN":{"b":[390,262,101,97],"pv":[402,348],"kind":"ant","ph":1.3},"leg0":{"b":[140,448,40,24],"pv":[170,451],"kind":"leg","ph":3},"leg1":{"b":[221,431,53,43],"pv":[265,434],"kind":"leg","ph":0},"leg2":{"b":[266,425,43,44],"pv":[294,428],"kind":"leg","ph":3},"leg3":{"b":[295,425,40,50],"pv":[321,428],"kind":"leg","ph":0},"leg4":{"b":[355,425,21,42],"pv":[359,428],"kind":"leg","ph":3},"leg5":{"b":[362,425,45,50],"pv":[373,428],"kind":"leg","ph":0},"leg6":{"b":[401,425,37,44],"pv":[406,428],"kind":"leg","ph":3}}},"karasu_adult":{"drop":0,"hop":0,"parts":{"wing":{"b":[20,45,339,411],"pv":[350,350],"kind":"wing"},"ant":{"b":[377,238,89,117],"pv":[388,345],"kind":"ant"},"antN":{"b":[382,258,109,99],"pv":[392,345],"kind":"ant","ph":1.3},"leg0":{"b":[165,447,34,18],"pv":[189,450],"kind":"leg","ph":3},"leg1":{"b":[236,433,39,33],"pv":[268,436],"kind":"leg","ph":0},"leg2":{"b":[304,425,19,41],"pv":[316,428],"kind":"leg","ph":3},"leg3":{"b":[366,425,39,39],"pv":[371,428],"kind":"leg","ph":0},"leg4":{"b":[395,425,47,37],"pv":[400,428],"kind":"leg","ph":3}}},"oomurasaki_adult":{"drop":0,"hop":0,"parts":{"wing":{"b":[20,60,353,375],"pv":[335,335],"kind":"wing"},"ant":{"b":[369,205,91,133],"pv":[382,328],"kind":"ant"},"antN":{"b":[379,244,112,96],"pv":[388,328],"kind":"ant","ph":1.3},"leg0":{"b":[168,423,42,29],"pv":[199,426],"kind":"leg","ph":3},"leg1":{"b":[246,409,27,43],"pv":[262,412],"kind":"leg","ph":0},"leg2":{"b":[306,409,20,25],"pv":[308,412],"kind":"leg","ph":3},"leg3":{"b":[335,409,39,36],"pv":[342,412],"kind":"leg","ph":0},"leg4":{"b":[370,409,25,16],"pv":[375,412],"kind":"leg","ph":3}}}};
 function artSVG(key){
   const R = ART_RIG[key], dir = `img/bugs/parts/${key}/`, kids = {};
   Object.entries(R.parts).forEach(([k, P])=> (kids[P.parent || ''] = kids[P.parent || ''] || []).push(k));
@@ -1783,6 +1794,33 @@ const SKY = {asa:['#9ad0f0','#e8f4c0'], hiru:['#5aa6d8','#a9d7ea'], yu:['#f0a060
 const CASE_BG = {heya:'bg_heya', genkan:'bg_genkan', beranda:'bg_beranda'};
 // 土の絵：幅 130、h は高さ、top は絵の上から表面までの長さ（表面が soilTop に来るようにずらす）、base は絵の下にしく色
 const SOIL_ART = {futsu:{img:'soil_futsu', h:41.5, top:2.37, base:'#6b4426', room:'#3a2414', crumb:'#8a5f3a'}, mat_fuyo:{img:'soil_fuyo', h:40, top:3.55, base:'#3b2418', room:'#1f130c', crumb:'#7a5236'}, mat_kuro:{img:'soil_kuro', h:42, top:2.54, base:'#1c1614', room:'#0d0a08', crumb:'#3a302a'}, mat_suna:{img:'soil_suna', h:37.1, top:1.69, base:'#d9bd8c', room:'#a98c5e', crumb:'#efdcb4'}};
+/* 夜の室内：絵（1280x853）のガラス面だけを夜空にして、わくや桟は照明で明るいままにする。すみは少し暗く。座標は絵のまま
+   polys：ガラス1枚ずつ／glow：ガラスにうつる店内の明かり／patch：昼の日ざしを、その場所の色でかくす [点, 色]／c：照明の位置／noStar：星を出さない */
+const GENKAN_PANES = [[73,109],[121,159],[171,206],[218,256],[268,309],[321,359],[371,411],[423,460]].flatMap(([a,b])=> [[52,300],[348,505]].map(([t,u])=> `${a},${t} ${b},${t} ${b},${u} ${a},${u}`));
+const ROOM_NIGHT = {
+  place_heya:{polys:['250,0 340,0 340,60 232,60','365,0 462,0 478,60 365,60','225,82 340,82 340,178 213,178 205,145','365,82 485,82 500,115 503,150 495,178 365,178','0,0 33,0 33,178 0,178','52,0 125,0 140,100 130,178 52,178'],
+    glow:[[290,120,45,40],[430,130,45,40]], patch:[['0,190 230,195 130,330 0,340','#f4d0b0']], c:[640,-40]},
+  place_genkan:{polys:GENKAN_PANES, noStar:1, patch:[['0,0 72,0 72,540 0,540','#e8b078'],['72,0 240,0 240,50 72,50','#dea468']], c:[820,-40]},
+  scr_shop:{polys:['962,208 1075,152 1075,212 962,255','960,272 1075,240 1075,555 960,508','1102,145 1280,60 1280,140 1102,205','1108,250 1195,228 1195,680 1108,635','1215,222 1280,205 1280,715 1215,690'], noStar:1, glow:[[1150,330,70,130],[1000,370,50,110]], patch:[['800,600 1000,590 1170,716 830,716','#ead3ae']], c:[640,70], r:1120, edge:.34},
+  scr_dex:{polys:['50,0 117,0 117,148 50,148','135,0 188,0 202,60 225,120 228,148 135,148','0,0 32,0 32,148 0,148'], glow:[[85,85,22,35],[170,85,22,35]], patch:[['0,170 90,170 60,320 0,320','#f4d0b0']], c:[660,-60]},
+  scr_opt:{polys:['372,0 457,0 457,53 354,53','478,0 575,0 590,53 478,53','350,73 457,73 457,163 345,163 336,105','478,73 596,73 610,105 603,163 478,163'], glow:[[405,120,35,30],[540,120,35,30]], patch:[['0,0 240,0 130,80 0,80','#f4d0b0']], c:[640,-40]},
+};
+function roomNightSVG(R){
+  const [cx, cy] = R.c, r = R.r || 820, edge = R.edge || .58;
+  const sky = R.polys.map(pts=>`<polygon points="${pts}" fill="url(#nrSky)" opacity=".82"/>`).join('');
+  const box = pts=>{ const q = pts.split(' ').map(a=>a.split(',').map(Number)), xs = q.map(a=>a[0]), ys = q.map(a=>a[1]), x = Math.min(...xs), y = Math.min(...ys); return [x, y, Math.max(...xs) - x, Math.max(...ys) - y]; };
+  const stars = R.noStar ? '' : R.polys.flatMap(pts=>{ const [x,y,w,h] = box(pts); return [[.5,.2],[.3,.45],[.65,.7]].map(([a,b])=>`<circle cx="${(x+w*a).toFixed(0)}" cy="${(y+h*b).toFixed(0)}" r="1.8" fill="#fff" opacity=".7"/>`); }).join('');
+  const glow = (R.glow||[]).map(([x,y,rx,ry])=>`<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="#ffd9a0" opacity=".13"/>`).join('');
+  const patch = (R.patch||[]).map(([pts,col])=>`<polygon points="${pts}" fill="${col}" opacity=".8"/>`).join('');
+  return `<defs><radialGradient id="nrLight" gradientUnits="userSpaceOnUse" cx="${cx}" cy="${cy}" r="${r}"><stop offset="0" stop-color="#ffd48a" stop-opacity=".2"/><stop offset=".45" stop-color="#d98a3e" stop-opacity=".1"/><stop offset="1" stop-color="#2a140e" stop-opacity="${edge}"/></radialGradient><linearGradient id="nrSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0c1436"/><stop offset="1" stop-color="#22305e"/></linearGradient><filter id="nrSoft" x="-5%" y="-5%" width="110%" height="110%"><feGaussianBlur stdDeviation="1.6"/></filter><filter id="nrGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="16"/></filter></defs><g filter="url(#nrGlow)">${patch}</g><rect width="1280" height="853" fill="url(#nrLight)"/><g filter="url(#nrSoft)">${sky}</g>${stars}<g filter="url(#nrGlow)">${glow}</g>`;
+}
+function paintPlace(img, slot){   // 背景の絵と、朝・夕方・夜の色。夜の室内は照明がついた見た目にする
+  const pb = $('placeBg'), R = slot === 'yoru' && ROOM_NIGHT[img], ti = R ? null : CASE_TINT[slot];
+  pb.style.backgroundImage = `url(img/ui/${img}.webp)`;
+  pb.firstElementChild.style.cssText = ti ? `background:${ti[0]};opacity:${ti === CASE_TINT.yoru ? .72 : (ti[1]*.8).toFixed(2)}` : '';
+  $('nightRoom').innerHTML = R ? roomNightSVG(R) : '';
+  document.body.dataset.night = slot !== 'yoru' ? '' : R ? 'room' : 'sky';
+}
 const CASE_TINT = {asa:['#ffd9a0',.16], yu:['#e8742c',.34], yoru:['#0a1434',.62]};   // 絵は「昼」の1枚。朝・夕方・夜は色をかさねる
 /* 土の中の部屋：placeBug が under:true を返すと、どの虫でもこれで土の中にいるように見せる。
    虫の大きさに合わせて穴をほり、虫は穴の中だけに見える（はみ出た分は土にかくれる）。
@@ -1866,7 +1904,7 @@ function sceneSVG(c, slot, o={}){
       `<g class="leaf" data-hide="1"><image href="img/case/hide_kuchiki.webp" x="8" y="${soilTop-16}" width="40" height="18" preserveAspectRatio="xMidYMax meet"/></g>`;
   const mess = (c.soilAge||0) > 72 && st !== 'pupa' ? [[12,1],[30,3],[47,1.5],[66,2.5],[82,1],[58,4],[22,5]].map(([x,dy])=>`<ellipse cx="${x}" cy="${soilTop + dy}" rx="2.6" ry="1.3" fill="#2a1a0a" opacity=".85"/>`).join('') + `<path d="M36 ${soilTop-1} q3 -3 6 0 M72 ${soilTop-1} q3 -3 6 0" stroke="#8a7a40" stroke-width="1.2" fill="none"/>` : '';
   ensureZ(c);
-  const A = SOIL_ART[c.mat] || SOIL_ART.futsu, bgArt = CASE_BG[c.place] || CASE_BG.heya, tint = CASE_TINT[slot];
+  const A = SOIL_ART[c.mat] || SOIL_ART.futsu, bgArt = CASE_BG[c.place] || CASE_BG.heya, tint = slot === 'yoru' && c.place !== 'beranda' ? ['#2a140e', .28] : CASE_TINT[slot];
   const room = p.under ? soilRoom(p, soilTop, A) : null;
   const soilImg = `<image href="img/case/${A.img}.webp" x="-15" y="${soilTop - A.top}" width="130" height="${A.h}" preserveAspectRatio="none"/>`;
   const soil = `<rect x="-15" y="${soilTop + 2}" width="130" height="${98 - soilTop}" fill="${A.base}"/>${soilImg}<g mask="url(#soilMask)"><g id="wetLayer">${c.wetZ.map((v,z)=>`<rect class="wz" x="${z ? z*20 : -15}" y="${soilTop - 4}" width="${z === 0 || z === 4 ? 35 : 20}" height="${104 - soilTop}" shape-rendering="crispEdges" fill="#1a0e04" opacity="${(v/100*.4).toFixed(2)}"/>`).join('')}</g></g>
@@ -1924,6 +1962,7 @@ async function yakusoku(key, text){ if(S.yk[key]) return; S.yk[key] = 1; await s
 let tab = 'home', openCase = null;
 const view = $('view');
 function refresh(){ tickAll(); handleGone(); hud(); render(); }
+setInterval(()=>{ if(S && !QS.has('mihon') && !document.querySelector('.toolObj.drag') && document.body.dataset.slot && document.body.dataset.slot !== slotOf()) refresh(); }, 60000);   // 朝・昼・夕方・夜がかわったら、絵の色もかえる
 const hudHtml = ()=>{ const slot = slotOf(); return `<span class="slot">${SLOT_ICON[slot]} ${SLOT_NAMES[slot]}</span><span>${dateStr()} ${hhmm()}</span><span class="money" title="どんぐり">🌰 ${dg(S.money)}</span>`; };
 function hud(){
   if(!S){ $('hud').hidden = true; return; }
@@ -1958,12 +1997,12 @@ document.querySelectorAll('#tabs button').forEach(b=> b.onclick = ()=> setTab(b.
 function render(){
   document.body.classList.toggle('obsMode', !!S && openCase !== null); document.body.classList.toggle('title', !S); document.body.classList.toggle('noteUI', !!S);
   const atSpot = !!S && openCase === null && tab === 'out' && outState && outState.spot;
-  document.body.dataset.tab = openCase !== null ? 'case' : atSpot ? 'spot' : tab;
+  document.body.dataset.tab = openCase !== null ? 'case' : atSpot ? 'spot' : tab; document.body.dataset.slot = slotOf();
   document.querySelectorAll('body > #drawer').forEach(e=>e.remove()); $('rtCase').hidden = true;   // ケースのこと は、ケースの画面のときだけ
   if(sidePanel === 'case') sidePanel = null; setSide(sidePanel); $('rtabs').hidden = !S;
   if(!S){ renderTitle(); return; }
   if(openCase !== null){ renderObs(); return; }
-  { const pb = $('placeBg'), ti = (tab === 'out' || tab === 'sumo') ? CASE_TINT[slotOf()] : null; pb.style.backgroundImage = `url(img/ui/${atSpot ? 'spot_' + outState.spot.key : tab === 'home' ? 'place_heya' : 'scr_' + tab}.webp)`; pb.firstElementChild.style.cssText = ti ? `background:${ti[0]};opacity:${(ti[1]*.8).toFixed(2)}` : ''; }
+  paintPlace(atSpot ? 'spot_' + outState.spot.key : tab === 'home' ? 'place_heya' : 'scr_' + tab, slotOf());
   ({home:renderHome, out:renderOut, sumo:renderSumo, shop:renderShop, dex:renderDex, opt:renderOpt})[tab]();
 }
 
@@ -2043,7 +2082,7 @@ const PLACE_IC = {genkan:'🚪', heya:'🛏', beranda:'🌿'};
 const PLACES = {genkan:{name:'げんかん', desc:'すずしくて静か。かいふくがよくなり、のんびりした性格になりやすい'}, heya:{name:'へや', desc:'いつもそばにいる。人なつっこい性格になりやすい'}, beranda:{name:'ベランダの日かげ', desc:'外の空気。まもりが強くなる。ただし、かわきやすい'}};
 const toolImg = k=> `<img class="tim" src="img/tools/${k}.webp" alt="" draggable="false">`;
 const TOOLS = {yubi:{name:'ゆび', ic:toolImg('yubi')}, megane:{name:'虫めがね', ic:toolImg('megane')}, fukin:{name:'ふきん', ic:toolImg('fukin')}, kiri:{name:'きりふき', ic:toolImg('kiri')}, esa:{name:'エサ', ic:toolImg('esa')}, kazari:{name:'かざり', ic:toolImg('kazari')}, big:{name:'大そうじ', ic:toolImg('houki')}, furu:{name:'ふる', ic:toolImg('furu')}};
-let tool = 'yubi', obsSession = null, decoSel = null, lensLook = ()=>{};   // obsSession：いまのぞいている間の、さわった回数など
+let tool = 'yubi', /* 'yubi'：道具を持っていない。ケースを直接タップしてさわる */ obsSession = null, decoSel = null, lensLook = ()=>{};   // obsSession：いまのぞいている間の、さわった回数など
 function indLine(c){ const f = fighterOf(c); return statLine(f); }
 // 性格ごとの、さわったとき・ふったときの反応
 const REACT = {
@@ -2064,25 +2103,25 @@ async function renderObs(){
   const ownDeco = Object.keys(ITEMS).filter(k=>ITEMS[k].cat && (S.items[k]||0) > 0);
   const bigGuide = st.k === 'pupa' ? 'さなぎの間は、大そうじはできない。' : (!big || big.step === 1) ? ((c.soilAge||0) > 72 || big ? '' : 'まだ大そうじはいらない（3日に1回くらい）。') + '🤏をつかんで虫の上で止めると、そっとつまめる。右上のひなんケースへ運ぼう。すばやくぶつけると虫がいやがる。' : big.step === 2 ? `🧹をつかんで、土の上を左右に動かして入れかえよう（あと${3 - big.pass}回）` : '🤏をひなんケースの上で止めて虫をつまみ、ケースの中へもどそう。';
   const guides = {big:bigGuide, kazari:ownDeco.length ? (decoSel ? (ITEMS[decoSel].cat === 'mat' ? 'マットは、えらぶとすぐにしきかえる。' : 'かざりをつかんで、置きたい場所ではなす。置いたものは、直接つまんで動かせる。左下の「しまう」に入れるともどる。') : '下から、置きたいかざりをえらぼう。') : 'かざりは、「おみせ」で買えるよ。',
-    yubi:'手をつかんで、葉や木にのせるとのぞける。虫にのせるとそっとさわる。置いたエサやかざりは、直接つまんで動かせる。', fukin:dirtN || oldN ? `スポンジをつかんで、よごれの上でこすろう（のこり${dirtN + oldN}）` : 'ガラスはきれい。', kiri:'きりふきをつかんで、かけたい場所で指を止めると水が出る。ケースぜんたいに少しずつ。左上の5本の棒が、場所ごとのしめりけ。', esa:st.k === 'pupa' ? 'さなぎは、なにも食べない。' : `エサをつかんで、置きたい場所ではなす（${esc(food.name)}${food.price ? ` ×${S.items[foodKey]||0}` : ''}）`, furu:'ケースをつかんで、左右に動かすとゆれる。何回もゆらすと、虫がおどろくよ。', megane:'虫めがねをつかんで、見たいところに動かすと、大きく見える。虫の上で、じっと見てみよう。'}, guide = guides[tool];
+    yubi:'', fukin:dirtN || oldN ? `スポンジをつかんで、よごれの上でこすろう（のこり${dirtN + oldN}）` : 'ガラスはきれい。', kiri:'きりふきをつかんで、かけたい場所で指を止めると水が出る。ケースぜんたいに少しずつ。左上の5本の棒が、場所ごとのしめりけ。', esa:st.k === 'pupa' ? 'さなぎは、なにも食べない。' : `エサをつかんで、置きたい場所ではなす（${esc(food.name)}${food.price ? ` ×${S.items[foodKey]||0}` : ''}）`, furu:'ケースをつかんで、左右に動かすとゆれる。何回もゆらすと、虫がおどろくよ。', megane:'虫めがねをつかんで、見たいところに動かすと、大きく見える。虫の上で、じっと見てみよう。'}, guide = guides[tool];
   const showGuide = obsSession.guide; obsSession.guide = false;   // 道具をえらんだすぐあとは、文の欄に道具のつかいかたを出す
   const esaGuide = st.k === 'pupa' ? '' : `エサをつかんで、置きたい場所ではなす`;
   const bornTag = `<span class="tag born">${esc((BORN[c.born]||BORN.any).name)}</span>${c.bornSlot === 'yoru' ? ' <span class="tag">夜型</span>' : ''}`;
   const BX = boxOf(c), tags = `<span class="tag">${BX.ic} ${esc(BX.name)}</span><span class="tag">${PLACE_IC[c.place]} ${esc(PLACES[c.place].name)}</span>${c.rare ? '<span class="tag" style="background:#7a5a20">めずらしい色</span>' : ''}`;
   const msgHtml = `${esc(sc.txt)}${persTxt ? `<br>${esc(persTxt)}` : ''}${c.trouble ? `<br><b class="yk">【${esc(TROUBLE[c.trouble].name)}】</b>${esc(TROUBLE[c.trouble].txt)}` : ''}${(c.soak||0) > 30 ? '<br><b class="yk">【びちゃびちゃ】</b>水をかけすぎて、土に水たまりができている。かわくまで、きりふきはやめよう。' : ''}${c.pending ? '<br><b class="yk">…なんだか、ようすがかわりそう！</b>' : fc ? `<br><b class="yk">【予告】</b>${esc(fc)}` : ''}`;
   // 左：ケース（＋メッセージ）／右：見出し・道具・ステータス・引き出し。横画面では1画面におさまる。たて画面（PCのせまい窓など）では上から順にならぶ
-  { const pb = $('placeBg'), ti = CASE_TINT[slot]; pb.style.backgroundImage = `url(img/ui/place_${c.place}.webp)`; pb.firstElementChild.style.cssText = ti ? `background:${ti[0]};opacity:${(ti[1]*.8).toFixed(2)}` : ''; }
+  paintPlace('place_' + c.place, slot);
   view.innerHTML = `<div class="obsGrid" id="obs">
     <div class="obsL">
       <div class="caseBox" style="${caseBoxCSS(c)}"><img class="caseArt" src="img/ui/case_${(S.boxes||[])[boxIdx(c)] || 'futsu'}.webp" alt="" draggable="false"><div class="scene tool-${tool}" id="scene" style="${caseSceneCSS(c)}">${sc.svg}<div class="toolObj norb" id="toolObj" hidden></div><div class="binZone norb" id="binZone" hidden>しまう</div>${tool === 'big' && st.k !== 'pupa' ? `<div class="refuge norb ${big && big.step >= 1 ? 'on' : ''}" id="refuge"><small>ひなんケース</small><div class="rb" id="refugeBug">${big && big.step >= 2 ? svgBug(c.bug, st.k, {instar:instarOf(c), scale:.9}) : ''}</div></div>` : ''}<div class="mini norb" id="mini" hidden></div></div></div>
       ${tool === 'kazari' ? `<div class="tools decoPick norb" id="decoPick"><button type="button" class="tbtn back" data-tool="yubi"><span class="ic">↩</span>道具へ</button>${ownDeco.map(k=>`<button type="button" class="pk ${decoSel===k?'on':''}" data-deco="${k}"><svg viewBox="0 0 100 100">${decoSVG(k)}</svg>${esc(ITEMS[k].name)}<small>×${S.items[k]}</small></button>`).join('')}</div>`
-        : `<div class="tools norb" id="toolTray">${Object.keys(TOOLS).map(k=>`<button type="button" class="tbtn ${tool===k?'on':''}" data-tool="${k}" ${k==='esa' && st.k==='pupa' ? 'disabled' : ''}><span class="ic">${TOOLS[k].ic}</span>${TOOLS[k].name}</button>`).join('')}</div>`}
+        : `<div class="tools norb" id="toolTray">${Object.keys(TOOLS).filter(k=> k !== 'yubi').map(k=>`<button type="button" class="tbtn ${tool===k?'on':''}" data-tool="${k}" ${k==='esa' && st.k==='pupa' ? 'disabled' : ''}><span class="ic">${TOOLS[k].ic}</span>${TOOLS[k].name}</button>`).join('')}</div>`}
     </div>
     <div class="obsR">
       <div class="obsHead"><h2>${title}</h2><div class="headTags">${bornTag}</div><button type="button" class="btn sub backBtn" id="btnBack">↩ もどる</button></div>
       <div class="obsTxt win" id="obsTxt">${showGuide && guide ? esc(guide) : msgHtml}</div>
       <div class="meters">${st.k !== 'pupa' ? m('おなか', c.hunger) : ''}${m('しめりけ', c.wet, `<b class="band" style="left:${band[0]}%;width:${band[1]-band[0]}%"></b>`)}${m('きれいさ', c.clean)}${m('元気', g)}</div>
-      <p class="small info">${SLOT_NAMES[slot]}のようす。${c.pending || st.k === 'adult' ? '' : `このすがたで、あと${daysLeft(c)}日くらい。`}${st.k === 'adult' ? `<br>${esc(indLine(c))}<br>わざ：${c.moves.map(k=>esc(MOVES[k].name)).join('・')}　${c.size}mm ${esc(c.sex||'')}` : ''}</p>
+      <p class="small info">${tool === 'yubi' && st.k !== 'pupa' ? '虫をタップすると、そっとさわれる。' : ''}${SLOT_NAMES[slot]}のようす。${c.pending || st.k === 'adult' ? '' : `このすがたで、あと${daysLeft(c)}日くらい。`}${st.k === 'adult' ? `<br>${esc(indLine(c))}<br>わざ：${c.moves.map(k=>esc(MOVES[k].name)).join('・')}　${c.size}mm ${esc(c.sex||'')}` : ''}</p>
       <div class="drawer" id="drawer" data-p="case"><div class="dHead"><b>ケースのこと</b></div>
         <div class="row">${tags}</div>
         <div class="acts">
@@ -2097,7 +2136,7 @@ async function renderObs(){
   document.body.appendChild(view.querySelector('#drawer'));
   $('rtCase').hidden = false; setSide(sidePanel === 'case' || sidePanel === 'items' ? sidePanel : null);
   $('btnBack').onclick = ()=>{ openCase = null; obsSession = null; render(); };   // 大そうじのとちゅうでも、もどれば虫はケースにいる（big は obsSession ごと消える）
-  view.querySelectorAll('[data-tool]').forEach(bt=> bt.onclick = async ()=>{ if(obsSession.big && bt.dataset.tool !== 'big'){ obsSession.big = null; await say('大そうじをとちゅうでやめた。虫はケースにもどした。'); } tool = bt.dataset.tool; obsSession.guide = true; renderObs(); });
+  view.querySelectorAll('[data-tool]').forEach(bt=> bt.onclick = async ()=>{ if(obsSession.big && bt.dataset.tool !== 'big'){ obsSession.big = null; await say('大そうじをとちゅうでやめた。虫はケースにもどした。'); } const k = bt.dataset.tool; tool = tool === k && k !== 'yubi' ? 'yubi' : k; obsSession.guide = tool !== 'yubi'; renderObs(); });
   view.querySelectorAll('[data-deco]').forEach(bt=> bt.onclick = async ()=>{ const k = bt.dataset.deco;
     if(ITEMS[k].cat === 'mat'){ if(c.mat === k){ await say('もう、このマットをしいている。'); return; } if(c.mat) S.items[c.mat] = (S.items[c.mat]||0) + 1; S.items[k]--; c.mat = k; c.log.over++; save(); await say(`${ITEMS[k].name}をしきかえた。\n${c.mat === 'mat_fuyo' ? '幼虫がもぐっていった。腐葉土は、かわきにくい。' : 'ケースの見た目がかわった。'}`); decoSel = null; renderObs(); return; }
     decoSel = decoSel === k ? null : k; renderObs(); });
@@ -2129,7 +2168,7 @@ async function renderObs(){
     if(d && rigCtl && LOOK[key]){ d.mi = d.mi || {}; if(!d.mi[key]){ d.mi[key] = 1; first = true; save(); } }
     setTxt(key === 'plain' ? '虫めがねで見ると…からだのもようや、こまかい毛まで、よく見える！' : key === 'buried' ? '虫めがねで見ると…土の中に、虫のからだが少しだけ見える。ねているみたい。' : LOOK[key] + (first ? '（はじめて見た！）' : ''));
   };
-  const showTool = ()=>{ if(tool === 'furu' || (tool === 'big' && st.k === 'pupa') || (tool === 'esa' && st.k === 'pupa') || (tool === 'kazari' && (!decoSel || ITEMS[decoSel].cat === 'mat'))){ toolObj.hidden = true; return; } const r = restPos(); toolObj.innerHTML = toolIc() + '<span class="hint">つかんで動かす</span>'; toolObj.hidden = false; setObj(r.x, r.y, 'rest'); };
+  const showTool = ()=>{ if(tool === 'yubi' || tool === 'furu' || (tool === 'big' && st.k === 'pupa') || (tool === 'esa' && st.k === 'pupa') || (tool === 'kazari' && (!decoSel || ITEMS[decoSel].cat === 'mat'))){ toolObj.hidden = true; return; } const r = restPos(); toolObj.innerHTML = toolIc() + '<span class="hint">つかんで動かす</span>'; toolObj.hidden = false; setObj(r.x, r.y, 'rest'); };
   const hk = ()=> (parseFloat(getComputedStyle(toolObj).fontSize) || 84) / 84;
   const hotXY = ()=>{ const r = sceneEl.getBoundingClientRect(), h0 = HOT[tool], h = {x:h0.x*hk(), y:h0.y*hk()}; return toXYc(r.left + objPos.x + h.x, r.top + objPos.y + h.y); };
   showTool();
@@ -2171,9 +2210,17 @@ async function renderObs(){
     obsSession.touches++; const pk = c.pers && st.k === 'adult' ? c.pers : 'futsu';
     if(rigCtl && rigCtl.mood !== 'eat') rigCtl.start('threat');
     if(artCtl && artCtl.mood !== 'eat') artCtl.start('threat');
-    setTxt(REACT.touch[pk]);
+    setTxt((obsSession.touches === 1 ? 'そっとね。さわるのは、ちょっとだけ。\n' : '') + REACT.touch[pk]);
     if(obsSession.touches >= 3){ c.log.over++; c.hideUntil = now() + 10*60*1000; save(); await say('さわりすぎ！ 虫がつかれてしまう。\n【そだてのやくそく】\n虫は、見るのが基本。さわるのは、ちょっとだけ。'); renderObs(); return; }
     if(pk === 'okubyo'){ c.hideUntil = now() + 10*60*1000; save(); renderObs(); }
+  };
+  let itemDown = null, lastTouch = 0;
+  // 道具を持っていないとき：虫をタップすると、そっとさわる。かくれ家をタップすると、のぞく
+  const tapAt = async (x, y)=>{
+    if(nearBug(x, y)){ if(Date.now() - lastTouch < 600) return; lastTouch = Date.now(); await touchBug(); return; }   // すぐに続けたタップは、1回にかぞえる
+    const H = hideSpot(c, b);
+    if(Math.hypot(x - H.x, y - H.y) < 18){ await peek(); return; }
+    setTxt(sc.txt);
   };
   const peek = async ()=>{
     const leaf = svg.querySelector('.deco .leaf') || svg.querySelector('.leaf'); if(leaf){ leaf.classList.remove('flip'); void leaf.getBoundingClientRect(); leaf.classList.add('flip'); }
@@ -2303,11 +2350,11 @@ async function renderObs(){
   let fromTray = null, trayDragT = 0;
   const inScene = e=>{ const r = sceneEl.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top; return x >= 0 && y >= 0 && x <= r.width && y <= r.height; };
   view.querySelectorAll('#toolTray [data-tool]').forEach(bt=> bt.onpointerdown = e=>{
-    const k = bt.dataset.tool; if(!['yubi','megane','fukin','kiri','esa'].includes(k) || bt.disabled || obsSession.big) return;
+    const k = bt.dataset.tool, was = tool; if(!['megane','fukin','kiri','esa'].includes(k) || bt.disabled || obsSession.big) return;
     e.preventDefault();
     if(tool !== k){ tool = k; view.querySelectorAll('#toolTray [data-tool]').forEach(b=> b.classList.toggle('on', b.dataset.tool === k)); sceneEl.className = `scene tool-${k}`; showTool(); lensSaid = ''; updateMini(); }
     setTxt(guides[k] || '');
-    fromTray = {in:false}; down = true; sceneEl.setPointerCapture(e.pointerId); grab = {dx:0, dy:0};
+    fromTray = {in:false, again:was === k}; down = true; sceneEl.setPointerCapture(e.pointerId); grab = {dx:0, dy:0};
     toolObj.querySelector('.hint')?.remove(); dragTo(e); lastMove = Date.now();
     if(tool === 'kiri') stillT = setInterval(()=>{ if(fromTray && !fromTray.in) return; if(Date.now() - lastMove > 280) sprayStart(); }, 60);
   });
@@ -2315,15 +2362,16 @@ async function renderObs(){
   sceneEl.onpointerdown = e=>{ e.preventDefault();
     if(tool === 'big' && st.k === 'pupa'){ ripple(e); setTxt('さなぎの間は、大そうじはできない。'); return; }
     const hit = tool !== 'fukin' && tool !== 'furu' && tool !== 'big' && !nearObj(e) && itemAt(e);
-    if(hit){ down = true; dragItem = hit; sceneEl.setPointerCapture(e.pointerId); ripple(e); if(hit.type === 'deco') binZone.hidden = false; return; }
+    if(hit){ down = true; dragItem = hit; itemDown = {x:e.clientX, y:e.clientY, moved:false, ix:hit.it.x, iy:hit.it.y}; sceneEl.setPointerCapture(e.pointerId); ripple(e); if(hit.type === 'deco') binZone.hidden = false; return; }
     if(tool === 'furu'){ down = true; sceneEl.setPointerCapture(e.pointerId); ripple(e); furu.x0 = furu.last = e.clientX; furu.n = 0; furu.seg = 0; furu.dir = 0; return; }
+    if(tool === 'yubi'){ ripple(e); const q = toXY(e); tapAt(q.x, q.y); return; }
     if(!nearObj(e)){ ripple(e); setTxt(`${TOOLS[tool].name}をつかんで、動かしてね。`); return; }
     down = true; sceneEl.setPointerCapture(e.pointerId); const r = sceneEl.getBoundingClientRect(); grab = {dx:e.clientX - r.left - objPos.x, dy:e.clientY - r.top - objPos.y};
     toolObj.querySelector('.hint')?.remove(); dragTo(e); lastMove = Date.now();
     if(tool === 'kiri'){ stillT = setInterval(()=>{ if(Date.now() - lastMove > 280) sprayStart(); }, 60); } };
   sceneEl.onpointermove = e=>{ if(!down) return;
     if(fromTray) fromTray.in = inScene(e);
-    if(dragItem){ moveItem(e); return; }
+    if(dragItem){ if(!itemDown.moved && Math.hypot(e.clientX - itemDown.x, e.clientY - itemDown.y) < 8) return; itemDown.moved = true; moveItem(e); return; }
     if(tool === 'furu'){ furuMove(e); return; }
     const r = sceneEl.getBoundingClientRect(), nx = e.clientX - r.left - grab.dx, ny = e.clientY - r.top - grab.dy;
     if(Math.hypot(nx - objPos.x, ny - objPos.y) > 2.5){ lastMove = Date.now(); if(tool === 'kiri') sprayStop(); }
@@ -2331,9 +2379,10 @@ async function renderObs(){
     if(tool === 'fukin'){ const q = hotXY(); wipeAt(q.x, q.y); }
     if(tool === 'big') bigTick(e); };
   sceneEl.onpointerup = sceneEl.onpointercancel = async e=>{ if(!down) return; down = false; clearInterval(stillT); stillT = null;
-    if(fromTray){ fromTray = null; trayDragT = Date.now(); if(!inScene(e)){ sprayStop(); const rp = restPos(); setObj(rp.x, rp.y, 'rest'); return; } }
+    if(fromTray){ const again = fromTray.again; fromTray = null; trayDragT = Date.now(); if(!inScene(e)){ sprayStop(); if(again){ tool = 'yubi'; renderObs(); return; } const rp = restPos(); setObj(rp.x, rp.y, 'rest'); return; } }
     if(tool === 'big'){ await bigRelease(); const rp = restPos(); setObj(rp.x, rp.y, ''); showTool(); return; }
-    if(dragItem){ const di = dragItem, binned = di.type === 'deco' && inBin(e); dragItem = null; binZone.hidden = true; binZone.classList.remove('over');
+    if(dragItem){ const di = dragItem, binned = di.type === 'deco' && inBin(e), tapped = !itemDown.moved; dragItem = null; binZone.hidden = true; binZone.classList.remove('over');
+      if(tapped){ if(tool === 'yubi'){ const q = toXY(e); await tapAt(q.x, q.y); } return; }   // 動かさなければ、タップとおなじ
       if(binned){ c.deco = c.deco.filter(d=>d !== di.it); S.items[di.it.k] = (S.items[di.it.k]||0) + 1; save(); setTxt(`${ITEMS[di.it.k].name}をしまった。`); renderObs(); return; }
       c.log.over += di.type === 'food' ? 0 : 0; save(); renderObs(); setTimeout(()=> setTxt(di.type === 'food' ? 'エサの場所をかえた。' : `${ITEMS[di.it.k].name}の場所をかえた。`), 50); return; }
     if(tool === 'furu'){ await furuEnd(); return; }
@@ -2343,10 +2392,6 @@ async function renderObs(){
     if(tool === 'fukin'){ await wipeDone(); return; }
     if(tool === 'esa'){ await placeFood(q.x, q.y); return; }
     if(tool === 'kazari'){ if(!decoSel) return; const soilTop = soilTopOf(b); c.deco.push({id:Date.now(), k:decoSel, x:clamp(q.x, 8 - (noteUI() ? caseExtra(c) : 0), 92 + (noteUI() ? caseExtra(c) : 0)), y:clamp(q.y, soilTop - 28, soilTop + 2)}); S.items[decoSel]--; if(!(S.items[decoSel] > 0)) decoSel = null; save(); renderObs(); setTimeout(()=> setTxt('かざりを置いた。つまんで動かせるよ。'), 50); await yakusoku('deco', 'かくれ家やとまり木があると、虫は落ちついてくらせる。\n本物の虫かごでも、同じだよ。'); return; }
-    // ゆび：手の先がどこにあるか
-    if(nearBug(q.x, q.y)){ await touchBug(); return; }
-    const H = hideSpot(c, b);
-    if(Math.hypot(q.x - H.x, q.y - H.y) < 18){ await peek(); return; }
     setTxt(sc.txt); };
   const furuMove = e=>{ const dx = e.clientX - furu.x0, v = e.clientX - furu.last; furu.last = e.clientX;
     svg.style.transform = `translateX(${clamp(dx*.35, -16, 16)}px) rotate(${clamp(dx*.04, -2.5, 2.5)}deg)`;
