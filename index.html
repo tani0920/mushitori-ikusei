@@ -621,10 +621,11 @@ html.land #arena .ctl{grid-column:2;margin-top:0}
 
 /* ===== 飼育画面：観察ノート。場所のけしきの台に、虫かごとノートを置く（横画面だけ） ===== */
 #placeBg{display:none}
-html.land body.obsMode #placeBg{display:block;position:fixed;inset:0;z-index:-1;background-position:center bottom;background-size:cover;background-repeat:no-repeat;background-color:#d9c4a4}
+html.land body.noteUI #placeBg{display:block;position:fixed;inset:0;z-index:-1;background-position:center bottom;background-size:cover;background-repeat:no-repeat;background-color:#d9c4a4}
 #placeBg i{position:absolute;inset:0;display:block}
 .tabArt{display:none}
-html.land body.obsMode{--note-ink:#4a3320;--toolh:clamp(50px,calc(var(--H) * .085),84px);--nf:clamp(14px,calc(var(--H) * .023),22px);--sih:min(calc((var(--H) - var(--st) - var(--sb) - var(--toolh) - 42px) * .73),calc((var(--W) - 80px - var(--rtw) - var(--sl) - var(--sr)) * .6 / 1.78));font-family:"Klee One","Hiragino Maru Gothic ProN","Hiragino Sans",sans-serif;background:#d9c4a4}
+html.land body.noteUI{--note-ink:#4a3320;font-family:"Klee One","Hiragino Maru Gothic ProN","Hiragino Sans",sans-serif;background:#d9c4a4}
+html.land body.obsMode{--toolh:clamp(50px,calc(var(--H) * .085),84px);--nf:clamp(14px,calc(var(--H) * .023),22px);--sih:min(calc((var(--H) - var(--st) - var(--sb) - var(--toolh) - 42px) * .73),calc((var(--W) - 80px - var(--rtw) - var(--sl) - var(--sr)) * .6 / 1.78))}
 html.land body.obsMode #view{padding-top:0;font-weight:600;overflow:hidden}
 html.land body.obsMode .obsGrid{gap:6px;box-sizing:border-box;height:100%;grid-template-rows:minmax(0,1fr);align-items:stretch}
 html.land body.obsMode .obsL{width:calc(var(--sih) * 1.78);flex:none;justify-content:flex-end;gap:4px;padding-bottom:4px;box-sizing:border-box;align-items:center;height:100%}
@@ -635,18 +636,18 @@ html.land body.obsMode #obs .caseBox .scene{position:absolute;max-width:none;asp
 html.land body.obsMode .obsL .tools{width:100%;max-width:none;gap:3px}
 html.land body.obsMode .obsL .tools .tbtn{height:var(--toolh);color:var(--note-ink);background:url(img/ui/card.webp) center/100% 100% no-repeat;border:0;border-radius:8px;font-weight:600;font-size:clamp(10.5px,calc(var(--H) * .0165),16px);letter-spacing:-.1em;white-space:nowrap;filter:drop-shadow(0 1px 2px #3a241266)}
 html.land body.obsMode .obsL .tools .tbtn.on{background:#f6cf5b;box-shadow:inset 0 0 0 2px #fff8;color:#3a2410}
-html.land body.obsMode #tabs button{background:url(img/ui/card.webp) center/100% 100% no-repeat;color:var(--note-ink);border:0;border-radius:8px;box-shadow:none;width:68px;margin-left:4px;min-height:58px;font-weight:600;font-size:12px;filter:drop-shadow(0 1px 2px #3a241266)}
-html.land body.obsMode #tabs{gap:6px;padding-top:max(6px,var(--st))}
-html.land body.obsMode #tabs .ic{display:none}
-html.land body.obsMode #tabs .tabArt{display:block;width:32px;height:32px;margin:0 auto 1px;object-fit:contain;pointer-events:none}
-html.land body.obsMode #tabs button.on{background:#f6cf5b;color:#3a2410}
-html.land body.obsMode #rtabs{top:max(46px,calc(var(--st) + 46px));gap:4px}
-html.land body.obsMode #rtabs .rt{color:var(--note-ink);border:0;font-weight:600;box-shadow:none;background:url(img/ui/tab_y.webp) center/100% 100% no-repeat;filter:drop-shadow(1px 1px 2px #3a241266)}
-html.land body.obsMode #rtabs #rtItems{background-image:url(img/ui/tab_p.webp)}
-html.land body.obsMode #rtabs #rtCase{background-image:url(img/ui/tab_b.webp)}
-html.land body.obsMode #rtabs .rt.on{filter:drop-shadow(0 0 3px #fff) drop-shadow(1px 1px 2px #3a241266)}
-html.land body.obsMode #hud{background:#fbf3dfee;color:var(--note-ink);border-radius:8px;box-shadow:0 1px 3px #3a241255;font-weight:600;top:max(3px,var(--st))}
-html.land body.obsMode #hud .money{color:#8a5a14}
+html.land body.noteUI #tabs button{background:url(img/ui/card.webp) center/100% 100% no-repeat;color:var(--note-ink);border:0;border-radius:8px;box-shadow:none;width:68px;margin-left:4px;min-height:58px;font-weight:600;font-size:12px;filter:drop-shadow(0 1px 2px #3a241266)}
+html.land body.noteUI #tabs{gap:6px;padding-top:max(6px,var(--st))}
+html.land body.noteUI #tabs .ic{display:none}
+html.land body.noteUI #tabs .tabArt{display:block;width:32px;height:32px;margin:0 auto 1px;object-fit:contain;pointer-events:none}
+html.land body.noteUI #tabs button.on{background:#f6cf5b;color:#3a2410}
+html.land body.noteUI #rtabs{top:max(46px,calc(var(--st) + 46px));gap:4px}
+html.land body.noteUI #rtabs .rt{color:var(--note-ink);border:0;font-weight:600;box-shadow:none;background:url(img/ui/tab_y.webp) center/100% 100% no-repeat;filter:drop-shadow(1px 1px 2px #3a241266)}
+html.land body.noteUI #rtabs #rtItems{background-image:url(img/ui/tab_p.webp)}
+html.land body.noteUI #rtabs #rtCase{background-image:url(img/ui/tab_b.webp)}
+html.land body.noteUI #rtabs .rt.on{filter:drop-shadow(0 0 3px #fff) drop-shadow(1px 1px 2px #3a241266)}
+html.land body.noteUI #hud{background:#fbf3dfee;color:var(--note-ink);border-radius:8px;box-shadow:0 1px 3px #3a241255;font-weight:600;top:max(3px,var(--st))}
+html.land body.noteUI #hud .money{color:#8a5a14}
 html.land body.obsMode .obsR{position:relative;margin-top:30px;color:var(--note-ink);height:calc(100% - 30px);max-height:none;background:url(img/ui/note_page.webp) center/100% 100% no-repeat;padding:max(13px,3.2%) 5.5% max(16px,4.5%) 12.5%;box-sizing:border-box;filter:drop-shadow(0 3px 4px #3a241255)}
 html.land body.obsMode .obsR>.obsHead h2{color:#3f2a18;font-size:calc(var(--nf) * 1.06);font-weight:600;line-height:1.25;letter-spacing:0;margin:0}
 html.land body.obsMode .obsR>.obsHead .backBtn{background:#fbf3df;color:var(--note-ink);border:1.5px solid #a98a60;box-shadow:none;font-weight:600}
@@ -658,19 +659,64 @@ html.land body.obsMode .obsR .meters .bar i{background:repeating-linear-gradient
 html.land body.obsMode .mini{background:#fbf3dfe8;color:var(--note-ink);border:1.5px solid #a98a60;font-weight:600}
 html.land body.obsMode .toolObj .hint{background:#fbf3dfee;color:var(--note-ink);border:1px solid #a98a60;font-weight:600}
 html.land body.obsMode .mini .bar{background:#fbf6e6;border:1px solid #8a6a44}
-html.land body.obsMode .drawer{background:transparent url(img/ui/note_page.webp) center/100% 100% no-repeat;color:var(--note-ink);font-weight:600;border:0;box-shadow:none;filter:drop-shadow(-2px 2px 5px #3a241266);padding-left:46px;padding-right:24px;padding-top:18px;top:var(--st);bottom:var(--sb)}
-html.land body.obsMode .drawer .dHead b{color:#3f2a18}
-html.land body.obsMode .drawer .btn{background:#fffdf3;color:var(--note-ink);border:1.5px solid #a98a60;box-shadow:0 1px 2px #3a241244;font-weight:600}
-html.land body.obsMode .drawer .btn small,html.land body.obsMode .drawer small{color:#7a6144}
-html.land body.obsMode .drawer .tag{background:#efe2c4;color:var(--note-ink);border:1px solid #c4a878}
+html.land body.noteUI .drawer{background:transparent url(img/ui/note_page.webp) center/100% 100% no-repeat;color:var(--note-ink);font-weight:600;border:0;box-shadow:none;filter:drop-shadow(-2px 2px 5px #3a241266);padding-left:46px;padding-right:24px;padding-top:18px;top:var(--st);bottom:var(--sb)}
+html.land body.noteUI .drawer .dHead b{color:#3f2a18}
+html.land body.noteUI .drawer .btn{background:#fffdf3;color:var(--note-ink);border:1.5px solid #a98a60;box-shadow:0 1px 2px #3a241244;font-weight:600}
+html.land body.noteUI .drawer .btn small,html.land body.noteUI .drawer small{color:#7a6144}
+html.land body.noteUI .drawer .tag{background:#efe2c4;color:var(--note-ink);border:1px solid #c4a878}
 html.land body.obsMode .obsR .info{color:#6a5238;font-size:calc(var(--nf) * .84);line-height:1.4;margin:.4em 0 0}
-html.land body.obsMode{isolation:isolate}
-html.land.tall body.obsMode #tabs button{width:72px;min-height:74px;font-size:14px}
-html.land.tall body.obsMode #tabs .tabArt{width:44px;height:44px}
-html.land.tall body.obsMode #hud{font-size:17px}
+html.land body.noteUI{isolation:isolate}
+html.land.tall body.noteUI #tabs button{width:72px;min-height:74px;font-size:14px}
+html.land.tall body.noteUI #tabs .tabArt{width:44px;height:44px}
+html.land.tall body.noteUI #hud{font-size:17px}
+/* 飼育画面いがいの画面：絵の上に紙のカードを置く。色は変数で切りかえる */
+html.land body.noteUI:not(.obsMode) #view{--win:#fffaebf2;--ink:#4a3320;--edge:#b49468;--sun:#8a5a14;--mute:#6f573c;color:var(--ink);font-weight:600}
+html.land body.noteUI:not(.obsMode) #view>h2,html.land body.noteUI:not(.obsMode) #view>h3,html.land body.noteUI:not(.obsMode) #view>p:not(.win){width:fit-content;max-width:100%;box-sizing:border-box;background:#fffaebe6;border:0;border-radius:8px;padding:.1em .6em;margin:.3em 0;color:#3f2a18;letter-spacing:.02em;box-shadow:0 1px 3px #3a241244}
+html.land body.noteUI:not(.obsMode) #view h3{color:#3f2a18;border-color:#b4946866}
+html.land body.noteUI:not(.obsMode) .small{color:var(--mute)}
+html.land body.noteUI:not(.obsMode) #view>p.small{color:#4a3320}
+html.land body.noteUI:not(.obsMode) .win,html.land body.noteUI:not(.obsMode) .spot,html.land body.noteUI:not(.obsMode) .case,html.land body.noteUI:not(.obsMode) .rival{box-shadow:0 2px 4px #3a241244;border-width:1.5px}
+html.land body.noteUI:not(.obsMode) .btn{box-shadow:0 1px 3px #3a241244}
+html.land body.noteUI:not(.obsMode) .btn.pri{background:#f6cf5b;color:#3a2410;border-color:#d9a93a}
+html.land body.noteUI:not(.obsMode) .btn.sub{background:#efe2c4}
+html.land body.noteUI:not(.obsMode) .case .nm{color:#3f2a18}
+html.land body.noteUI:not(.obsMode) .case .boxLine{border-color:#b4946866}
+html.land body.noteUI:not(.obsMode) .demoBox{background:#fffaebe6}
+html.land body.noteUI:not(.obsMode) .album .ph,html.land body.noteUI:not(.obsMode) .dexGrid .d{box-shadow:0 1px 3px #3a241244}
+/* 絵が見えるよう、画面ごとにカードの置き場所をかえる。はばは --H ではなく #view のわりあい */
+html.land body.noteUI[data-tab=out] #view{padding-top:calc(var(--H) * .3)}
+html.land body.noteUI[data-tab=sumo] #view{margin-left:auto;width:58%}
+html.land body.noteUI[data-tab=shop] #view{margin-left:auto;width:62%}
+html.land body.noteUI[data-tab=dex] #view{margin-left:auto;width:68%}
+html.land body.noteUI[data-tab=opt] #view{margin-left:auto;width:62%}
+html.land body.noteUI[data-tab=sumo] #placeBg{background-size:calc(max(var(--W),var(--H) * 1.5) * 1.28) auto;background-position:right bottom}
+/* 押せないものも、すけないように（うしろの絵と文字がかさなって読めなくなる） */
+html.land body.noteUI:not(.obsMode) .btn:disabled{opacity:1;background:#e9dcc0;color:#8d7a60;border-color:#c9b48f}
+html.land body.noteUI:not(.obsMode) .btn:disabled small{color:#8d7a60}
+html.land body.noteUI:not(.obsMode) .btn:disabled .decoIc,html.land body.noteUI:not(.obsMode) .btn:disabled svg{opacity:.6}
+html.land body.noteUI:not(.obsMode) .rival.locked{opacity:1;background:#e9dcc0;color:#8d7a60}
+html.land body.noteUI:not(.obsMode) .rival.locked .small,html.land body.noteUI:not(.obsMode) .rival.locked b{color:#8d7a60}
+html.land body.noteUI:not(.obsMode) .dexGrid .d.no,html.land body.noteUI:not(.obsMode) .album .ph.no{opacity:1;background:#e9dcc0;color:#8d7a60}
+html.land body.noteUI:not(.obsMode) .case.empty,html.land body.noteUI:not(.obsMode) .case.buy{opacity:1;background:#fffaebd9}
+/* タブレット：字を大きく */
+html.land.tall body.noteUI:not(.obsMode) #view{font-size:21px}
+html.land.tall body.noteUI:not(.obsMode) #view .small{font-size:18px}
+html.land.tall body.noteUI:not(.obsMode) #view h2{font-size:28px}
+html.land.tall body.noteUI:not(.obsMode) #view h3{font-size:22px}
+html.land.tall body.noteUI:not(.obsMode) .spot{font-size:21px}
+html.land.tall body.noteUI:not(.obsMode) .spot .bugs{font-size:18px}
+html.land.tall body.noteUI:not(.obsMode) .opt .btn{font-size:21px}
+html.land.tall body.noteUI:not(.obsMode) .opt .btn small{font-size:18px}
+html.land.tall body.noteUI:not(.obsMode) .case .nm{font-size:21px}
+html.land.tall body.noteUI:not(.obsMode) .case .st,html.land.tall body.noteUI:not(.obsMode) .case .meters,html.land.tall body.noteUI:not(.obsMode) .case .boxLine{font-size:18px}
+html.land.tall body.noteUI:not(.obsMode) .rival{font-size:20px}
+html.land.tall body.noteUI:not(.obsMode) .dexGrid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+html.land.tall body.noteUI:not(.obsMode) .dexGrid .d{font-size:17px}
+html.land.tall body.noteUI:not(.obsMode) .album .ph{font-size:14px}
+html.land body.noteUI:not(.obsMode) #hud{z-index:65}
 html.land.tall body.obsMode .obsR{margin-top:40px;height:calc(100% - 40px)}
-html.land.tall body.obsMode #rtabs{top:calc(var(--st) + 56px)}
-html.land.tall body.obsMode #rtabs .rt{font-size:15px}
+html.land.tall body.noteUI #rtabs{top:calc(var(--st) + 56px)}
+html.land.tall body.noteUI #rtabs .rt{font-size:15px}
 </style>
 
 <div id="app">
@@ -711,9 +757,13 @@ const SAVE_KEY = KEY_PRE + 'munakata-mushisodate-v1';
 const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
-const GAME_VER = '0.11.1';
-const BUILD = '20261105-2237';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const GAME_VER = '0.12.0';
+const BUILD = '20261105-2302';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
+  {v:'0.12.0', date:'2026-11-05', items:[
+    'そと・すもう・おみせ・ずかん・その他の画面に絵が入った！ 丘から大島が見える宗像のけしき、赤間の町の切りかぶ、虫具店の中も見られるよ',
+    'どの画面も、虫かごの画面と同じ紙のカードの見た目になった',
+  ]},
   {v:'0.11.1', date:'2026-11-05', items:[
     'iPhoneやiPadで、文字やボタンが切れないようにした。画面の上のぼやけるところには、ボタンを置かないようにしたよ',
     'ノートのリングに文字がかからないようにして、iPadでは字とボタンを大きくした',
@@ -1880,11 +1930,13 @@ document.querySelector('#rtabs [data-t=home]').onclick = ()=>{ setSide(null); se
 function setTab(t){ tab = t; openCase = null; document.querySelectorAll('#tabs button, #rtabs [data-t]').forEach(b=> b.classList.toggle('on', b.dataset.t === t)); render(); (scrollTo(0,0), view.scrollTop = 0); }
 document.querySelectorAll('#tabs button').forEach(b=> b.onclick = ()=> setTab(b.dataset.t));
 function render(){
-  document.body.classList.toggle('obsMode', !!S && openCase !== null); document.body.classList.toggle('title', !S);
+  document.body.classList.toggle('obsMode', !!S && openCase !== null); document.body.classList.toggle('title', !S); document.body.classList.toggle('noteUI', !!S);
+  document.body.dataset.tab = openCase !== null ? 'case' : tab;
   document.querySelectorAll('body > #drawer').forEach(e=>e.remove()); $('rtCase').hidden = true;   // ケースのこと は、ケースの画面のときだけ
   if(sidePanel === 'case') sidePanel = null; setSide(sidePanel); $('rtabs').hidden = !S;
   if(!S){ renderTitle(); return; }
   if(openCase !== null){ renderObs(); return; }
+  { const pb = $('placeBg'), ti = (tab === 'out' || tab === 'sumo') ? CASE_TINT[slotOf()] : null; pb.style.backgroundImage = `url(img/ui/${tab === 'home' ? 'place_heya' : 'scr_' + tab}.webp)`; pb.firstElementChild.style.cssText = ti ? `background:${ti[0]};opacity:${(ti[1]*.8).toFixed(2)}` : ''; }
   ({home:renderHome, out:renderOut, sumo:renderSumo, shop:renderShop, dex:renderDex, opt:renderOpt})[tab]();
 }
 
@@ -2454,7 +2506,7 @@ function renderOut(){
   const slot = slotOf(), today = dayKey();
   if(outState && outState.spot) return renderSpot();
   view.innerHTML = `<h2>そとへ虫をさがしに行く</h2>
-    <p class="small">いまは<b style="color:#fff">${SLOT_NAMES[slot]}</b>。活動中の虫は見つけやすい。ねむっている虫も、さがせば見つかることがある（夜の山は危ないので、昼に行っても大丈夫）。つかまえた場所と時間は、虫の「生まれ」として残る。</p>
+    <p class="small">いまは<b style="color:var(--ink)">${SLOT_NAMES[slot]}</b>。活動中の虫は見つけやすい。ねむっている虫も、さがせば見つかることがある（夜の山は危ないので、昼に行っても大丈夫）。つかまえた場所と時間は、虫の「生まれ」として残る。</p>
     <div class="row"><button type="button" class="btn pri" id="btnGeo">📍 いまいる場所をしらべる</button></div>
     <div class="spots" style="margin-top:10px">${SPOTS.map(sp=>{ const v = (S.visits[sp.key+'|'+today]||0), bn = BORN[sp.key];
       return `<div class="spot"><b>${esc(sp.name)}</b>　<span class="small">${esc(sp.env)}</span><div class="bugs">いま活動中：${spotBugs(sp.key, slot).map(nmQ).join('・') || 'いない'}　／　ねむっている：${spotBugs(sp.key).filter(id=>!BUGS[id].time.includes(slot) && !BUGS[id].spots.includes('any')).map(id=>`${nmQ(id)}（${BUGS[id].time.map(t=>SLOT_NAMES[t]).join('・')}）`).join('・') || 'なし'}</div><div class="small">${esc(bn.name)}：${esc(bn.txt)}</div>${v ? `<div class="small">今日は${v}回さがした</div>` : ''}</div>`; }).join('')}
