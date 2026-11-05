@@ -164,11 +164,11 @@ p{margin:.3em 0}
 
 /* 全画面パネル（ずかん・説明など）：「とじる」はいつも右下 */
 .full{position:fixed;inset:0;z-index:100;overflow-y:auto;background:var(--frame);
-  padding:max(12px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+  padding:max(12px,var(--st,0px)) max(16px,var(--sr,0px)) max(16px,var(--sb,0px)) max(16px,var(--sl,0px))}
 .full .in{max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:10px;padding-bottom:80px}
 .full .top{display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:2px solid #f7f1df55;padding-bottom:6px}
 .full .top h2{margin:0}
-.full .close{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:101;font-size:17px;padding:.55em 1.5em;box-shadow:0 3px 0 #0006,0 0 0 2px var(--frame)}
+.full .close{position:fixed;right:max(16px,var(--sr,0px));bottom:max(16px,var(--sb,0px));z-index:101;font-size:17px;padding:.55em 1.5em;box-shadow:0 3px 0 #0006,0 0 0 2px var(--frame)}
 .chlog h3{margin:.8em 0 .2em}
 .chlog .now{font-size:11px;background:var(--sun);color:#1b130c;border-radius:999px;padding:0 .5em;margin-left:.5em}
 .chlog ul{margin:.2em 0 .6em;padding-left:1.3em;font-size:13px}
@@ -188,7 +188,7 @@ p{margin:.3em 0}
 #msgLayer .yk{color:var(--sun)}
 
 /* 新しい版のお知らせ（虫とり日記と同じ） */
-.updBar{position:fixed;left:12px;right:12px;margin:0 auto;width:fit-content;top:calc(env(safe-area-inset-top,0px) + 6px);z-index:10000;display:flex;align-items:center;justify-content:center;gap:.6em;white-space:nowrap;background:#14284af0;color:#fff;border:2px solid var(--sun);border-radius:10px;padding:.4em .5em .4em .9em;box-shadow:0 4px 12px #0008;font-size:13px}
+.updBar{position:fixed;left:12px;right:12px;margin:0 auto;width:fit-content;top:calc(var(--st,0px) + 6px);z-index:10000;display:flex;align-items:center;justify-content:center;gap:.6em;white-space:nowrap;background:#14284af0;color:#fff;border:2px solid var(--sun);border-radius:10px;padding:.4em .5em .4em .9em;box-shadow:0 4px 12px #0008;font-size:13px}
 .updBar button{font:inherit;background:var(--sun);color:#1b130c;border:0;border-radius:6px;padding:.35em .8em;cursor:pointer;white-space:nowrap}
 .updAsk{position:fixed;inset:0;z-index:10001;display:flex;align-items:center;justify-content:center;background:#0008;padding:16px}
 .updAsk .box{background:#14284a;color:#fff;border:2px solid var(--sun);border-radius:12px;padding:1em 1.1em;max-width:22em;font-size:15px;line-height:1.7;box-shadow:0 6px 18px #000a}
@@ -197,7 +197,7 @@ p{margin:.3em 0}
 .updAsk button{font:inherit;border:0;border-radius:8px;padding:.6em .8em;cursor:pointer}
 .updAsk .go{background:var(--sun);color:#1b130c}
 .updAsk .later{background:#ffffff22;color:#fff}
-.demoBadge{position:fixed;right:env(safe-area-inset-right,0px);top:env(safe-area-inset-top,0px);z-index:9999;background:#c0392b;color:#fff;font-size:10px;letter-spacing:.1em;padding:1px 7px;border-radius:0 0 0 6px;opacity:.9;pointer-events:none}
+.demoBadge{position:fixed;right:var(--sr,0px);top:var(--st,0px);z-index:9999;background:#c0392b;color:#fff;font-size:10px;letter-spacing:.1em;padding:1px 7px;border-radius:0 0 0 6px;opacity:.9;pointer-events:none}
 .saveMark{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(80px + env(safe-area-inset-bottom,0px));z-index:60;background:#0009;color:#fff;font-size:11px;border-radius:999px;padding:.1em .8em;opacity:0;transition:opacity .3s;pointer-events:none}
 .saveMark.on{opacity:1}
 
@@ -484,7 +484,10 @@ html.land .sendL.recv .in{display:flex}
 @media (min-width:600px) and (orientation:portrait){ #tabs button{font-size:15px} }
 /* ===== 観察画面の2列（左：ケース／右：道具とステータス） ===== */
 .obsGrid{display:flex;flex-direction:column;gap:8px}
-.obsHead{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.obsHead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:2px 8px}
+.obsHead h2{flex:0 0 100%}
+.headTags{flex:1 1 0;min-width:0;display:flex;flex-wrap:wrap;gap:3px}
+.headTags .tag{white-space:nowrap}
 .obsHead h2{margin:0;font-size:16px;line-height:1.3}
 .obsR .meters{margin-top:6px}
 .obsR .info{margin:.3em 0}
@@ -515,9 +518,13 @@ html:not(.land) #rtabs [data-t=home]{display:none}
 /* ===== 横レイアウト =====
    html.land は JS が付ける：横画面のとき、または たて画面のスマホ・タブレットを「画面ごと90度まわして」横に見せているとき（向きロック対策）
    --W / --H は横レイアウトの はば・高さ。--sl/--sr/--st/--sb は横にしたときの左右上下のセーフエリア */
-:root{--W:100vw;--H:100vh;--vw:100vw;--vh:100vh;--sl:env(safe-area-inset-left,0px);--sr:env(safe-area-inset-right,0px);--st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px)}
-html[data-rot="1"]{--sl:env(safe-area-inset-top,0px);--sr:env(safe-area-inset-bottom,0px);--st:env(safe-area-inset-right,0px);--sb:env(safe-area-inset-left,0px)}
-html[data-rot="-1"]{--sl:env(safe-area-inset-bottom,0px);--sr:env(safe-area-inset-top,0px);--st:env(safe-area-inset-left,0px);--sb:env(safe-area-inset-right,0px)}
+/* --eT など：端末のセーフエリア。--bt：端末のいちばん上で、OSが画面をぼかす帯の太さ（ステータスバーより広い。iPadで約2倍、iPhoneで約68px） */
+:root{--W:100vw;--H:100vh;--vw:100vw;--vh:100vh;--eT:env(safe-area-inset-top,0px);--eB:env(safe-area-inset-bottom,0px);--eL:env(safe-area-inset-left,0px);--eR:env(safe-area-inset-right,0px);--bt:min(calc(var(--eT) * 2),68px);--band:#3a2a1c;--sl:var(--eL);--sr:var(--eR);--st:var(--bt);--sb:var(--eB)}
+html[data-rot="1"]{--sl:var(--bt);--sr:var(--eB);--st:var(--eR);--sb:var(--eL)}
+html[data-rot="-1"]{--sl:var(--eB);--sr:var(--bt);--st:var(--eL);--sb:var(--eR)}
+/* ぼかされても見た目が変わらないよう、帯は無地でおおう。まわしていても、端末の上に出るよう html に付ける */
+html::before{content:"";position:fixed;left:0;right:0;top:0;height:var(--bt);background:var(--band);z-index:100000;pointer-events:none}
+html.land{background:var(--band)}
 html[data-rot="1"] body,html[data-rot="-1"] body{position:fixed;top:0;left:0;width:var(--W);height:var(--H);transform-origin:0 0;margin:0}
 html[data-rot="1"] body{transform:translateX(var(--vw)) rotate(90deg)}
 html[data-rot="-1"] body{transform:translateY(var(--vh)) rotate(-90deg)}
@@ -617,7 +624,7 @@ html.land #arena .ctl{grid-column:2;margin-top:0}
 html.land body.obsMode #placeBg{display:block;position:fixed;inset:0;z-index:-1;background-position:center bottom;background-size:cover;background-repeat:no-repeat;background-color:#d9c4a4}
 #placeBg i{position:absolute;inset:0;display:block}
 .tabArt{display:none}
-html.land body.obsMode{--note-ink:#4a3320;--sih:min(calc((var(--H) - var(--st) - var(--sb) - 92px) * .73),calc((var(--W) - 76px - var(--rtw)) * .6 / 1.78));font-family:"Klee One","Hiragino Maru Gothic ProN","Hiragino Sans",sans-serif;background:#d9c4a4}
+html.land body.obsMode{--note-ink:#4a3320;--toolh:clamp(50px,calc(var(--H) * .085),84px);--nf:clamp(14px,calc(var(--H) * .023),22px);--sih:min(calc((var(--H) - var(--st) - var(--sb) - var(--toolh) - 42px) * .73),calc((var(--W) - 80px - var(--rtw) - var(--sl) - var(--sr)) * .6 / 1.78));font-family:"Klee One","Hiragino Maru Gothic ProN","Hiragino Sans",sans-serif;background:#d9c4a4}
 html.land body.obsMode #view{padding-top:0;font-weight:600;overflow:hidden}
 html.land body.obsMode .obsGrid{gap:6px;box-sizing:border-box;height:100%;grid-template-rows:minmax(0,1fr);align-items:stretch}
 html.land body.obsMode .obsL{width:calc(var(--sih) * 1.78);flex:none;justify-content:flex-end;gap:4px;padding-bottom:4px;box-sizing:border-box;align-items:center;height:100%}
@@ -626,7 +633,7 @@ html.land body.obsMode .caseBox{position:relative;flex:none}
 html.land body.obsMode .caseBox .caseArt{display:block;position:absolute;inset:0;width:100%;height:100%;pointer-events:none;-webkit-user-drag:none;user-select:none;filter:drop-shadow(0 3px 3px #3a241255)}
 html.land body.obsMode #obs .caseBox .scene{position:absolute;max-width:none;aspect-ratio:auto;border:0;border-radius:0 0 3px 3px;background:transparent;overflow:hidden}
 html.land body.obsMode .obsL .tools{width:100%;max-width:none;gap:3px}
-html.land body.obsMode .obsL .tools .tbtn{height:50px;color:var(--note-ink);background:url(img/ui/card.webp) center/100% 100% no-repeat;border:0;border-radius:8px;font-weight:600;font-size:11px;letter-spacing:-.06em;filter:drop-shadow(0 1px 2px #3a241266)}
+html.land body.obsMode .obsL .tools .tbtn{height:var(--toolh);color:var(--note-ink);background:url(img/ui/card.webp) center/100% 100% no-repeat;border:0;border-radius:8px;font-weight:600;font-size:clamp(10.5px,calc(var(--H) * .0165),16px);letter-spacing:-.1em;white-space:nowrap;filter:drop-shadow(0 1px 2px #3a241266)}
 html.land body.obsMode .obsL .tools .tbtn.on{background:#f6cf5b;box-shadow:inset 0 0 0 2px #fff8;color:#3a2410}
 html.land body.obsMode #tabs button{background:url(img/ui/card.webp) center/100% 100% no-repeat;color:var(--note-ink);border:0;border-radius:8px;box-shadow:none;width:68px;margin-left:4px;min-height:58px;font-weight:600;font-size:12px;filter:drop-shadow(0 1px 2px #3a241266)}
 html.land body.obsMode #tabs{gap:6px;padding-top:max(6px,var(--st))}
@@ -640,24 +647,30 @@ html.land body.obsMode #rtabs #rtCase{background-image:url(img/ui/tab_b.webp)}
 html.land body.obsMode #rtabs .rt.on{filter:drop-shadow(0 0 3px #fff) drop-shadow(1px 1px 2px #3a241266)}
 html.land body.obsMode #hud{background:#fbf3dfee;color:var(--note-ink);border-radius:8px;box-shadow:0 1px 3px #3a241255;font-weight:600;top:max(3px,var(--st))}
 html.land body.obsMode #hud .money{color:#8a5a14}
-html.land body.obsMode .obsR{position:relative;margin-top:30px;color:var(--note-ink);height:calc(100% - 30px);max-height:none;background:url(img/ui/note_page.webp) center/100% 100% no-repeat;padding:13px 20px 16px 38px;box-sizing:border-box;filter:drop-shadow(0 3px 4px #3a241255)}
-html.land body.obsMode .obsR>.obsHead h2{color:#3f2a18;font-size:15px;font-weight:600;line-height:1.25}
+html.land body.obsMode .obsR{position:relative;margin-top:30px;color:var(--note-ink);height:calc(100% - 30px);max-height:none;background:url(img/ui/note_page.webp) center/100% 100% no-repeat;padding:max(13px,3.2%) 5.5% max(16px,4.5%) 12.5%;box-sizing:border-box;filter:drop-shadow(0 3px 4px #3a241255)}
+html.land body.obsMode .obsR>.obsHead h2{color:#3f2a18;font-size:calc(var(--nf) * 1.06);font-weight:600;line-height:1.25;letter-spacing:0;margin:0}
 html.land body.obsMode .obsR>.obsHead .backBtn{background:#fbf3df;color:var(--note-ink);border:1.5px solid #a98a60;box-shadow:none;font-weight:600}
 html.land body.obsMode .obsR>.obsHead .tag{background:#efe2c4;color:var(--note-ink);border:1px solid #c4a878}
-html.land body.obsMode #obs .obsR .obsTxt{background:#fffdf3cc;color:var(--note-ink);border:1.5px solid #a9b67a;border-radius:10px;box-shadow:none;font-size:14px;line-height:1.45;min-height:4.4em;padding:.35em .6em}
-html.land body.obsMode .obsR .meters{width:100%;font-size:12px;margin-top:6px;gap:2px 6px}
-html.land body.obsMode .obsR .meters .bar{height:9px;background:#fbf6e6;border:1px solid #8a6a44;border-radius:5px;overflow:hidden}
+html.land body.obsMode #obs .obsR .obsTxt{background:#fffdf3cc;color:var(--note-ink);border:1.5px solid #a9b67a;border-radius:10px;box-shadow:none;font-size:var(--nf);line-height:1.45;min-height:3.2em;padding:.35em .6em}
+html.land body.obsMode .obsR .meters{width:100%;font-size:calc(var(--nf) * .86);margin-top:6px;gap:2px 6px}
+html.land body.obsMode .obsR .meters .bar{height:calc(var(--nf) * .66);background:#fbf6e6;border:1px solid #8a6a44;border-radius:5px;overflow:hidden}
 html.land body.obsMode .obsR .meters .bar i{background:repeating-linear-gradient(112deg,#8fbb4e 0 3px,#a6cc62 3px 5px,#86b246 5px 7px);border-radius:0}
 html.land body.obsMode .mini{background:#fbf3dfe8;color:var(--note-ink);border:1.5px solid #a98a60;font-weight:600}
 html.land body.obsMode .toolObj .hint{background:#fbf3dfee;color:var(--note-ink);border:1px solid #a98a60;font-weight:600}
 html.land body.obsMode .mini .bar{background:#fbf6e6;border:1px solid #8a6a44}
-html.land body.obsMode .drawer{background:transparent url(img/ui/note_page.webp) center/100% 100% no-repeat;color:var(--note-ink);font-weight:600;border:0;box-shadow:none;filter:drop-shadow(-2px 2px 5px #3a241266);padding-left:46px;padding-right:24px;padding-top:18px}
+html.land body.obsMode .drawer{background:transparent url(img/ui/note_page.webp) center/100% 100% no-repeat;color:var(--note-ink);font-weight:600;border:0;box-shadow:none;filter:drop-shadow(-2px 2px 5px #3a241266);padding-left:46px;padding-right:24px;padding-top:18px;top:var(--st);bottom:var(--sb)}
 html.land body.obsMode .drawer .dHead b{color:#3f2a18}
 html.land body.obsMode .drawer .btn{background:#fffdf3;color:var(--note-ink);border:1.5px solid #a98a60;box-shadow:0 1px 2px #3a241244;font-weight:600}
 html.land body.obsMode .drawer .btn small,html.land body.obsMode .drawer small{color:#7a6144}
 html.land body.obsMode .drawer .tag{background:#efe2c4;color:var(--note-ink);border:1px solid #c4a878}
-@media (min-height:600px){html.land body.obsMode #obs .obsR .obsTxt{font-size:18px}html.land body.obsMode .obsR>.obsHead h2{font-size:19px}html.land body.obsMode .obsR .meters{font-size:16px}html.land body.obsMode .obsR .meters .bar{height:13px}html.land body.obsMode .obsR .info{font-size:15px}html.land body.obsMode .obsL .tools .tbtn{height:72px;font-size:14px}}
-html.land body.obsMode .obsR .info{color:#6a5238;font-size:12px;line-height:1.4}
+html.land body.obsMode .obsR .info{color:#6a5238;font-size:calc(var(--nf) * .84);line-height:1.4;margin:.4em 0 0}
+html.land body.obsMode{isolation:isolate}
+html.land.tall body.obsMode #tabs button{width:72px;min-height:74px;font-size:14px}
+html.land.tall body.obsMode #tabs .tabArt{width:44px;height:44px}
+html.land.tall body.obsMode #hud{font-size:17px}
+html.land.tall body.obsMode .obsR{margin-top:40px;height:calc(100% - 40px)}
+html.land.tall body.obsMode #rtabs{top:calc(var(--st) + 56px)}
+html.land.tall body.obsMode #rtabs .rt{font-size:15px}
 </style>
 
 <div id="app">
@@ -698,9 +711,13 @@ const SAVE_KEY = KEY_PRE + 'munakata-mushisodate-v1';
 const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
-const GAME_VER = '0.11.0';
-const BUILD = '20261105-0941';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const GAME_VER = '0.11.1';
+const BUILD = '20261105-2237';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
+  {v:'0.11.1', date:'2026-11-05', items:[
+    'iPhoneやiPadで、文字やボタンが切れないようにした。画面の上のぼやけるところには、ボタンを置かないようにしたよ',
+    'ノートのリングに文字がかからないようにして、iPadでは字とボタンを大きくした',
+  ]},
   {v:'0.11.0', date:'2026-11-05', items:[
     '虫かごの画面が「観察ノート」になった！ 虫かごが、へや・げんかん・ベランダの台の上に置かれて、どこにあるのかよくわかる',
     '虫かご5しゅるいが、それぞれ別の絵になった。広い虫かごとDXは横に広くて、虫が長く歩けるよ',
@@ -889,9 +906,10 @@ try{ if(screen.orientation && screen.orientation.lock) screen.orientation.lock('
    ========================================================= */
 const ROT_KEY = 'munakata-sodate-rot';
 let rotMode = 0;   // 0：まわさない　1：右に90度　-1：左に90度
+let rotLen = 0;    // まわしているときの、横レイアウトのはば（端末の長い辺のうち、絵がかける長さ）
 const rotPref = ()=>{ try{ return localStorage.getItem(ROT_KEY) === '-1' ? -1 : 1; }catch(e){ return 1; } };
-function c2f(x, y){ return rotMode === 1 ? {x:y, y:innerWidth - x} : rotMode === -1 ? {x:innerHeight - y, y:x} : {x, y}; }
-function f2c(x, y){ return rotMode === 1 ? {x:innerWidth - y, y:x} : rotMode === -1 ? {x:y, y:innerHeight - x} : {x, y}; }
+function c2f(x, y){ return rotMode === 1 ? {x:y, y:innerWidth - x} : rotMode === -1 ? {x:rotLen - y, y:x} : {x, y}; }
+function f2c(x, y){ return rotMode === 1 ? {x:innerWidth - y, y:x} : rotMode === -1 ? {x:y, y:rotLen - x} : {x, y}; }
 (function(){
   const dX = Object.getOwnPropertyDescriptor(MouseEvent.prototype, 'clientX'), dY = Object.getOwnPropertyDescriptor(MouseEvent.prototype, 'clientY');
   if(dX && dY && dX.get && dY.get){
@@ -903,16 +921,28 @@ function f2c(x, y){ return rotMode === 1 ? {x:innerWidth - y, y:x} : rotMode ===
     const a = c2f(r.left, r.top), b = c2f(r.right, r.bottom), x = Math.min(a.x, b.x), y = Math.min(a.y, b.y);
     return new DOMRect(x, y, Math.abs(a.x - b.x), Math.abs(a.y - b.y)); };
 })();
+function layoutProbeH(){ const d = document.createElement('div'); d.style.cssText = 'position:fixed;left:0;top:0;width:1px;height:100%;visibility:hidden;pointer-events:none'; document.documentElement.appendChild(d); const h = d.offsetHeight; d.remove(); return h; }
 function layout(){
   const touch = document.body.classList.contains('touch'), portrait = innerHeight > innerWidth;
   rotMode = touch && portrait ? rotPref() : 0;
-  const W = rotMode ? innerHeight : innerWidth, H = rotMode ? innerWidth : innerHeight, de = document.documentElement;
-  de.dataset.rot = rotMode; de.style.setProperty('--W', W + 'px'); de.style.setProperty('--H', H + 'px'); de.style.setProperty('--vw', innerWidth + 'px'); de.style.setProperty('--vh', innerHeight + 'px');
+  const de = document.documentElement;
+  // ホーム画面のアプリをたて向きで開くと、innerHeight より短い高さでしか絵がかけないことがある（iPhone）。短いほうに合わせる
+  rotLen = Math.min(innerHeight, de.clientHeight || innerHeight, layoutProbeH() || innerHeight);
+  const W = rotMode ? rotLen : innerWidth, H = rotMode ? innerWidth : innerHeight, short = rotMode && rotLen < innerHeight - 1;
+  de.dataset.rot = rotMode; de.style.setProperty('--W', W + 'px'); de.style.setProperty('--H', H + 'px'); de.style.setProperty('--vw', innerWidth + 'px'); de.style.setProperty('--vh', (rotMode ? rotLen : innerHeight) + 'px');
+  // 短いときは、端末の下のふちが絵の外になるので、そのぶんあけなくてよい
+  de.style.removeProperty('--sr'); de.style.removeProperty('--sl');
+  if(short) de.style.setProperty(rotMode === 1 ? '--sr' : '--sl', '0px');
   de.classList.toggle('land', W > H && W >= 600);
+  de.classList.toggle('tall', H >= 600);   // 横レイアウトの高さで見る（@media の高さは、まわす前の高さになってしまう）
 }
 layout();
 addEventListener('resize', ()=>{ layout(); });
 addEventListener('orientationchange', ()=> setTimeout(layout, 300));
+if(new URLSearchParams(location.search).has('sunpo')){ const b = document.createElement('div'); b.style.cssText = 'position:fixed;left:50%;top:40%;transform:translate(-50%,-50%);z-index:100001;background:#000c;color:#fff;font:13px/1.5 monospace;padding:8px;white-space:pre;pointer-events:none'; document.documentElement.appendChild(b);
+  const show = ()=>{ const de = document.documentElement, cs = getComputedStyle(de), pr = n=>{ const d = document.createElement('div'); d.style.cssText = 'position:fixed;visibility:hidden;height:var('+n+')'; de.appendChild(d); const v = Math.round(d.offsetHeight); d.remove(); return v; };
+    b.textContent = `inner ${innerWidth}x${innerHeight}\nclient ${de.clientWidth}x${de.clientHeight}\nscreen ${screen.width}x${screen.height}\nvv ${window.visualViewport ? Math.round(visualViewport.width)+'x'+Math.round(visualViewport.height) : '-'}\nprobe100% ${layoutProbeH()}\nenv T${pr('--eT')} B${pr('--eB')} L${pr('--eL')} R${pr('--eR')}\nrot ${rotMode} W${cs.getPropertyValue('--W')} H${cs.getPropertyValue('--H')}\nstandalone ${!!navigator.standalone}`; };
+  show(); addEventListener('resize', ()=> setTimeout(show, 50)); }
 function flipRot(){ try{ localStorage.setItem(ROT_KEY, rotPref() === 1 ? '-1' : '1'); }catch(e){} layout(); }
 
 /* =========================================================
@@ -1950,7 +1980,7 @@ async function renderObs(){
   const foodKey = st.k === 'adult' ? b.foodAdult : b.food, food = ITEMS[foodKey], haveFood = food.price === 0 || (S.items[foodKey]||0) > 0;
   const m = (lbl, v, extra='')=> `<span>${lbl}</span><span class="bar">${extra}<i class="${meterCls(v)}" style="width:${v}%"></i></span>`;
   const persTxt = c.pers && st.k === 'adult' ? `${PERS[c.pers].name}なので、${PERS[c.pers].txt}` : '';
-  const title = c.name ? `${esc(c.name)}（${esc(b.name)}の${stageLabel(c)}）` : caseKnown(c) ? `${esc(b.name)}の${stageLabel(c)}` : `なぞの${esc(GROUP[groupOf(c.bug)].name)}（${stageLabel(c)}）`;
+  const title = c.name ? `${esc(c.name)}（${esc(b.name)}の${stageLabel(c)}）` : caseKnown(c) ? `${esc(b.name)}の${stageLabel(c)}` : (GROUP[groupOf(c.bug)].name.endsWith(stageLabel(c)) ? `なぞの${esc(GROUP[groupOf(c.bug)].name)}` : `なぞの${esc(GROUP[groupOf(c.bug)].name)}（${stageLabel(c)}）`);
   const dirtN = (c.dirt||[]).length, oldN = (c.foods||[]).filter(f=>f.old).length;
   const ownDeco = Object.keys(ITEMS).filter(k=>ITEMS[k].cat && (S.items[k]||0) > 0);
   const bigGuide = st.k === 'pupa' ? 'さなぎの間は、大そうじはできない。' : (!big || big.step === 1) ? ((c.soilAge||0) > 72 || big ? '' : 'まだ大そうじはいらない（3日に1回くらい）。') + '🤏をつかんで虫の上で止めると、そっとつまめる。右上のひなんケースへ運ぼう。すばやくぶつけると虫がいやがる。' : big.step === 2 ? `🧹をつかんで、土の上を左右に動かして入れかえよう（あと${3 - big.pass}回）` : '🤏をひなんケースの上で止めて虫をつまみ、ケースの中へもどそう。';
@@ -1970,7 +2000,7 @@ async function renderObs(){
         : `<div class="tools norb" id="toolTray">${Object.keys(TOOLS).map(k=>`<button type="button" class="tbtn ${tool===k?'on':''}" data-tool="${k}" ${k==='esa' && st.k==='pupa' ? 'disabled' : ''}><span class="ic">${TOOLS[k].ic}</span>${TOOLS[k].name}</button>`).join('')}</div>`}
     </div>
     <div class="obsR">
-      <div class="obsHead"><h2>${title} ${bornTag}</h2><button type="button" class="btn sub backBtn" id="btnBack">↩ もどる</button></div>
+      <div class="obsHead"><h2>${title}</h2><div class="headTags">${bornTag}</div><button type="button" class="btn sub backBtn" id="btnBack">↩ もどる</button></div>
       <div class="obsTxt win" id="obsTxt">${showGuide && guide ? esc(guide) : msgHtml}</div>
       <div class="meters">${st.k !== 'pupa' ? m('おなか', c.hunger) : ''}${m('しめりけ', c.wet, `<b class="band" style="left:${band[0]}%;width:${band[1]-band[0]}%"></b>`)}${m('きれいさ', c.clean)}${m('元気', g)}</div>
       <p class="small info">${SLOT_NAMES[slot]}のようす。${c.pending || st.k === 'adult' ? '' : `このすがたで、あと${daysLeft(c)}日くらい。`}${st.k === 'adult' ? `<br>${esc(indLine(c))}<br>わざ：${c.moves.map(k=>esc(MOVES[k].name)).join('・')}　${c.size}mm ${esc(c.sex||'')}` : ''}</p>
