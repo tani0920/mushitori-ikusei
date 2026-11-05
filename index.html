@@ -28,7 +28,7 @@ if(DEMO){
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Klee+One:wght@400;600&display=swap">
 <style>
 /* 見た目は「むなかた虫とり日記」の家族：森のフレーム＋RPGウィンドウ。こちらは昼の飼育ケースなので、少し明るい苔色 */
 :root{
@@ -611,6 +611,53 @@ html.land #arena{display:grid;grid-template-columns:1.3fr 1fr;grid-template-rows
 html.land #arena .ring{grid-row:1 / 3;max-height:none}
 html.land #arena .log{grid-column:2;max-height:none;min-height:0;font-size:15px}
 html.land #arena .ctl{grid-column:2;margin-top:0}
+
+/* ===== 飼育画面：観察ノート。場所のけしきの台に、虫かごとノートを置く（横画面だけ） ===== */
+#placeBg{display:none}
+html.land body.obsMode #placeBg{display:block;position:fixed;inset:0;z-index:-1;background-position:center bottom;background-size:cover;background-repeat:no-repeat;background-color:#d9c4a4}
+#placeBg i{position:absolute;inset:0;display:block}
+.tabArt{display:none}
+html.land body.obsMode{--note-ink:#4a3320;--sih:min(calc((var(--H) - var(--st) - var(--sb) - 92px) * .73),calc((var(--W) - 76px - var(--rtw)) * .6 / 1.78));font-family:"Klee One","Hiragino Maru Gothic ProN","Hiragino Sans",sans-serif;background:#d9c4a4}
+html.land body.obsMode #view{padding-top:0;font-weight:600;overflow:hidden}
+html.land body.obsMode .obsGrid{gap:6px;box-sizing:border-box;height:100%;grid-template-rows:minmax(0,1fr);align-items:stretch}
+html.land body.obsMode .obsL{width:calc(var(--sih) * 1.78);flex:none;justify-content:flex-end;gap:4px;padding-bottom:4px;box-sizing:border-box;align-items:center;height:100%}
+html.land body.obsMode .caseBox{position:relative;flex:none}
+.caseBox .caseArt{display:none}
+html.land body.obsMode .caseBox .caseArt{display:block;position:absolute;inset:0;width:100%;height:100%;pointer-events:none;-webkit-user-drag:none;user-select:none;filter:drop-shadow(0 3px 3px #3a241255)}
+html.land body.obsMode #obs .caseBox .scene{position:absolute;max-width:none;aspect-ratio:auto;border:0;border-radius:0 0 3px 3px;background:transparent;overflow:hidden}
+html.land body.obsMode .obsL .tools{width:100%;max-width:none;gap:3px}
+html.land body.obsMode .obsL .tools .tbtn{height:50px;color:var(--note-ink);background:url(img/ui/card.webp) center/100% 100% no-repeat;border:0;border-radius:8px;font-weight:600;font-size:11px;letter-spacing:-.06em;filter:drop-shadow(0 1px 2px #3a241266)}
+html.land body.obsMode .obsL .tools .tbtn.on{background:#f6cf5b;box-shadow:inset 0 0 0 2px #fff8;color:#3a2410}
+html.land body.obsMode #tabs button{background:url(img/ui/card.webp) center/100% 100% no-repeat;color:var(--note-ink);border:0;border-radius:8px;box-shadow:none;width:68px;margin-left:4px;min-height:58px;font-weight:600;font-size:12px;filter:drop-shadow(0 1px 2px #3a241266)}
+html.land body.obsMode #tabs{gap:6px;padding-top:max(6px,var(--st))}
+html.land body.obsMode #tabs .ic{display:none}
+html.land body.obsMode #tabs .tabArt{display:block;width:32px;height:32px;margin:0 auto 1px;object-fit:contain;pointer-events:none}
+html.land body.obsMode #tabs button.on{background:#f6cf5b;color:#3a2410}
+html.land body.obsMode #rtabs{top:max(46px,calc(var(--st) + 46px));gap:4px}
+html.land body.obsMode #rtabs .rt{color:var(--note-ink);border:0;font-weight:600;box-shadow:none;background:url(img/ui/tab_y.webp) center/100% 100% no-repeat;filter:drop-shadow(1px 1px 2px #3a241266)}
+html.land body.obsMode #rtabs #rtItems{background-image:url(img/ui/tab_p.webp)}
+html.land body.obsMode #rtabs #rtCase{background-image:url(img/ui/tab_b.webp)}
+html.land body.obsMode #rtabs .rt.on{filter:drop-shadow(0 0 3px #fff) drop-shadow(1px 1px 2px #3a241266)}
+html.land body.obsMode #hud{background:#fbf3dfee;color:var(--note-ink);border-radius:8px;box-shadow:0 1px 3px #3a241255;font-weight:600;top:max(3px,var(--st))}
+html.land body.obsMode #hud .money{color:#8a5a14}
+html.land body.obsMode .obsR{position:relative;margin-top:30px;color:var(--note-ink);height:calc(100% - 30px);max-height:none;background:url(img/ui/note_page.webp) center/100% 100% no-repeat;padding:13px 20px 16px 38px;box-sizing:border-box;filter:drop-shadow(0 3px 4px #3a241255)}
+html.land body.obsMode .obsR>.obsHead h2{color:#3f2a18;font-size:15px;font-weight:600;line-height:1.25}
+html.land body.obsMode .obsR>.obsHead .backBtn{background:#fbf3df;color:var(--note-ink);border:1.5px solid #a98a60;box-shadow:none;font-weight:600}
+html.land body.obsMode .obsR>.obsHead .tag{background:#efe2c4;color:var(--note-ink);border:1px solid #c4a878}
+html.land body.obsMode #obs .obsR .obsTxt{background:#fffdf3cc;color:var(--note-ink);border:1.5px solid #a9b67a;border-radius:10px;box-shadow:none;font-size:14px;line-height:1.45;min-height:4.4em;padding:.35em .6em}
+html.land body.obsMode .obsR .meters{width:100%;font-size:12px;margin-top:6px;gap:2px 6px}
+html.land body.obsMode .obsR .meters .bar{height:9px;background:#fbf6e6;border:1px solid #8a6a44;border-radius:5px;overflow:hidden}
+html.land body.obsMode .obsR .meters .bar i{background:repeating-linear-gradient(112deg,#8fbb4e 0 3px,#a6cc62 3px 5px,#86b246 5px 7px);border-radius:0}
+html.land body.obsMode .mini{background:#fbf3dfe8;color:var(--note-ink);border:1.5px solid #a98a60;font-weight:600}
+html.land body.obsMode .toolObj .hint{background:#fbf3dfee;color:var(--note-ink);border:1px solid #a98a60;font-weight:600}
+html.land body.obsMode .mini .bar{background:#fbf6e6;border:1px solid #8a6a44}
+html.land body.obsMode .drawer{background:transparent url(img/ui/note_page.webp) center/100% 100% no-repeat;color:var(--note-ink);font-weight:600;border:0;box-shadow:none;filter:drop-shadow(-2px 2px 5px #3a241266);padding-left:46px;padding-right:24px;padding-top:18px}
+html.land body.obsMode .drawer .dHead b{color:#3f2a18}
+html.land body.obsMode .drawer .btn{background:#fffdf3;color:var(--note-ink);border:1.5px solid #a98a60;box-shadow:0 1px 2px #3a241244;font-weight:600}
+html.land body.obsMode .drawer .btn small,html.land body.obsMode .drawer small{color:#7a6144}
+html.land body.obsMode .drawer .tag{background:#efe2c4;color:var(--note-ink);border:1px solid #c4a878}
+@media (min-height:600px){html.land body.obsMode #obs .obsR .obsTxt{font-size:18px}html.land body.obsMode .obsR>.obsHead h2{font-size:19px}html.land body.obsMode .obsR .meters{font-size:16px}html.land body.obsMode .obsR .meters .bar{height:13px}html.land body.obsMode .obsR .info{font-size:15px}html.land body.obsMode .obsL .tools .tbtn{height:72px;font-size:14px}}
+html.land body.obsMode .obsR .info{color:#6a5238;font-size:12px;line-height:1.4}
 </style>
 
 <div id="app">
@@ -619,13 +666,14 @@ html.land #arena .ctl{grid-column:2;margin-top:0}
   <div id="view"></div><!-- 中央画面（#view） -->
 </div>
 <!-- 左メニュー（#tabs）：そと・すもう・おみせ・ずかん・その他（たて画面のPCでは下にならび、おうちもここ） -->
+<div id="placeBg"><i></i></div>
 <div id="tabs" hidden>
   <button type="button" data-t="home"><span class="ic">🧺</span>虫かご</button>
-  <button type="button" data-t="out"><span class="ic">🌳</span>そと</button>
-  <button type="button" data-t="sumo"><span class="ic">🏟</span>すもう</button>
-  <button type="button" data-t="shop"><span class="ic">🏪</span>おみせ</button>
-  <button type="button" data-t="dex"><span class="ic">📖</span>ずかん</button>
-  <button type="button" data-t="opt"><span class="ic">⚙</span>その他</button>
+  <button type="button" data-t="out"><span class="ic">🌳</span><img class="tabArt" src="img/ui/ic_out.webp" alt="" draggable="false">そと</button>
+  <button type="button" data-t="sumo"><span class="ic">🏟</span><img class="tabArt" src="img/ui/ic_sumo.webp" alt="" draggable="false">すもう</button>
+  <button type="button" data-t="shop"><span class="ic">🏪</span><img class="tabArt" src="img/ui/ic_shop.webp" alt="" draggable="false">おみせ</button>
+  <button type="button" data-t="dex"><span class="ic">📖</span><img class="tabArt" src="img/ui/ic_dex.webp" alt="" draggable="false">ずかん</button>
+  <button type="button" data-t="opt"><span class="ic">⚙</span><img class="tabArt" src="img/ui/ic_opt.webp" alt="" draggable="false">その他</button>
 </div>
 <!-- 右メニュー（#rtabs）：虫かご・もちもの・ケースのこと。押すとパネルが出る -->
 <div id="rtabs" hidden>
@@ -650,9 +698,14 @@ const SAVE_KEY = KEY_PRE + 'munakata-mushisodate-v1';
 const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
-const GAME_VER = '0.10.0';
-const BUILD = '20261105-0807';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const GAME_VER = '0.11.0';
+const BUILD = '20261105-0941';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
+  {v:'0.11.0', date:'2026-11-05', items:[
+    '虫かごの画面が「観察ノート」になった！ 虫かごが、へや・げんかん・ベランダの台の上に置かれて、どこにあるのかよくわかる',
+    '虫かご5しゅるいが、それぞれ別の絵になった。広い虫かごとDXは横に広くて、虫が長く歩けるよ',
+    'ノート・カード・しおりの見た目にして、字も読みやすくした',
+  ]},
   {v:'0.10.0', date:'2026-11-05', items:[
     '虫が動くようになった！ 幼虫は体を曲げのばしして、さなぎは静かに息をする。コクワガタやバッタは歩いて、バッタはピョンとはねる。スズムシは鳴くときに、はねがふるえる',
     'エサが8しゅるいとも絵になった。古くなると茶色くくすむよ',
@@ -994,6 +1047,15 @@ const BOXES = {
 };
 const boxIdx = c=> S.cases.indexOf(c);
 const boxOf = c=> BOXES[(S.boxes||[])[boxIdx(c)]] || BOXES.futsu;
+/* 虫かごの絵：ar はよこ÷たて、in は中の透明なところ [左, 上, はば, 高さ]（%）。tools/ui_prep.py が出す */
+const CASE_ART = {"futsu":{"ar":1.1811,"in":[6.0,21.26,87.67,72.83]},"wide":{"ar":1.676,"in":[4.22,26.63,91.33,67.97]},"ami":{"ar":1.1811,"in":[6.89,20.08,86.11,74.8]},"ki":{"ar":1.1749,"in":[7.22,21.67,85.22,70.76]},"dx":{"ar":1.6729,"in":[4.33,26.02,91.22,68.59]}};
+const BOX_WIDE = {wide:1, dx:1};   // 広い虫かご：虫の大きさはそのまま、左右に 10 ずつ広くなる（x は -10〜110）
+const caseExtra = c=> BOX_WIDE[(S.boxes||[])[boxIdx(c)]] ? 10 : 0;
+const noteUI = ()=> document.documentElement.classList.contains('land');
+const caseArtOf = c=> CASE_ART[(S.boxes||[])[boxIdx(c)]] || CASE_ART.futsu;
+/* ケースの中（--sih が高さ）を基準に、わくの絵の大きさを決める。広い虫かごは中のはばだけ広がるので、虫の大きさは同じ */
+const caseBoxCSS = c=>{ if(!noteUI()) return ''; const I = caseArtOf(c).in, ar = (100 + caseExtra(c)*2)/75; return `width:calc(var(--sih) * ${(ar*100/I[2]).toFixed(4)});height:calc(var(--sih) * ${(100/I[3]).toFixed(4)})`; };
+const caseSceneCSS = c=>{ if(!noteUI()) return ''; const I = caseArtOf(c).in; return `left:${I[0]}%;top:${I[1]}%;width:${I[2]}%;height:${I[3]}%`; };
 const MATS = {mat_fuyo:{fill:'#3b2a18', bits:'#6a4a28'}, mat_suna:{fill:'#d8c9a3', bits:'#b8a070'}, mat_kuro:{fill:'#2a2016', bits:'#1a1008'}};
 function decoSVG(k){   // viewBox 100x100 の中に描く。底が y=70 あたり
   switch(k){
@@ -1361,7 +1423,7 @@ function startMover(p, id, stage){
   const my = ++moverId, el = $('bugMove');
   if(!el || !(BUG_IMG[id]||{})[stage] || p.hidden || p.under || p.eating || (p.o && p.o.sleep)) return;
   if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const x0 = p.x, key = `${openCase}:${id}:${stage}:${x0}:${p.y}`, half = p.s*.85*46, lo = half + 2, hi = 100 - half - 2;
+  const x0 = p.x, key = `${openCase}:${id}:${stage}:${x0}:${p.y}`, half = p.s*.85*46, wx = noteUI() && S.cases[openCase] ? caseExtra(S.cases[openCase]) : 0, lo = half + 2 - wx, hi = 100 - half - 2 + wx;
   const mem = moverMem && moverMem.key === key ? moverMem : null;   // 道具を使って画面がかきなおされても、いた場所と向きをおぼえておく
   let x = mem ? mem.x : x0, face = mem ? mem.face : (Math.random() < .5 ? 1 : -1), shown = face, mode = 'idle', tx = x, phase = 0, leanT = 0, last = performance.now();
   let until = last + 800 + Math.random()*1500;
@@ -1701,7 +1763,7 @@ function sceneSVG(c, slot, o={}){
   const A = SOIL_ART[c.mat] || SOIL_ART.futsu, bgArt = CASE_BG[c.place] || CASE_BG.heya, tint = CASE_TINT[slot];
   const room = p.under ? soilRoom(p, soilTop, A) : null;
   const soilImg = `<image href="img/case/${A.img}.webp" x="-15" y="${soilTop - A.top}" width="130" height="${A.h}" preserveAspectRatio="none"/>`;
-  const soil = `<rect x="0" y="${soilTop + 2}" width="100" height="${98 - soilTop}" fill="${A.base}"/>${soilImg}<g mask="url(#soilMask)"><g id="wetLayer">${c.wetZ.map((v,z)=>`<rect class="wz" x="${z*20}" y="${soilTop - 4}" width="20" height="${104 - soilTop}" shape-rendering="crispEdges" fill="#1a0e04" opacity="${(v/100*.4).toFixed(2)}"/>`).join('')}</g></g>
+  const soil = `<rect x="-15" y="${soilTop + 2}" width="130" height="${98 - soilTop}" fill="${A.base}"/>${soilImg}<g mask="url(#soilMask)"><g id="wetLayer">${c.wetZ.map((v,z)=>`<rect class="wz" x="${z ? z*20 : -15}" y="${soilTop - 4}" width="${z === 0 || z === 4 ? 35 : 20}" height="${104 - soilTop}" shape-rendering="crispEdges" fill="#1a0e04" opacity="${(v/100*.4).toFixed(2)}"/>`).join('')}</g></g>
     <g id="soakLayer">${c.soakZ.map((v,z)=>`<ellipse class="sz" cx="${z*20+10}" cy="${soilTop+3}" rx="9" ry="2.3" fill="#6ab0e0" opacity="${(v > 0 ? Math.min(.85, v/40) : 0).toFixed(2)}"/>`).join('')}</g>`;
   const foods = (c.foods||[]).map(foodSVG).join('');
   const decos = (c.deco||[]).map(d=>`<g class="deco" data-deco="${d.id}" transform="translate(${d.x} ${d.y}) scale(.55) translate(-50 -70)"><g class="${ITEMS[d.k].hide ? 'leaf' : ''}">${decoSVG(d.k)}</g></g>`).join('');
@@ -1712,12 +1774,13 @@ function sceneSVG(c, slot, o={}){
   const dirt = (c.dirt||[]).map((d,i)=> d.k === 'kabi' ? `<g class="dirt" data-d="${i}" opacity="${(d.hp/3).toFixed(2)}"><circle cx="${d.x}" cy="${d.y}" r="4" fill="#eee" opacity=".8"/><circle cx="${d.x-2}" cy="${d.y+1}" r="2.5" fill="#fff"/><circle cx="${d.x+2}" cy="${d.y-1}" r="2" fill="#ddd"/></g>`
     : d.k === 'kumori' ? `<ellipse class="dirt" data-d="${i}" cx="${d.x}" cy="${d.y}" rx="7" ry="5" fill="#cfd8dc" opacity="${(d.hp/3*.55).toFixed(2)}"/>`
     : `<g class="dirt" data-d="${i}" opacity="${(d.hp/3).toFixed(2)}"><circle cx="${d.x}" cy="${d.y}" r="1.6" fill="#3b2715"/><circle cx="${d.x+2.5}" cy="${d.y+1.5}" r="1.2" fill="#3b2715"/><circle cx="${d.x-2}" cy="${d.y+2}" r="1" fill="#3b2715"/></g>`).join('');
-  const glass = `<rect x=".35" y="12.85" width="99.3" height="74.3" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width=".7" rx="1"/><path d="M3 16 L3 38" stroke="#fff" stroke-width=".7" stroke-linecap="round" opacity=".35"/>`;   // 4:3 で見えるのは y=12.5〜87.5
+  const ex = caseExtra(c), clear = o.clear;   // clear：後ろのけしきが、ガラスごしに見える（ノートの画面）
+  const glass = clear ? '' : `<rect x=".35" y="12.85" width="99.3" height="74.3" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width=".7" rx="1"/><path d="M3 16 L3 38" stroke="#fff" stroke-width=".7" stroke-linecap="round" opacity=".35"/>`;   // 4:3 で見えるのは y=12.5〜87.5
   const zz = p.o && p.o.sleep && !p.hidden ? `<text class="zz" x="${p.x+8}" y="${p.y-8}" font-size="7" fill="#fff">z</text><text class="zz" x="${p.x+13}" y="${p.y-14}" font-size="5" fill="#fff" style="animation-delay:-1.2s">z</text>` : '';
   const sing = p.o && p.o.sing ? `<text class="zz" x="${p.x+12}" y="${p.y-12}" font-size="5" fill="#fff">リーン</text>` : '';
   const nom = p.eating ? `<text class="zz" x="${p.x+10}" y="${p.y-6}" font-size="5" fill="#fff">もぐもぐ</text>` : '';
-  return {svg:`<svg id="sceneSvg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice"><defs><filter id="foodOld"><feColorMatrix type="matrix" values=".5 .3 .1 0 0  .35 .35 .1 0 0  .2 .2 .1 0 0  0 0 0 1 0"/></filter><mask id="soilMask" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="-15" y="0" width="130" height="100">${soilImg}</mask>${room ? room.defs : ''}</defs><g id="sceneMain">
-    <image href="img/case/${bgArt}.webp" x="0" y="12.5" width="100" height="75"/>${soil}${room ? room.back : ''}${tint ? `<rect width="100" height="100" fill="${tint[0]}" opacity="${tint[1]}" pointer-events="none"/>` : ''}${mess}${p.hidden || o.noBug ? '' : ''}${(p.hidden || p.behind) && !o.noBug ? bug : ''}${plants}${decos}${foods}${ants}${p.hidden || p.behind || o.noBug ? '' : bug}${zz}${sing}${nom}<g id="sprayLayer"></g><g id="dirtLayer">${dirt}</g>${glass}</g></svg>`, txt:p.txt, p};
+  return {svg:`<svg id="sceneSvg" viewBox="${clear ? -ex : 0} 0 ${clear ? 100 + ex*2 : 100} 100" preserveAspectRatio="xMidYMid slice"><defs><filter id="foodOld"><feColorMatrix type="matrix" values=".5 .3 .1 0 0  .35 .35 .1 0 0  .2 .2 .1 0 0  0 0 0 1 0"/></filter><mask id="soilMask" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="-15" y="0" width="130" height="100">${soilImg}</mask>${room ? room.defs : ''}</defs><g id="sceneMain">
+    ${clear ? '' : `<image href="img/case/${bgArt}.webp" x="0" y="12.5" width="100" height="75"/>`}${soil}${room ? room.back : ''}${tint ? (clear ? `<rect x="-15" y="${soilTop}" width="130" height="${100 - soilTop}" fill="${tint[0]}" opacity="${tint[1]}" pointer-events="none"/>` : `<rect width="100" height="100" fill="${tint[0]}" opacity="${tint[1]}" pointer-events="none"/>`) : ''}${mess}${p.hidden || o.noBug ? '' : ''}${(p.hidden || p.behind) && !o.noBug ? bug : ''}${plants}${decos}${foods}${ants}${p.hidden || p.behind || o.noBug ? '' : bug}${zz}${sing}${nom}<g id="sprayLayer"></g><g id="dirtLayer">${dirt}</g>${glass}</g></svg>`, txt:p.txt, p};
 }
 
 /* =========================================================
@@ -1883,7 +1946,7 @@ async function renderObs(){
   if(!obsSession || obsSession.i !== openCase) obsSession = {i:openCase, touches:0, sprayed:false};
   const furu = {n:0, x0:0, last:0, dir:0, seg:0};   // 「ふる」：つかんでゆらした回数
   const big = obsSession.big;   // 大そうじのとちゅう：{step:1 虫をひなんケースへ, 2 土を入れかえる, 3 虫をもどす}
-  const b = BUGS[c.bug], st = stageOf(c), slot = slotOf(), sc = sceneSVG(c, slot, {noBug: big && big.step >= 1 && big.step <= 3}), g = genkiOf(c), fc = forecast(c), band = WET_BAND[b.shape];
+  const b = BUGS[c.bug], st = stageOf(c), slot = slotOf(), sc = sceneSVG(c, slot, {noBug: big && big.step >= 1 && big.step <= 3, clear: noteUI()}), g = genkiOf(c), fc = forecast(c), band = WET_BAND[b.shape];
   const foodKey = st.k === 'adult' ? b.foodAdult : b.food, food = ITEMS[foodKey], haveFood = food.price === 0 || (S.items[foodKey]||0) > 0;
   const m = (lbl, v, extra='')=> `<span>${lbl}</span><span class="bar">${extra}<i class="${meterCls(v)}" style="width:${v}%"></i></span>`;
   const persTxt = c.pers && st.k === 'adult' ? `${PERS[c.pers].name}なので、${PERS[c.pers].txt}` : '';
@@ -1899,9 +1962,10 @@ async function renderObs(){
   const BX = boxOf(c), tags = `<span class="tag">${BX.ic} ${esc(BX.name)}</span><span class="tag">${PLACE_IC[c.place]} ${esc(PLACES[c.place].name)}</span>${c.rare ? '<span class="tag" style="background:#7a5a20">めずらしい色</span>' : ''}`;
   const msgHtml = `${esc(sc.txt)}${persTxt ? `<br>${esc(persTxt)}` : ''}${c.trouble ? `<br><b class="yk">【${esc(TROUBLE[c.trouble].name)}】</b>${esc(TROUBLE[c.trouble].txt)}` : ''}${(c.soak||0) > 30 ? '<br><b class="yk">【びちゃびちゃ】</b>水をかけすぎて、土に水たまりができている。かわくまで、きりふきはやめよう。' : ''}${c.pending ? '<br><b class="yk">…なんだか、ようすがかわりそう！</b>' : fc ? `<br><b class="yk">【予告】</b>${esc(fc)}` : ''}`;
   // 左：ケース（＋メッセージ）／右：見出し・道具・ステータス・引き出し。横画面では1画面におさまる。たて画面（PCのせまい窓など）では上から順にならぶ
+  { const pb = $('placeBg'), ti = CASE_TINT[slot]; pb.style.backgroundImage = `url(img/ui/place_${c.place}.webp)`; pb.firstElementChild.style.cssText = ti ? `background:${ti[0]};opacity:${(ti[1]*.8).toFixed(2)}` : ''; }
   view.innerHTML = `<div class="obsGrid" id="obs">
     <div class="obsL">
-      <div class="scene tool-${tool}" id="scene">${sc.svg}<div class="toolObj norb" id="toolObj" hidden></div><div class="binZone norb" id="binZone" hidden>しまう</div>${tool === 'big' && st.k !== 'pupa' ? `<div class="refuge norb ${big && big.step >= 1 ? 'on' : ''}" id="refuge"><small>ひなんケース</small><div class="rb" id="refugeBug">${big && big.step >= 2 ? svgBug(c.bug, st.k, {instar:instarOf(c), scale:.9}) : ''}</div></div>` : ''}<div class="mini norb" id="mini" hidden></div></div>
+      <div class="caseBox" style="${caseBoxCSS(c)}"><img class="caseArt" src="img/ui/case_${(S.boxes||[])[boxIdx(c)] || 'futsu'}.webp" alt="" draggable="false"><div class="scene tool-${tool}" id="scene" style="${caseSceneCSS(c)}">${sc.svg}<div class="toolObj norb" id="toolObj" hidden></div><div class="binZone norb" id="binZone" hidden>しまう</div>${tool === 'big' && st.k !== 'pupa' ? `<div class="refuge norb ${big && big.step >= 1 ? 'on' : ''}" id="refuge"><small>ひなんケース</small><div class="rb" id="refugeBug">${big && big.step >= 2 ? svgBug(c.bug, st.k, {instar:instarOf(c), scale:.9}) : ''}</div></div>` : ''}<div class="mini norb" id="mini" hidden></div></div></div>
       ${tool === 'kazari' ? `<div class="tools decoPick norb" id="decoPick"><button type="button" class="tbtn back" data-tool="yubi"><span class="ic">↩</span>道具へ</button>${ownDeco.map(k=>`<button type="button" class="pk ${decoSel===k?'on':''}" data-deco="${k}"><svg viewBox="0 0 100 100">${ITEMS[k].cat==='mat' ? `<rect x="10" y="40" width="80" height="45" rx="6" fill="${MATS[k].fill}"/>` : decoSVG(k)}</svg>${esc(ITEMS[k].name)}<small>×${S.items[k]}</small></button>`).join('')}</div>`
         : `<div class="tools norb" id="toolTray">${Object.keys(TOOLS).map(k=>`<button type="button" class="tbtn ${tool===k?'on':''}" data-tool="${k}" ${k==='esa' && st.k==='pupa' ? 'disabled' : ''}><span class="ic">${TOOLS[k].ic}</span>${TOOLS[k].name}</button>`).join('')}</div>`}
     </div>
@@ -1938,7 +2002,7 @@ async function renderObs(){
   // 虫めがね：レンズの中に、ケース（sceneMain）を 2.5 倍でうつす。虫の上にかざすと、くわしいようすが文に出る
   const LENS_Z = 2.5;
   const lensAt = ()=>{ const lens = toolObj.querySelector('.lens svg'); if(!lens) return;
-    const q = hotXY(), D = lens.getBoundingClientRect().width / (objPos.drag ? 1.08 : 1) || 100, k = Math.max(sceneEl.clientWidth, sceneEl.clientHeight) / 100, w = D / (k * LENS_Z);
+    const q = hotXY(), D = lens.getBoundingClientRect().width / (objPos.drag ? 1.08 : 1) || 100, k = Math.max(sceneEl.clientWidth * (noteUI() ? 100/(100 + caseExtra(c)*2) : 1), sceneEl.clientHeight) / 100, w = D / (k * LENS_Z);
     lens.setAttribute('viewBox', `${(q.x - w/2).toFixed(2)} ${(q.y - w/2).toFixed(2)} ${w.toFixed(2)} ${w.toFixed(2)}`); lensLook(); };
   let lensSaid = '';
   const LOOK = {clean:'虫めがねで見ると…前脚で、触角をそうじしている！ においをよく感じるために、だいじなことなんだ。', eat:'虫めがねで見ると…オレンジ色のブラシのような口で、ゼリーをなめている！', nemui:'虫めがねで見ると…おなかが、ゆっくりふくらんだりしぼんだりしている。息をしているんだ。', genki:'虫めがねで見ると…触角の先が、ひだのようにひらいている。ぴくぴく動かして、においをさぐっているよ。', threat:'虫めがねで見ると…ツノをもちあげて、こっちをにらんでいる！'};
@@ -2062,7 +2126,7 @@ async function renderObs(){
     if(!haveFood){ await say(`「${food.name}」がない！\n「おみせ」で買えるよ。`); return; }
     const fresh = (c.foods||[]).filter(f=>!f.old).length;
     if(fresh >= 2){ c.log.over++; save(); await say('もうエサが置いてある。\n置きすぎると、古くなってアリがくるよ。食べたら、また置こう。'); return; }
-    const soilTop = soilTopOf(b); y = clamp(y, 14, soilTop - 2); x = clamp(x, 8, 92);   // 土の中には置けない
+    const soilTop = soilTopOf(b); y = clamp(y, 14, soilTop - 2); x = clamp(x, 8 - (noteUI() ? caseExtra(c) : 0), 92 + (noteUI() ? caseExtra(c) : 0));   // 土の中には置けない
     if(food.price) S.items[foodKey]--;
     c.foods.push({id:Date.now(), k:foodKey, x, y, age:0, left:1, old:false});
     c.log.feed++; if(c.hunger >= 50) c.log.feedFull++;
@@ -2081,7 +2145,7 @@ async function renderObs(){
   const itemAt = e=>{ const el = e.target.closest && e.target.closest('.food, .deco'); if(!el) return null;
     if(el.classList.contains('food')){ const f = (c.foods||[]).find(f=>String(f.id) === el.dataset.f); return f && {type:'food', it:f, el}; }
     const d = (c.deco||[]).find(d=>String(d.id) === el.dataset.deco); return d && {type:'deco', it:d, el}; };
-  const moveItem = e=>{ const q = toXY(e), soilTop = soilTopOf(b); dragItem.it.x = clamp(q.x, 6, 94); dragItem.it.y = dragItem.type === 'food' ? clamp(q.y, 14, soilTop - 2) : clamp(q.y, soilTop - 28, soilTop + 2);
+  const moveItem = e=>{ const q = toXY(e), soilTop = soilTopOf(b); dragItem.it.x = clamp(q.x, 6 - (noteUI() ? caseExtra(c) : 0), 94 + (noteUI() ? caseExtra(c) : 0)); dragItem.it.y = dragItem.type === 'food' ? clamp(q.y, 14, soilTop - 2) : clamp(q.y, soilTop - 28, soilTop + 2);
     const sc = dragItem.type === 'food' ? `scale(${.5 + .5*Math.max(.2, dragItem.it.left)}) translate(-50 -50)` : 'scale(.55) translate(-50 -70)';
     dragItem.el.setAttribute('transform', `translate(${dragItem.it.x} ${dragItem.it.y}) ${sc}`); if(dragItem.type === 'deco') binZone.classList.toggle('over', inBin(e)); };
   const dragTo = e=>{ const r = sceneEl.getBoundingClientRect(); setObj(clamp(e.clientX - r.left - grab.dx, 8, r.width - 8), clamp(e.clientY - r.top - grab.dy, 8, r.height - 8), 'drag' + (tool === 'fukin' ? ' wipe' : '') + (sprayTimer ? ' spray' : '')); };
@@ -2169,7 +2233,7 @@ async function renderObs(){
     if(tool === 'kiri'){ await sprayEnd(); return; }
     if(tool === 'fukin'){ await wipeDone(); return; }
     if(tool === 'esa'){ await placeFood(q.x, q.y); return; }
-    if(tool === 'kazari'){ if(!decoSel) return; const soilTop = soilTopOf(b); c.deco.push({id:Date.now(), k:decoSel, x:clamp(q.x, 8, 92), y:clamp(q.y, soilTop - 28, soilTop + 2)}); S.items[decoSel]--; if(!(S.items[decoSel] > 0)) decoSel = null; save(); renderObs(); setTimeout(()=> setTxt('かざりを置いた。つまんで動かせるよ。'), 50); await yakusoku('deco', 'かくれ家やとまり木があると、虫は落ちついてくらせる。\n本物の虫かごでも、同じだよ。'); return; }
+    if(tool === 'kazari'){ if(!decoSel) return; const soilTop = soilTopOf(b); c.deco.push({id:Date.now(), k:decoSel, x:clamp(q.x, 8 - (noteUI() ? caseExtra(c) : 0), 92 + (noteUI() ? caseExtra(c) : 0)), y:clamp(q.y, soilTop - 28, soilTop + 2)}); S.items[decoSel]--; if(!(S.items[decoSel] > 0)) decoSel = null; save(); renderObs(); setTimeout(()=> setTxt('かざりを置いた。つまんで動かせるよ。'), 50); await yakusoku('deco', 'かくれ家やとまり木があると、虫は落ちついてくらせる。\n本物の虫かごでも、同じだよ。'); return; }
     // ゆび：手の先がどこにあるか
     if(nearBug(q.x, q.y)){ await touchBug(); return; }
     const H = hideSpot(c, b);
@@ -2899,7 +2963,7 @@ function startMihon(){
   const id = BUGS[QS.get('mihon')] && BUGS[QS.get('mihon')].plan ? QS.get('mihon') : 'kabuto', b = BUGS[id];
   const M = {st:QS.get('st') || 'adult', slot:'yoru', eda:false, esa:false};
   const HOUR = {asa:7, hiru:13, yu:17, yoru:22};
-  S = newGame(); S.yk.hello = 1; S.boxes = ['wide']; S.dex[id] = {found:dayKey(), where:'見本', known:1, adult:dayKey()};
+  S = newGame(); S.yk.hello = 1; S.boxes = [BOXES[QS.get('box')] ? QS.get('box') : 'wide']; S.dex[id] = {found:dayKey(), where:'見本', known:1, adult:dayKey()};
   const build = ()=>{
     const si = Math.max(0, b.plan.map(x=>x.k).lastIndexOf(M.st));
     const c = {bug:id, si, prog:0, hunger:80, wet:60, clean:95, tick:now(), pending:false, from:'宗像大社', born:'taisha', bornSlot:'yoru', since:dayKey(), ind:{hp:1,atk:1,def:1,spd:1,heal:1}, log:newLog(), tot:newLog(), place:QS.get('place') || 'genkan', trouble:null, dirt:[], foods:[], soak:0, hideUntil:0, deco:M.eda ? [{id:1, k:'eda_nagai', x:60, y:50}] : [], mat:QS.has('mat') ? (SOIL_ART[QS.get('mat')] && QS.get('mat') !== 'futsu' ? QS.get('mat') : null) : 'mat_fuyo', soilAge:10, known:true, pers:'futsu', name:'みほん', size:b.size[1], sex:'オス', moves:[b.shape]};
