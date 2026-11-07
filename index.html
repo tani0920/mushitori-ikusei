@@ -139,6 +139,11 @@ p{margin:.3em 0}
 .spot b{color:var(--sun);font-weight:400}
 .spot .bugs{font-size:12px;color:var(--mute)}
 .spot{display:flow-root}
+.shopNav{position:sticky;top:0;z-index:5;display:flex;gap:6px;flex-wrap:wrap;padding:4px 0;margin:4px 0}
+.shopNav .btn{padding:.25em .9em;box-shadow:0 1px 3px #0005}
+.shopNav .btn.on{background:var(--sun);color:#1b130c;border-color:var(--sun)}
+html.land body.noteUI .shopNav .btn.on{background:#f6cf5b;color:#3a2410;border-color:#d9a93a}
+html.land body.noteUI .shopNav{background:#f6ead2;border-radius:0 0 10px 10px;padding:6px 8px;box-shadow:0 -30px 0 #f6ead2,0 3px 5px #3a241244}
 .spotPic{float:left;width:112px;aspect-ratio:3/2;object-fit:cover;border-radius:6px;margin:.1em .7em .1em 0;box-shadow:0 1px 3px #3a241255;pointer-events:none}
 .spot.here{border-color:var(--sun);box-shadow:0 0 0 2px var(--sun)}
 .found{display:flex;flex-direction:column;align-items:center;gap:.4em;padding:.6em}
@@ -299,7 +304,7 @@ html.land .sendL.recv .in{display:flex}
 #obs .scene{touch-action:none;cursor:pointer;position:relative}
 .toolObj{position:absolute;left:0;top:0;font-size:84px;line-height:1;transform:translate(-50%,-50%);filter:drop-shadow(0 4px 3px #0009);z-index:3;touch-action:none;cursor:grab;transition:left .3s,top .3s;user-select:none}
 .toolObj::after{content:'';position:absolute;inset:-14px;border-radius:50%}
-.toolObj.rest{animation:toolPop .45s}
+.toolObj.rest{animation:toolPop .25s}
 .toolObj .lens{position:relative;width:1.35em;height:1.35em;border-radius:50%;overflow:hidden;border:.07em solid #c8a050;box-shadow:0 0 0 .025em #5a3a10,inset 0 0 .12em #0008;background:#000}
 .toolObj .lens svg{width:100%;height:100%;display:block}
 .toolObj .lens::after{content:'';position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 30% 25%,#fff6 0,#fff0 35%);pointer-events:none}
@@ -354,7 +359,7 @@ html.land .sendL.recv .in{display:flex}
 .mini .ng{color:#ff9a8a}
 .mini.hot{border-color:var(--sun);box-shadow:0 0 0 2px #f4b63c66}
 #obs .scene.tool-fukin{cursor:grab}
-#obs .scene.shake{animation:caseShake .5s}
+#obs .scene.shake,#obs .caseBox.shake{animation:caseShake .5s}
 @keyframes caseShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px) rotate(-1deg)}40%{transform:translateX(6px) rotate(1deg)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
 .tools{display:flex;gap:6px;margin-top:8px}
 .tools .tbtn{font:inherit;flex:1;font-size:12.5px;letter-spacing:-.02em;color:var(--ink);background:var(--win);border:2px solid #f7f1df66;border-radius:12px;padding:.45em 0;cursor:pointer;line-height:1.2;min-height:76px;white-space:nowrap}
@@ -688,7 +693,7 @@ html.land body.noteUI:not(.obsMode) .case .boxLine{border-color:#b4946866}
 html.land body.noteUI:not(.obsMode) .demoBox{background:#fffaebb8}
 html.land body.noteUI:not(.obsMode) .album .ph,html.land body.noteUI:not(.obsMode) .dexGrid .d{box-shadow:0 1px 3px #3a241244}
 /* 絵が見えるよう、画面ごとにカードの置き場所をかえる。はばは --H ではなく #view のわりあい */
-html.land body.noteUI[data-tab=out] #view{padding-top:calc(var(--H) * .3)}
+html.land body.noteUI[data-tab=out] #view{padding-top:calc(var(--H) * .14);margin-left:auto;width:56%}
 html.land body.noteUI[data-tab=spot] #view{padding-top:calc(var(--H) * .22)}
 /* 夜：絵を暗く。カードは少し濃くして、字を読みやすく */
 html.land body.noteUI[data-slot=yoru] .spotPic,html.land body.noteUI[data-night=sky] .caseBox .caseArt{filter:brightness(.62) saturate(.85)}
@@ -777,9 +782,15 @@ const SAVE_KEY = KEY_PRE + 'munakata-mushisodate-v1';
 const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
-const GAME_VER = '0.14.0';
-const BUILD = '20261106-0148';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const GAME_VER = '0.14.1';
+const BUILD = '20261107-2109';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
+  {v:'0.14.1', date:'2026-11-07', items:[
+    '道具をえらぶと、すぐ左下に出るようにした',
+    '「ふる」で、虫かごがまるごとゆれるようにした',
+    'おみせの上に「虫かご・エサ・土・かざり」のボタンがついて、押すとそこへとべる',
+    'そとの場所カードを右よせにして、うしろのけしきが見えるようにした',
+  ]},
   {v:'0.14.0', date:'2026-11-06', items:[
     '「ゆび」の道具がなくなった。虫を直接タップすると、そっとさわれるよ。さわるのは、ちょっとだけね',
     'ほんとうの時間が夜になると、画面も夜になる。外は暗くなって、へややおみせは明かりがついて、窓の外に星が見えるよ',
@@ -2003,6 +2014,7 @@ function render(){
   if(!S){ renderTitle(); return; }
   if(openCase !== null){ renderObs(); return; }
   paintPlace(atSpot ? 'spot_' + outState.spot.key : tab === 'home' ? 'place_heya' : 'scr_' + tab, slotOf());
+  view.onscroll = null;
   ({home:renderHome, out:renderOut, sumo:renderSumo, shop:renderShop, dex:renderDex, opt:renderOpt})[tab]();
 }
 
@@ -2059,13 +2071,19 @@ function renderHome(){
   if($('buyBox')) $('buyBox').onclick = ()=> setTab('shop');
 }
 function renderShop(){
-  const boxShop = `<h3>虫かご（いま ${S.boxes.length} / ${MAX_BOXES}こ）</h3><div class="opt">${Object.keys(BOXES).map(k=>{ const B = BOXES[k];
+  const boxShop = `<h3 id="shopBox">虫かご（いま ${S.boxes.length} / ${MAX_BOXES}こ）</h3><div class="opt">${Object.keys(BOXES).map(k=>{ const B = BOXES[k];
     return `<button type="button" class="btn" data-box="${k}" ${S.money < B.price ? 'disabled' : ''}><span><span class="decoIc boxIc"><img class="tim" src="img/ui/case_${k}.webp" alt="" draggable="false"></span>${esc(B.name)}<br><small class="small">${esc(B.desc)}${B.grow > 1 ? `　育ち +${Math.round((B.grow-1)*100)}%` : ''}${B.clean < 1 ? `　よごれにくさ +${Math.round((1-B.clean)*100)}%` : ''}</small></span><span class="v">${dg(B.price)}　もっている ×${S.boxes.filter(x=>x===k).length}</span></button>`; }).join('')}</div>`;
   view.innerHTML = `<h2>おみせ</h2><p class="small">どんぐり：<b style="color:var(--sun)">${dg(S.money)}</b>　場所から場所へ歩くともらえるよ。</p>
+    <div class="shopNav norb">${[['shopBox','虫かご'],['shopFood','エサ'],['shopMat','土'],['shopDeco','かざり']].map(([id, t])=>`<button type="button" class="btn" data-go="${id}">${t}</button>`).join('')}</div>
     ${boxShop}
-    ${[['エサ', k=>!ITEMS[k].cat], ['かざり（マット）：ケースの土をかえる', k=>ITEMS[k].cat==='mat'], ['かざり：買って、ケースに自分で置く', k=>ITEMS[k].cat==='deco']].map(([ttl, f])=>`<h3>${ttl}</h3><div class="opt">${Object.keys(ITEMS).filter(f).map(k=>{ const it = ITEMS[k], free = !it.price;
+    ${[['エサ', k=>!ITEMS[k].cat, 'shopFood'], ['かざり（マット）：ケースの土をかえる', k=>ITEMS[k].cat==='mat', 'shopMat'], ['かざり：買って、ケースに自分で置く', k=>ITEMS[k].cat==='deco', 'shopDeco']].map(([ttl, f, id])=>`<h3 id="${id}">${ttl}</h3><div class="opt">${Object.keys(ITEMS).filter(f).map(k=>{ const it = ITEMS[k], free = !it.price;
       return `<button type="button" class="btn" data-k="${k}" ${!free && S.money < it.price ? 'disabled' : ''}><span>${!it.cat && FOOD_ART[k] ? `<span class="decoIc">${foodIc(k)}</span>` : ''}${it.cat ? `<span class="decoIc"><svg viewBox="0 2 100 70">${decoSVG(k)}</svg></span>` : ''}${esc(it.name)}<br><small class="small">${esc(it.desc)}</small></span><span class="v">${free ? 'ただ' : dg(it.price)}　×${S.items[k]||0}</span></button>`; }).join('')}</div>`).join('')}
     `;
+  // カテゴリー：押すとそこへとぶ。いま見ているところに色がつく
+  const nav = view.querySelector('.shopNav'), goBtns = [...nav.querySelectorAll('[data-go]')];
+  const markNav = ()=>{ const top = view.getBoundingClientRect().top + (parseFloat(getComputedStyle(view).paddingTop) || 0) + nav.offsetHeight + 10; let cur = goBtns[0]; goBtns.forEach(b=>{ if($(b.dataset.go).getBoundingClientRect().top <= top + 2) cur = b; }); if(view.scrollTop + view.clientHeight >= view.scrollHeight - 2) cur = goBtns[goBtns.length - 1]; /* いちばん下まで来たら、さいごのカテゴリー */ goBtns.forEach(b=> b.classList.toggle('on', b === cur)); };
+  goBtns.forEach(b=> b.onclick = ()=>{ const h = $(b.dataset.go); const pad = parseFloat(getComputedStyle(view).paddingTop) || 0; view.scrollTo({top: view.scrollTop + h.getBoundingClientRect().top - view.getBoundingClientRect().top - pad - nav.offsetHeight - 6, behavior:'smooth'}); });
+  view.onscroll = markNav; markNav();
   view.querySelectorAll('[data-box]').forEach(bt=> bt.onclick = async ()=>{ const k = bt.dataset.box, B = BOXES[k]; if(S.money < B.price) return;
     let at = -1;
     if(S.boxes.length >= MAX_BOXES){
@@ -2168,7 +2186,8 @@ async function renderObs(){
     if(d && rigCtl && LOOK[key]){ d.mi = d.mi || {}; if(!d.mi[key]){ d.mi[key] = 1; first = true; save(); } }
     setTxt(key === 'plain' ? '虫めがねで見ると…からだのもようや、こまかい毛まで、よく見える！' : key === 'buried' ? '虫めがねで見ると…土の中に、虫のからだが少しだけ見える。ねているみたい。' : LOOK[key] + (first ? '（はじめて見た！）' : ''));
   };
-  const showTool = ()=>{ if(tool === 'yubi' || tool === 'furu' || (tool === 'big' && st.k === 'pupa') || (tool === 'esa' && st.k === 'pupa') || (tool === 'kazari' && (!decoSel || ITEMS[decoSel].cat === 'mat'))){ toolObj.hidden = true; return; } const r = restPos(); toolObj.innerHTML = toolIc() + '<span class="hint">つかんで動かす</span>'; toolObj.hidden = false; setObj(r.x, r.y, 'rest'); };
+  const showTool = ()=>{ if(tool === 'yubi' || tool === 'furu' || (tool === 'big' && st.k === 'pupa') || (tool === 'esa' && st.k === 'pupa') || (tool === 'kazari' && (!decoSel || ITEMS[decoSel].cat === 'mat'))){ toolObj.hidden = true; return; } const r = restPos(); toolObj.innerHTML = toolIc() + '<span class="hint">つかんで動かす</span>'; toolObj.hidden = false; placeRest(); };
+  const placeRest = ()=>{ const r = restPos(); toolObj.style.transition = 'none'; setObj(r.x, r.y, 'rest'); void toolObj.offsetWidth; toolObj.style.transition = ''; };
   const hk = ()=> (parseFloat(getComputedStyle(toolObj).fontSize) || 84) / 84;
   const hotXY = ()=>{ const r = sceneEl.getBoundingClientRect(), h0 = HOT[tool], h = {x:h0.x*hk(), y:h0.y*hk()}; return toXYc(r.left + objPos.x + h.x, r.top + objPos.y + h.y); };
   showTool();
@@ -2347,18 +2366,18 @@ async function renderObs(){
       obsSession.big = null; c.log.clean += 2; c.hideUntil = 0; save(); renderObs(); setTimeout(()=> setTxt('大そうじ、おつかれさま！ 虫も新しい土によろこんでいる。'), 50); await yakusoku('bigdone', '大そうじは、3日に1回くらい。\n土やマットは、虫の家そのもの。きれいな家で、元気に育つよ。'); }
   };
   // 道具の列から、そのままケースへドラッグして使える（ゆび・虫めがね・ふきん・きりふき・エサ）。ケースの外ではなすと、使わずにもどる
-  let fromTray = null, trayDragT = 0;
+  let fromTray = null, trayDragT = 0, trayDragK = '';
   const inScene = e=>{ const r = sceneEl.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top; return x >= 0 && y >= 0 && x <= r.width && y <= r.height; };
   view.querySelectorAll('#toolTray [data-tool]').forEach(bt=> bt.onpointerdown = e=>{
     const k = bt.dataset.tool, was = tool; if(!['megane','fukin','kiri','esa'].includes(k) || bt.disabled || obsSession.big) return;
     e.preventDefault();
     if(tool !== k){ tool = k; view.querySelectorAll('#toolTray [data-tool]').forEach(b=> b.classList.toggle('on', b.dataset.tool === k)); sceneEl.className = `scene tool-${k}`; showTool(); lensSaid = ''; updateMini(); }
     setTxt(guides[k] || '');
-    fromTray = {in:false, again:was === k}; down = true; sceneEl.setPointerCapture(e.pointerId); grab = {dx:0, dy:0};
+    fromTray = {in:false, again:was === k}; trayDragK = k; down = true; sceneEl.setPointerCapture(e.pointerId); grab = {dx:0, dy:0};
     toolObj.querySelector('.hint')?.remove(); dragTo(e); lastMove = Date.now();
     if(tool === 'kiri') stillT = setInterval(()=>{ if(fromTray && !fromTray.in) return; if(Date.now() - lastMove > 280) sprayStart(); }, 60);
   });
-  view.querySelectorAll('#toolTray [data-tool]').forEach(bt=>{ const oc = bt.onclick; bt.onclick = e=>{ if(Date.now() - trayDragT < 700) return; oc && oc(e); }; });
+  view.querySelectorAll('#toolTray [data-tool]').forEach(bt=>{ const oc = bt.onclick; bt.onclick = e=>{ if(Date.now() - trayDragT < 700 && bt.dataset.tool === trayDragK) return; oc && oc(e); }; });
   sceneEl.onpointerdown = e=>{ e.preventDefault();
     if(tool === 'big' && st.k === 'pupa'){ ripple(e); setTxt('さなぎの間は、大そうじはできない。'); return; }
     const hit = tool !== 'fukin' && tool !== 'furu' && tool !== 'big' && !nearObj(e) && itemAt(e);
@@ -2379,7 +2398,7 @@ async function renderObs(){
     if(tool === 'fukin'){ const q = hotXY(); wipeAt(q.x, q.y); }
     if(tool === 'big') bigTick(e); };
   sceneEl.onpointerup = sceneEl.onpointercancel = async e=>{ if(!down) return; down = false; clearInterval(stillT); stillT = null;
-    if(fromTray){ const again = fromTray.again; fromTray = null; trayDragT = Date.now(); if(!inScene(e)){ sprayStop(); if(again){ tool = 'yubi'; renderObs(); return; } const rp = restPos(); setObj(rp.x, rp.y, 'rest'); return; } }
+    if(fromTray){ const again = fromTray.again; fromTray = null; trayDragT = Date.now(); if(!inScene(e)){ sprayStop(); if(again){ tool = 'yubi'; renderObs(); return; } placeRest(); return; } }
     if(tool === 'big'){ await bigRelease(); const rp = restPos(); setObj(rp.x, rp.y, ''); showTool(); return; }
     if(dragItem){ const di = dragItem, binned = di.type === 'deco' && inBin(e), tapped = !itemDown.moved; dragItem = null; binZone.hidden = true; binZone.classList.remove('over');
       if(tapped){ if(tool === 'yubi'){ const q = toXY(e); await tapAt(q.x, q.y); } return; }   // 動かさなければ、タップとおなじ
@@ -2393,15 +2412,16 @@ async function renderObs(){
     if(tool === 'esa'){ await placeFood(q.x, q.y); return; }
     if(tool === 'kazari'){ if(!decoSel) return; const soilTop = soilTopOf(b); c.deco.push({id:Date.now(), k:decoSel, x:clamp(q.x, 8 - (noteUI() ? caseExtra(c) : 0), 92 + (noteUI() ? caseExtra(c) : 0)), y:clamp(q.y, soilTop - 28, soilTop + 2)}); S.items[decoSel]--; if(!(S.items[decoSel] > 0)) decoSel = null; save(); renderObs(); setTimeout(()=> setTxt('かざりを置いた。つまんで動かせるよ。'), 50); await yakusoku('deco', 'かくれ家やとまり木があると、虫は落ちついてくらせる。\n本物の虫かごでも、同じだよ。'); return; }
     setTxt(sc.txt); };
+  const shakeEl = sceneEl.closest('.caseBox') || sceneEl;   // 観察ノートでは、わくの絵ごとゆらす
   const furuMove = e=>{ const dx = e.clientX - furu.x0, v = e.clientX - furu.last; furu.last = e.clientX;
-    svg.style.transform = `translateX(${clamp(dx*.35, -16, 16)}px) rotate(${clamp(dx*.04, -2.5, 2.5)}deg)`;
+    shakeEl.style.transform = `translateX(${clamp(dx*.35, -16, 16)}px) rotate(${clamp(dx*.04, -2.5, 2.5)}deg)`;
     const d = Math.sign(v); if(d && d !== furu.dir){ if(Math.abs(furu.seg) > 14) furu.n++; furu.dir = d; furu.seg = 0; } furu.seg += v; updateMini(); };
-  const furuEnd = async ()=>{ svg.style.transition = 'transform .25s'; svg.style.transform = ''; setTimeout(()=>{ svg.style.transition = ''; }, 300);
+  const furuEnd = async ()=>{ shakeEl.style.transition = 'transform .25s'; shakeEl.style.transform = ''; setTimeout(()=>{ shakeEl.style.transition = ''; }, 300);
     const n = furu.n; furu.n = 0; furu.seg = 0; furu.dir = 0;
     if(n >= 4){ await doShake(); return; }
     if(n >= 1){ setTxt(st.k === 'pupa' ? 'ケースがゆれた。さなぎは、ゆらさないでね。' : 'ケースが少しゆれた。虫がちょっとおどろいた。'); } };
   async function doShake(){
-    sceneEl.classList.remove('shake'); void sceneEl.offsetWidth; sceneEl.classList.add('shake');
+    shakeEl.classList.remove('shake'); void shakeEl.offsetWidth; shakeEl.classList.add('shake');
     obsSession.touches++; c.log.over++;
     const pk = c.pers && st.k === 'adult' ? c.pers : 'futsu';
     if(pk !== 'hitonatsu' && pk !== 'gaman' && st.k !== 'pupa') c.hideUntil = now() + (pk === 'okubyo' ? 30 : 10)*60*1000;
