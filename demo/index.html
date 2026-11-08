@@ -113,7 +113,11 @@ p{margin:.3em 0}
 .case{background:var(--win);border:3px solid var(--edge);border-radius:8px;padding:.5em;cursor:pointer;display:flex;flex-direction:column;gap:.3em;box-shadow:0 0 0 2px var(--win)}
 .case.empty{opacity:.8;border-style:dashed;min-height:180px;color:var(--mute)}
 .case .pic{height:110px;border-radius:6px;overflow:hidden;position:relative}
-.case .pic svg{width:100%;height:100%}
+.case .pic svg{width:100%;height:100%;display:block}
+.case .pic{aspect-ratio:4/3;height:auto;background:#cfe3ef}
+.mIc{width:1.5em;height:1.5em;object-fit:contain;vertical-align:-.4em;margin-right:.3em}
+.mIc.pl{border-radius:50%;object-fit:cover;width:1.35em;height:1.35em;border:1px solid #fff9;vertical-align:-.35em}
+.mIc.shop{width:1.7em;height:1.7em;vertical-align:-.5em}
 .case .nm{font-size:15px;color:#fff}
 .case .st{font-size:12px;color:var(--mute)}
 .case .alert{position:absolute;right:4px;top:4px;background:var(--low);color:#fff;font-size:11px;border-radius:999px;padding:0 .5em}
@@ -875,7 +879,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261108-1151';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261108-1219';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-08', items:[
     '虫ずもうが、赤間の町の切りかぶの上でたたかうようになった！ 虫どうしが向かい合って、相手にぶつかっていくよ',
@@ -883,6 +887,7 @@ const CHANGELOG = [
     'HPがへったりふえたりすると、虫の上に数字が出る。HPは虫の足もとに出るようにした',
     'ピンチになると、そだてた日々を思い出して、力がもどることがあるよ',
     'きりふきは、指をはなしたら、すぐに水が止まるようにした',
+    '虫かごの一覧が、ケースの中と同じ絵になった。もちものの「おみせへ」や、虫かご・置き場所の小さな絵も新しくしたよ',
     'ゲームの名前が「むなかた 虫そだて日記〈1週間〉」になった！ タイトル画面も新しくなったよ（縁側と丘の絵が、かわりばんこに出る）',
     'クワガタやキンカブト、チョウの幼虫が、絵になった！ バッタ・カマキリ・スズムシの子どもと、さなぎもぜんぶ絵になった。チョウのさなぎは、くきや葉にとまっているよ',
     '幼虫やさなぎも動くようになった！ 脚や触角、頭を動かしたり、息をしたり、いもむしは体をのびちぢみさせたりするよ。アゲハのなかまの小さい幼虫は、鳥のフンそっくり',
@@ -2111,7 +2116,7 @@ function renderItems(){
   const own = Object.keys(ITEMS).filter(k=> (S.items[k]||0) > 0);
   const ic = k=> ITEMS[k].cat ? `<svg viewBox="0 0 100 100">${decoSVG(k)}</svg>` : `<span>${foodIc(k) || '・'}</span>`;
   $('itemsBody').innerHTML = (own.length ? `<div class="itemList">${own.map(k=>`<div class="it"><i>${ic(k)}</i><div><b>${esc(ITEMS[k].name)}</b> ×${S.items[k]}<br><small>${esc(ITEMS[k].desc)}</small></div></div>`).join('')}</div>` : '<p>なにももっていない。</p>')
-    + `<div class="row" style="margin-top:10px"><button type="button" class="btn pri" id="itemsShop">🏪 おみせへ</button></div>`;
+    + `<div class="row" style="margin-top:10px"><button type="button" class="btn pri" id="itemsShop"><img class="mIc shop" src="img/ui/ic_shop.webp" alt="" draggable="false">おみせへ</button></div>`;
   $('itemsShop').onclick = ()=>{ setSide(null); setTab('shop'); };
 }
 $('rtItems').onclick = ()=> setSide(sidePanel === 'items' ? null : 'items');
@@ -2199,15 +2204,15 @@ async function start(){
 /* ---- おうち ---- */
 function renderHome(){
   const slot = slotOf();
-  const boxLine = i=>{ const B = BOXES[S.boxes[i]]; return `<div class="boxLine"><span>${B.ic} ${esc(B.name)}</span></div>`; };
+  const boxLine = i=>{ const B = BOXES[S.boxes[i]]; return `<div class="boxLine"><span>${boxIc(S.boxes[i])}${esc(B.name)}</span></div>`; };
   view.innerHTML = `<h2>虫かご <small class="small">${S.boxes.length} / ${MAX_BOXES}こ</small></h2><div class="cases">${S.cases.map((c,i)=>{
     if(!c) return `<div class="case empty" data-i="${i}">${boxLine(i)}<div class="emptyBody"><div>（からっぽ）</div><div class="small">そとで虫をみつけて、つれてかえろう</div></div></div>`;
     const b = BUGS[c.bug], st = stageOf(c), nd = needs(c), g = genkiOf(c), ins = instarOf(c), fc = forecast(c);
     return `<div class="case" data-i="${i}">
       ${boxLine(i)}
-      <div class="pic" style="background:linear-gradient(${SKY[slot][0]},${SKY[slot][1]} 60%,#5a3d22 61%)">${svgBug(c.bug, st.k, {instar:ins, scale:.66, rare:c.rare, sleep:(placeBug(c, slot).o||{}).sleep})}
+      <div class="pic">${miniScene(c, slot, i)}
         ${c.pending ? '<span class="ev norb">！</span>' : fc ? '<span class="ev norb">予告</span>' : ''}${nd.length ? `<span class="alert">${nd.join('・')}</span>` : ''}
-        <span class="placeTag norb">${PLACE_IC[c.place]} ${esc(PLACES[c.place].name)}</span></div>
+        <span class="placeTag norb">${placeIc(c.place)}${esc(PLACES[c.place].name)}</span></div>
       <div class="nm">${esc(dispName(c))}</div>
       <div class="st">${c.name ? esc(b.name) + '・' : ''}${stageLabel(c)}</div>
       <div class="st">${c.pending ? 'なにかおこりそう…' : st.k === 'adult' ? `${c.size}mm・${esc(PERS[c.pers||'futsu'].name)}` : `あと${daysLeft(c)}日くらい`}</div>
@@ -2242,7 +2247,11 @@ function renderShop(){
 }
 
 /* ---- 観察（ケースの中）：道具をえらんで、ケースの中を指でさわる ---- */
-const PLACE_IC = {genkan:'🚪', heya:'🛏', beranda:'🌿'};
+const PLACE_IC = {genkan:'🚪', heya:'🛏', beranda:'🌿'};   // 文だけのところ（えらぶ答えなど）で使う
+const boxIc = k=> `<img class="mIc" src="img/ui/case_${k}.webp" alt="" draggable="false">`;      // 虫かごの小さな絵
+const placeIc = k=> `<img class="mIc pl" src="img/ui/place_${k}.webp" alt="" draggable="false">`;   // 置き場所の小さな絵
+// 虫かご一覧の小さなけしき：ケースの中と同じ絵（sceneSVG）を、id がぶつからないように名前をかえて使う
+const miniScene = (c, slot, i)=> sceneSVG(c, slot, {}).svg.replace(/id="([\w-]+)"/g, `id="$1_m${i}"`).replace(/url\(#([\w-]+)\)/g, `url(#$1_m${i})`).replace(/href="#([\w-]+)"/g, `href="#$1_m${i}"`);
 const PLACES = {genkan:{name:'げんかん', desc:'すずしくて静か。かいふくがよくなり、のんびりした性格になりやすい'}, heya:{name:'へや', desc:'いつもそばにいる。人なつっこい性格になりやすい'}, beranda:{name:'ベランダの日かげ', desc:'外の空気。まもりが強くなる。ただし、かわきやすい'}};
 const toolImg = k=> `<img class="tim" src="img/tools/${k}.webp" alt="" draggable="false">`;
 const TOOLS = {yubi:{name:'ゆび', ic:toolImg('yubi')}, megane:{name:'虫めがね', ic:toolImg('megane')}, fukin:{name:'ふきん', ic:toolImg('fukin')}, kiri:{name:'きりふき', ic:toolImg('kiri')}, esa:{name:'エサ', ic:toolImg('esa')}, kazari:{name:'かざり', ic:toolImg('kazari')}, big:{name:'大そうじ', ic:toolImg('houki')}, furu:{name:'ふる', ic:toolImg('furu')}};
@@ -2271,7 +2280,7 @@ async function renderObs(){
   const showGuide = obsSession.guide; obsSession.guide = false;   // 道具をえらんだすぐあとは、文の欄に道具のつかいかたを出す
   const esaGuide = st.k === 'pupa' ? '' : `ケースの中の、置きたいところをさわる`;
   const bornTag = `<span class="tag born">${esc((BORN[c.born]||BORN.any).name)}</span>${c.bornSlot === 'yoru' ? ' <span class="tag">夜型</span>' : ''}`;
-  const BX = boxOf(c), tags = `<span class="tag">${BX.ic} ${esc(BX.name)}</span><span class="tag">${PLACE_IC[c.place]} ${esc(PLACES[c.place].name)}</span>${c.rare ? '<span class="tag" style="background:#7a5a20">めずらしい色</span>' : ''}`;
+  const BX = boxOf(c), tags = `<span class="tag">${boxIc((S.boxes||[])[boxIdx(c)] || 'futsu')}${esc(BX.name)}</span><span class="tag">${placeIc(c.place)}${esc(PLACES[c.place].name)}</span>${c.rare ? '<span class="tag" style="background:#7a5a20">めずらしい色</span>' : ''}`;
   const msgHtml = `${esc(sc.txt)}${persTxt ? `<br>${esc(persTxt)}` : ''}${c.trouble ? `<br><b class="yk">【${esc(TROUBLE[c.trouble].name)}】</b>${esc(TROUBLE[c.trouble].txt)}` : ''}${(c.soak||0) > 30 ? '<br><b class="yk">【びちゃびちゃ】</b>水をかけすぎて、土に水たまりができている。かわくまで、きりふきはやめよう。' : ''}${c.pending ? '<br><b class="yk">…なんだか、ようすがかわりそう！</b>' : fc ? `<br><b class="yk">【予告】</b>${esc(fc)}` : ''}`;
   // 左：ケース（＋メッセージ）／右：見出し・道具・ステータス・引き出し。横画面では1画面におさまる。たて画面（PCのせまい窓など）では上から順にならぶ
   paintPlace('place_' + c.place, slot);
@@ -2808,7 +2817,7 @@ function renderSpot(){
       ${later.length ? `<div class="bugs">ねむっているけど、さがせる：${later.map(id=>`${nmQ(id)}（${BUGS[id].time.map(t=>SLOT_NAMES[t]).join('・')}に活動）`).join('・')}</div>` : ''}
       ${egg ? '<div class="small" style="color:var(--sun)">…木の根もとで、なにかが金色に光っている。</div>' : ''}</div>
     <div id="findBox" class="search"><p>草むらや木のまわりを、そっとのぞいてみよう。</p><p class="small">今日ここでさがせるのは、あと${left}回</p>
-      <button type="button" class="btn pri" id="btnFind" ${left <= 0 || (!all.length && !egg) ? 'disabled' : ''} style="font-size:18px;padding:.6em 1.6em">🔍 さがす</button></div>
+      <button type="button" class="btn pri" id="btnFind" ${left <= 0 || (!all.length && !egg) ? 'disabled' : ''} style="font-size:18px;padding:.6em 1.6em"><img class="mIc shop" src="img/tools/megane.webp" alt="" draggable="false">さがす</button></div>
     <div class="spot photoBox"><b>📷 本物の虫の写真をとる</b>　<span class="small">今日のこり ${photoLeft()}まい</span>
       <div class="small">外で見つけた本物の虫をとると、どんぐりがもらえる。写真の虫のなかまの幼虫も見つかりやすくなるよ。写真はこのたんまつの中だけでAIが判定して、どこにも送られません。</div>
       <div class="row" style="margin-top:6px"><label class="btn pri">カメラでとる<input id="camIn" class="vh" type="file" accept="image/*" capture="environment"></label><label class="btn">アルバムから<input id="libIn" class="vh" type="file" accept="image/*"></label></div>
