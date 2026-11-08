@@ -1,6 +1,6 @@
 {
-  "name": "むなかた虫そだて（デモ）",
-  "short_name": "虫そだてデモ",
+  "name": "むなかた 虫そだて日記〈1週間〉（デモ）",
+  "short_name": "虫そだて日記デモ",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
