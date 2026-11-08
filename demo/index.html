@@ -335,10 +335,10 @@ html.land .sendL.recv .in{display:flex}
 @keyframes tipIn{from{opacity:0;transform:translate(-50%,6px)}}
 html.land.tall .toolTip{font-size:16px}
 #toolTray .tbtn.on{transform:translateY(-6px);box-shadow:0 4px 0 #d9a93a}
-.toolObj .lens{position:relative;width:1.35em;height:1.35em;border-radius:50%;overflow:hidden;border:.07em solid #c8a050;box-shadow:0 0 0 .025em #5a3a10,inset 0 0 .12em #0008;background:#000}
+.toolObj .lens{position:relative;width:2.1em;height:2.1em;border-radius:50%;overflow:hidden;border:.07em solid #c8a050;box-shadow:0 0 0 .025em #5a3a10,inset 0 0 .12em #0008;background:#000}
 .toolObj .lens svg{width:100%;height:100%;display:block}
 .toolObj .lens::after{content:'';position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 30% 25%,#fff6 0,#fff0 35%);pointer-events:none}
-.toolObj:has(.lens)::after{content:'';position:absolute;left:78%;top:78%;width:.18em;height:.55em;background:#8a5a20;border-radius:.06em;transform:rotate(-45deg);transform-origin:top center;z-index:-1}
+.toolObj:has(.lens)::after{content:'';position:absolute;left:82%;top:82%;width:.24em;height:.85em;background:#8a5a20;border-radius:.06em;transform:rotate(-45deg);transform-origin:top center;z-index:-1}
 @keyframes toolPop{0%{transform:translate(-50%,-50%) scale(.3)}70%{transform:translate(-50%,-50%) scale(1.15)}100%{transform:translate(-50%,-50%) scale(1)}}
 .toolObj.drag{transition:none;transform:translate(-50%,-50%) scale(1.08);cursor:grabbing}
 .toolObj.wipe{animation:wipeIc .35s ease-in-out infinite alternate}
@@ -898,7 +898,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261108-1343';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261108-1409';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-08', items:[
     '虫ずもうが、赤間の町の切りかぶの上でたたかうようになった！ 虫どうしが向かい合って、相手にぶつかっていくよ',
@@ -906,6 +906,7 @@ const CHANGELOG = [
     'HPがへったりふえたりすると、虫の上に数字が出る。HPは虫の足もとに出るようにした',
     'ピンチになると、そだてた日々を思い出して、力がもどることがあるよ',
     'きりふきは、指をはなしたら、すぐに水が止まるようにした',
+    '虫めがねを大きくした。指で取っ手を持つので、レンズが指にかくれないよ。虫ずもうのさいごは、虫具店のおじさんが勝因・敗因を教えてくれる',
     'そとで場所に着いたとき、説明の枠を細くして、場所の絵が見えるようにした',
     'アプリのアイコンが新しくなった！（ホーム画面に追加しなおすと、かわるよ）',
     'ぼく・おとうさん・虫具店のおじさんの顔が出るようになった！ おとうさんは育て方を教えてくれる、虫の研究者。ぼくは、うれしい・くやしい・かなしい・たのしい・びっくりの顔をするよ。会話の窓も、ノートの紙の色になった',
@@ -2367,7 +2368,7 @@ async function renderObs(){
     if(d && rigCtl && LOOK[key]){ d.mi = d.mi || {}; if(!d.mi[key]){ d.mi[key] = 1; first = true; save(); } }
     setTxt(key === 'plain' ? '虫めがねで見ると…からだのもようや、こまかい毛まで、よく見える！' : key === 'buried' ? '虫めがねで見ると…土の中に、虫のからだが少しだけ見える。ねているみたい。' : LOOK[key] + (first ? '（はじめて見た！）' : ''));
   };
-  const TIP = {megane:'さわったところを、虫めがねでのぞく', fukin:'よごれの上をこする', kiri:'さわったまま止めると、水が出る', esa:'さわったところに、エサをおく', kazari:'さわったところに、かざりをおく', big:'虫の上をさわって、そっとつまむ'};
+  const TIP = {megane:'取っ手を持って、見たいところにレンズをかざす', fukin:'よごれの上をこする', kiri:'さわったまま止めると、水が出る', esa:'さわったところに、エサをおく', kazari:'さわったところに、かざりをおく', big:'虫の上をさわって、そっとつまむ'};
   const toolOff = ()=> tool === 'yubi' || tool === 'furu' || (tool === 'big' && st.k === 'pupa') || (tool === 'esa' && st.k === 'pupa') || (tool === 'kazari' && (!decoSel || ITEMS[decoSel].cat === 'mat'));
   // 道具をえらんだら、ケースの上に「いま持っている道具」と使い方を出す。道具の絵は、ケースの中をさわったところに出る
   const showTool = ()=>{ toolObj.hidden = true; let tp = sceneEl.querySelector('.toolTip');
@@ -2377,6 +2378,8 @@ async function renderObs(){
   const toolHere = (e, off={dx:0, dy:0})=>{ toolObj.innerHTML = toolIc(); toolObj.hidden = false; toolObj.style.transition = 'none'; grab = off; dragTo(e); void toolObj.offsetWidth; toolObj.style.transition = ''; };
   const placeRest = ()=>{ const r = restPos(); toolObj.style.transition = 'none'; setObj(r.x, r.y, 'rest'); void toolObj.offsetWidth; toolObj.style.transition = ''; };
   const hk = ()=> (parseFloat(getComputedStyle(toolObj).fontSize) || 84) / 84;
+  // 虫めがねの取っ手：指がここをにぎる（レンズの中心から右下へ。レンズ 2.1em、取っ手は 82% のところから）。見る場所はレンズの中心
+  const megGrip = ()=>{ const em = parseFloat(getComputedStyle(toolObj).fontSize) || 84, g = (.32*2.1 + .55*.707) * em; return {dx:g, dy:g}; };
   const hotXY = ()=>{ const r = sceneEl.getBoundingClientRect(), h0 = HOT[tool], h = {x:h0.x*hk(), y:h0.y*hk()}; return toXYc(r.left + objPos.x + h.x, r.top + objPos.y + h.y); };
   showTool();
   const ripple = e=>{ const r = sceneEl.getBoundingClientRect(), d = document.createElement('div'); d.className = 'ripple'; d.style.left = (e.clientX - r.left) + 'px'; d.style.top = (e.clientY - r.top) + 'px'; sceneEl.appendChild(d); setTimeout(()=>d.remove(), 520); };
@@ -2507,7 +2510,7 @@ async function renderObs(){
     if(!down || !sceneEl.isConnected){ clearInterval(stillT); stillT = null; sprayStop(); return; }
     if(fromTray && !fromTray.in){ sprayStop(); return; }
     if(Date.now() - lastMove > 280) sprayStart(); }, 60); };
-  const nearObj = e=>{ if(toolObj.hidden) return false; const r = sceneEl.getBoundingClientRect(); return Math.hypot(e.clientX - r.left - objPos.x, e.clientY - r.top - objPos.y) < 70; };
+  const nearObj = e=>{ if(toolObj.hidden) return false; const r = sceneEl.getBoundingClientRect(), d = Math.hypot(e.clientX - r.left - objPos.x, e.clientY - r.top - objPos.y); return d < (tool === 'megane' ? megGrip().dx * 1.9 : 70); };   // 虫めがねは、レンズでも取っ手でもつかめる
   // 置いたエサ・かざりを直接つまんで動かす
   const binZone = $('binZone'); let dragItem = null;
   const inBin = e=>{ const r = binZone.getBoundingClientRect(); return e.clientX > r.left - 20 && e.clientX < r.right + 20 && e.clientY > r.top - 20 && e.clientY < r.bottom + 20; };
@@ -2568,7 +2571,7 @@ async function renderObs(){
     if(tool !== k){ tool = k; view.querySelectorAll('#toolTray [data-tool]').forEach(b=> b.classList.toggle('on', b.dataset.tool === k)); sceneEl.className = `scene tool-${k}`; showTool(); lensSaid = ''; updateMini(); }
     setTxt(guides[k] || '');
     fromTray = {in:false, again:was === k}; trayDragK = k; down = true; sceneEl.setPointerCapture(e.pointerId);
-    if(!toolOff()) toolHere(e); lastMove = Date.now();
+    if(!toolOff()) toolHere(e, tool === 'megane' ? megGrip() : undefined); lastMove = Date.now();
     if(tool === 'kiri') kiriWatch();
   });
   view.querySelectorAll('#toolTray [data-tool]').forEach(bt=>{ const oc = bt.onclick; bt.onclick = e=>{ if(Date.now() - trayDragT < 700 && bt.dataset.tool === trayDragK) return; oc && oc(e); }; });
@@ -2581,6 +2584,7 @@ async function renderObs(){
     if(toolOff()){ ripple(e); setTxt(tool === 'kazari' ? 'おきたいかざりを、下の列からえらんでね。' : tool === 'esa' ? 'さなぎの間は、エサはいらない。' : sc.txt); return; }
     down = true; sceneEl.setPointerCapture(e.pointerId);
     if(!toolObj.hidden && nearObj(e)){ const r = sceneEl.getBoundingClientRect(); grab = {dx:e.clientX - r.left - objPos.x, dy:e.clientY - r.top - objPos.y}; dragTo(e); }   // 置いてある虫めがねは、そのままつかめる
+    else if(tool === 'megane') toolHere(e, megGrip());   // 虫めがねは、取っ手が指の下（レンズが指にかくれない）
     else { const h = HOT[tool], k = hk(); toolHere(e, {dx:h.x*k, dy:h.y*k}); }   // 道具の「きくところ」が指の下にくる
     lastMove = Date.now();
     if(tool === 'kiri') kiriWatch(); };
@@ -3132,8 +3136,8 @@ async function sumoBattle(r, c){
   const NAMES = {atk:'ちから', hp:'たいりょく', spd:'すばやさ', def:'まもり', heal:'かいふく'};
   const HINT = {atk:'エサをたっぷりあげると、ちからがつく', hp:'毎日かかさず世話すると、たいりょくがつく', spd:'広いケースで育てると、すばやくなる', def:'ベランダの日かげで育てると、まもりが強くなる', heal:'げんかんの静かな場所で、こまめにそうじすると、かいふくがよくなる'};
   await say(won ? 'やったー！ 勝った！' : 'くやしい〜！ もっと育てて、また ちょうせんするぞ！', {face:won ? 'boku_fun' : 'boku_angry'});
-  if(won) await say(`【勝因】${me.name}は、相手より「${NAMES[high]}」が高かった。\n育て方が、ちゃんと虫に出ている！`, {face:'papa_happy'});
-  else await say(`【敗因】${me.name}は、相手より「${NAMES[low]}」が足りなかった。\n【ヒント】${HINT[low]}。\n${BUGS[c.bug].rank < BUGS[r.bug].rank ? 'もっとめずらしい虫を育てるのも、ひとつの手。' : '次の虫で、ためしてみよう。'}`, {face:'papa_teach'});
+  if(won) await say(`【勝因】${me.name}は、相手より「${NAMES[high]}」が高かった。\n育て方が、ちゃんと虫に出ている！`, {face:'ojisan_laugh'});
+  else await say(`【敗因】${me.name}は、相手より「${NAMES[low]}」が足りなかった。\n【ヒント】${HINT[low]}。\n${BUGS[c.bug].rank < BUGS[r.bug].rank ? 'もっとめずらしい虫を育てるのも、ひとつの手。' : '次の虫で、ためしてみよう。'}`, {face:'ojisan'});
   refresh();
 }
 
