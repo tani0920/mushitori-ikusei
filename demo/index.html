@@ -203,13 +203,19 @@ html.land body.noteUI .shopNav{background:#f6ead2;border-radius:0 0 10px 10px;pa
 .shopHi{display:flex;align-items:center;gap:.7em;margin:.2em 0 .5em;padding:.5em .7em;background:#fffaf0e6;border:1px solid #d8c3a0;border-radius:12px;color:#4a3320;font-size:14px;line-height:1.5}
 .shopHi .fimg{width:64px;height:64px;flex:none;border-radius:12px;border:2px solid #fff;box-shadow:0 1px 3px #0003;object-fit:cover}
 .shopHi b{display:block;font-size:12px;color:#8a5a20}
-#msgLayer .win{position:relative;--fs:88px}
-#msgLayer .win.hasFace{padding-left:calc(var(--fs) + 1.5em);min-height:calc(var(--fs) + 2.8em)}
-#msgLayer .face{position:absolute;left:.6em;top:.6em;width:var(--fs);text-align:center;white-space:normal}
-#msgLayer .face .fimg{display:block;width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;background:#fbf4e4;border:2px solid #fff;box-shadow:0 2px 5px #0003;animation:faceIn .35s ease-out}
-#msgLayer .face b{display:block;margin-top:.2em;font-size:12px;line-height:1.3;color:var(--sun);font-weight:700}
-@keyframes faceIn{0%{transform:scale(.85) translateY(6px);opacity:0}100%{transform:none;opacity:1}}
-html.land #msgLayer .win{--fs:clamp(80px,calc(var(--H) * .2),130px)}
+#msgLayer .win{position:relative}
+#msgLayer .actors{position:absolute;left:0;right:0;bottom:30%;height:0;pointer-events:none;--ah:220px}
+#msgLayer .actor{position:absolute;bottom:0;height:var(--ah);width:auto;filter:drop-shadow(0 4px 8px #0005);animation:actorIn .35s ease-out}
+#msgLayer .actor.r{right:max(4%,calc(var(--sr,0px) + 70px))}
+#msgLayer .actor.l{left:max(6%,calc(var(--sl,0px) + 96px))}
+#msgLayer .actor.off{filter:brightness(.6) saturate(.8);animation:none}
+@keyframes actorIn{0%{transform:translateY(14px);opacity:0}100%{transform:none;opacity:1}}
+#msgLayer .win.talkWin{z-index:1;padding-top:1.1em;width:min(100%,640px);margin:0 auto;flex:none}
+html.land #msgLayer.talk{padding-left:calc(90px + var(--sl,0px));padding-right:calc(64px + var(--sr,0px))}
+html.land.tall #msgLayer .win.talkWin{width:min(100%,820px);font-size:21px}
+html.land.tall #msgLayer .who{font-size:17px}
+#msgLayer .who{position:absolute;top:-.95em;background:#f6cf5b;border:2px solid #d9a93a;border-radius:999px;padding:0 1em;color:#3a2410;font-size:14px;line-height:1.6;white-space:nowrap}
+#msgLayer .who.r{right:1.3em}#msgLayer .who.l{left:1.3em}
 /* 会話の窓も、観察ノートと同じ紙の色に（2026-11-08。前は紺） */
 body.noteUI #msgLayer .win{background:#fffaf0;color:#4a3320;border:2px solid #c9a978;box-shadow:0 0 0 3px #fffaf0cc,0 6px 18px #0004;border-radius:14px;font-family:"Klee One","Hiragino Maru Gothic ProN",sans-serif;font-weight:600}
 body.noteUI #msgLayer .yk{color:#c0661a}
@@ -217,8 +223,7 @@ body.noteUI #msgLayer .win .tap{color:#a08a6a}
 body.noteUI #msgLayer .btn{background:#fff;color:#4a3320;border-color:#c9a978;box-shadow:0 2px 0 #c9a97866;font-weight:600}
 body.noteUI #msgLayer .btn.pri{background:#f6cf5b;color:#3a2410;border-color:#d9a93a}
 body.noteUI #msgLayer input{border-color:#c9a978}
-body.noteUI #msgLayer .face b{color:#8a5a20}
-body.noteUI #msgLayer .face .fimg{border-color:#e9d8b8}
+
 
 /* 新しい版のお知らせ（虫とり日記と同じ） */
 .updBar{position:fixed;left:12px;right:12px;margin:0 auto;width:fit-content;top:calc(var(--st,0px) + 6px);z-index:10000;display:flex;align-items:center;justify-content:center;gap:.6em;white-space:nowrap;background:#14284af0;color:#fff;border:2px solid var(--sun);border-radius:10px;padding:.4em .5em .4em .9em;box-shadow:0 4px 12px #0008;font-size:13px}
@@ -900,7 +905,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261108-1440';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261108-1629';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-08', items:[
     '虫ずもうが、赤間の町の切りかぶの上でたたかうようになった！ 虫どうしが向かい合って、相手にぶつかっていくよ',
@@ -913,6 +918,7 @@ const CHANGELOG = [
     '虫めがねを大きくした。指で取っ手を持つので、レンズが指にかくれないよ。虫ずもうのさいごは、虫具店のおじさんが勝因・敗因を教えてくれる',
     'そとで場所に着いたとき、説明の枠を細くして、場所の絵が見えるようにした',
     'アプリのアイコンが新しくなった！（ホーム画面に追加しなおすと、かわるよ）',
+    '話している人が、大きく出るようになった！（ぼくは左、ほかの人は右。すもうは、ぼくと相手）',
     'ぼく・おとうさん・虫具店のおじさんの顔が出るようになった！ おとうさんは育て方を教えてくれる、虫の研究者。ぼくは、うれしい・くやしい・かなしい・たのしい・びっくりの顔をするよ。会話の窓も、ノートの紙の色になった',
     '虫かごの一覧が、ケースの中と同じ絵になった。もちものの「おみせへ」や、虫かご・置き場所の小さな絵も新しくしたよ',
     'ゲームの名前が「むなかた 虫そだて日記〈1週間〉」になった！ タイトル画面も新しくなったよ（縁側と丘の絵が、かわりばんこに出る）',
@@ -2093,18 +2099,39 @@ function sceneSVG(c, slot, o={}){
    ========================================================= */
 /* 人物の顔（img/chara/キー.webp）。say(文, {face:'papa_teach'}) で、会話の窓の左に顔と名前を出す */
 const FACES = {boku:'ぼく', boku_joy:'ぼく', boku_angry:'ぼく', boku_sad:'ぼく', boku_fun:'ぼく', boku_surprise:'ぼく',
-  papa:'おとうさん', papa_teach:'おとうさん', papa_worry:'おとうさん', papa_happy:'おとうさん', ojisan:'虫具店のおじさん', ojisan_laugh:'虫具店のおじさん'};   // すもうの子どもたち（yuta・haruka・kenta・soma・daichi・ren）の顔は、まだ描いていない。描けたらここに足す
-const faceImg = (k, cls='')=> FACES[k] ? `<img class="fimg ${cls}" src="img/chara/${k}.webp" alt="${esc(FACES[k])}" draggable="false">` : '';
+  papa:'おとうさん', papa_teach:'おとうさん', papa_worry:'おとうさん', papa_happy:'おとうさん', ojisan:'虫具店のおじさん', ojisan_laugh:'虫具店のおじさん'};
+// すもうの子どもたち：名前の札は出す。絵はまだない（描けたら FACE_ART に足す）
+const RIVAL_NAME = {yuta:'ゆうた', haruka:'はるか', kenta:'けんた', soma:'そうま', daichi:'だいち', ren:'れん'};
+const FACE_ART = new Set(Object.keys(FACES));   // 絵がある人（img/chara/キー.webp と img/chara/cut/キー.webp）
+const faceName = k=> FACES[k] || RIVAL_NAME[k] || '';
+const faceImg = (k, cls='')=> FACE_ART.has(k) ? `<img class="fimg ${cls}" src="img/chara/${k}.webp" alt="${esc(faceName(k))}" draggable="false">` : '';
+/* 会話：話す人を、大きな切りぬきの絵で出す（ノベルゲームのように）。ぼくは左、ほかの人は右。
+   say(文, {face:'papa_teach'})。すもうなど2人のときは {face:'yuta', with:'boku'}（with の人は少し暗く、反対がわに） */
+const isBoku = k=> /^boku/.test(k || '');
+function talkActors(L, w, opts){
+  const k = opts.face, side = isBoku(k) ? 'l' : 'r', other = opts.with;
+  const list = [[k, side, true]]; if(other) list.push([other, side === 'l' ? 'r' : 'l', false]);
+  const A = document.createElement('div'); A.className = 'actors';
+  A.innerHTML = list.filter(([x])=> FACE_ART.has(x)).map(([x, sd, on])=> `<img class="actor ${sd} ${on ? 'on' : 'off'}" src="img/chara/cut/${x}.webp" alt="" draggable="false">`).join('');
+  L.insertBefore(A, w);
+  // 胸が、セリフの枠のすぐ上に来るように（絵の下のはしを、枠の上のふちに少し重ねる）
+  const fit = ()=>{ if(!L.isConnected) return; const lr = L.getBoundingClientRect(), wr = w.getBoundingClientRect(), top = wr.top - lr.top;
+    A.style.bottom = Math.round(lr.height - top - Math.min(16, wr.height*.12)) + 'px';
+    A.style.setProperty('--ah', Math.round(Math.max(120, Math.min(top - 6, lr.height*.62))) + 'px'); };
+  fit(); requestAnimationFrame(fit); addEventListener('resize', fit, {once:true});
+}
 function say(text, opts={}){
   return new Promise(res=>{
     const L = document.createElement('div'); L.id = 'msgLayer';
-    const w = document.createElement('div'); w.className = 'win' + (FACES[opts.face] ? ' hasFace' : '');
-    w.innerHTML = (FACES[opts.face] ? `<div class="face norb">${faceImg(opts.face)}<b>${esc(FACES[opts.face])}</b></div>` : '') + fmtMsg(text) + (opts.ans ? '' : '<span class="tap">▼ タップでつぎへ</span>');
+    const nm = faceName(opts.face), talk = !!nm, side = isBoku(opts.face) ? 'l' : 'r';
+    if(talk) L.classList.add('talk');
+    const w = document.createElement('div'); w.className = 'win' + (talk ? ' talkWin' : '');
+    w.innerHTML = (talk ? `<b class="who ${side} norb">${esc(nm)}</b>` : '') + fmtMsg(text) + (opts.ans ? '' : '<span class="tap">▼ タップでつぎへ</span>');
     if(opts.ans){ const a = document.createElement('div'); a.className = 'ans';
       opts.ans.forEach((t,i)=>{ const b = document.createElement('button'); b.type = 'button'; b.className = 'btn' + (i===0 ? ' pri' : ''); b.textContent = t; b.onclick = e=>{ e.stopPropagation(); L.remove(); res(i); }; a.appendChild(b); });
       w.appendChild(a);
     } else { L.onclick = ()=>{ L.remove(); res(0); }; }
-    L.appendChild(w); document.body.appendChild(L);
+    L.appendChild(w); document.body.appendChild(L); if(talk) talkActors(L, w, opts);
   });
 }
 const fmtMsg = t=> esc(t).replace(/【([^】]+)】/g, '<b class="yk">【$1】</b>').replace(/\n/g, '<br>');
@@ -2982,7 +3009,7 @@ async function sumoBattle(r, c){
   if(me.cond != null) await say(me.cond >= .75 ? `${me.name}は、きょうは ぜっこうちょう！ 力がみなぎっている。` : me.cond >= .45 ? `${me.name}の調子は、ふつう。` : `${me.name}は、きょうは 調子がいまいち…。おなかや元気がへっているみたい。`);
   if(me.night && night) me.spd += 1;   // 夜型は夜に少しはやい
   S.sumoDay[r.key] = dayKey(); save();
-  await say(`${r.name}「${r.hi}」`, {face:r.key});
+  await say(`${r.name}「${r.hi}」`, {face:r.key, with:'boku'});
   const A = document.createElement('div'); A.id = 'arena'; A.className = slotOf();
   const info = (f, side)=> `<div class="info ${side}"><b>${esc(f.name)}</b> <small>${f.t.name}</small><span class="bar"><i id="hp-${side}" style="width:100%"></i></span><small id="hpn-${side}">${f.hp}/${f.maxhp}</small></div>`;
   A.innerHTML = `<div class="ring"><div class="dohyo"></div>${info(me,'l')}${info(op,'r')}<div class="vs norb" hidden>VS</div><div class="gyoji norb">🪭</div>
@@ -3144,14 +3171,14 @@ async function sumoBattle(r, c){
   // 結果：勝因・敗因を育て方にむすびつける
   const first = !S.sumo[r.key];
   if(won){ S.stats.wins++; S.sumo[r.key] = dayKey(); const m = first ? r.money : SUMO_REWIN; S.money += m; if(r.key === 'ren') S.sumoChamp = true;
-    await say(`${r.short}「${r.win}」\nどんぐり ${dg(m)} をもらった！${first && r.key === 'ren' ? '\n【チャンピオン】きみの虫が、宗像でいちばん強い！' : ''}`, {face:r.key}); }
-  else { S.stats.loses++; if(c.pers !== 'makezu' && Math.random() < .3){ c.pers = 'makezu'; await say(`${r.short}「${r.lose}」\n${me.name}は、くやしそうに相手をにらんでいる…。性格が「まけずぎらい」になった！`, {face:r.key}); } else await say(`${r.short}「${r.lose}」`, {face:r.key}); }
+    await say(`${r.short}「${r.win}」\nどんぐり ${dg(m)} をもらった！${first && r.key === 'ren' ? '\n【チャンピオン】きみの虫が、宗像でいちばん強い！' : ''}`, {face:r.key, with:'boku'}); }
+  else { S.stats.loses++; if(c.pers !== 'makezu' && Math.random() < .3){ c.pers = 'makezu'; await say(`${r.short}「${r.lose}」\n${me.name}は、くやしそうに相手をにらんでいる…。性格が「まけずぎらい」になった！`, {face:r.key, with:'boku'}); } else await say(`${r.short}「${r.lose}」`, {face:r.key, with:'boku'}); }
   save();
   const cmp = {atk:me.atk/op.atk, hp:me.maxhp/op.maxhp, spd:(me.spd+1)/(op.spd+1), def:op.def/me.def, heal:me.heal/op.heal};
   const keys = Object.keys(cmp).sort((a,b)=>cmp[a]-cmp[b]), low = keys[0], high = keys[keys.length-1];
   const NAMES = {atk:'ちから', hp:'たいりょく', spd:'すばやさ', def:'まもり', heal:'かいふく'};
   const HINT = {atk:'エサをたっぷりあげると、ちからがつく', hp:'毎日かかさず世話すると、たいりょくがつく', spd:'広いケースで育てると、すばやくなる', def:'ベランダの日かげで育てると、まもりが強くなる', heal:'げんかんの静かな場所で、こまめにそうじすると、かいふくがよくなる'};
-  await say(won ? 'やったー！ 勝った！' : 'くやしい〜！ もっと育てて、また ちょうせんするぞ！', {face:won ? 'boku_fun' : 'boku_angry'});
+  await say(won ? 'やったー！ 勝った！' : 'くやしい〜！ もっと育てて、また ちょうせんするぞ！', {face:won ? 'boku_fun' : 'boku_angry', with:r.key});
   if(won) await say(`【勝因】${me.name}は、相手より「${NAMES[high]}」が高かった。\n育て方が、ちゃんと虫に出ている！`, {face:'ojisan_laugh'});
   else await say(`【敗因】${me.name}は、相手より「${NAMES[low]}」が足りなかった。\n【ヒント】${HINT[low]}。\n${BUGS[c.bug].rank < BUGS[r.bug].rank ? 'もっとめずらしい虫を育てるのも、ひとつの手。' : '次の虫で、ためしてみよう。'}`, {face:'ojisan'});
   refresh();
