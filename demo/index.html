@@ -29,6 +29,7 @@ if(DEMO){
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Klee+One:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&text=%E3%82%80%E3%81%AA%E3%81%8B%E3%81%9F%E8%99%AB%E3%81%9D%E3%81%A0%E3%81%A6%E6%97%A5%E8%A8%98%E9%80%B1%E9%96%93%E3%81%AE%E3%81%8B%E3%81%94%E3%81%8D%E3%82%8D%E3%81%84%E3%81%A1%E3%81%AB%E3%81%A1%EF%BD%9E1234567&display=swap">
 <style>
 /* 見た目は「むなかた虫とり日記」の家族：森のフレーム＋RPGウィンドウ。こちらは昼の飼育ケースなので、少し明るい苔色 */
 :root{
@@ -641,6 +642,23 @@ html.land #titleScr .tbtns{margin-top:0}
 html.land #titleScr .tbtn{font-size:calc(var(--H) * .042);padding:.25em 1.2em}
 html.land #titleScr .vrow{margin-top:0}
 html.land #titleScr .verbtn{font-size:calc(var(--H) * .03)}
+/* タイトルの絵（2026-11-08）：上の空にロゴ、下の床にボタン */
+#titleScr.art{background:#7ec3ef var(--tart) center bottom/cover no-repeat;justify-content:flex-start}
+#titleScr.art .tlogoBox{width:min(78%,640px);margin-top:2%}
+#titleScr.art .tlogo{display:block;width:100%;height:auto;overflow:visible}
+#titleScr.art .t1{color:#fff;text-shadow:0 0 6px #1a4a8a,1px 1px 0 #1a4a8a;margin-top:-.2em}
+#titleScr.art .tgap{flex:1}
+#titleScr.art .t3{display:none}
+#titleScr.art .t4{order:9;background:none;color:#fff;text-shadow:0 0 4px #3a2410,1px 1px 0 #3a2410;padding:0;margin:.2em 0 0}
+html.land #titleScr.art{justify-content:flex-start}
+html.land #titleScr.art{background-position:center 30%}
+html.land #titleScr.art .tlogoBox{width:auto;height:calc(var(--H) * .36);margin-top:calc(var(--H) * .015)}
+html.land.wide #titleScr.art .tlogoBox{height:calc(var(--H) * .31);transform:translateX(-12%)} html.land.wide #titleScr.art .t1{transform:translateX(-12%)}
+html.land #titleScr.art .tlogo{height:100%;width:auto}
+html.land #titleScr.art .t1{font-size:calc(var(--H) * .034);margin:0}
+html.land #titleScr.art .t3{font-size:calc(var(--H) * .028);line-height:1.5}
+html.land #titleScr.art .t4{font-size:calc(var(--H) * .02);max-width:90%;line-height:1.35}
+html.land #titleScr.art .tbtns{margin:calc(var(--H) * .012) 0}
 html.land #msgLayer{padding-bottom:12px;padding-left:90px}
 html.land #msgLayer .win{font-size:17px}
 html.land .saveMark{bottom:10px}
@@ -854,7 +872,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261108-1053';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261108-1113';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-08', items:[
     '虫ずもうが、赤間の町の切りかぶの上でたたかうようになった！ 虫どうしが向かい合って、相手にぶつかっていくよ',
@@ -862,6 +880,7 @@ const CHANGELOG = [
     'HPがへったりふえたりすると、虫の上に数字が出る。HPは虫の足もとに出るようにした',
     'ピンチになると、そだてた日々を思い出して、力がもどることがあるよ',
     'きりふきは、指をはなしたら、すぐに水が止まるようにした',
+    'タイトル画面が新しくなった！ 縁側から宗像の海と大島が見えるよ',
     'クワガタやキンカブト、チョウの幼虫が、絵になった！ バッタ・カマキリ・スズムシの子どもと、さなぎもぜんぶ絵になった。チョウのさなぎは、くきや葉にとまっているよ',
     '幼虫やさなぎも動くようになった！ 脚や触角、頭を動かしたり、息をしたり、いもむしは体をのびちぢみさせたりするよ。アゲハのなかまの小さい幼虫は、鳥のフンそっくり',
   ]},
@@ -1110,7 +1129,8 @@ function layout(){
   de.style.removeProperty('--sr'); de.style.removeProperty('--sl');
   if(short) de.style.setProperty(rotMode === 1 ? '--sr' : '--sl', '0px');
   de.classList.toggle('land', W > H && W >= 600);
-  de.classList.toggle('tall', H >= 600);   // 横レイアウトの高さで見る（@media の高さは、まわす前の高さになってしまう）
+  de.classList.toggle('tall', H >= 600);
+  de.classList.toggle('wide', W / H >= 1.7);   // スマホの横長（タイトルのロゴをよける）   // 横レイアウトの高さで見る（@media の高さは、まわす前の高さになってしまう）
 }
 layout();
 addEventListener('resize', ()=>{ layout(); });
@@ -2110,14 +2130,34 @@ function render(){
 }
 
 /* ---- タイトル ---- */
+const TITLE = {l1:'むなかた', l2:'虫そだて日記', num:'1', unit:'週間'};   // タイトル名（仮。決まったらここをかえる）
+function titleLogo(){
+  const T = TITLE, n2 = [...T.l2].length, W = Math.max(560, n2*104 + 150), cx = (W - 120)/2;
+  return `<svg class="tlogo" viewBox="0 0 ${W} 250" role="img" aria-label="${esc(T.l1 + ' ' + T.l2 + ' ' + T.num + T.unit)}">
+    <defs><linearGradient id="tlg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff27a"/><stop offset=".55" stop-color="#ffc533"/><stop offset="1" stop-color="#f08a1c"/></linearGradient>
+      <filter id="tls" x="-10%" y="-10%" width="120%" height="140%"><feDropShadow dx="0" dy="6" stdDeviation="0" flood-color="#3a1c0a" flood-opacity=".55"/></filter></defs>
+    <g filter="url(#tls)" font-family="'Mochiy Pop One','Hiragino Maru Gothic ProN','Hiragino Sans',sans-serif" text-anchor="middle" paint-order="stroke" stroke="#4a2410" stroke-linejoin="round">
+      <text x="${cx}" y="70" font-size="54" stroke-width="12" fill="#fff8e0" letter-spacing="6">${esc(T.l1)}</text>
+      <text x="${cx}" y="190" font-size="${n2 > 6 ? 96 : 104}" stroke-width="16" fill="url(#tlg)">${esc(T.l2)}</text>
+    </g>
+    <image href="img/bugs/kabuto_adult_genki.webp" x="${cx - 245}" y="4" width="92" height="92" transform="rotate(-12 ${cx - 199} 50)"/>
+    <g class="cal" transform="translate(${W - 116} 92) rotate(9)">
+      <rect x="0" y="0" width="112" height="128" rx="12" fill="#fffdf4" stroke="#4a2410" stroke-width="7"/>
+      <path d="M3.5 12 a8.5 8.5 0 0 1 8.5 -8.5 h88 a8.5 8.5 0 0 1 8.5 8.5 v26 h-105 z" fill="#e8553a"/>
+      <circle cx="32" cy="4" r="7" fill="#fffdf4" stroke="#4a2410" stroke-width="5"/><circle cx="80" cy="4" r="7" fill="#fffdf4" stroke="#4a2410" stroke-width="5"/>
+      <g font-family="'Mochiy Pop One','Hiragino Maru Gothic ProN',sans-serif" text-anchor="middle" fill="#4a2410">
+        <text x="56" y="95" font-size="62">${esc(T.num)}</text><text x="56" y="120" font-size="22">${esc(T.unit)}</text></g>
+    </g></svg>`;
+}
 function renderTitle(){
   $('tabs').hidden = true;
   const has = !!load();
-  view.innerHTML = `<div id="titleScr" class="norb">
-    <div class="sun"></div><div class="credit">Game Director: Ryohei Taniguchi</div>
+  const art = QS.get('title') === 'b' ? 'b' : 'a';   // タイトルの絵（a：縁側、b：丘。?title=b でくらべられる）
+  view.innerHTML = `<div id="titleScr" class="norb art" style="--tart:url(img/ui/title_${art}.webp)">
+    <div class="credit">Game Director: Ryohei Taniguchi</div>
+    <div class="tlogoBox">${titleLogo()}</div>
     <div class="t1">みつけて、そだてて、かえす</div>
-    <div class="t2">むなかた<br>虫そだて</div>
-    <div class="hero">${svgBest('kabuto')}</div>
+    <div class="tgap"></div>
     <div class="t3">宗像の森や川で虫をみつけて、おうちのケースでそだてよう。脱皮・さなぎ・羽化を見られるかな？</div>
     <div class="t4">※このゲームに出てくる場所と虫の組み合わせはゲーム用のもので、実際にその場所にいる虫とはかぎりません。ゲームの中でそだつ速さも、本物よりずっと速くしてあります。</div>
     <div class="tbtns">${has ? '<button type="button" class="tbtn pri" id="btnCont">つづきから</button>' : ''}<button type="button" class="tbtn ${has ? '' : 'pri'}" id="btnNew">${has ? 'はじめから' : 'はじめる'}</button></div>
