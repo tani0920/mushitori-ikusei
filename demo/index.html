@@ -151,7 +151,52 @@ html.land body.noteUI .shopNav .btn.on{background:#f6cf5b;color:#3a2410;border-c
 html.land body.noteUI .shopNav{background:#f6ead2;border-radius:0 0 10px 10px;padding:6px 8px;box-shadow:0 -30px 0 #f6ead2,0 3px 5px #3a241244}
 .spotPic{float:left;width:112px;aspect-ratio:3/2;object-fit:cover;border-radius:6px;margin:.1em .7em .1em 0;box-shadow:0 1px 3px #3a241255;pointer-events:none}
 .spot.here{border-color:var(--sun);box-shadow:0 0 0 2px var(--sun)}
-.found{display:flex;flex-direction:column;align-items:center;gap:.4em;padding:.6em}
+.found{display:flex;flex-direction:column;align-items:center;gap:.4em;padding:.6em;position:relative;border-radius:14px}
+.found.tier-mezura{box-shadow:0 0 0 3px #7ec8f0,0 0 18px #7ec8f088}
+.found.tier-maboroshi{box-shadow:0 0 0 3px #f0c44a,0 0 22px #f0c44aaa;background:linear-gradient(#fff8dc66,#fff0)}
+.found .tierTag{position:absolute;top:.4em;left:.6em;padding:0 .8em;border-radius:999px;font-size:12px;font-weight:700;background:#7ec8f0;color:#163a52}
+.found.tier-maboroshi .tierTag{background:#f0c44a;color:#4a3000}
+.found .stamp{position:absolute;top:.6em;right:.6em;z-index:2;padding:.2em .5em;border:3px solid #d9462c;border-radius:10px;color:#d9462c;font-weight:800;font-size:18px;transform:rotate(-12deg);background:#fff8;animation:stamp .5s .6s both cubic-bezier(.3,1.6,.5,1)}
+@keyframes stamp{0%{transform:rotate(-12deg) scale(2.4);opacity:0}100%{transform:rotate(-12deg) scale(1);opacity:1}}
+.found .pic.peek{animation:peek .8s ease-out both}
+@keyframes peek{0%{transform:translateY(30%) scale(.7);opacity:0}60%{transform:translateY(-4%) scale(1.04);opacity:1}100%{transform:none}}
+/* さがすところ（場所の絵の上） */
+#findField{position:fixed;z-index:5;left:calc(96px + var(--sl,0px));right:calc(56% + 10px);top:max(52px,calc(var(--st,0px) + 46px));bottom:max(10px,var(--sb,0px));pointer-events:none}
+#findField .hide{position:absolute;transform:translate(-50%,-50%);pointer-events:auto;width:clamp(64px,13vmin,110px);aspect-ratio:1;border:0;padding:0;background:radial-gradient(circle,#fff9 0,#fff5 40%,#ffffff22 62%,#fff0 70%);border-radius:50%;outline:2.5px dashed #ffffffe0;outline-offset:-6px;cursor:pointer;touch-action:none;font:inherit;animation:hideGlow 2.2s ease-in-out infinite}
+#findField .hide:nth-child(2){animation-delay:-.5s}#findField .hide:nth-child(3){animation-delay:-1.1s}#findField .hide:nth-child(4){animation-delay:-1.6s}
+@keyframes hideGlow{0%,100%{box-shadow:0 0 0 0 #fff6;transform:translate(-50%,-50%) scale(1)}50%{box-shadow:0 0 18px 6px #fff8;transform:translate(-50%,-50%) scale(1.06)}}
+#findField .hide b{position:absolute;left:50%;top:100%;transform:translateX(-50%);white-space:nowrap;font-size:13px;padding:0 .7em;border-radius:999px;background:#fffaf0e6;color:#4a3320;border:1px solid #c9a978;font-family:"Klee One",sans-serif}
+#findField .ring{position:absolute;inset:0}
+#findField .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+#findField .ring circle{fill:none;stroke:#f6cf5b;stroke-width:7;stroke-linecap:round;stroke-dasharray:277;stroke-dashoffset:277;filter:drop-shadow(0 0 3px #0006)}
+#findField.busy .hide:not(.hold):not(.rustle){opacity:.35;animation:none}
+#findField .hide.hold{animation:none;transform:translate(-50%,-50%) scale(1.08)}
+#findField .hide.rustle{animation:rustle .12s linear infinite}
+@keyframes rustle{0%,100%{transform:translate(-50%,-50%) rotate(0)}25%{transform:translate(-52%,-50%) rotate(-4deg)}75%{transform:translate(-48%,-50%) rotate(4deg)}}
+#findField .hide.flee{animation:flee .5s}
+@keyframes flee{0%,100%{transform:translate(-50%,-50%)}30%{transform:translate(-54%,-50%)}60%{transform:translate(-46%,-50%)}}
+#findField .gasa{position:absolute;left:50%;top:-10%;transform:translateX(-50%);font:800 22px/1 "Klee One",sans-serif;color:#fff;-webkit-text-stroke:1.5px #4a3320;animation:gasa .9s ease-out both;white-space:nowrap}
+#findField .bang{position:absolute;right:-12%;top:-30%;font:800 44px/1 sans-serif;color:#f6cf5b;-webkit-text-stroke:2px #4a3320;animation:pop .45s .35s both}
+@keyframes gasa{0%{transform:translate(-50%,10px) scale(.6);opacity:0}30%{transform:translate(-50%,0) scale(1.15);opacity:1}100%{transform:translate(-50%,-14px);opacity:1}}
+#findField .shadow{position:absolute;left:50%;top:50%;width:70%;filter:brightness(0) opacity(.55);animation:shadowRun .9s ease-in both}
+#findField .shadow svg{width:100%;height:auto}
+@keyframes shadowRun{0%{transform:translate(-50%,-50%)}100%{transform:translate(160%,-30%) scale(.6);opacity:0}}
+#findField.call .hide{animation:hideCall .6s 2}
+@keyframes hideCall{50%{box-shadow:0 0 26px 12px #fff;transform:translate(-50%,-50%) scale(1.18)}}
+#findField .fieldMsg{position:absolute;left:0;right:0;top:0;margin:0 auto;width:max-content;max-width:100%;padding:.2em 1em;border-radius:999px;background:#fffaf0e6;border:1px solid #c9a978;color:#4a3320;font:600 13px/1.5 "Klee One",sans-serif;pointer-events:none}
+/* ボタンまわり */
+.search .papaHint{display:flex;align-items:center;gap:.6em;text-align:left;margin-bottom:.4em;font-size:14px}
+.search .papaHint .fimg{width:44px;height:44px;border-radius:10px;border:2px solid #fff;box-shadow:0 1px 3px #0003;object-fit:cover;flex:none}
+.search .findRow{display:flex;align-items:center;justify-content:center;gap:1em}
+.search .findBtn{width:92px;height:92px;border-radius:50%;border:3px solid #fff;background:radial-gradient(circle at 35% 30%,#ffe58a,#f6c446 60%,#e4a92a);box-shadow:0 4px 0 #b9862066,0 6px 14px #0003;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;cursor:pointer;font:inherit;color:#3a2410;animation:findPulse 2s ease-in-out infinite}
+.search .findBtn img{width:46px;height:46px;object-fit:contain}
+.search .findBtn b{font-size:15px;margin-top:-2px}
+.search .findBtn:disabled{filter:grayscale(.8) opacity(.6);animation:none}
+@keyframes findPulse{50%{transform:scale(1.05)}}
+.search .acorns{display:flex;gap:4px;justify-content:center;margin:.2em 0}
+.search .acorns i{width:18px;height:22px;border-radius:50% 50% 45% 45%/40% 40% 60% 60%;background:#d8c8b0;position:relative}
+.search .acorns i.on{background:radial-gradient(circle at 40% 35%,#c98a4a,#8a5226)}
+.search .acorns i::before{content:'';position:absolute;left:-1px;right:-1px;top:-2px;height:8px;border-radius:6px 6px 3px 3px;background:#6a4a2a}
 .found .pic{width:min(60%,220px);aspect-ratio:1}
 .found .pic svg{width:100%;height:100%}
 .found .ex{position:absolute;font-size:40px;color:var(--sun);text-shadow:2px 2px 0 #000;animation:pop .5s}
@@ -905,7 +950,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261108-1629';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261108-1700';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-08', items:[
     '虫ずもうが、赤間の町の切りかぶの上でたたかうようになった！ 虫どうしが向かい合って、相手にぶつかっていくよ',
@@ -918,6 +963,7 @@ const CHANGELOG = [
     '虫めがねを大きくした。指で取っ手を持つので、レンズが指にかくれないよ。虫ずもうのさいごは、虫具店のおじさんが勝因・敗因を教えてくれる',
     'そとで場所に着いたとき、説明の枠を細くして、場所の絵が見えるようにした',
     'アプリのアイコンが新しくなった！（ホーム画面に追加しなおすと、かわるよ）',
+    '虫さがしが新しくなった！ 草むら・木のねもと・葉のうら・石の下から えらんで、指をおいてじっと待とう。うごくと、虫がにげちゃうよ。めずらしい虫や、はじめての虫には しるしがつく',
     '話している人が、大きく出るようになった！（ぼくは左、ほかの人は右。すもうは、ぼくと相手）',
     'ぼく・おとうさん・虫具店のおじさんの顔が出るようになった！ おとうさんは育て方を教えてくれる、虫の研究者。ぼくは、うれしい・くやしい・かなしい・たのしい・びっくりの顔をするよ。会話の窓も、ノートの紙の色になった',
     '虫かごの一覧が、ケースの中と同じ絵になった。もちものの「おみせへ」や、虫かご・置き場所の小さな絵も新しくしたよ',
@@ -2197,6 +2243,7 @@ document.querySelectorAll('#tabs button').forEach(b=> b.onclick = ()=> setTab(b.
 function render(){
   document.body.classList.toggle('obsMode', !!S && openCase !== null); document.body.classList.toggle('title', !S); document.body.classList.toggle('noteUI', !!S);
   const atSpot = !!S && openCase === null && tab === 'out' && outState && outState.spot;
+  if(!atSpot && $('findField')) $('findField').remove();   // さがすところは、場所の画面だけ
   document.body.dataset.tab = openCase !== null ? 'case' : atSpot ? 'spot' : tab; document.body.dataset.slot = slotOf();
   document.querySelectorAll('body > #drawer').forEach(e=>e.remove()); $('rtCase').hidden = true;   // ケースのこと は、ケースの画面のときだけ
   if(sidePanel === 'case') sidePanel = null; setSide(sidePanel); $('rtabs').hidden = !S;
@@ -2880,6 +2927,41 @@ async function arrive(sp, outside){
   if(!outside) await say(`【注意】${sp.warn}`, {face:'papa_teach'});
   render();
 }
+/* さがす（2026-11-08）：場所の絵の上の「さがすところ」をえらぶ → 指をおいたまま、じっと待つ → ガサッと出てくる。
+   うごいたり、はなしたりすると、虫がにげる（回数はへらない）。虫のなかま（shape）ごとに、見つかりやすいところがある */
+const HIDES = [
+  {k:'kusa',  name:'草むら',     x:22, y:72, like:['grass','cricket','mantis'], txt:'草むらを、そっとかきわける…'},
+  {k:'nemo',  name:'木のねもと', x:66, y:76, like:['beetle','stag'],             txt:'木のねもとの、落ち葉の下をのぞく…'},
+  {k:'ha',    name:'葉のうら',   x:36, y:38, like:['butterfly','mantis','firefly'], txt:'葉のうらを、そっとめくる…'},
+  {k:'ishi',  name:'石の下',     x:80, y:48, like:['cricket','beetle','stag'],    txt:'石を、そっともちあげる…'},
+];
+const SLOT_HINT = {asa:'朝は、葉のうらに夜の虫がかくれているよ。', hiru:'昼は、草むらで動く虫を見てごらん。', yu:'夕方は、木のねもとから虫が出てくるころ。', yoru:'夜は、木のみきや草の上をよく見てごらん。'};
+const RARE_TIER = r=> r >= 4 ? {k:'maboroshi', name:'まぼろし'} : r >= 3 ? {k:'mezura', name:'めずらしい'} : {k:'futsu', name:''};
+function findField(sp, all, egg, slot, left){
+  let F = $('findField'); F && F.remove();
+  if(!html_land() || left <= 0 || (!all.length && !egg)) return;
+  F = document.createElement('div'); F.id = 'findField'; F.className = 'norb';
+  F.innerHTML = HIDES.map(h=> `<button type="button" class="hide" data-k="${h.k}" style="left:${h.x}%;top:${h.y}%" aria-label="${h.name}"><i class="ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44"/></svg></i><b>${h.name}</b></button>`).join('')
+    + '<div class="fieldMsg" id="fieldMsg">光っているところに、指をおいて、じっと待とう</div>';
+  document.body.appendChild(F);
+  const msg = t=>{ const m = $('fieldMsg'); if(m) m.textContent = t; };
+  F.querySelectorAll('.hide').forEach(bt=>{
+    bt.onpointerdown = e=>{ e.preventDefault(); if(F.classList.contains('busy')) return;
+      const h = HIDES.find(x=>x.k === bt.dataset.k), x0 = e.clientX, y0 = e.clientY, T = 1700, t0 = performance.now();
+      F.classList.add('busy'); bt.classList.add('hold'); msg(h.txt + '　じっと…'); try{ bt.setPointerCapture(e.pointerId); }catch(_){}
+      const ring = bt.querySelector('circle'); let done = false, raf = 0;
+      const stop = ok=>{ if(done) return; done = true; cancelAnimationFrame(raf); bt.onpointermove = bt.onpointerup = bt.onpointercancel = null; bt.classList.remove('hold'); ring.style.strokeDashoffset = '';
+        if(ok){ bt.classList.add('rustle'); doFind(sp, all, egg, slot, h); return; }
+        F.classList.remove('busy'); bt.classList.add('flee'); setTimeout(()=> bt.classList.remove('flee'), 900);
+        msg('あっ…！ 何かが、さっとかくれた。うごかないで、じっと待ってね'); };
+      bt.onpointermove = ev=>{ if(Math.hypot(ev.clientX - x0, ev.clientY - y0) > 18) stop(false); };
+      bt.onpointerup = bt.onpointercancel = ()=> stop(false);
+      const tick = t=>{ if(done) return; const k = Math.min(1, (t - t0)/T); ring.style.strokeDashoffset = (277 * (1 - k)).toFixed(1); if(k >= 1) stop(true); else raf = requestAnimationFrame(tick); };
+      raf = requestAnimationFrame(tick);
+    };
+  });
+}
+const html_land = ()=> document.documentElement.classList.contains('land');
 function renderSpot(){
   const sp = outState.spot, slot = slotOf(), today = dayKey(), key = sp.key + '|' + today, used = S.visits[key]||0, left = FINDS_PER_VISIT - used;
   const here = spotBugs(sp.key, slot), all = findable(sp.key, slot), later = all.filter(id=>!here.includes(id));
@@ -2889,32 +2971,45 @@ function renderSpot(){
       <div>いま活動中：${here.map(nmQ).join('・') || 'いない'}</div>
       ${later.length ? `<div class="bugs">ねむっているけど、さがせる：${later.map(id=>`${nmQ(id)}（${BUGS[id].time.map(t=>SLOT_NAMES[t]).join('・')}に活動）`).join('・')}</div>` : ''}
       ${egg ? '<div class="small" style="color:var(--sun)">…木の根もとで、なにかが金色に光っている。</div>' : ''}</div>
-    <div id="findBox" class="search"><p>草むらや木のまわりを、そっとのぞいてみよう。</p><p class="small">今日ここでさがせるのは、あと${left}回</p>
-      <button type="button" class="btn pri" id="btnFind" ${left <= 0 || (!all.length && !egg) ? 'disabled' : ''} style="font-size:18px;padding:.6em 1.6em"><img class="mIc shop" src="img/tools/megane.webp" alt="" draggable="false">さがす</button></div>
+    <div id="findBox" class="search"><div class="papaHint norb">${faceImg('papa')}<span>${esc(SLOT_HINT[slot])}</span></div>
+      <div class="findRow"><button type="button" class="findBtn" id="btnFind" ${left <= 0 || (!all.length && !egg) ? 'disabled' : ''}><img src="img/tools/megane.webp" alt="" draggable="false"><b>さがす</b></button>
+      <div class="left"><div class="small">今日ここで さがせるのは</div><div class="acorns">${Array.from({length:FINDS_PER_VISIT}, (_, i)=> `<i class="${i < left ? 'on' : ''}"></i>`).join('')}</div><div class="small">あと${Math.max(0, left)}回</div></div></div></div>
     <div class="spot photoBox"><b>📷 本物の虫の写真をとる</b>　<span class="small">今日のこり ${photoLeft()}まい</span>
       <div class="small">外で見つけた本物の虫をとると、どんぐりがもらえる。写真の虫のなかまの幼虫も見つかりやすくなるよ。写真はこのたんまつの中だけでAIが判定して、どこにも送られません。</div>
       <div class="row" style="margin-top:6px"><label class="btn pri">カメラでとる<input id="camIn" class="vh" type="file" accept="image/*" capture="environment"></label><label class="btn">アルバムから<input id="libIn" class="vh" type="file" accept="image/*"></label></div>
       <div id="photoRes" class="small"></div></div>`;
   ['camIn','libIn'].forEach(k=>{ $(k).onchange = async e=>{ const f = e.target.files[0]; e.target.value = ''; const box = $('photoRes'); box.className = 'photoRes'; await handlePhoto(f, sp, box); }; });
-  $('btnLeave').onclick = ()=>{ outState = null; setTab('home'); };
-  $('btnFind').onclick = ()=> doFind(sp, all, egg, slot);
+  $('btnLeave').onclick = ()=>{ outState = null; $('findField') && $('findField').remove(); setTab('home'); };
+  findField(sp, all, egg, slot, left);
+  // ボタン：横画面では「光っているところをえらんでね」と知らせる（たて画面は、そのままさがす）
+  $('btnFind').onclick = ()=>{ const F = $('findField'); if(!F){ doFind(sp, all, egg, slot, null); return; }
+    F.classList.remove('call'); void F.offsetWidth; F.classList.add('call'); const m = $('fieldMsg'); if(m) m.textContent = '光っているところに、指をおいて、じっと待とう'; };
 }
-async function doFind(sp, here, egg, slot){
+async function doFind(sp, here, egg, slot, h){
   const key = sp.key + '|' + dayKey(); S.visits[key] = (S.visits[key]||0) + 1; save();
-  const box = $('findBox'); box.innerHTML = `<p class="dots">${pick(['草をかきわけている', '木のねもとをのぞいている', '葉のうらを見ている', 'じっと耳をすませている'])}</p>`;
-  await wait(1400);
+  const box = $('findBox'), F = $('findField');
+  if(!F) box.innerHTML = `<p class="dots">${pick(['草をかきわけている', '木のねもとをのぞいている', '葉のうらを見ている', 'じっと耳をすませている'])}</p>`;
+  await wait(F ? 650 : 1400);
   // めずらしい虫（rank が高い）ほど出にくい。何も見つからないこともある。宗像大社うまれは少し運がいい
   let id = null;
   if(egg){ id = 'kinkabuto'; S.link.kinEgg = 1; }
-  else { const pool = []; here.forEach(b=>{ const w = {1:5, 2:3, 3:2, 4:1, 5:1}[BUGS[b].rank] * (BUGS[b].time.includes(slot) ? 2 : 1) * photoBoost(BUGS[b].shape); for(let i=0;i<w;i++) pool.push(b); }); for(let i=0;i<4;i++) pool.push(null); id = pick(pool); }
-  if(!id){ box.innerHTML = `<p>…今回は、みつからなかった。</p><p class="small">虫は、きみのことをよく見ている。もう一度、しずかにさがしてみよう。</p><button type="button" class="btn" id="btnAgain">もどる</button>`; $('btnAgain').onclick = renderSpot; return; }
+  else { const pool = []; here.forEach(b=>{ const w = {1:5, 2:3, 3:2, 4:1, 5:1}[BUGS[b].rank] * (BUGS[b].time.includes(slot) ? 2 : 1) * photoBoost(BUGS[b].shape); const hw = h ? (h.like.includes(BUGS[b].shape) ? 3 : .5) : 1; for(let i=0;i<Math.round(w*hw*2);i++) pool.push(b); }); for(let i=0;i<8;i++) pool.push(null); id = pick(pool); }
+  const spotEl = F && h ? F.querySelector(`.hide[data-k="${h.k}"]`) : null;
+  if(!id){ if(spotEl){   // 何もいなかった：かげが、さっとにげる
+      const cand = here.length ? BUGS[pick(here)] : null; spotEl.classList.remove('rustle'); spotEl.insertAdjacentHTML('beforeend', `<span class="shadow">${cand ? svgBug(Object.keys(BUGS).find(k=>BUGS[k] === cand), 'larva', {instar:0}) : ''}</span>`);
+      const m = $('fieldMsg'); if(m) m.textContent = '…かげが、さっとにげていった。'; await wait(900); }
+    F && F.remove();
+    box.innerHTML = `<p>…今回は、みつからなかった。</p><p class="small">虫は、きみのことをよく見ている。もう一度、しずかにさがしてみよう。</p><button type="button" class="btn" id="btnAgain">もどる</button>`; $('btnAgain').onclick = renderSpot; return; }
   const b = BUGS[id], odd = !b.time.includes(slot) && !b.link, know = knowsAtFind(id), G = GROUP[groupOf(id)];
-  const first = !S.dex[id];
+  const first = !S.dex[id], tier = RARE_TIER(b.rank);
+  if(spotEl){ spotEl.classList.remove('rustle'); spotEl.insertAdjacentHTML('beforeend', '<span class="gasa">ガサッ</span><span class="bang">！</span>'); await wait(900); }
+  F && F.remove();
   S.dex[id] = S.dex[id] || {found:dayKey(), where:sp.name}; if(know) S.dex[id].known = 1; save();
   const findTxt = know === 'link' || know === 'raised' ? b.find : know === 'eye' ? `${G.find.replace(/ ?なん.*$|！$/, '！')}\n…観察眼で、すぐにわかった！ これは${b.name}の幼虫だ！` : G.find;
   const whoTxt = know ? '' : `<br><small>まだ、なんの虫かわからない。${G.who}みたいだ。育てて大きくなると、わかるかも。</small>`;
   const oddTxt = odd ? `<br><b class="yk">【めずらしい】</b>こんな時間に会えるなんて！ ${esc(b.name)}は、ほんとうは${b.time.map(t=>SLOT_NAMES[t]).join('や')}に活動する虫なんだ。いまは、かくれてねむっているところを見つけたんだね。` : '';
-  box.innerHTML = `<div class="found"><span class="ex norb">！</span><div class="pic">${b.watch ? svgBest(id) : svgBug(id, 'larva', {instar:0})}</div>
+  setTimeout(()=>{ const fb = $('findBox'); fb && fb.scrollIntoView({block:'center', behavior:'smooth'}); }, 60);   // 見つけたカードが見えるように
+  box.innerHTML = `<div class="found tier-${tier.k}"><span class="ex norb">！</span>${tier.name ? `<span class="tierTag norb">${tier.name}</span>` : ''}${first && know ? '<span class="stamp norb">はじめて！</span>' : ''}<div class="pic peek">${b.watch ? svgBest(id) : svgBug(id, 'larva', {instar:0})}</div>
     <div class="win" style="width:100%">${fmtMsg(findTxt)}${whoTxt}${know ? oddTxt : ''}${first && know ? '<br><b class="yk">はじめてみつけた！ ずかんに登録。</b>' : first ? '<br><b class="yk">ずかんに「？？？」で登録。</b>' : ''}</div>
     <div class="row" id="foundBtns"></div></div>`;
   const btns = $('foundBtns');
