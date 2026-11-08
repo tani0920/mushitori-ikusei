@@ -854,7 +854,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261108-0924';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261108-0941';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-08', items:[
     '虫ずもうが、赤間の町の切りかぶの上でたたかうようになった！ 虫どうしが向かい合って、相手にぶつかっていくよ',
@@ -862,6 +862,7 @@ const CHANGELOG = [
     'HPがへったりふえたりすると、虫の上に数字が出る。HPは虫の足もとに出るようにした',
     'ピンチになると、そだてた日々を思い出して、力がもどることがあるよ',
     'きりふきは、指をはなしたら、すぐに水が止まるようにした',
+    'クワガタやキンカブト、チョウの幼虫が、絵になった！',
   ]},
   {v:'0.15.0', date:'2026-11-07', items:[
     '道具のつかいかたがかわった！ 道具をえらんで、ケースの中をさわると、さわったところで使えるよ',
@@ -1658,20 +1659,20 @@ function startMover(p, id, stage){
 /* 絵ができた虫は、SVG のかわりに画像を使う。img/bugs/名前.webp（tools/img_prep.py で作る）。100x100 の箱いっぱいに置く */
 const BUG_IMG = {
   kabuto: {adult:'kabuto_adult_genki', larva:'kabuto_larva_genki', pupa:'kabuto_pupa'},
-  kokuwa: {adult:'kokuwa_adult_genki'},
+  kokuwa: {adult:'kokuwa_adult_genki', larva:'kokuwa_larva_genki'},
   suzumushi: {adult:'suzumushi_adult_genki'},
   shoryo: {adult:'shoryo_adult_genki'},
   tonosama: {adult:'tonosama_adult_genki'},
-  kinkabuto: {adult:'kinkabuto_adult_genki'},
-  nokogiri: {adult:'nokogiri_adult_genki'},
-  hirata: {adult:'hirata_adult_genki'},
-  miyama: {adult:'miyama_adult_genki'},
-  ookuwa: {adult:'ookuwa_adult_genki'},
+  kinkabuto: {adult:'kinkabuto_adult_genki', larva:'kinkabuto_larva_genki'},
+  nokogiri: {adult:'nokogiri_adult_genki', larva:'nokogiri_larva_genki'},
+  hirata: {adult:'hirata_adult_genki', larva:'hirata_larva_genki'},
+  miyama: {adult:'miyama_adult_genki', larva:'miyama_larva_genki'},
+  ookuwa: {adult:'ookuwa_adult_genki', larva:'ookuwa_larva_genki'},
   kamakiri: {adult:'kamakiri_adult_genki'},
-  monshiro: {adult:'monshiro_adult_genki'},
-  ageha: {adult:'ageha_adult_genki'},
-  karasu: {adult:'karasu_adult_genki'},
-  oomurasaki: {adult:'oomurasaki_adult_genki'},
+  monshiro: {adult:'monshiro_adult_genki', larva:'monshiro_larva_genki'},
+  ageha: {adult:'ageha_adult_genki', larva:'ageha_larva_genki'},
+  karasu: {adult:'karasu_adult_genki', larva:'karasu_larva_genki'},
+  oomurasaki: {adult:'oomurasaki_adult_genki', larva:'oomurasaki_larva_genki'},
   genji: {adult:'genji_adult_genki'},
   abura: {adult:'abura_adult_genki'},
 };
