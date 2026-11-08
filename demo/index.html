@@ -875,7 +875,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261108-1132';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261108-1151';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-08', items:[
     '虫ずもうが、赤間の町の切りかぶの上でたたかうようになった！ 虫どうしが向かい合って、相手にぶつかっていくよ',
@@ -2135,7 +2135,10 @@ function render(){
 /* ---- タイトル ---- */
 const TITLE = {l1:'むなかた', l2:'虫そだて日記', num:'1', unit:'週間', full:'むなかた 虫そだて日記〈1週間〉'};   // タイトル名（2026-11-08 に決定）
 /* タイトルロゴ：色えんぴつで描いたような、やわらかい文字（ふちは少しゆらし、中は斜めの線のぬりあと＋紙のつぶつぶ） */
-function titleLogo(font){
+function titleLogo(){   // GPT で描いたロゴ（img/ui/title_logo.webp、1200x395）。名前をかえるときは titleLogoSVG() を使うか、描きなおす
+  return `<img class="tlogo" src="img/ui/title_logo.webp" width="1200" height="395" alt="${esc(TITLE.full)}" decoding="async">`;
+}
+function titleLogoSVG(font){
   const T = TITLE, n2 = [...T.l2].length, W = Math.max(560, n2*104 + 150), cx = (W - 120)/2, F = font || "'Yusei Magic','Klee One','Hiragino Maru Gothic ProN',sans-serif";
   const ink = '#5a3418', paper = '#fffaf0';
   return `<svg class="tlogo" viewBox="0 0 ${W} 250" role="img" aria-label="${esc(T.full)}">
