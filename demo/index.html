@@ -955,7 +955,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261108-1742';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261109-0029';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-08', items:[
     '虫ずもうが、赤間の町の切りかぶの上でたたかうようになった！ 虫どうしが向かい合って、相手にぶつかっていくよ',
@@ -963,6 +963,7 @@ const CHANGELOG = [
     'HPがへったりふえたりすると、虫の上に数字が出る。HPは虫の足もとに出るようにした',
     'ピンチになると、そだてた日々を思い出して、力がもどることがあるよ',
     'きりふきは、指をはなしたら、すぐに水が止まるようにした',
+    'お世話が足りずに虫が死んでしまったとき、どうすればいいかを、おとうさんが教えてくれるようにした。虫をかえすときの、だいじなやくそくもふえたよ',
     'カブトムシ・クワガタ・オオムラサキ・スズムシは、絵のとおり、みんなオスで羽化するようにした',
     'さなぎが右や左に向きをかえないようにした。名前をつけるとき、カードがキーボードにかくれないようにした',
     '虫めがねを大きくした。指で取っ手を持つので、レンズが指にかくれないよ。虫ずもうのさいごは、虫具店のおじさんが勝因・敗因を教えてくれる',
@@ -2659,7 +2660,7 @@ async function renderObs(){
     if(bg.step === 1){ if(inRefuge(hc)){ bg.step = 2; save(); renderObs(); setTimeout(()=> setTxt('ひなんケースに入れた。ほうきで、土を入れかえよう。'), 50); await yakusoku('bigclean', '虫は、力を入れずに、そっと持とうね。\n大そうじの間は、ひなんケースで待っていてもらおう。'); }
       else { if(el) el.style.opacity = ''; setTxt('ケースの中にもどしてしまった。ひなんケースまで運ぼう。'); } return; }
     if(bg.step === 3){ if(inRefuge(hc)){ $('refugeBug').innerHTML = svgBug(c.bug, st.k, {instar:instarOf(c), scale:.9}); setTxt('まだひなんケースの中。ケースの中までもどそう。'); return; }
-      obsSession.big = null; c.log.clean += 2; c.hideUntil = 0; save(); renderObs(); setTimeout(()=> setTxt('大そうじ、おつかれさま！ 虫も新しい土によろこんでいる。'), 50); await yakusoku('bigdone', '大そうじは、3日に1回くらい。\n土やマットは、虫の家そのもの。きれいな家で、元気に育つよ。'); }
+      obsSession.big = null; c.log.clean += 2; c.hideUntil = 0; save(); renderObs(); setTimeout(()=> setTxt('大そうじ、おつかれさま！ 虫も新しい土によろこんでいる。'), 50); await yakusoku('bigdone', '大そうじは、3日に1回くらい。\n土やマットは、虫の家そのもの。きれいな家で、元気に育つよ。\n古い土やエサは、公園や庭にすてないで、もえるごみに。目に見えないダニや病気のもとが、外の虫にうつることがあるんだ。'); }
   };
   // 道具の列から、そのままケースへドラッグして使える（ゆび・虫めがね・ふきん・きりふき・エサ）。ケースの外ではなすと、使わずにもどる
   let fromTray = null, trayDragT = 0, trayDragK = '';
@@ -2750,7 +2751,7 @@ async function renderObs(){
     S.cases[openCase] = null;
     if(adult){ S.money += 50; S.stats.released++; const d = S.dex[c.bug]; d.raised = dayKey(); d.released = (d.released||0) + 1; await say(`${nm}は、${c.from}の空へ元気に飛んでいった！\nさいごまでそだてたごほうびに、どんぐり ${dg(50)} をもらった。`, {face:'boku_joy'}); }
     else { S.money += 5; await say(`${nm}を${c.from}にかえした。\n「元気でね！」`, {face:'boku'}); }
-    await yakusoku('release', '観察がおわったら、みつけた場所にかえしてあげよう。\nちがう場所にはなすと、そこにいる虫たちがこまってしまうんだ。');
+    await yakusoku('release', '観察がおわったら、みつけた場所に、その虫がくらしている季節のうちにかえそう。\n同じカブトムシでも、場所ごとに少しずつちがう。ちがう場所にはなすと、そこにいる虫たちのくらしがみだれてしまうんだ。\n外国の虫は、ぜったいに外にはなさないこと。');
     save(); openCase = null; refresh();
   };
   // すがたがかわる演出（ケースをのぞいたときに見せる）
@@ -2810,11 +2811,20 @@ async function showResult(c){
   c.name = (nm || b.name).slice(0, 10); save();
   await say(`「${c.name}」と名づけた。\nこれから、虫ずもうに出られるよ！（「すもう」タブ）`, {face:'boku_fun'});
 }
-// 元気がとても低いままだった虫は、自然にかえる
+// 元気がとても低いままだった虫は、死んでしまう（やさしく正直に伝える）
 async function handleGone(){
   for(let i=0;i<S.cases.length;i++){ const c = S.cases[i]; if(!c || !c.gone) continue;
     S.cases[i] = null; save();
-    await say(`${dispName(c)}は、元気がなくなって、ケースから出ていってしまった…。\nお世話が足りなかったみたい。\n【そだてのやくそく】\n飼うときめたら、毎日、エサとしめりけとそうじを見てあげよう。`, {face:'boku_sad'});
+    // 死なせてしまったとき（2026-11-09）：やさしく、正直に。土にうめずに、紙につつんでもえるごみ（または標本）。資料_宗像.md
+    const nm = dispName(c), d = S.dex[c.bug];
+    await say(`${nm}が、動かなくなってしまった…。`, {face:'boku_sad'});
+    await say('毎日のお世話が、少し足りなかったのかもしれないね。\n…小さい体で、よくがんばって生きたね。', {face:'papa_worry'});
+    const way = await say('さいごに、どうしてあげようか。', {face:'papa', ans:['紙につつんで、ありがとうを言う', '標本にして、記録にのこす']});
+    if(way === 0) await say('土にうめると、ケースの土や虫についた、目に見えないダニや病気のもとが、外の虫にうつることがあるんだ。\nだから、紙につつんで、ありがとうを言って、もえるごみに出そう。', {face:'papa_teach'});
+    else { if(d){ d.specimen = (d.specimen||0) + 1; } await say('標本にすると、いつ、どこでくらした虫かの、だいじな記録になるんだ。\nずかんに、きちんとのこしておこう。', {face:'papa_teach'}); }
+    if(d) d.lost = (d.lost||0) + 1; save();
+    await say(`${nm}、ありがとう。`, {face:'boku_sad'});
+    await yakusoku('gone', '飼うときめたら、毎日、エサとしめりけとそうじを見てあげよう。\n虫の命は、ぼくたちの手の中にあるんだ。');
     render();
   }
 }
