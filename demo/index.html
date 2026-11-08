@@ -854,7 +854,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261108-0956';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261108-1030';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-08', items:[
     '虫ずもうが、赤間の町の切りかぶの上でたたかうようになった！ 虫どうしが向かい合って、相手にぶつかっていくよ',
@@ -862,7 +862,7 @@ const CHANGELOG = [
     'HPがへったりふえたりすると、虫の上に数字が出る。HPは虫の足もとに出るようにした',
     'ピンチになると、そだてた日々を思い出して、力がもどることがあるよ',
     'きりふきは、指をはなしたら、すぐに水が止まるようにした',
-    'クワガタやキンカブト、チョウの幼虫が、絵になった！ バッタ・カマキリ・スズムシの子どもと、クワガタのさなぎも',
+    'クワガタやキンカブト、チョウの幼虫が、絵になった！ バッタ・カマキリ・スズムシの子どもと、さなぎもぜんぶ絵になった。チョウのさなぎは、くきや葉にとまっているよ',
   ]},
   {v:'0.15.0', date:'2026-11-07', items:[
     '道具のつかいかたがかわった！ 道具をえらんで、ケースの中をさわると、さわったところで使えるよ',
@@ -1663,16 +1663,16 @@ const BUG_IMG = {
   suzumushi: {adult:'suzumushi_adult_genki', larva:'suzumushi_larva_genki'},
   shoryo: {adult:'shoryo_adult_genki', larva:'shoryo_larva_genki'},
   tonosama: {adult:'tonosama_adult_genki', larva:'tonosama_larva_genki'},
-  kinkabuto: {adult:'kinkabuto_adult_genki', larva:'kinkabuto_larva_genki'},
+  kinkabuto: {adult:'kinkabuto_adult_genki', larva:'kinkabuto_larva_genki', pupa:'kinkabuto_pupa'},
   nokogiri: {adult:'nokogiri_adult_genki', larva:'nokogiri_larva_genki', pupa:'nokogiri_pupa'},
   hirata: {adult:'hirata_adult_genki', larva:'hirata_larva_genki', pupa:'hirata_pupa'},
   miyama: {adult:'miyama_adult_genki', larva:'miyama_larva_genki', pupa:'miyama_pupa'},
   ookuwa: {adult:'ookuwa_adult_genki', larva:'ookuwa_larva_genki', pupa:'ookuwa_pupa'},
   kamakiri: {adult:'kamakiri_adult_genki', larva:'kamakiri_larva_genki'},
-  monshiro: {adult:'monshiro_adult_genki', larva:'monshiro_larva_genki'},
-  ageha: {adult:'ageha_adult_genki', larva:'ageha_larva_genki'},
-  karasu: {adult:'karasu_adult_genki', larva:'karasu_larva_genki'},
-  oomurasaki: {adult:'oomurasaki_adult_genki', larva:'oomurasaki_larva_genki'},
+  monshiro: {adult:'monshiro_adult_genki', larva:'monshiro_larva_genki', pupa:'monshiro_pupa'},
+  ageha: {adult:'ageha_adult_genki', larva:'ageha_larva_genki', pupa:'ageha_pupa'},
+  karasu: {adult:'karasu_adult_genki', larva:'karasu_larva_genki', pupa:'karasu_pupa'},
+  oomurasaki: {adult:'oomurasaki_adult_genki', larva:'oomurasaki_larva_genki', pupa:'oomurasaki_pupa'},
   genji: {adult:'genji_adult_genki'},
   abura: {adult:'abura_adult_genki'},
 };
@@ -1969,7 +1969,8 @@ function placeBug(c, slot){   // どこに、どんなすがたでいるか
   }
   if(b.shape === 'butterfly'){
     if(st === 'larva') return {x:60, y:36, s:.4, o:{instar:ins}, txt:day ? '葉のふちから、むしゃむしゃ食べている。フンもたくさん出るよ。' : '葉のうらで、じっとしている。'};
-    if(st === 'pupa') return {x:70, y:26, s:.4, o:{}, txt:'葉のうらに、糸でぶらさがっている。中では体が作りかえられているところ。'};
+    if(st === 'pupa') return c.bug === 'oomurasaki' ? {x:55, y:50, s:.32, o:{}, txt:'葉のうらに、おしりの糸でさかさまにぶらさがっている。中では体が作りかえられているところ。'}
+      : {x:43, y:52, s:.32, o:{}, txt:'くきに、糸のベルトで体をささえてとまっている。中では体が作りかえられているところ。'};   // 絵の頭が上（オオムラサキは下）
     if(night) return {x:40, y:30, s:.45, o:{rest:true, sleep:true}, txt:'はねをとじて、くきにとまってねている。'};
     return {x:55, y:34, s:.55, o:{}, txt:fresh ? '花にとまって、さとう水をすっている。' : 'はねをひらいたりとじたりしている。さとう水を置いてあげよう。'};
   }
