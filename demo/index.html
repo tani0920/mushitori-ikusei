@@ -198,6 +198,25 @@ html.land body.noteUI .shopNav{background:#f6ead2;border-radius:0 0 10px 10px;pa
 @keyframes blink{50%{opacity:.2}}
 #msgLayer .win .ans{display:flex;flex-direction:column;gap:.4em;margin-top:.6em}
 #msgLayer .yk{color:var(--sun)}
+.shopHi{display:flex;align-items:center;gap:.7em;margin:.2em 0 .5em;padding:.5em .7em;background:#fffaf0e6;border:1px solid #d8c3a0;border-radius:12px;color:#4a3320;font-size:14px;line-height:1.5}
+.shopHi .fimg{width:64px;height:64px;flex:none;border-radius:12px;border:2px solid #fff;box-shadow:0 1px 3px #0003;object-fit:cover}
+.shopHi b{display:block;font-size:12px;color:#8a5a20}
+#msgLayer .win{position:relative;--fs:88px}
+#msgLayer .win.hasFace{padding-left:calc(var(--fs) + 1.5em);min-height:calc(var(--fs) + 2.8em)}
+#msgLayer .face{position:absolute;left:.6em;top:.6em;width:var(--fs);text-align:center;white-space:normal}
+#msgLayer .face .fimg{display:block;width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;background:#fbf4e4;border:2px solid #fff;box-shadow:0 2px 5px #0003;animation:faceIn .35s ease-out}
+#msgLayer .face b{display:block;margin-top:.2em;font-size:12px;line-height:1.3;color:var(--sun);font-weight:700}
+@keyframes faceIn{0%{transform:scale(.85) translateY(6px);opacity:0}100%{transform:none;opacity:1}}
+html.land #msgLayer .win{--fs:clamp(80px,calc(var(--H) * .2),130px)}
+/* 会話の窓も、観察ノートと同じ紙の色に（2026-11-08。前は紺） */
+body.noteUI #msgLayer .win{background:#fffaf0;color:#4a3320;border:2px solid #c9a978;box-shadow:0 0 0 3px #fffaf0cc,0 6px 18px #0004;border-radius:14px;font-family:"Klee One","Hiragino Maru Gothic ProN",sans-serif;font-weight:600}
+body.noteUI #msgLayer .yk{color:#c0661a}
+body.noteUI #msgLayer .win .tap{color:#a08a6a}
+body.noteUI #msgLayer .btn{background:#fff;color:#4a3320;border-color:#c9a978;box-shadow:0 2px 0 #c9a97866;font-weight:600}
+body.noteUI #msgLayer .btn.pri{background:#f6cf5b;color:#3a2410;border-color:#d9a93a}
+body.noteUI #msgLayer input{border-color:#c9a978}
+body.noteUI #msgLayer .face b{color:#8a5a20}
+body.noteUI #msgLayer .face .fimg{border-color:#e9d8b8}
 
 /* 新しい版のお知らせ（虫とり日記と同じ） */
 .updBar{position:fixed;left:12px;right:12px;margin:0 auto;width:fit-content;top:calc(var(--st,0px) + 6px);z-index:10000;display:flex;align-items:center;justify-content:center;gap:.6em;white-space:nowrap;background:#14284af0;color:#fff;border:2px solid var(--sun);border-radius:10px;padding:.4em .5em .4em .9em;box-shadow:0 4px 12px #0008;font-size:13px}
@@ -879,7 +898,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261108-1219';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261108-1239';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-08', items:[
     '虫ずもうが、赤間の町の切りかぶの上でたたかうようになった！ 虫どうしが向かい合って、相手にぶつかっていくよ',
@@ -887,6 +906,7 @@ const CHANGELOG = [
     'HPがへったりふえたりすると、虫の上に数字が出る。HPは虫の足もとに出るようにした',
     'ピンチになると、そだてた日々を思い出して、力がもどることがあるよ',
     'きりふきは、指をはなしたら、すぐに水が止まるようにした',
+    'ぼく・おとうさん・虫具店のおじさんの顔が出るようになった！ おとうさんは育て方を教えてくれる、虫の研究者。ぼくは、うれしい・くやしい・かなしい・たのしい・びっくりの顔をするよ。会話の窓も、ノートの紙の色になった',
     '虫かごの一覧が、ケースの中と同じ絵になった。もちものの「おみせへ」や、虫かご・置き場所の小さな絵も新しくしたよ',
     'ゲームの名前が「むなかた 虫そだて日記〈1週間〉」になった！ タイトル画面も新しくなったよ（縁側と丘の絵が、かわりばんこに出る）',
     'クワガタやキンカブト、チョウの幼虫が、絵になった！ バッタ・カマキリ・スズムシの子どもと、さなぎもぜんぶ絵になった。チョウのさなぎは、くきや葉にとまっているよ',
@@ -2060,11 +2080,15 @@ function sceneSVG(c, slot, o={}){
 /* =========================================================
    メッセージ（RPGの窓。タップで次へ）
    ========================================================= */
+/* 人物の顔（img/chara/キー.webp）。say(文, {face:'papa_teach'}) で、会話の窓の左に顔と名前を出す */
+const FACES = {boku:'ぼく', boku_joy:'ぼく', boku_angry:'ぼく', boku_sad:'ぼく', boku_fun:'ぼく', boku_surprise:'ぼく',
+  papa:'おとうさん', papa_teach:'おとうさん', papa_worry:'おとうさん', papa_happy:'おとうさん', ojisan:'虫具店のおじさん', ojisan_laugh:'虫具店のおじさん'};   // すもうの子どもたち（yuta・haruka・kenta・soma・daichi・ren）の顔は、まだ描いていない。描けたらここに足す
+const faceImg = (k, cls='')=> FACES[k] ? `<img class="fimg ${cls}" src="img/chara/${k}.webp" alt="${esc(FACES[k])}" draggable="false">` : '';
 function say(text, opts={}){
   return new Promise(res=>{
     const L = document.createElement('div'); L.id = 'msgLayer';
-    const w = document.createElement('div'); w.className = 'win';
-    w.innerHTML = fmtMsg(text) + (opts.ans ? '' : '<span class="tap">▼ タップでつぎへ</span>');
+    const w = document.createElement('div'); w.className = 'win' + (FACES[opts.face] ? ' hasFace' : '');
+    w.innerHTML = (FACES[opts.face] ? `<div class="face norb">${faceImg(opts.face)}<b>${esc(FACES[opts.face])}</b></div>` : '') + fmtMsg(text) + (opts.ans ? '' : '<span class="tap">▼ タップでつぎへ</span>');
     if(opts.ans){ const a = document.createElement('div'); a.className = 'ans';
       opts.ans.forEach((t,i)=>{ const b = document.createElement('button'); b.type = 'button'; b.className = 'btn' + (i===0 ? ' pri' : ''); b.textContent = t; b.onclick = e=>{ e.stopPropagation(); L.remove(); res(i); }; a.appendChild(b); });
       w.appendChild(a);
@@ -2084,7 +2108,7 @@ function askText(text, def=''){
   });
 }
 // そだてのやくそく：はじめての場面で、ひとことずつ教える
-async function yakusoku(key, text){ if(S.yk[key]) return; S.yk[key] = 1; await say('【そだてのやくそく】\n' + text); }
+async function yakusoku(key, text){ if(S.yk[key]) return; S.yk[key] = 1; await say('【そだてのやくそく】\n' + text, {face:'papa_teach'}); }   // 教えてくれるのは、おとうさん
 
 /* =========================================================
    画面
@@ -2192,11 +2216,11 @@ function renderTitle(){
 async function start(){
   $('tabs').hidden = false; $('rtabs').hidden = false; setTab('home'); hud();
   const diary = readDiary();
-  if(diary && diary.dex && diary.dex.kinkabuto && !S.link.kin){ S.link.kin = 1; save(); await say('この端末に「むなかた虫とり日記」のセーブがあった！\nミアレカブトに出会っているね…。宗像大社に行くと、なにかが見つかるかも。'); }
+  if(diary && diary.dex && diary.dex.kinkabuto && !S.link.kin){ S.link.kin = 1; save(); await say('この端末に「むなかた虫とり日記」のセーブがあった！\nミアレカブトに出会っているね…。宗像大社に行くと、なにかが見つかるかも。', {face:'boku_surprise'}); }
   if(!S.yk.hello){ S.yk.hello = 1;
     await say('ようこそ、「むなかた 虫そだて日記〈1週間〉」へ！\nこのゲームは、そとで虫をみつけて、おうちでそだてるゲーム。');
-    await say('そとに出るときは、おうちの人のスマホで、いっしょに。\nおうちでのお世話は、きみひとりでもできるよ。');
-    await say('まずは「そと」タブで、虫をさがしにいこう！\n（おうちにはキャベツの葉が2まいあるから、モンシロチョウの幼虫からはじめるのがおすすめ）');
+    await say('そとに出るときは、おうちの人のスマホで、いっしょに。\nおうちでのお世話は、きみひとりでもできるよ。', {face:'papa'});
+    await say('まずは「そと」タブで、虫をさがしにいこう！\n（おうちにはキャベツの葉が2まいあるから、モンシロチョウの幼虫からはじめるのがおすすめ）', {face:'papa_teach'});
     save();
   }
 }
@@ -2224,7 +2248,7 @@ function renderHome(){
 function renderShop(){
   const boxShop = `<h3 id="shopBox">虫かご（いま ${S.boxes.length} / ${MAX_BOXES}こ）</h3><div class="opt">${Object.keys(BOXES).map(k=>{ const B = BOXES[k];
     return `<button type="button" class="btn" data-box="${k}" ${S.money < B.price ? 'disabled' : ''}><span><span class="decoIc boxIc"><img class="tim" src="img/ui/case_${k}.webp" alt="" draggable="false"></span>${esc(B.name)}<br><small class="small">${esc(B.desc)}${B.grow > 1 ? `　育ち +${Math.round((B.grow-1)*100)}%` : ''}${B.clean < 1 ? `　よごれにくさ +${Math.round((1-B.clean)*100)}%` : ''}</small></span><span class="v">${dg(B.price)}　もっている ×${S.boxes.filter(x=>x===k).length}</span></button>`; }).join('')}</div>`;
-  view.innerHTML = `<h2>おみせ</h2><p class="small">どんぐり：<b style="color:var(--sun)">${dg(S.money)}</b>　場所から場所へ歩くともらえるよ。</p>
+  view.innerHTML = `<h2>おみせ</h2><div class="shopHi norb">${faceImg('ojisan')}<span><b>虫具店のおじさん</b>いらっしゃい！ 虫の家も、ごはんも、土も そろってるよ。わからないことは、なんでも聞いてな。</span></div><p class="small">どんぐり：<b style="color:var(--sun)">${dg(S.money)}</b>　場所から場所へ歩くともらえるよ。</p>
     <div class="shopNav norb">${[['shopBox','虫かご'],['shopFood','エサ'],['shopMat','土'],['shopDeco','かざり']].map(([id, t])=>`<button type="button" class="btn" data-go="${id}">${t}</button>`).join('')}</div>
     ${boxShop}
     ${[['エサ', k=>!ITEMS[k].cat, 'shopFood'], ['かざり（マット）：ケースの土をかえる', k=>ITEMS[k].cat==='mat', 'shopMat'], ['かざり：買って、ケースに自分で置く', k=>ITEMS[k].cat==='deco', 'shopDeco']].map(([ttl, f, id])=>`<h3 id="${id}">${ttl}</h3><div class="opt">${Object.keys(ITEMS).filter(f).map(k=>{ const it = ITEMS[k], free = !it.price;
@@ -2242,7 +2266,7 @@ function renderShop(){
       if(i >= S.boxes.length) return; at = i;
     }
     S.money -= B.price; if(at < 0){ S.boxes.push(k); S.cases.push(null); } else S.boxes[at] = k;
-    save(); hud(); await say(`${B.name}を買った！${at < 0 ? `\n虫かごが ${S.boxes.length}こ になった。` : `\n${at+1}ばんの虫かごを とりかえた。`}`); const y = view.scrollTop; renderShop(); view.scrollTop = y; });
+    save(); hud(); await say(`${B.name}を買った！${at < 0 ? `\n虫かごが ${S.boxes.length}こ になった。` : `\n${at+1}ばんの虫かごを とりかえた。`}`, {face:'ojisan_laugh'}); const y = view.scrollTop; renderShop(); view.scrollTop = y; });
   view.querySelectorAll('[data-k]').forEach(b=> b.onclick = ()=>{ const k = b.dataset.k, it = ITEMS[k]; if(S.money < it.price) return; S.money -= it.price; S.items[k] = (S.items[k]||0) + 1; save(); hud(); const y = scrollY, vy = view.scrollTop; renderShop(); scrollTo(0, y); view.scrollTop = vy; });
 }
 
@@ -2392,7 +2416,7 @@ async function renderObs(){
     if(rigCtl && rigCtl.mood !== 'eat') rigCtl.start('threat');
     if(artCtl && artCtl.mood !== 'eat') artCtl.start('threat');
     setTxt((obsSession.touches === 1 ? 'そっとね。さわるのは、ちょっとだけ。\n' : '') + REACT.touch[pk]);
-    if(obsSession.touches >= 3){ c.log.over++; c.hideUntil = now() + 10*60*1000; save(); await say('さわりすぎ！ 虫がつかれてしまう。\n【そだてのやくそく】\n虫は、見るのが基本。さわるのは、ちょっとだけ。'); renderObs(); return; }
+    if(obsSession.touches >= 3){ c.log.over++; c.hideUntil = now() + 10*60*1000; save(); await say('さわりすぎ！ 虫がつかれてしまう。\n【そだてのやくそく】\n虫は、見るのが基本。さわるのは、ちょっとだけ。', {face:'papa_worry'}); renderObs(); return; }
     if(pk === 'okubyo'){ c.hideUntil = now() + 10*60*1000; save(); renderObs(); }
   };
   let itemDown = null, lastTouch = 0;
@@ -2422,7 +2446,7 @@ async function renderObs(){
     c.dirt = (c.dirt||[]).filter(d=>d.hp > 0); c.foods = (c.foods||[]).filter(f=>!(f.old && f.left <= 0));
     const after = c.dirt.length + c.foods.filter(f=>f.old).length, removed = before - after;
     if(removed > 0){ c.clean = clamp(c.clean + removed*12.5, 0, 100); if(after === 0) c.clean = 100; }
-    if(after === 0 && c.trouble && before > 0){ const tr = TROUBLE[c.trouble]; c.trouble = null; if(tr === TROUBLE.kabi){ c.soakZ = Array(WZ).fill(0); c.wetZ = c.wetZ.map(v=>Math.min(v, 60)); syncWet(c); } c.log.clean++; save(); await say(tr.fix); await yakusoku('trouble', 'トラブルは、早く気づけば小さいうちに直せる。\n毎日ちょっとのぞくのが、いちばんのお世話。'); renderObs(); return; }
+    if(after === 0 && c.trouble && before > 0){ const tr = TROUBLE[c.trouble]; c.trouble = null; if(tr === TROUBLE.kabi){ c.soakZ = Array(WZ).fill(0); c.wetZ = c.wetZ.map(v=>Math.min(v, 60)); syncWet(c); } c.log.clean++; save(); await say(tr.fix, {face:'papa_happy'}); await yakusoku('trouble', 'トラブルは、早く気づけば小さいうちに直せる。\n毎日ちょっとのぞくのが、いちばんのお世話。'); renderObs(); return; }
     if(after === 0 && before > 0){ c.log.clean++; save(); await yakusoku('clean', 'フンや古いエサは、こまめにとってあげよう。\n虫のそばをこするときは、そっとね。'); renderObs(); return; }
     if(removed > 0){ save(); renderObs(); }
   };
@@ -2461,9 +2485,9 @@ async function renderObs(){
   // ---- エサ：置く ----
   const placeFood = async (x, y)=>{
     if(st.k === 'pupa') return;
-    if(!haveFood){ await say(`「${food.name}」がない！\n「おみせ」で買えるよ。`); return; }
+    if(!haveFood){ await say(`「${food.name}」がない！\n「おみせ」で買えるよ。`, {face:'papa'}); return; }
     const fresh = (c.foods||[]).filter(f=>!f.old).length;
-    if(fresh >= 2){ c.log.over++; save(); await say('もうエサが置いてある。\n置きすぎると、古くなってアリがくるよ。食べたら、また置こう。'); return; }
+    if(fresh >= 2){ c.log.over++; save(); await say('もうエサが置いてある。\n置きすぎると、古くなってアリがくるよ。食べたら、また置こう。', {face:'papa_worry'}); return; }
     const soilTop = soilTopOf(b); y = clamp(y, 14, soilTop - 2); x = clamp(x, 8 - (noteUI() ? caseExtra(c) : 0), 92 + (noteUI() ? caseExtra(c) : 0));   // 土の中には置けない
     if(food.price) S.items[foodKey]--;
     c.foods.push({id:Date.now(), k:foodKey, x, y, age:0, left:1, old:false});
@@ -2598,7 +2622,7 @@ async function renderObs(){
     obsSession.touches++; c.log.over++;
     const pk = c.pers && st.k === 'adult' ? c.pers : 'futsu';
     if(pk !== 'hitonatsu' && pk !== 'gaman' && st.k !== 'pupa') c.hideUntil = now() + (pk === 'okubyo' ? 30 : 10)*60*1000;
-    if(st.k === 'pupa'){ c.log.over += 2; save(); await say('さなぎの入ったケースをふった！\nさなぎは、ゆらすととても弱ってしまう。ぜったいにやめよう。'); renderObs(); return; }
+    if(st.k === 'pupa'){ c.log.over += 2; save(); await say('さなぎの入ったケースをふった！\nさなぎは、ゆらすととても弱ってしまう。ぜったいにやめよう。', {face:'papa_worry'}); renderObs(); return; }
     save(); await wait(500); setTxt(REACT.shake[pk]); await wait(900); renderObs();
   }
   $('aPlace').onclick = async ()=>{
@@ -2607,7 +2631,7 @@ async function renderObs(){
     renderObs();
   };
   if($('aWide')) $('aWide').onclick = async ()=>{
-    if(st.k === 'pupa'){ await say('さなぎの間は、うつさないほうがいい。羽化してからにしよう。'); return; }
+    if(st.k === 'pupa'){ await say('さなぎの間は、うつさないほうがいい。羽化してからにしよう。', {face:'papa'}); return; }
     const from = boxIdx(c), opts = S.cases.map((x,j)=> !x && S.boxes[j] !== S.boxes[from] ? j : -1).filter(j=>j >= 0);
     const i = await say('どの虫かごにうつす？', {ans:opts.map(j=>`${j+1}ばん：${BOXES[S.boxes[j]].ic} ${BOXES[S.boxes[j]].name}（${BOXES[S.boxes[j]].desc}）`).concat(['やめる'])});
     if(i >= opts.length) return;
@@ -2619,8 +2643,8 @@ async function renderObs(){
     const adult = st.k === 'adult', nm = dispName(c);
     if(!(await ask(adult ? `${nm}は、りっぱな成虫になった。\nみつけた場所（${esc(c.from)}）に、かえしてあげる？\n（かえすと、虫ずもうには出られなくなるよ）` : `${nm}を、まだとちゅうだけど、みつけた場所（${esc(c.from)}）にかえす？`, 'かえす', 'やめる'))) return;
     S.cases[openCase] = null;
-    if(adult){ S.money += 50; S.stats.released++; const d = S.dex[c.bug]; d.raised = dayKey(); d.released = (d.released||0) + 1; await say(`${nm}は、${c.from}の空へ元気に飛んでいった！\nさいごまでそだてたごほうびに、どんぐり ${dg(50)} をもらった。`); }
-    else { S.money += 5; await say(`${nm}を${c.from}にかえした。\n「元気でね！」`); }
+    if(adult){ S.money += 50; S.stats.released++; const d = S.dex[c.bug]; d.raised = dayKey(); d.released = (d.released||0) + 1; await say(`${nm}は、${c.from}の空へ元気に飛んでいった！\nさいごまでそだてたごほうびに、どんぐり ${dg(50)} をもらった。`, {face:'boku_joy'}); }
+    else { S.money += 5; await say(`${nm}を${c.from}にかえした。\n「元気でね！」`, {face:'boku'}); }
     await yakusoku('release', '観察がおわったら、みつけた場所にかえしてあげよう。\nちがう場所にはなすと、そこにいる虫たちがこまってしまうんだ。');
     save(); openCase = null; refresh();
   };
@@ -2630,7 +2654,7 @@ async function renderObs(){
 async function playEvent(c){
   const b = BUGS[c.bug], cur = stageOf(c), nx = b.plan[c.si+1], ins = instarOf(c);
   if(!nx){   // 成虫のさいご：かえすとき
-    if(!c.doneSaid){ c.doneSaid = 1; save(); await say(`${c.name || b.name}は、ケースでずいぶん長くくらした。\nそろそろ、みつけた場所にかえしてあげよう。\n（「もとの場所にかえす」でごほうびがもらえる）`); }
+    if(!c.doneSaid){ c.doneSaid = 1; save(); await say(`${c.name || b.name}は、ケースでずいぶん長くくらした。\nそろそろ、みつけた場所にかえしてあげよう。\n（「もとの場所にかえす」でごほうびがもらえる）`, {face:'papa'}); }
     return;
   }
   const kind = cur.k === 'larva' && nx.k === 'larva' ? 'molt' : nx.k === 'pupa' ? 'pupate' : 'emerge';
@@ -2653,8 +2677,8 @@ async function playEvent(c){
   if(kind === 'emerge'){ c.known = true; const d = S.dex[c.bug]; d.known = 1; d.raisedN = (d.adult ? (d.raisedN||1) + 1 : 1); d.adult = dayKey(); d.born = Object.assign(d.born||{}, {[c.born]:1}); if(!d.best || c.size > d.best) d.best = c.size; S.stats.raised++; }
   save();
   const learned = kind === 'molt' && ins === 0 ? `\n【わざ】「${MOVES[b.shape].name}」をおぼえた！` : kind === 'pupate' || (kind === 'molt' && ins >= 1) ? '\n体の中で、得意わざが育っているみたい…' : '';
-  await say(`${ttl}　どんぐり ${dg(bonus)} をもらった。${learned}`);
-  if(!caseKnown(c)){ c.known = true; S.dex[c.bug].known = 1; save(); await say(`【わかった！】\n大きくなって、もようや形がはっきりしてきた。\nこの幼虫は、${b.name}の幼虫だ！ ずかんに登録。`); }
+  await say(`${ttl}　どんぐり ${dg(bonus)} をもらった。${learned}`, {face:kind === 'emerge' ? 'boku_joy' : 'boku_surprise'});
+  if(!caseKnown(c)){ c.known = true; S.dex[c.bug].known = 1; save(); await say(`【わかった！】\n大きくなって、もようや形がはっきりしてきた。\nこの幼虫は、${b.name}の幼虫だ！ ずかんに登録。`, {face:'boku_surprise'}); }
   if(kind === 'molt') await yakusoku('molt', '脱皮したばかりの虫は、体がやわらかい。\nしばらくは、さわらないでそっと見ていよう。');
   if(kind === 'pupate') await yakusoku('pupate', 'さなぎの中では、体がまるごと作りかえられている。\nゆらしたり、さわったりしないでね。');
   if(kind === 'emerge'){ await yakusoku('emerge', '羽化したばかりのはねは、まだやわらかい。\nはねがかわいてかたくなるまで、そっとしておこう。'); await showResult(c); }
@@ -2679,13 +2703,13 @@ async function showResult(c){
   await new Promise(r=>{ p.querySelector('.close').onclick = ()=>{ p.remove(); r(); }; });
   const nm = await askText(`${b.name}に名前をつけよう！`, b.name);
   c.name = (nm || b.name).slice(0, 10); save();
-  await say(`「${c.name}」と名づけた。\nこれから、虫ずもうに出られるよ！（「すもう」タブ）`);
+  await say(`「${c.name}」と名づけた。\nこれから、虫ずもうに出られるよ！（「すもう」タブ）`, {face:'boku_fun'});
 }
 // 元気がとても低いままだった虫は、自然にかえる
 async function handleGone(){
   for(let i=0;i<S.cases.length;i++){ const c = S.cases[i]; if(!c || !c.gone) continue;
     S.cases[i] = null; save();
-    await say(`${dispName(c)}は、元気がなくなって、ケースから出ていってしまった…。\nお世話が足りなかったみたい。\n【そだてのやくそく】\n飼うときめたら、毎日、エサとしめりけとそうじを見てあげよう。`);
+    await say(`${dispName(c)}は、元気がなくなって、ケースから出ていってしまった…。\nお世話が足りなかったみたい。\n【そだてのやくそく】\n飼うときめたら、毎日、エサとしめりけとそうじを見てあげよう。`, {face:'boku_sad'});
     render();
   }
 }
@@ -2790,7 +2814,7 @@ function renderOut(){
 async function askTogether(){   // 安全の確認（1日1回）
   const k = 'out|' + dayKey(); if(S.yk[k]) return true;
   const ok = await ask('そとに出る前に…\nおうちの人といっしょ？', 'いっしょにいる', '子どもだけ');
-  if(!ok){ await say('そとで虫をさがすのは、おうちの人といっしょのときだけ。\nおうちの人のスマホで、いっしょに開いてもらおう！'); return false; }
+  if(!ok){ await say('そとで虫をさがすのは、おうちの人といっしょのときだけ。\nおうちの人のスマホで、いっしょに開いてもらおう！', {face:'papa'}); return false; }
   S.yk[k] = 1; save(); return true;
 }
 async function arrive(sp, outside){
@@ -2804,7 +2828,7 @@ async function arrive(sp, outside){
   S.money += got; S.last = {key:sp.key, name:sp.name, lat:sp.lat, lon:sp.lon, day:today}; save(); hud();
   outState = {spot:sp, outside};
   await say((outside ? '宗像のスポットの近くではないみたい。\nでも、どこにでもいる虫ならさがせるよ。' : `「${sp.name}」に着いた！`) + (moved ? `\n${moved} どんぐり ${dg(got)} をもらった。` : '') + gift);
-  if(!outside) await say(`【注意】${sp.warn}`);
+  if(!outside) await say(`【注意】${sp.warn}`, {face:'papa_teach'});
   render();
 }
 function renderSpot(){
@@ -2847,7 +2871,7 @@ async function doFind(sp, here, egg, slot){
   const btns = $('foundBtns');
   if(b.watch){
     btns.innerHTML = `<button type="button" class="btn pri" id="bWatch">見るだけにする</button>`;
-    $('bWatch').onclick = async ()=>{ await say(`${b.name}は、きれいな川の水と、エサのカワニナがないと育たない。\nつかまえずに、光るようすを見ていよう。`); await yakusoku('watch', '飼えない虫や、ぐあいの悪そうな虫は、見るだけにしよう。\n「つかまえない」も、虫とのいいつきあいかたなんだ。'); renderSpot(); };
+    $('bWatch').onclick = async ()=>{ await say(`${b.name}は、きれいな川の水と、エサのカワニナがないと育たない。\nつかまえずに、光るようすを見ていよう。`, {face:'papa_teach'}); await yakusoku('watch', '飼えない虫や、ぐあいの悪そうな虫は、見るだけにしよう。\n「つかまえない」も、虫とのいいつきあいかたなんだ。'); renderSpot(); };
     return;
   }
   const frees = S.cases.map((c,j)=> c ? -1 : j).filter(j=>j >= 0), free0 = frees.length ? frees[0] : -1;
@@ -2855,7 +2879,7 @@ async function doFind(sp, here, egg, slot){
   $('bLeave').onclick = ()=> renderSpot();
   $('bTake').onclick = async ()=>{
     const foodKey = b.food, food = ITEMS[foodKey];
-    if(food.price && !(S.items[foodKey]||0)) await say(`つれてかえるなら、ごはんの「${food.name}」がいるよ。\n「おみせ」で買っておこう。（いまのどんぐり：${dg(S.money)}）`);
+    if(food.price && !(S.items[foodKey]||0)) await say(`つれてかえるなら、ごはんの「${food.name}」がいるよ。\n「おみせ」で買っておこう。（いまのどんぐり：${dg(S.money)}）`, {face:'papa'});
     // 虫かごとおき場所をえらぶ（育て方のはじまり）
     let free = free0;
     if(frees.length > 1){ const wi = await say('どの虫かごに入れる？', {ans:frees.map(j=>`${j+1}ばん：${BOXES[S.boxes[j]].ic} ${BOXES[S.boxes[j]].name}（${BOXES[S.boxes[j]].desc}）`).concat(['やめる'])}); if(wi >= frees.length) return; free = frees[wi]; }
@@ -2936,7 +2960,7 @@ async function sumoBattle(r, c){
   if(me.cond != null) await say(me.cond >= .75 ? `${me.name}は、きょうは ぜっこうちょう！ 力がみなぎっている。` : me.cond >= .45 ? `${me.name}の調子は、ふつう。` : `${me.name}は、きょうは 調子がいまいち…。おなかや元気がへっているみたい。`);
   if(me.night && night) me.spd += 1;   // 夜型は夜に少しはやい
   S.sumoDay[r.key] = dayKey(); save();
-  await say(`${r.name}「${r.hi}」`);
+  await say(`${r.name}「${r.hi}」`, {face:r.key});
   const A = document.createElement('div'); A.id = 'arena'; A.className = slotOf();
   const info = (f, side)=> `<div class="info ${side}"><b>${esc(f.name)}</b> <small>${f.t.name}</small><span class="bar"><i id="hp-${side}" style="width:100%"></i></span><small id="hpn-${side}">${f.hp}/${f.maxhp}</small></div>`;
   A.innerHTML = `<div class="ring"><div class="dohyo"></div>${info(me,'l')}${info(op,'r')}<div class="vs norb" hidden>VS</div><div class="gyoji norb">🪭</div>
@@ -3098,15 +3122,16 @@ async function sumoBattle(r, c){
   // 結果：勝因・敗因を育て方にむすびつける
   const first = !S.sumo[r.key];
   if(won){ S.stats.wins++; S.sumo[r.key] = dayKey(); const m = first ? r.money : SUMO_REWIN; S.money += m; if(r.key === 'ren') S.sumoChamp = true;
-    await say(`${r.short}「${r.win}」\nどんぐり ${dg(m)} をもらった！${first && r.key === 'ren' ? '\n【チャンピオン】きみの虫が、宗像でいちばん強い！' : ''}`); }
-  else { S.stats.loses++; if(c.pers !== 'makezu' && Math.random() < .3){ c.pers = 'makezu'; await say(`${r.short}「${r.lose}」\n${me.name}は、くやしそうに相手をにらんでいる…。性格が「まけずぎらい」になった！`); } else await say(`${r.short}「${r.lose}」`); }
+    await say(`${r.short}「${r.win}」\nどんぐり ${dg(m)} をもらった！${first && r.key === 'ren' ? '\n【チャンピオン】きみの虫が、宗像でいちばん強い！' : ''}`, {face:r.key}); }
+  else { S.stats.loses++; if(c.pers !== 'makezu' && Math.random() < .3){ c.pers = 'makezu'; await say(`${r.short}「${r.lose}」\n${me.name}は、くやしそうに相手をにらんでいる…。性格が「まけずぎらい」になった！`, {face:r.key}); } else await say(`${r.short}「${r.lose}」`, {face:r.key}); }
   save();
   const cmp = {atk:me.atk/op.atk, hp:me.maxhp/op.maxhp, spd:(me.spd+1)/(op.spd+1), def:op.def/me.def, heal:me.heal/op.heal};
   const keys = Object.keys(cmp).sort((a,b)=>cmp[a]-cmp[b]), low = keys[0], high = keys[keys.length-1];
   const NAMES = {atk:'ちから', hp:'たいりょく', spd:'すばやさ', def:'まもり', heal:'かいふく'};
   const HINT = {atk:'エサをたっぷりあげると、ちからがつく', hp:'毎日かかさず世話すると、たいりょくがつく', spd:'広いケースで育てると、すばやくなる', def:'ベランダの日かげで育てると、まもりが強くなる', heal:'げんかんの静かな場所で、こまめにそうじすると、かいふくがよくなる'};
-  if(won) await say(`【勝因】${me.name}は、相手より「${NAMES[high]}」が高かった。\n育て方が、ちゃんと虫に出ている！`);
-  else await say(`【敗因】${me.name}は、相手より「${NAMES[low]}」が足りなかった。\n【ヒント】${HINT[low]}。\n${BUGS[c.bug].rank < BUGS[r.bug].rank ? 'もっとめずらしい虫を育てるのも、ひとつの手。' : '次の虫で、ためしてみよう。'}`);
+  await say(won ? 'やったー！ 勝った！' : 'くやしい〜！ もっと育てて、また ちょうせんするぞ！', {face:won ? 'boku_fun' : 'boku_angry'});
+  if(won) await say(`【勝因】${me.name}は、相手より「${NAMES[high]}」が高かった。\n育て方が、ちゃんと虫に出ている！`, {face:'papa_happy'});
+  else await say(`【敗因】${me.name}は、相手より「${NAMES[low]}」が足りなかった。\n【ヒント】${HINT[low]}。\n${BUGS[c.bug].rank < BUGS[r.bug].rank ? 'もっとめずらしい虫を育てるのも、ひとつの手。' : '次の虫で、ためしてみよう。'}`, {face:'papa_teach'});
   refresh();
 }
 
@@ -3327,7 +3352,7 @@ async function sendBug(i){
     if(!(await ask('おくり先で、虫かごに入ったのを見た？\n（この端末からは、いなくなるよ）', 'とどいた', 'まだ'))) return;
     L.querySelector('.sendAnim').classList.add('away'); await wait(900); L.remove();
     S.cases[i] = null; S.stats.sent = (S.stats.sent||0) + 1; save(); openCase = null; obsSession = null; tab = 'home'; render(); hud();
-    await say(`${nm}は、新しいおうちにとどいた。\nあっちでも、大切にそだててね。`);
+    await say(`${nm}は、新しいおうちにとどいた。\nあっちでも、大切にそだててね。`, {face:'boku_joy'});
   };
 }
 /* 受けとる：?okuru=… で開いたとき */
