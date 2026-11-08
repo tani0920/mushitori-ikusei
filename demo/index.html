@@ -387,10 +387,12 @@ html.land .sendL.recv .in{display:flex}
 @keyframes tipIn{from{opacity:0;transform:translate(-50%,6px)}}
 html.land.tall .toolTip{font-size:16px}
 #toolTray .tbtn.on{transform:translateY(-6px);box-shadow:0 4px 0 #d9a93a}
-.toolObj .lens{position:relative;width:2.1em;height:2.1em;border-radius:50%;overflow:hidden;border:.07em solid #c8a050;box-shadow:0 0 0 .025em #5a3a10,inset 0 0 .12em #0008;background:#000}
+.toolObj .lens{position:relative;width:2.1em;height:2.1em;border-radius:50%;overflow:hidden;box-shadow:inset 0 0 .12em #0006;background:#000}
+/* 虫めがねの枠は、道具のアイコンと同じ絵（ガラスだけ透明。megane_frame.webp）。レンズの円は絵の (97.5, 90.5) 半径 69.5 */
+.toolObj .lensFrame{position:absolute;left:-.423em;top:-.317em;width:3.868em;height:3.868em;pointer-events:none;z-index:1}
 .toolObj .lens svg{width:100%;height:100%;display:block}
 .toolObj .lens::after{content:'';position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 30% 25%,#fff6 0,#fff0 35%);pointer-events:none}
-.toolObj:has(.lens)::after{content:'';position:absolute;left:82%;top:82%;width:.24em;height:.85em;background:#8a5a20;border-radius:.06em;transform:rotate(-45deg);transform-origin:top center;z-index:-1}
+/* 取っ手は lensFrame の絵にある */
 @keyframes toolPop{0%{transform:translate(-50%,-50%) scale(.3)}70%{transform:translate(-50%,-50%) scale(1.15)}100%{transform:translate(-50%,-50%) scale(1)}}
 .toolObj.drag{transition:none;transform:translate(-50%,-50%) scale(1.08);cursor:grabbing}
 .toolObj.wipe{animation:wipeIc .35s ease-in-out infinite alternate}
@@ -456,6 +458,9 @@ html.land.tall .toolTip{font-size:16px}
 .obsL .tools .tbtn .ic{font-size:26px}
 .obsL .decoPick{flex-wrap:nowrap;overflow-x:auto}
 .obsHead .backBtn{flex:none}
+.obsHead .caseNav{display:flex;gap:4px;flex:none;align-items:center}
+.obsHead .navBtn{flex:none;padding:.3em .7em;font-size:13px;line-height:1.2}
+.obsHead .backBtn small{font-size:.8em;opacity:.75}
 .bar{position:relative}
 .bar .band{position:absolute;top:-2px;bottom:-2px;background:#fff3;border-left:1px solid #fff9;border-right:1px solid #fff9;z-index:1}
 .leaf{transform-box:fill-box;transform-origin:left center}
@@ -826,7 +831,7 @@ html.land body.noteUI #hud{background:#fbf3dfee;color:var(--note-ink);border-rad
 html.land body.noteUI #hud .money{color:#8a5a14}
 html.land body.obsMode .obsR{position:relative;margin-top:30px;color:var(--note-ink);height:calc(100% - 30px);max-height:none;background:url(img/ui/note_page.webp) center/100% 100% no-repeat;padding:max(13px,3.2%) 5.5% max(16px,4.5%) 12.5%;box-sizing:border-box;filter:drop-shadow(0 3px 4px #3a241255)}
 html.land body.obsMode .obsR>.obsHead h2{color:#3f2a18;font-size:calc(var(--nf) * 1.06);font-weight:600;line-height:1.25;letter-spacing:0;margin:0}
-html.land body.obsMode .obsR>.obsHead .backBtn{background:#fbf3df;color:var(--note-ink);border:1.5px solid #a98a60;box-shadow:none;font-weight:600}
+html.land body.obsMode .obsR>.obsHead .navBtn,html.land body.obsMode .obsR>.obsHead .backBtn{background:#fbf3df;color:var(--note-ink);border:1.5px solid #a98a60;box-shadow:none;font-weight:600}
 html.land body.obsMode .obsR>.obsHead .tag{background:#efe2c4;color:var(--note-ink);border:1px solid #c4a878}
 html.land body.obsMode #obs .obsR .obsTxt{background:#fffdf3cc;color:var(--note-ink);border:1.5px solid #a9b67a;border-radius:10px;box-shadow:none;font-size:var(--nf);line-height:1.45;min-height:3.2em;padding:.35em .6em}
 html.land body.obsMode .obsR .meters{width:100%;font-size:calc(var(--nf) * .86);margin-top:6px;gap:2px 6px}
@@ -950,7 +955,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261108-1700';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261108-1742';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-08', items:[
     '虫ずもうが、赤間の町の切りかぶの上でたたかうようになった！ 虫どうしが向かい合って、相手にぶつかっていくよ',
@@ -963,6 +968,7 @@ const CHANGELOG = [
     '虫めがねを大きくした。指で取っ手を持つので、レンズが指にかくれないよ。虫ずもうのさいごは、虫具店のおじさんが勝因・敗因を教えてくれる',
     'そとで場所に着いたとき、説明の枠を細くして、場所の絵が見えるようにした',
     'アプリのアイコンが新しくなった！（ホーム画面に追加しなおすと、かわるよ）',
+    '虫かごの ◀ ▶ で、ほかの虫かごへすぐ移れるようになった。虫めがねも、アイコンと同じ絵になったよ',
     '虫さがしが新しくなった！ 草むら・木のねもと・葉のうら・石の下から えらんで、指をおいてじっと待とう。うごくと、虫がにげちゃうよ。めずらしい虫や、はじめての虫には しるしがつく',
     '話している人が、大きく出るようになった！（ぼくは左、ほかの人は右。すもうは、ぼくと相手）',
     'ぼく・おとうさん・虫具店のおじさんの顔が出るようになった！ おとうさんは育て方を教えてくれる、虫の研究者。ぼくは、うれしい・くやしい・かなしい・たのしい・びっくりの顔をするよ。会話の窓も、ノートの紙の色になった',
@@ -2370,6 +2376,7 @@ const placeIc = k=> `<img class="mIc pl" src="img/ui/place_${k}.webp" alt="" dra
 // 虫かご一覧の小さなけしき：ケースの中と同じ絵（sceneSVG）を、id がぶつからないように名前をかえて使う
 const miniScene = (c, slot, i)=> sceneSVG(c, slot, {}).svg.replace(/id="([\w-]+)"/g, `id="$1_m${i}"`).replace(/url\(#([\w-]+)\)/g, `url(#$1_m${i})`).replace(/href="#([\w-]+)"/g, `href="#$1_m${i}"`);
 const PLACES = {genkan:{name:'げんかん', desc:'すずしくて静か。かいふくがよくなり、のんびりした性格になりやすい'}, heya:{name:'へや', desc:'いつもそばにいる。人なつっこい性格になりやすい'}, beranda:{name:'ベランダの日かげ', desc:'外の空気。まもりが強くなる。ただし、かわきやすい'}};
+const MEG_GRIP = [1.62, 1.84];   // 虫めがね：指がにぎる取っ手の場所（レンズの中心から、em）
 const toolImg = k=> `<img class="tim" src="img/tools/${k}.webp" alt="" draggable="false">`;
 const TOOLS = {yubi:{name:'ゆび', ic:toolImg('yubi')}, megane:{name:'虫めがね', ic:toolImg('megane')}, fukin:{name:'ふきん', ic:toolImg('fukin')}, kiri:{name:'きりふき', ic:toolImg('kiri')}, esa:{name:'エサ', ic:toolImg('esa')}, kazari:{name:'かざり', ic:toolImg('kazari')}, big:{name:'大そうじ', ic:toolImg('houki')}, furu:{name:'ふる', ic:toolImg('furu')}};
 let tool = 'yubi', /* 'yubi'：道具を持っていない。ケースを直接タップしてさわる */ obsSession = null, decoSel = null, lensLook = ()=>{};   // obsSession：いまのぞいている間の、さわった回数など
@@ -2408,7 +2415,7 @@ async function renderObs(){
         : `<div class="tools norb" id="toolTray">${Object.keys(TOOLS).filter(k=> k !== 'yubi').map(k=>`<button type="button" class="tbtn ${tool===k?'on':''}" data-tool="${k}" ${k==='esa' && st.k==='pupa' ? 'disabled' : ''}><span class="ic">${TOOLS[k].ic}</span>${TOOLS[k].name}</button>`).join('')}</div>`}
     </div>
     <div class="obsR">
-      <div class="obsHead"><h2>${title}</h2><div class="headTags">${bornTag}</div><button type="button" class="btn sub backBtn" id="btnBack">↩ もどる</button></div>
+      <div class="obsHead"><h2>${title}</h2><div class="headTags">${bornTag}</div>${caseNav()}</div>
       <div class="obsTxt win" id="obsTxt">${showGuide && guide ? esc(guide) : msgHtml}</div>
       <div class="meters">${st.k !== 'pupa' ? m('おなか', c.hunger) : ''}${m('しめりけ', c.wet, `<b class="band" style="left:${band[0]}%;width:${band[1]-band[0]}%"></b>`)}${m('きれいさ', c.clean)}${m('元気', g)}</div>
       <p class="small info">${tool === 'yubi' && st.k !== 'pupa' ? '虫をタップすると、そっとさわれる。' : ''}${SLOT_NAMES[slot]}のようす。${c.pending || st.k === 'adult' ? '' : `このすがたで、あと${daysLeft(c)}日くらい。`}${st.k === 'adult' ? `<br>${esc(indLine(c))}<br>わざ：${c.moves.map(k=>esc(MOVES[k].name)).join('・')}　${c.size}mm ${esc(c.sex||'')}` : ''}</p>
@@ -2425,13 +2432,15 @@ async function renderObs(){
   document.querySelectorAll('body > #drawer').forEach(e=>e.remove());   // 前に出していたものはけす
   document.body.appendChild(view.querySelector('#drawer'));
   $('rtCase').hidden = false; setSide(sidePanel === 'case' || sidePanel === 'items' ? sidePanel : null);
-  $('btnBack').onclick = ()=>{ openCase = null; obsSession = null; render(); };   // 大そうじのとちゅうでも、もどれば虫はケースにいる（big は obsSession ごと消える）
+  $('btnBack').onclick = ()=>{ openCase = null; obsSession = null; render(); };
+  // ◀ ▶：虫が入っているほかの虫かごへ、一覧にもどらずに移る
+  view.querySelectorAll('[data-go]').forEach(bt=> bt.onclick = ()=>{ if(obsSession && obsSession.big) return; const L = filledCases(), i = L.indexOf(openCase); openCase = L[(i + +bt.dataset.go + L.length) % L.length]; obsSession = null; render(); });   // 大そうじのとちゅうでも、もどれば虫はケースにいる（big は obsSession ごと消える）
   view.querySelectorAll('[data-tool]').forEach(bt=> bt.onclick = async ()=>{ if(obsSession.big && bt.dataset.tool !== 'big'){ obsSession.big = null; await say('大そうじをとちゅうでやめた。虫はケースにもどした。'); } const k = bt.dataset.tool; tool = tool === k && k !== 'yubi' ? 'yubi' : k; obsSession.guide = tool !== 'yubi'; renderObs(); });
   view.querySelectorAll('[data-deco]').forEach(bt=> bt.onclick = async ()=>{ const k = bt.dataset.deco;
     if(ITEMS[k].cat === 'mat'){ if(c.mat === k){ await say('もう、このマットをしいている。'); return; } if(c.mat) S.items[c.mat] = (S.items[c.mat]||0) + 1; S.items[k]--; c.mat = k; c.log.over++; save(); await say(`${ITEMS[k].name}をしきかえた。\n${c.mat === 'mat_fuyo' ? '幼虫がもぐっていった。腐葉土は、かわきにくい。' : 'ケースの見た目がかわった。'}`); decoSel = null; renderObs(); return; }
     decoSel = decoSel === k ? null : k; renderObs(); });
   const sceneEl = $('scene'), svg = $('sceneSvg'), txtEl = $('obsTxt'), toolObj = $('toolObj'), mini = $('mini');
-  const toolIc = ()=> tool === 'big' ? ((obsSession.big||{step:1}).step === 2 ? toolImg('houki') : toolImg('tsumamu')) : tool === 'kazari' ? (decoSel ? `<svg viewBox="0 0 100 100">${decoSVG(decoSel)}</svg>` : '') : tool === 'megane' ? '<div class="lens"><svg viewBox="0 0 10 10"><use href="#sceneMain"/></svg></div>' : ({yubi:toolImg('yubi'), fukin:toolImg('fukin'), kiri:toolImg('kiri'), esa:foodIc(foodKey) || toolImg('esa'), furu:''})[tool];
+  const toolIc = ()=> tool === 'big' ? ((obsSession.big||{step:1}).step === 2 ? toolImg('houki') : toolImg('tsumamu')) : tool === 'kazari' ? (decoSel ? `<svg viewBox="0 0 100 100">${decoSVG(decoSel)}</svg>` : '') : tool === 'megane' ? '<div class="lens"><svg viewBox="0 0 10 10"><use href="#sceneMain"/></svg></div><img class="lensFrame" src="img/tools/megane_frame.webp" alt="" draggable="false">' : ({yubi:toolImg('yubi'), fukin:toolImg('fukin'), kiri:toolImg('kiri'), esa:foodIc(foodKey) || toolImg('esa'), furu:''})[tool];
   // 道具は、えらんでからケースの中をさわると、さわったところに出る。hot は「きく場所」（きりふきの口など）で、指の下にくる
   const HOT = {yubi:{x:-8, y:-36}, fukin:{x:0, y:0}, kiri:{x:-22, y:-42}, esa:{x:0, y:0}, kazari:{x:0, y:10}, big:{x:-6, y:30}, furu:{x:0, y:0}, megane:{x:0, y:0}};
   const restPos = ()=>{ const r = sceneEl.getBoundingClientRect(), k = (parseFloat(getComputedStyle($('toolObj')).fontSize) || 84) / 84; return {x:56*k, y:r.height - 54*k}; };
@@ -2469,7 +2478,7 @@ async function renderObs(){
   const placeRest = ()=>{ const r = restPos(); toolObj.style.transition = 'none'; setObj(r.x, r.y, 'rest'); void toolObj.offsetWidth; toolObj.style.transition = ''; };
   const hk = ()=> (parseFloat(getComputedStyle(toolObj).fontSize) || 84) / 84;
   // 虫めがねの取っ手：指がここをにぎる（レンズの中心から右下へ。レンズ 2.1em、取っ手は 82% のところから）。見る場所はレンズの中心
-  const megGrip = ()=>{ const em = parseFloat(getComputedStyle(toolObj).fontSize) || 84, g = (.32*2.1 + .55*.707) * em; return {dx:g, dy:g}; };
+  const megGrip = ()=>{ const em = parseFloat(getComputedStyle(toolObj).fontSize) || 84; return {dx:MEG_GRIP[0]*em, dy:MEG_GRIP[1]*em}; };
   const hotXY = ()=>{ const r = sceneEl.getBoundingClientRect(), h0 = HOT[tool], h = {x:h0.x*hk(), y:h0.y*hk()}; return toXYc(r.left + objPos.x + h.x, r.top + objPos.y + h.y); };
   showTool();
   const ripple = e=>{ const r = sceneEl.getBoundingClientRect(), d = document.createElement('div'); d.className = 'ripple'; d.style.left = (e.clientX - r.left) + 'px'; d.style.top = (e.clientY - r.top) + 'px'; sceneEl.appendChild(d); setTimeout(()=>d.remove(), 520); };
@@ -2962,6 +2971,9 @@ function findField(sp, all, egg, slot, left){
   });
 }
 const html_land = ()=> document.documentElement.classList.contains('land');
+const filledCases = ()=> S.cases.map((c,i)=> c ? i : -1).filter(i=> i >= 0);
+function caseNav(){ const L = filledCases(), i = L.indexOf(openCase), many = L.length > 1;
+  return `<div class="caseNav norb">${many ? '<button type="button" class="btn sub navBtn" data-go="-1" aria-label="まえの虫かご">◀</button>' : ''}<button type="button" class="btn sub backBtn" id="btnBack">↩ もどる${many ? `<small> ${i+1}/${L.length}</small>` : ''}</button>${many ? '<button type="button" class="btn sub navBtn" data-go="1" aria-label="つぎの虫かご">▶</button>' : ''}</div>`; }
 function renderSpot(){
   const sp = outState.spot, slot = slotOf(), today = dayKey(), key = sp.key + '|' + today, used = S.visits[key]||0, left = FINDS_PER_VISIT - used;
   const here = spotBugs(sp.key, slot), all = findable(sp.key, slot), later = all.filter(id=>!here.includes(id));
