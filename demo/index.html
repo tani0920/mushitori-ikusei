@@ -198,6 +198,8 @@ html.land body.noteUI .shopNav{background:#f6ead2;border-radius:0 0 10px 10px;pa
 @keyframes blink{50%{opacity:.2}}
 #msgLayer .win .ans{display:flex;flex-direction:column;gap:.4em;margin-top:.6em}
 #msgLayer .yk{color:var(--sun)}
+#msgLayer.askL,html.land #msgLayer.askL{align-items:flex-start;justify-content:center;padding:8px 12px}   /* 名前の入力：上にだして、キーボードにかくれないように */
+#msgLayer.askL .win{width:min(100%,520px)}
 .shopHi{display:flex;align-items:center;gap:.7em;margin:.2em 0 .5em;padding:.5em .7em;background:#fffaf0e6;border:1px solid #d8c3a0;border-radius:12px;color:#4a3320;font-size:14px;line-height:1.5}
 .shopHi .fimg{width:64px;height:64px;flex:none;border-radius:12px;border:2px solid #fff;box-shadow:0 1px 3px #0003;object-fit:cover}
 .shopHi b{display:block;font-size:12px;color:#8a5a20}
@@ -898,7 +900,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261108-1409';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261108-1420';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-08', items:[
     '虫ずもうが、赤間の町の切りかぶの上でたたかうようになった！ 虫どうしが向かい合って、相手にぶつかっていくよ',
@@ -906,6 +908,7 @@ const CHANGELOG = [
     'HPがへったりふえたりすると、虫の上に数字が出る。HPは虫の足もとに出るようにした',
     'ピンチになると、そだてた日々を思い出して、力がもどることがあるよ',
     'きりふきは、指をはなしたら、すぐに水が止まるようにした',
+    'さなぎが右や左に向きをかえないようにした。名前をつけるとき、カードがキーボードにかくれないようにした',
     '虫めがねを大きくした。指で取っ手を持つので、レンズが指にかくれないよ。虫ずもうのさいごは、虫具店のおじさんが勝因・敗因を教えてくれる',
     'そとで場所に着いたとき、説明の枠を細くして、場所の絵が見えるようにした',
     'アプリのアイコンが新しくなった！（ホーム画面に追加しなおすと、かわるよ）',
@@ -1670,7 +1673,7 @@ const statLine = f=> `${f.t.name}タイプ　たいりょく${f.maxhp}　ちか�
 let moverId = 0, moverMem = null, moverWalking = false, rigCtl = null, artCtl = null;   // rigCtl：ケースの中の部品の虫（リグ）
 function startMover(p, id, stage){
   const my = ++moverId, el = $('bugMove');
-  if(!el || !(BUG_IMG[id]||{})[stage] || p.hidden || p.under || p.eating || (p.o && p.o.sleep)) return;
+  if(!el || !(BUG_IMG[id]||{})[stage] || stage === 'pupa' || p.hidden || p.under || p.eating || (p.o && p.o.sleep)) return;   // さなぎは動かない（向きもかえない）
   if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const x0 = p.x, key = `${openCase}:${id}:${stage}:${x0}:${p.y}`, half = p.s*.85*46, wx = noteUI() && S.cases[openCase] ? caseExtra(S.cases[openCase]) : 0, lo = half + 2 - wx, hi = 100 - half - 2 + wx;
   const mem = moverMem && moverMem.key === key ? moverMem : null;   // 道具を使って画面がかきなおされても、いた場所と向きをおぼえておく
@@ -2107,7 +2110,15 @@ function askText(text, def=''){
     L.innerHTML = `<div class="win">${fmtMsg(text)}<input type="text" maxlength="10" value="${esc(def)}"><div class="ans"><button type="button" class="btn pri">きめた</button></div></div>`;
     const inp = L.querySelector('input'); L.querySelector('button').onclick = ()=>{ const v = inp.value.trim(); L.remove(); res(v); };
     inp.onkeydown = e=>{ if(e.key === 'Enter') L.querySelector('button').click(); };
-    document.body.appendChild(L); inp.focus(); inp.select();
+    // キーボードが出ても、カードが見えるように：見えている場所（visualViewport）の中に、カードを置く
+    L.classList.add('askL');
+    const fit = ()=>{ if(!L.isConnected){ vv && vv.removeEventListener('resize', fit); return; }
+      const rot = +(document.documentElement.dataset.rot || 0), vh = vv ? vv.height : innerHeight, off = vv ? vv.offsetTop : 0;
+      if(!rot){ L.style.top = off + 'px'; L.style.height = vh + 'px'; L.style.bottom = 'auto'; L.style.left = L.style.width = ''; }
+      else { const W = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--W')) || innerHeight;   // まわしているとき：キーボードは横レイアウトの右（rot 1）か左（rot -1）
+        L.style.width = Math.min(W, vh) + 'px'; L.style.left = (rot === 1 ? 0 : W - Math.min(W, vh)) + 'px'; L.style.right = 'auto'; L.style.top = L.style.height = ''; } };
+    const vv = window.visualViewport; vv && vv.addEventListener('resize', fit);
+    document.body.appendChild(L); fit(); inp.focus(); inp.select(); setTimeout(fit, 350);
   });
 }
 // そだてのやくそく：はじめての場面で、ひとことずつ教える
