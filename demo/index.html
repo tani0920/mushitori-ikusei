@@ -900,7 +900,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261108-1420';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261108-1440';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-08', items:[
     '虫ずもうが、赤間の町の切りかぶの上でたたかうようになった！ 虫どうしが向かい合って、相手にぶつかっていくよ',
@@ -908,6 +908,7 @@ const CHANGELOG = [
     'HPがへったりふえたりすると、虫の上に数字が出る。HPは虫の足もとに出るようにした',
     'ピンチになると、そだてた日々を思い出して、力がもどることがあるよ',
     'きりふきは、指をはなしたら、すぐに水が止まるようにした',
+    'カブトムシ・クワガタ・オオムラサキ・スズムシは、絵のとおり、みんなオスで羽化するようにした',
     'さなぎが右や左に向きをかえないようにした。名前をつけるとき、カードがキーボードにかくれないようにした',
     '虫めがねを大きくした。指で取っ手を持つので、レンズが指にかくれないよ。虫ずもうのさいごは、虫具店のおじさんが勝因・敗因を教えてくれる',
     'そとで場所に着いたとき、説明の枠を細くして、場所の絵が見えるようにした',
@@ -1517,7 +1518,11 @@ let S = null;
 function newGame(){
   return {v:2, money:30, boxes:['futsu'], cases:[null], items:{kyabetsu:2, kusa:1}, dex:{}, yk:{}, visits:{}, last:null, demoOff:0, started:Date.now(), stats:{raised:0, released:0, wins:0, loses:0}, sumo:{}, sumoDay:{}, link:{}};
 }
+/* 成虫の絵がオスの虫（メスは見た目がちがう）：かならずオスにする。カブト・ミアレカブトはツノ、クワガタは大あご、
+   オオムラサキはむらさきのはね（メスは茶色）、スズムシは鳴く広いはね（メスはさんらん管がある）。ほかの虫はオスメスで絵が同じ */
+const MALE_ONLY = new Set(['kabuto','kinkabuto','kokuwa','nokogiri','hirata','miyama','ookuwa','oomurasaki','suzumushi']);
 function migrate(s){   // 古いセーブ（v1）を v2 のかたちにする
+  s.cases.forEach(c=>{ if(c && c.sex === 'メス' && MALE_ONLY.has(c.bug)){ c.sex = 'オス'; if(c.size) c.size = Math.round(c.size / .8); } });   // 前のセーブのメス → オスに（大きさもオスに）
   if(!s.boxes){ s.boxes = s.cases.map(c=> c && c.wide ? 'wide' : 'futsu'); if(s.items && s.items.wide){ delete s.items.wide; } }   // 虫かごの種類ができる前のセーブ
   s.cases.forEach(c=>{ if(c){ ensureZ(c); c.dirt = c.dirt || []; c.foods = c.foods || []; c.soak = c.soak || 0; c.hideUntil = c.hideUntil || 0; c.deco = c.deco || []; c.mat = c.mat || null; } });
   if(s.v >= 2) return s;
@@ -1641,7 +1646,7 @@ function finalize(c){
   for(const k in sc) sc[k] += Math.random()*.8;
   c.pers = Object.keys(sc).sort((a,b)=>sc[b]-sc[a])[0];
   // 大きさ：エサと元気で決まる。オスメス
-  c.sex = Math.random() < .6 ? 'オス' : 'メス';
+  c.sex = MALE_ONLY.has(c.bug) || Math.random() < .6 ? 'オス' : 'メス';
   const q = clamp((ind.atk + ind.hp - 2)/.3, 0, 1) * .6 + Math.random()*.4 + (born.luck && Math.random() < .3 ? .15 : 0);
   const [mn, mx] = b.size; c.size = Math.round((mn + (mx-mn)*q) * (c.sex === 'メス' ? .8 : 1));
   c.rare = (born.rareColor && Math.random() < .25) || (born.luck && Math.random() < .15);
@@ -3337,6 +3342,7 @@ async function unpackBug(t){
   if(t[0] === 'z') raw = new Uint8Array(await new Response(new Blob([raw]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer());
   const o = JSON.parse(new TextDecoder().decode(raw));
   if(!o || o.v !== 1 || !o.c || !BUGS[o.c.bug]) throw new Error('bad');
+  if(o.c.sex === 'メス' && MALE_ONLY.has(o.c.bug)){ o.c.sex = 'オス'; if(o.c.size) o.c.size = Math.round(o.c.size / .8); }   // 前の版から送られたメスも、オスに
   return o;
 }
 /* 小さい虫かご（おくるときに使う）。lid がふた */
