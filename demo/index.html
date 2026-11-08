@@ -854,13 +854,14 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261107-2309';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261108-0924';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-08', items:[
     '虫ずもうが、赤間の町の切りかぶの上でたたかうようになった！ 虫どうしが向かい合って、相手にぶつかっていくよ',
     '必殺技の動きがついた。カマキリはカマをふって、チョウは飛びながらたたかう',
     'HPがへったりふえたりすると、虫の上に数字が出る。HPは虫の足もとに出るようにした',
     'ピンチになると、そだてた日々を思い出して、力がもどることがあるよ',
+    'きりふきは、指をはなしたら、すぐに水が止まるようにした',
   ]},
   {v:'0.15.0', date:'2026-11-07', items:[
     '道具のつかいかたがかわった！ 道具をえらんで、ケースの中をさわると、さわったところで使えるよ',
@@ -2362,6 +2363,7 @@ async function renderObs(){
     if(sprayTimer) return; if(!sprayed){ sprayStartWet = c.wet; sprayed = true; obsSession.sprayed = true; }
     toolObj.classList.add('spray');
     sprayTimer = setInterval(()=>{
+      if(!down || !sceneEl.isConnected){ sprayStop(); return; }
       const {x, y} = hotXY(), z = clamp(Math.floor(x/20), 0, WZ-1);
       [[z, 6], [z-1, 1.5], [z+1, 1.5]].forEach(([k, a])=>{ if(k < 0 || k >= WZ) return; if(c.wetZ[k] < 100) c.wetZ[k] = Math.min(100, c.wetZ[k] + a); else if(a > 2) c.soakZ[k] = Math.min(100, c.soakZ[k] + 7); });
       syncWet(c);
@@ -2405,6 +2407,11 @@ async function renderObs(){
   };
   // ---- 指のイベント：道具をつかんで動かす。ふる だけは、ケースそのものをつかむ ----
   let down = false, grab = null, stillT = null, lastMove = 0;
+  // きりふき：指を止めているあいだだけ水を出す。指がはなれたら、すぐ止める
+  const kiriWatch = ()=>{ clearInterval(stillT); stillT = setInterval(()=>{
+    if(!down || !sceneEl.isConnected){ clearInterval(stillT); stillT = null; sprayStop(); return; }
+    if(fromTray && !fromTray.in){ sprayStop(); return; }
+    if(Date.now() - lastMove > 280) sprayStart(); }, 60); };
   const nearObj = e=>{ if(toolObj.hidden) return false; const r = sceneEl.getBoundingClientRect(); return Math.hypot(e.clientX - r.left - objPos.x, e.clientY - r.top - objPos.y) < 70; };
   // 置いたエサ・かざりを直接つまんで動かす
   const binZone = $('binZone'); let dragItem = null;
@@ -2467,7 +2474,7 @@ async function renderObs(){
     setTxt(guides[k] || '');
     fromTray = {in:false, again:was === k}; trayDragK = k; down = true; sceneEl.setPointerCapture(e.pointerId);
     if(!toolOff()) toolHere(e); lastMove = Date.now();
-    if(tool === 'kiri') stillT = setInterval(()=>{ if(fromTray && !fromTray.in) return; if(Date.now() - lastMove > 280) sprayStart(); }, 60);
+    if(tool === 'kiri') kiriWatch();
   });
   view.querySelectorAll('#toolTray [data-tool]').forEach(bt=>{ const oc = bt.onclick; bt.onclick = e=>{ if(Date.now() - trayDragT < 700 && bt.dataset.tool === trayDragK) return; oc && oc(e); }; });
   sceneEl.onpointerdown = e=>{ e.preventDefault();
@@ -2481,7 +2488,7 @@ async function renderObs(){
     if(!toolObj.hidden && nearObj(e)){ const r = sceneEl.getBoundingClientRect(); grab = {dx:e.clientX - r.left - objPos.x, dy:e.clientY - r.top - objPos.y}; dragTo(e); }   // 置いてある虫めがねは、そのままつかめる
     else { const h = HOT[tool], k = hk(); toolHere(e, {dx:h.x*k, dy:h.y*k}); }   // 道具の「きくところ」が指の下にくる
     lastMove = Date.now();
-    if(tool === 'kiri'){ stillT = setInterval(()=>{ if(Date.now() - lastMove > 280) sprayStart(); }, 60); } };
+    if(tool === 'kiri') kiriWatch(); };
   sceneEl.onpointermove = e=>{ if(!down) return;
     if(fromTray) fromTray.in = inScene(e);
     if(dragItem){ if(!itemDown.moved && Math.hypot(e.clientX - itemDown.x, e.clientY - itemDown.y) < 8) return; itemDown.moved = true; moveItem(e); return; }
@@ -2506,6 +2513,9 @@ async function renderObs(){
     if(tool === 'esa'){ await placeFood(q.x, q.y); return; }
     if(tool === 'kazari'){ if(!decoSel) return; const soilTop = soilTopOf(b); c.deco.push({id:Date.now(), k:decoSel, x:clamp(q.x, 8 - (noteUI() ? caseExtra(c) : 0), 92 + (noteUI() ? caseExtra(c) : 0)), y:clamp(q.y, soilTop - 28, soilTop + 2)}); S.items[decoSel]--; if(!(S.items[decoSel] > 0)) decoSel = null; save(); renderObs(); setTimeout(()=> setTxt('かざりを置いた。つまんで動かせるよ。'), 50); await yakusoku('deco', 'かくれ家やとまり木があると、虫は落ちついてくらせる。\n本物の虫かごでも、同じだよ。'); return; }
     setTxt(sc.txt); };
+  sceneEl.onlostpointercapture = e=>{ if(down) sceneEl.onpointerup(e); };
+  window.__toolUp = e=>{ if(down && sceneEl.isConnected) sceneEl.onpointerup(e); else sprayStop(); };
+  if(!window.__toolUpOn){ window.__toolUpOn = true; ['pointerup','pointercancel'].forEach(t=> addEventListener(t, e=> window.__toolUp && window.__toolUp(e))); addEventListener('blur', ()=> window.__toolUp && window.__toolUp({clientX:-1, clientY:-1})); }
   const shakeEl = sceneEl.closest('.caseBox') || sceneEl;   // 観察ノートでは、わくの絵ごとゆらす
   const furuMove = e=>{ const dx = e.clientX - furu.x0, v = e.clientX - furu.last; furu.last = e.clientX;
     shakeEl.style.transform = `translateX(${clamp(dx*.35, -16, 16)}px) rotate(${clamp(dx*.04, -2.5, 2.5)}deg)`;
