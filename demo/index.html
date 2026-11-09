@@ -66,7 +66,11 @@ header small{color:var(--mute);font-size:12px}
 #hud .hudT,#hud .hudS{display:contents}
 #hud .hudSleep{font:inherit;font-weight:700;color:#1b2340;background:#ffe6a0;border:2px solid #fff6d6;border-radius:999px;padding:.15em .8em;cursor:pointer;line-height:1.3}
 #hud .hudHold{font:inherit;font-weight:700;color:#fff;background:#3a5a8a;border:2px solid #dfe8f6;border-radius:999px;padding:.15em .8em;cursor:pointer;line-height:1.3}
-#hud .hudHold.on{background:#d9532c;border-color:#ffd8c8;animation:sleepPulse 1.6s ease-in-out infinite}
+#pauseLayer{position:fixed;inset:0;z-index:190;background:#0c1830b8;display:flex;align-items:center;justify-content:center;cursor:pointer}
+#pauseLayer .pz{display:flex;flex-direction:column;align-items:center;gap:.4em;color:#fff;text-align:center}
+#pauseLayer b{font-size:34px;letter-spacing:.08em}
+#pauseLayer span{font-size:17px}
+#pauseLayer small{margin-top:.6em;font-size:15px;padding:.3em 1.1em;border:2px solid #fff8;border-radius:999px;animation:blink 1.4s infinite}
 #hud .hudSleep.late{background:#ffd23f;animation:sleepPulse 1.6s ease-in-out infinite}
 @keyframes sleepPulse{50%{box-shadow:0 0 0 5px #ffd23f55}}
 #hud .slot{display:inline-flex;align-items:center;gap:.3em}
@@ -275,6 +279,24 @@ html.land body.noteUI .shopNav{background:#f6ead2;border-radius:0 0 10px 10px;pa
 #msgLayer .yk{color:var(--sun)}
 #msgLayer.askL,html.land #msgLayer.askL{align-items:center;justify-content:center;padding:calc(var(--st,0px) + 8px) 12px 8px}   /* 名前の入力：キーボードの上の、見えているところのまん中に（上の帯にもかくれないように。2026-11-09 iPad） */
 #msgLayer.askL .win{width:min(100%,520px)}
+/* 名前を書く：あいうえお ひょう（2026-11-10） */
+#msgLayer.kanaL{align-items:center;justify-content:center;padding:max(6px,var(--st,0px)) 10px max(6px,var(--sb,0px))}
+#msgLayer.kanaL .win.kanaWin{width:min(100%,640px);min-height:0;cursor:default;white-space:normal;display:flex;flex-direction:column;gap:6px;padding:10px 12px}
+#msgLayer.kanaL .kq{font-size:15px;line-height:1.45;white-space:pre-line}
+#msgLayer.kanaL .krow{display:flex;gap:6px;align-items:stretch}
+#msgLayer.kanaL .krow input{flex:1;margin:0;font-size:20px;font-weight:800;min-width:0}
+#msgLayer.kanaL .kdel{flex:none;font-size:13px;padding:.3em .7em}
+#msgLayer.kanaL .kana{--kh:clamp(26px,calc((100dvh - 210px) / 5),46px);display:grid;grid-template-columns:repeat(11,1fr);grid-template-rows:repeat(5,var(--kh));grid-auto-flow:column;gap:4px}
+#msgLayer.kanaL .kk{font:inherit;font-size:clamp(14px,calc(var(--kh) * .45),20px);font-weight:800;border-radius:9px;border:1px solid #c9a978;background:#fff;color:#3a2410;padding:0;cursor:pointer;touch-action:manipulation}
+#msgLayer.kanaL .kk:active{background:#ffe9a8;transform:scale(.95)}
+#msgLayer.kanaL .kk.fn{background:#f3e6c8;font-size:clamp(10px,calc(var(--kh) * .3),14px);white-space:nowrap;letter-spacing:-.05em}
+#msgLayer.kanaL .kk.fn[data-f=daku],#msgLayer.kanaL .kk.fn[data-f=han],#msgLayer.kanaL .kk.fn[data-f=bar]{font-size:clamp(16px,calc(var(--kh) * .55),24px)}
+#msgLayer.kanaL .kk:disabled{opacity:.35}
+#msgLayer.kanaL .kk.none{visibility:hidden}
+#msgLayer.kanaL .ans{margin-top:2px}
+html.land #msgLayer.kanaL .kana{--kh:clamp(24px,calc((var(--H,100vh) - 190px) / 5),46px)}
+html.land #msgLayer.kanaL .win.kanaWin{width:min(100%,680px)}
+
 .shopHi{display:flex;align-items:center;gap:.7em;margin:.2em 0 .5em;padding:.5em .7em;background:#fffaf0e6;border:1px solid #d8c3a0;border-radius:12px;color:#4a3320;font-size:14px;line-height:1.5}
 .shopHi .fimg{width:64px;height:64px;flex:none;border-radius:12px;border:2px solid #fff;box-shadow:0 1px 3px #0003;object-fit:cover}
 .shopHi b{display:block;font-size:12px;color:#8a5a20}
@@ -1002,7 +1024,7 @@ body.noteUI #hud .sch{color:#b0601a}   /* 明るい札の上でも読めるよ�
 <!-- 左メニュー（#tabs）：そと・すもう・おみせ・ずかん・その他（たて画面のPCでは下にならび、おうちもここ） -->
 <div id="placeBg"><i></i><svg id="nightRoom" viewBox="0 0 1280 853" preserveAspectRatio="xMidYMax slice" aria-hidden="true"></svg></div>
 <div id="tabs" hidden>
-  <button type="button" data-t="home"><span class="ic">🧺</span>虫かご</button>
+  <button type="button" data-t="home"><span class="ic">🏠</span>おうち</button>
   <button type="button" data-t="out"><span class="ic">🌳</span><img class="tabArt" src="img/ui/ic_out.webp" alt="" draggable="false">そと</button>
   <button type="button" data-t="sumo"><span class="ic">🏟</span><img class="tabArt" src="img/ui/ic_sumo.webp" alt="" draggable="false">すもう</button>
   <button type="button" data-t="shop"><span class="ic">🏪</span><img class="tabArt" src="img/ui/ic_shop.webp" alt="" draggable="false">おみせ</button>
@@ -1011,7 +1033,7 @@ body.noteUI #hud .sch{color:#b0601a}   /* 明るい札の上でも読めるよ�
 </div>
 <!-- 右メニュー（#rtabs）：虫かご・もちもの・ケースのこと。押すとパネルが出る -->
 <div id="rtabs" hidden>
-  <button type="button" class="rt" data-t="home"><span class="ic">🧺</span>虫かご</button>
+  <button type="button" class="rt" data-t="home"><span class="ic">🏠</span>おうち</button>
   <button type="button" class="rt" id="rtItems"><span class="ic">🎒</span>もちもの</button>
   <button type="button" class="rt" id="rtCase" hidden><span class="ic">📋</span>ケースの<br>こと</button>
 </div>
@@ -1033,10 +1055,17 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261109-2336';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261110-0107';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-08', items:[
     'ストーリーの七夕祭（3章）で、出店を回れるようになった。ヨーヨーつり・輪なげ・くじびきで遊べるよ',
+    '虫やノートの名前は、あいうえお ひょうで書けるようにした（スマホのキーボードを使わなくていい。゛゜・ちいさく・ー もある）',
+    '「虫かご」のタブを「おうち」にした',
+    'ストーリーの7日目は、朝に「きょうは虫をかえす日」と教えてくれる。その日は遊べて、虫をかえすのは夕方4時',
+    '「⏸ ポーズ」をおすと画面にふたがかかり、タップするとつづきから',
+    '時計の数字は、はやい は30分、ゆっくり は15分ごとに動く',
+    '夜9時半をすぎても時計が進みつづけて、ねる時間をのがすことがあったのを直した',
+    'ストーリーで、虫の世話をしているあいだと、そとで虫をさがしているあいだは、時計が止まるようにした（世話をしているうちに次の日になっていた）',
     'きりふき・ふきん・エサなどの道具が、指の左上に大きく出るようになった（指で道具がかくれない）',
     'きりふきは、タップするとシュッと1回 水が出るようにした（おしたままでは出ない）',
     'ストーリーの時計を「⏸ とめる」で止められるようにした（上の時計の札。止めているあいだは、虫もおなかがへらない）',
@@ -2281,21 +2310,46 @@ function say(text, opts={}){
 }
 const fmtMsg = t=> esc(t).replace(/【([^】]+)】/g, '<b class="yk">【$1】</b>').replace(/\n/g, '<br>');
 const ask = (text, yes='はい', no='いいえ')=> say(text, {ans:[yes, no]}).then(i=> i === 0);
-function askText(text, def=''){
+/* 名前を書く：こどもが入れやすい「あいうえお ひょう」（おてつだい日記の KanaPad と同じならび。2026-11-10）
+   たてに あいうえお、みぎから ひだりへ あ・か・さ・た・な…わ。いちばん左の列は ゛゜・ちいさく・ー・あける（さいごの文字をかえる。もう一度おすと もどる）。
+   スマホのキーボードは出さない（inputmode="none"）。パソコンは、ふつうにキーボードでも打てる */
+const KANA_COLS = ['あいうえお', 'かきくけこ', 'さしすせそ', 'たちつてと', 'なにぬねの', 'はひふへほ', 'まみむめも', 'や ゆ よ', 'らりるれろ', 'わ を ん'].reverse();
+const kPairs = (a, b)=> Object.fromEntries([...a].map((c, i)=> [c, b[i]]));
+const kUndo = m=> Object.fromEntries(Object.entries(m).map(([k, v])=> [v, k]));
+const K_DAKU = kPairs('かきくけこさしすせそたちつてとはひふへほう', 'がぎぐげござじずぜぞだぢづでどばびぶべぼゔ');
+const K_HAN = Object.assign(kPairs('はひふへほ', 'ぱぴぷぺぽ'), kPairs('ばびぶべぼ', 'ぱぴぷぺぽ'));
+const K_SMALL = kPairs('あいうえおやゆよつわ', 'ぁぃぅぇぉゃゅょっゎ');
+const K_UNDAKU = kUndo(K_DAKU), K_UNHAN = kUndo(kPairs('はひふへほ', 'ぱぴぷぺぽ')), K_UNSMALL = kUndo(K_SMALL);
+function askText(text, def='', max=10){
   return new Promise(res=>{
-    const L = document.createElement('div'); L.id = 'msgLayer';
-    L.innerHTML = `<div class="win">${fmtMsg(text)}<input type="text" maxlength="10" value="${esc(def)}"><div class="ans"><button type="button" class="btn pri">きめた</button></div></div>`;
-    const inp = L.querySelector('input'); L.querySelector('button').onclick = ()=>{ const v = inp.value.trim(); L.remove(); res(v); };
-    inp.onkeydown = e=>{ if(e.key === 'Enter') L.querySelector('button').click(); };
-    // キーボードが出ても、カードが見えるように：見えている場所（visualViewport）の中に、カードを置く
-    L.classList.add('askL');
-    const fit = ()=>{ if(!L.isConnected){ vv && vv.removeEventListener('resize', fit); return; }
-      const rot = +(document.documentElement.dataset.rot || 0), vh = vv ? vv.height : innerHeight, off = vv ? vv.offsetTop : 0;
-      if(!rot){ L.style.top = off + 'px'; L.style.height = vh + 'px'; L.style.bottom = 'auto'; L.style.left = L.style.width = ''; }
-      else { const W = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--W')) || innerHeight;   // まわしているとき：キーボードは横レイアウトの右（rot 1）か左（rot -1）
-        L.style.width = Math.min(W, vh) + 'px'; L.style.left = (rot === 1 ? 0 : W - Math.min(W, vh)) + 'px'; L.style.right = 'auto'; L.style.top = L.style.height = ''; } };
-    const vv = window.visualViewport; vv && vv.addEventListener('resize', fit);
-    document.body.appendChild(L); fit(); inp.focus(); inp.select(); setTimeout(fit, 350);
+    const L = document.createElement('div'); L.id = 'msgLayer'; L.className = 'askL kanaL';
+    const fnKeys = [['゛', 'daku', 'てんてん'], ['゜', 'han', 'まる'], ['ちいさく', 'small', 'ちいさく'], ['ー', 'bar', 'のばす'], ['あける', 'sp', 'あける']];
+    const keys = fnKeys.map(([t, k, a])=> `<button type="button" class="kk fn" data-f="${k}" aria-label="${a}">${t}</button>`).join('')
+      + KANA_COLS.map(col=> [...col].map(c=> c === ' ' ? '<i class="kk none"></i>' : `<button type="button" class="kk" data-c="${c}">${c}</button>`).join('')).join('');
+    L.innerHTML = `<div class="win kanaWin"><div class="kq">${fmtMsg(text)}</div>
+      <div class="krow"><input type="text" maxlength="${max}" value="${esc(def)}" inputmode="none" autocomplete="off" aria-label="名前"><button type="button" class="btn kdel">← 1もじ けす</button></div>
+      <div class="kana norb">${keys}</div>
+      <div class="ans"><button type="button" class="btn pri">きめた</button></div></div>`;
+    const inp = L.querySelector('input'), ok = L.querySelector('.ans .btn');
+    const chars = ()=> [...inp.value], last = ()=> chars().slice(-1)[0] || '';
+    const sync = ()=>{ const l = last(), n = chars().length;
+      L.querySelector('[data-f=daku]').disabled = !K_DAKU[l] && !K_UNDAKU[l];
+      L.querySelector('[data-f=han]').disabled = !K_HAN[l] && !K_UNHAN[l];
+      L.querySelector('[data-f=small]').disabled = !K_SMALL[l] && !K_UNSMALL[l];
+      L.querySelector('[data-f=sp]').disabled = !n || l === ' ' || n >= max;
+      L.querySelector('[data-f=bar]').disabled = n >= max;
+      L.querySelectorAll('.kk[data-c]').forEach(b=> b.disabled = n >= max);
+      L.querySelector('.kdel').disabled = !n; };
+    const put = v=>{ inp.value = [...v].slice(0, max).join(''); sync(); };
+    const change = (...maps)=>{ const to = maps.map(m=> m[last()]).find(Boolean); if(to) put(chars().slice(0, -1).join('') + to); };
+    L.querySelector('.kana').onclick = e=>{ const b = e.target.closest('button'); if(!b || b.disabled) return;
+      if(b.dataset.c) put(inp.value + b.dataset.c);
+      else ({daku:()=> change(K_DAKU, K_UNDAKU), han:()=> change(K_HAN, K_UNHAN), small:()=> change(K_SMALL, K_UNSMALL), bar:()=> put(inp.value + 'ー'), sp:()=> put(inp.value + ' ')})[b.dataset.f](); };
+    L.querySelector('.kdel').onclick = ()=> put(chars().slice(0, -1).join(''));
+    inp.oninput = sync;
+    ok.onclick = ()=>{ const v = inp.value.trim(); L.remove(); res(v); };
+    inp.onkeydown = e=>{ if(e.key === 'Enter' && !e.isComposing) ok.click(); };
+    document.body.appendChild(L); sync();
   });
 }
 // そだてのやくそく：はじめての場面で、ひとことずつ教える
@@ -2310,13 +2364,18 @@ function refresh(){ tickAll(); handleGone(); hud(); render(); }
 setInterval(()=>{ if(S && !QS.has('mihon') && !document.querySelector('.toolObj.drag, #findField.busy, .found') && document.body.dataset.slot && document.body.dataset.slot !== slotOf()) refresh(); }, 60000);   // 朝・昼・夕方・夜がかわったら、絵の色もかえる
 const hudSleep = ()=>{ if(!storyOn() || !S.story.ch || S.story.done || storySp().m <= 1) return ''; const sl = slotOf(), h = new Date(now()).getHours(), hold = !!S.story.hold;
   // 時計を止める・うごかす（はやい・ゆっくり のとき。止めているあいだは、虫もおなかがへらない）
-  return `<button type="button" class="hudHold norb${hold ? ' on' : ''}" data-hold="1">${hold ? '▶ うごかす' : '⏸ とめる'}</button>` + ((sl === 'yu' || sl === 'yoru') && !hold ? `<button type="button" class="hudSleep norb${h >= STORY_BED - 1 || h < 5 ? ' late' : ''}" data-sleep="1">🌙 ねる</button>` : ''); };
+  return `<button type="button" class="hudHold norb" data-hold="1">⏸ ポーズ</button>` + ((sl === 'yu' || sl === 'yoru') && !hold ? `<button type="button" class="hudSleep norb${h >= STORY_BED - 1 || h < 5 ? ' late' : ''}" data-sleep="1">🌙 ねる</button>` : ''); };
 function storyHold(){ if(!storyOn()) return; storyCommit(); S.story.hold = !S.story.hold; storyRT = Date.now(); save(true); hud(); if(!S.story.hold) storyCheck(); }
-const hudHtml = ()=>{ const slot = slotOf(); return (storyOn() && S.story.ch && !S.story.done ? `<span class="slot sch">${S.story.ch}章 ${S.story.day}日目</span>` : '') + `<span class="slot">${SLOT_ICON[slot]} ${SLOT_NAMES[slot]}</span><span>${dateStr()} ${hhmm()}</span><span class="money" title="どんぐり">🌰 ${dg(S.money)}</span>`; };
+const hudT = ()=>{ const t = now(); if(!storyOn() || storySp().m <= 1) return t; const st = (storySp().m >= 360 ? 30 : 15) * 60e3; return Math.floor(t / st) * st; };   // 時計の数字は、はやい=30分・ゆっくり=15分ごと（2026-11-10）
+const hudHtml = ()=>{ const slot = slotOf(); return (storyOn() && S.story.ch && !S.story.done ? `<span class="slot sch">${S.story.ch}章 ${S.story.day}日目</span>` : '') + `<span class="slot">${SLOT_ICON[slot]} ${SLOT_NAMES[slot]}</span><span>${dateStr()} ${hhmm(hudT())}</span><span class="money" title="どんぐり">🌰 ${dg(S.money)}</span>`; };
 // 上の時計の札：文字だけを書きかえる。「ねる」ボタンは、出す・かえるときだけ作りなおす（500msごとに作りなおすと、指でおせない）
 function hudSet(){ const el = $('hud'); let t = el.querySelector('.hudT'), b = el.querySelector('.hudS');
   if(!t || !b){ el.innerHTML = '<span class="hudT"></span><span class="hudS"></span>'; t = el.querySelector('.hudT'); b = el.querySelector('.hudS'); }
-  t.innerHTML = hudHtml(); const sh = hudSleep(); if(b.dataset.v !== sh){ b.innerHTML = sh; b.dataset.v = sh; } }
+  t.innerHTML = hudHtml(); const sh = hudSleep(); if(b.dataset.v !== sh){ b.innerHTML = sh; b.dataset.v = sh; }
+  // ポーズ中は、画面にふた。どこかをさわると、つづきから（2026-11-10 ユーザー：何か行動したら動き出すように）
+  const hold = !!(S && S.story && S.story.hold && storyOn()); let pl = $('pauseLayer');
+  if(hold && !pl){ pl = document.createElement('div'); pl.id = 'pauseLayer'; pl.className = 'norb'; pl.innerHTML = '<div class="pz"><b>⏸ ポーズ中</b><span>時計が止まっています</span><small>画面をタップすると、つづきから</small></div>'; pl.onclick = e=>{ e.stopPropagation(); storyHold(); }; document.body.appendChild(pl); }
+  else if(!hold && pl) pl.remove(); }
 function hud(){
   if(!S){ $('hud').hidden = true; return; }
   $('hud').hidden = false;
@@ -3468,7 +3527,7 @@ function renderOpt(){
   if($('oNext')) $('oNext').onclick = ()=>{ storyCommit(); S.story.gt = atHour(storyIdx() + 1, 7); storyRT = Date.now(); save(); setTab('home'); refresh(); };
   if($('oMini')) $('oMini').onclick = async ()=>{ storyBusy = true; try{ await tanabataStalls(); } finally { storyBusy = false; } refresh(); };
   if($('oCh')) $('oCh').onclick = async ()=>{ const i = await say('何章へとぶ？（その章の1日目の朝へ。とちゅうの章は見たことにする）', {ans:['1章','2章','3章','4章','5章','6章','やめる']}); if(i > 5) return; const ch = i + 1;
-    for(let k=1; k<ch; k++) for(let d=1; d<=7; d++) S.story.seen[k + '-' + d] = 1;
+    for(let k=1; k<ch; k++){ for(let d=1; d<=7; d++) S.story.seen[k + '-' + d] = 1; S.story.seen[k + '-7m'] = 1; }
     if(ch > 3 && !S.story.egg) S.story.egg = {day:dayKey(), glow:0, txt:'大島で見つけた、金色のたまご。'};
     CH.forEach((cc, k)=>{ if(cc.kid && k < ch) meet(cc.kid); }); S.cases = S.cases.map(c=> c && c.story && c.story < ch ? null : c);
     S.story.gt = atHour((ch-1)*7 + 1, 7); storyRT = Date.now(); save(); setTab('home'); refresh(); };
@@ -3815,8 +3874,12 @@ const STORY_SRC = [   // 参考にしたページ（資料_宗像.md の出典�
 /* ---- 時計 ---- */
 let storyRT = Date.now(), storyBusy = false;
 const storySp = ()=> STORY_SPEED[S.story.speed] || STORY_SPEED.hayai;
-function storyPaused(){ return document.hidden || storyBusy || !!(S && S.story && S.story.hold) || !!document.querySelector('#msgLayer, #evLayer, #arena, #matsuri, .full'); }
-function storyNow(){ const st = S.story, m = storySp().m, t = Date.now(); if(m > 1 && storyPaused()){ storyRT = t; return st.gt; } const dt = Math.max(0, t - storyRT); st.gt += (m > 1 ? Math.min(dt, 3000) : dt) * m; storyRT = t; return st.gt; }   // 進めるたびにきざむ（止まったときに時計がもどらないように）
+// 時計が止まるとき：会話・お祭り・すもうのほか、虫の世話をしている（虫かごをひらいている）あいだと、そとで虫をさがしているあいだも止める
+// （2026-11-09 実機：「はやい」は1びょうで6分。午前に世話をしていたら夜になって、そとへ行こうとしたら次の日になっていた）
+function storyPaused(){ return document.hidden || storyBusy || !!(S && S.story && S.story.hold) || openCase !== null || (tab === 'out' && !!outState && !!outState.spot) || !!document.querySelector('#msgLayer, #evLayer, #arena, #matsuri, .full'); }
+function storyNow(){ const st = S.story, m = storySp().m, t = Date.now(); if(m > 1 && storyPaused()){ storyRT = t; return st.gt; } const dt = Math.max(0, t - storyRT), g0 = st.gt; st.gt += (m > 1 ? Math.min(dt, 3000) : dt) * m; storyRT = t;
+  if(m > 1 && st.ch && !st.done){ const bed = atHour(storyIdx(g0), STORY_BED) + 30*60e3; if(g0 < bed && st.gt > bed) st.gt = bed; }   // 夜9時半で止めて、おとうさんが「ねよう」と言いに来るのを待つ（夜中まで進まない）
+  return st.gt; }   // 進めるたびにきざむ（止まったときに時計がもどらないように）
 function storyCommit(){ if(!S || !S.story) return; S.story.gt = storyNow(); storyRT = Date.now(); S.story.rt = storyRT; }
 const storyIdx = (t=now())=>{ const d = new Date(t); return Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - new Date(STORY_Y, 6, 19)) / D); };   // 7月19日が 0
 const chOfIdx = i=> i <= 0 ? 0 : Math.min(7, Math.ceil(i/7));
@@ -4040,28 +4103,41 @@ async function storyCheck(){
   try{
     if(ch >= 1 && ch <= 6){
       // まえの章のおわりを見のがしていたら、先にすませる
-      for(let k=1; k<ch; k++) if(!S.story.seen[k + '-7']){ S.story.ch = k; ran = true; await storyDay(k, 7); }
+      for(let k=1; k<ch; k++) if(!day7Done(k)){ S.story.ch = k; ran = true; S.story.seen[k + '-7m'] = 1; await storyDay(k, 7); }
       if(S.story.ch !== ch || S.story.day !== day) ran = true;
       S.story.ch = ch; S.story.day = day;
       if(!S.story.seen[ch + '-1'] && day > 1){ ran = true; await storyDay(ch, 1); }
-      if(!S.story.seen[key] && h >= 5){ ran = true; await storyDay(ch, day); }
+      if(!S.story.seen[key] && h >= 5){ ran = true; if(day === 7 && ch <= 5) await storyDay7Intro(ch); else await storyDay(ch, day); }
+      else if(day === 7 && ch <= 5 && S.story.seen[key] && !day7Done(ch) && h >= STORY_D7){ ran = true; S.story.seen[key + 'm'] = 1; await storyDay(ch, 7, true); }   // 夕方4時：虫をかえす
       else if(S.story.seen[key] && !S.story.eve[key] && (slotOf() === 'yu' || slotOf() === 'yoru') && h >= 16){ const f = STORY_EVE[key]; S.story.eve[key] = 1; save(); if(f){ ran = true; outState = null; setTab('home'); await f(); } }
       else if((S.story.seen[key] || h < 5) && storySp().m > 1 && storyLate(h) && !S.story.done){ ran = true; await storyBedtime(); }   // 夜9時：ねる時間
     }
   } finally { storyRunning = false; storyBusy = false; if(ran) save(); else if(Date.now() - storyQuietSave > 10000){ storyQuietSave = Date.now(); save(true); } }   // 何もおきなかったときは、10秒に1回だけ だまってセーブ（ゲームの時計をのこすため。とじるときは autoSaveNow でもセーブ）
   if(ran && S && S.story) render();
 }
-async function storyDay(ch, day){
+async function storyDay(ch, day, noCard){
   const key = ch + '-' + day; S.story.seen[key] = 1; S.story.ch = ch; S.story.day = day; save();
   outState = null; $('findField') && $('findField').remove(); setTab('home');
   if(day === 1) await chapterCard(ch);
-  else await dayCard(ch, day);
+  else if(!noCard) await dayCard(ch, day);
   const f = STORY_DAY[key]; if(f) await f();
   save(); hud();
 }
 function cardShow(html, ms=2600){ return new Promise(r=>{ const L = document.createElement('div'); L.id = 'evLayer'; L.className = 'storyCard'; L.innerHTML = html; document.body.appendChild(L); const done = ()=>{ L.remove(); r(); }; L.onclick = done; setTimeout(done, ms); }); }
 const chapterCard = ch=> cardShow(`<div class="sc"><div class="sch norb">${ch}章</div><div class="stt">${esc(CH[ch].ttl)}</div><div class="sdt">${esc(CH[ch].place.replace(/の(畑|森|草むら|山道)$/, ''))}　${dateStr()}</div></div>`, 3200);
 const dayCard = (ch, day)=> cardShow(`<div class="sc small1"><div class="sch norb">${ch}章　${day}日目</div><div class="sdt">${dateStr()}</div></div>`, 1600);
+/* 7日目（1〜5章）は、朝に「きょうは虫をかえす日」と伝えるだけ。その日はふつうに遊べて、夕方4時に虫をかえす（2026-11-10 ユーザー：朝にかえすと、そのあとが半端） */
+const STORY_D7 = 16;
+const day7Done = k=> !!(S.story.note && S.story.note[k]) || (k <= 5 ? !!S.story.seen[k + '-7m'] : !!S.story.seen[k + '-7']);
+async function storyDay7Intro(ch){
+  const key = ch + '-7'; S.story.seen[key] = 1; S.story.ch = ch; S.story.day = 7; save();
+  outState = null; $('findField') && $('findField').remove(); setTab('home');
+  await dayCard(ch, 7);
+  const c = stCase(ch);
+  await play(c ? `おとうさん（ふつう）：きょうは、${dispName(c)}を「${CH[ch].place}」にかえす日だ。//夕方の4時に、かえしに行こう。それまで、さいごのお世話と観察をしておこうね。`
+    : `おとうさん（ふつう）：きょうで、${ch}章の虫しらべはおしまい。//夕方の4時に、「${CH[ch].place}」へ行こう。`);
+  storyGoal('夕方4時に、虫をかえしに行く'); save(); hud();
+}
 /* ねる：夕方から、つぎの日の朝7時へ（まいにち のときはできない） */
 async function storySleep(){
   if(storySp().m <= 1) return;
