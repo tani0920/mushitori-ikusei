@@ -16,13 +16,13 @@ if(DEMO){
   document.write('<meta name="robots" content="noindex,nofollow">');
 }
 </script>
-<link rel="apple-touch-icon" href="img/icons/apple-touch-icon.png?v=3">
-<link rel="icon" type="image/png" sizes="32x32" href="img/icons/favicon-32.png?v=3">
+<link rel="apple-touch-icon" href="img/icons/apple-touch-icon.png?v=4">
+<link rel="icon" type="image/png" sizes="32x32" href="img/icons/favicon-32.png?v=4">
 <link rel="manifest" href="manifest.webmanifest">
 <script>
 // アイコンを作り直したら ICON_VER を変える（iPhone・iPad が古いアイコンを覚えたままにならないように）
 (function(){
-  var ICON_VER = '1' + (window.DEMO ? '-demo' : '');
+  var ICON_VER = '2' + (window.DEMO ? '-demo' : '');
   document.querySelectorAll('link[rel="apple-touch-icon"],link[rel="icon"],link[rel="manifest"]').forEach(function(l){ l.href = l.getAttribute('href') + '?v=' + ICON_VER; });
 })();
 </script>
@@ -63,6 +63,10 @@ header h1{margin:0;font-size:18px;font-weight:400;letter-spacing:.08em;color:var
 header small{color:var(--mute);font-size:12px}
 #hud{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:14px;align-items:center;font-variant-numeric:tabular-nums;min-height:22px}
 #hud .money{color:var(--sun)}
+#hud .hudT,#hud .hudS{display:contents}
+#hud .hudSleep{font:inherit;font-weight:700;color:#1b2340;background:#ffe6a0;border:2px solid #fff6d6;border-radius:999px;padding:.15em .8em;cursor:pointer;line-height:1.3}
+#hud .hudSleep.late{background:#ffd23f;animation:sleepPulse 1.6s ease-in-out infinite}
+@keyframes sleepPulse{50%{box-shadow:0 0 0 5px #ffd23f55}}
 #hud .slot{display:inline-flex;align-items:center;gap:.3em}
 ruby.fr rt{font-size:.5em;letter-spacing:0;font-weight:400;opacity:.9}
 .win{background:var(--win);border:3px solid var(--edge);border-radius:6px;box-shadow:0 0 0 2px var(--win);color:var(--ink);padding:.6em .9em;line-height:1.6}
@@ -961,7 +965,7 @@ html.land.tall body.noteUI #rtabs .rt{font-size:15px}
 
 <div id="app">
   <header><h1>むなかた 虫そだて日記〈1週間〉</h1><small>デモ <span class="gver"></span></small></header>
-  <div id="hud" hidden></div>
+  <div id="hud" hidden onclick="if(event.target.closest('[data-sleep]')) storySleep()"></div>
   <div id="view"></div><!-- 中央画面（#view） -->
 </div>
 <!-- 左メニュー（#tabs）：そと・すもう・おみせ・ずかん・その他（たて画面のPCでは下にならび、おうちもここ） -->
@@ -998,10 +1002,11 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261109-2104';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261109-2146';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-08', items:[
     'ストーリーの七夕祭（3章）で、出店を回れるようになった。ヨーヨーつり・輪なげ・くじびきで遊べるよ',
+    'ストーリーは、夜の9時になったら ねる時間。つぎの日の朝になるよ。夕方からは、上の時計の「🌙 ねる」で早めにねることもできる',
     'ストーリーモードができた！ 夏休みの6週間、毎週ちがう場所で虫を見つけて、育てて、記録して、もとの場所にかえそう。とちゅうで、ふしぎなたまごに出会うよ',
     'ストーリーは、ゲームの時計の速さをえらべる（はやい：4分で1日／ゆっくり：1時間で1日／まいにち：スマホの時計と同じ）',
     '「その他」に「参考にしたもの」をつけた。物語はフィクションで、場所や行事は宗像大社・宗像市などのページを参考にしているよ',
@@ -2263,12 +2268,17 @@ let tab = 'home', openCase = null;
 const view = $('view');
 function refresh(){ tickAll(); handleGone(); hud(); render(); }
 setInterval(()=>{ if(S && !QS.has('mihon') && !document.querySelector('.toolObj.drag, #findField.busy, .found') && document.body.dataset.slot && document.body.dataset.slot !== slotOf()) refresh(); }, 60000);   // 朝・昼・夕方・夜がかわったら、絵の色もかえる
+const hudSleep = ()=>{ if(!storyOn() || !S.story.ch || S.story.done || storySp().m <= 1) return ''; const sl = slotOf(), h = new Date(now()).getHours(); return sl === 'yu' || sl === 'yoru' ? `<button type="button" class="hudSleep norb${h >= STORY_BED - 1 || h < 5 ? ' late' : ''}" data-sleep="1">🌙 ねる</button>` : ''; };
 const hudHtml = ()=>{ const slot = slotOf(); return (storyOn() && S.story.ch && !S.story.done ? `<span class="slot sch">${S.story.ch}章 ${S.story.day}日目</span>` : '') + `<span class="slot">${SLOT_ICON[slot]} ${SLOT_NAMES[slot]}</span><span>${dateStr()} ${hhmm()}</span><span class="money" title="どんぐり">🌰 ${dg(S.money)}</span>`; };
+// 上の時計の札：文字だけを書きかえる。「ねる」ボタンは、出す・かえるときだけ作りなおす（500msごとに作りなおすと、指でおせない）
+function hudSet(){ const el = $('hud'); let t = el.querySelector('.hudT'), b = el.querySelector('.hudS');
+  if(!t || !b){ el.innerHTML = '<span class="hudT"></span><span class="hudS"></span>'; t = el.querySelector('.hudT'); b = el.querySelector('.hudS'); }
+  t.innerHTML = hudHtml(); const sh = hudSleep(); if(b.dataset.v !== sh){ b.innerHTML = sh; b.dataset.v = sh; } }
 function hud(){
   if(!S){ $('hud').hidden = true; return; }
   $('hud').hidden = false;
   const slot = slotOf();
-  $('hud').innerHTML = hudHtml();
+  hudSet();
   document.body.classList.toggle('obsMode', openCase !== null);
   const n = S.cases.filter(c=>c && (c.pending || needs(c).length)).length;
   document.querySelectorAll('#tabs [data-t=home], #rtabs [data-t=home]').forEach(hb=>{ hb.querySelector('.badge')?.remove();
@@ -3908,7 +3918,7 @@ function storyGoal(t){ S.story.goal = t; save(); }
 let storyRunning = false;
 async function storyCheck(){
   if(!storyOn() || storyRunning || S.story.done) return;
-  if(openCase !== null || storyPaused() || document.querySelector('#findField.busy, .toolObj.drag')) return;
+  if(openCase !== null || storyPaused() || document.querySelector('#findField.busy, .toolObj.drag, .found')) return;
   const i = storyIdx(), ch = chOfIdx(i), day = dayOfIdx(i), h = new Date(now()).getHours();
   const key = ch + '-' + day;
   storyRunning = true; storyBusy = true; let ran = false;   // 話があったときだけ、あとで画面をかきなおす（500msごとに書きかえると、見つけたカードなどが消える）
@@ -3921,6 +3931,7 @@ async function storyCheck(){
       if(!S.story.seen[ch + '-1'] && day > 1){ ran = true; await storyDay(ch, 1); }
       if(!S.story.seen[key] && h >= 5){ ran = true; await storyDay(ch, day); }
       else if(S.story.seen[key] && !S.story.eve[key] && (slotOf() === 'yu' || slotOf() === 'yoru') && h >= 16){ const f = STORY_EVE[key]; S.story.eve[key] = 1; save(); if(f){ ran = true; outState = null; setTab('home'); await f(); } }
+      else if((S.story.seen[key] || h < 5) && storySp().m > 1 && storyLate(h) && !S.story.done){ ran = true; await storyBedtime(); }   // 夜9時：ねる時間
     }
   } finally { storyRunning = false; storyBusy = false; save(); }
   if(ran && S && S.story) render();
@@ -3939,10 +3950,24 @@ const dayCard = (ch, day)=> cardShow(`<div class="sc small1"><div class="sch nor
 /* ねる：夕方から、つぎの日の朝7時へ（まいにち のときはできない） */
 async function storySleep(){
   if(storySp().m <= 1) return;
-  const i = storyIdx(); if(!(await ask('今日は、もうねる？\n（つぎの日の朝になるよ。ねるまえに、エサやしめりけを見ておこう）', 'ねる', 'まだ'))) return;
-  tickAll(); S.story.gt = atHour(i + 1, 7); storyRT = Date.now(); tickAll(); save();
-  await cardShow('<div class="sc small1"><div class="sdt">…おやすみなさい。</div></div>', 1300);
+  if(!(await ask('今日は、もうねる？\n（つぎの日の朝になるよ。ねるまえに、エサやしめりけを見ておこう）', 'ねる', 'まだ'))) return;
+  storyBusy = true; try{ await storyToMorning(); } finally { storyBusy = false; }
   refresh(); storyCheck();
+}
+// つぎの朝7時へ（夜中の0時をすぎていたら、その日の朝7時）
+async function storyToMorning(){
+  const i = storyIdx(), h = new Date(now()).getHours();
+  tickAll(); S.story.gt = atHour(h < 5 ? i : i + 1, 7); storyRT = Date.now(); tickAll(); save();
+  await cardShow('<div class="sc small1"><div class="sdt">…おやすみなさい。</div></div>', 1300);
+}
+/* 夜9時（21時）になったら、ねる時間（2026-11-09 ユーザー確認：21時）。夕方の話がすんでから。まいにち のときは本物の時計なので、しない */
+const STORY_BED = 21;
+const storyLate = h=> h >= STORY_BED || h < 5;
+async function storyBedtime(){
+  const h = new Date(now()).getHours();
+  outState = null; $('findField') && $('findField').remove(); setTab('home');
+  await play(`おとうさん（にっこり）：もう${h >= 12 ? '夜の' + (h - 12) + '時' : '夜おそく'}だよ。虫たちも、そろそろ休む時間だ。//ぼくたちも、ねよう。`);
+  await storyToMorning();
 }
 /* ---- 虫かご一覧のうえの、ストーリーの札 ---- */
 function storyBanner(){
@@ -3987,7 +4012,7 @@ async function storyBegin(){
   S.story.name = (nm || 'ぼく').slice(0, 10);
   await play(`おとうさん（にっこり）：「${S.story.name}の虫しらべノート」か。いい名前だ。
     ＊ゲームの時計の速さは、「その他」でかえられるよ。いまは「${storySp().name}」（${storySp().txt}）。
-    ＊夕方になったら、「ねる」で次の日の朝にできるよ。`);
+    ＊夜の9時になったら、ねる時間。つぎの日の朝になるよ。//夕方からは、上の時計の「🌙 ねる」で、早めにねることもできる。`);
   S.story.seen['0-0'] = 1; S.story.gt = atHour(1, 7); storyRT = Date.now(); save();
   storyBusy = false; storyCheck();
 }
@@ -4331,7 +4356,7 @@ async function storyFinal(c){
   await play('おじさん（わらう）：いい勝負だった！ 育て方が、ちゃんと虫に出とるよ。'); storyGoal('ふしぎな幼虫のお世話'); save();
 }
 setInterval(()=>{ if(!storyOn()) return; storyCommit();
-  if(!document.querySelector('#msgLayer, #evLayer, #arena, .full')){ const el = $('hud'); if(el && !el.hidden) el.innerHTML = hudHtml();
+  if(!document.querySelector('#msgLayer, #evLayer, #arena, .full')){ const el = $('hud'); if(el && !el.hidden) hudSet();
     if(document.body.dataset.slot && document.body.dataset.slot !== slotOf() && !document.querySelector('.toolObj.drag, #findField.busy, .found, #matsuri') && !(tab === 'out' && outState && outState.spot)) refresh(); }   // 出かけている場所の画面（さがす・見つけた）は、とちゅうで書きかえない
   storyCheck(); }, 500);
 
