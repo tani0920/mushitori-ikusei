@@ -65,6 +65,8 @@ header small{color:var(--mute);font-size:12px}
 #hud .money{color:var(--sun)}
 #hud .hudT,#hud .hudS{display:contents}
 #hud .hudSleep{font:inherit;font-weight:700;color:#1b2340;background:#ffe6a0;border:2px solid #fff6d6;border-radius:999px;padding:.15em .8em;cursor:pointer;line-height:1.3}
+#hud .hudHold{font:inherit;font-weight:700;color:#fff;background:#3a5a8a;border:2px solid #dfe8f6;border-radius:999px;padding:.15em .8em;cursor:pointer;line-height:1.3}
+#hud .hudHold.on{background:#d9532c;border-color:#ffd8c8;animation:sleepPulse 1.6s ease-in-out infinite}
 #hud .hudSleep.late{background:#ffd23f;animation:sleepPulse 1.6s ease-in-out infinite}
 @keyframes sleepPulse{50%{box-shadow:0 0 0 5px #ffd23f55}}
 #hud .slot{display:inline-flex;align-items:center;gap:.3em}
@@ -291,6 +293,10 @@ html.land.tall #msgLayer .who{font-size:17px}
 #msgLayer .who.r{right:1.3em}#msgLayer .who.l{left:1.3em}
 /* 会話の窓も、観察ノートと同じ紙の色に（2026-11-08。前は紺） */
 body.noteUI #msgLayer .win{background:#fffaf0;color:#4a3320;border:2px solid #c9a978;box-shadow:0 0 0 3px #fffaf0cc,0 6px 18px #0004;border-radius:14px;font-family:"M PLUS Rounded 1c","Hiragino Maru Gothic ProN",sans-serif;font-weight:600}
+/* 会話の窓：話す人がいてもいなくても、同じはば・同じ高さ（2026-11-09 タブレットでころころ変わっていた） */
+#msgLayer:not(.askL) .win{width:min(100%,680px);min-height:8em;box-sizing:border-box}
+html.land #msgLayer:not(.askL){padding-left:calc(90px + var(--sl,0px));padding-right:calc(64px + var(--sr,0px))}
+html.land.tall #msgLayer:not(.askL) .win{width:min(100%,820px);font-size:21px}
 body.noteUI #msgLayer .yk{color:#c0661a}
 body.noteUI #msgLayer .win .tap{color:#a08a6a}
 body.noteUI #msgLayer .btn{background:#fff;color:#4a3320;border-color:#c9a978;box-shadow:0 2px 0 #c9a97866;font-weight:600}
@@ -406,7 +412,7 @@ html.land .sendL.recv .in{display:flex}
 
 /* お世話の道具と、ケースの中の指の操作 */
 #obs .scene{touch-action:none;cursor:pointer;position:relative}
-.toolObj{position:absolute;left:0;top:0;font-size:84px;line-height:1;transform:translate(-50%,-50%);filter:drop-shadow(0 4px 3px #0009);z-index:3;touch-action:none;cursor:grab;transition:left .3s,top .3s;user-select:none}
+.toolObj{position:absolute;left:0;top:0;font-size:100px;line-height:1;transform:translate(-50%,-50%);filter:drop-shadow(0 4px 3px #0009);z-index:3;touch-action:none;cursor:grab;transition:left .3s,top .3s;user-select:none}
 .toolObj::after{content:'';position:absolute;inset:-14px;border-radius:50%}
 .toolObj.rest{animation:toolPop .25s}
 .toolTip{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);z-index:4;display:flex;align-items:center;gap:.4em;white-space:nowrap;font-size:12px;background:#fbf3dfee;color:#4a3320;border:1.5px solid #d9a93a;border-radius:999px;padding:.15em .8em .15em .3em;pointer-events:none;box-shadow:0 1px 3px #3a241255;animation:tipIn .25s}
@@ -807,7 +813,7 @@ html.land #obs .obsR .obsTxt{font-size:15px;line-height:1.55;padding:.4em .7em;m
 html.land .obsR .meters{font-size:11.5px;gap:0 6px;width:72%;line-height:1.35;margin-top:8px}
 html.land .obsR .meters .bar{height:6px}
 html.land .obsR .info{font-size:13px;line-height:1.5}
-html.land .toolObj{font-size:64px}
+html.land .toolObj{font-size:80px}
 html.land .decoPick .pk{min-width:56px;font-size:11px}
 html.land .decoPick .pk svg{width:32px;height:32px}
 html.land{--dw:min(360px,calc(var(--W) * .44))}
@@ -983,13 +989,14 @@ html.land.tall body.noteUI #rtabs .rt{font-size:15px}
 .npage.empty{opacity:.6}.npage .npic{width:84px;height:84px;align-self:center}.npage small{font-size:.78em;line-height:1.5}
 .srcList{padding-left:1.2em}.srcList li{margin:.3em 0}.srcList small{color:#7a5a20;word-break:break-all}
 .hud .sch,#hud .sch{color:#ffd890}
+body.noteUI #hud .sch{color:#b0601a}   /* 明るい札の上でも読めるように */
 .storyFinal{margin:.4em 0}.storyFinal .btn{margin-left:.6em}
 #titleScr .tbtn small{display:block;font-size:.62em;opacity:.85}
 </style>
 
 <div id="app">
   <header><h1>むなかた 虫そだて日記〈1週間〉</h1><small>デモ <span class="gver"></span></small></header>
-  <div id="hud" hidden onclick="if(event.target.closest('[data-sleep]')) storySleep()"></div>
+  <div id="hud" hidden onclick="if(event.target.closest('[data-sleep]')) storySleep(); else if(event.target.closest('[data-hold]')) storyHold()"></div>
   <div id="view"></div><!-- 中央画面（#view） -->
 </div>
 <!-- 左メニュー（#tabs）：そと・すもう・おみせ・ずかん・その他（たて画面のPCでは下にならび、おうちもここ） -->
@@ -1026,10 +1033,15 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261109-2205';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261109-2336';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-08', items:[
     'ストーリーの七夕祭（3章）で、出店を回れるようになった。ヨーヨーつり・輪なげ・くじびきで遊べるよ',
+    'きりふき・ふきん・エサなどの道具が、指の左上に大きく出るようになった（指で道具がかくれない）',
+    'きりふきは、タップするとシュッと1回 水が出るようにした（おしたままでは出ない）',
+    'ストーリーの時計を「⏸ とめる」で止められるようにした（上の時計の札。止めているあいだは、虫もおなかがへらない）',
+    '会話の窓が、話す人がいてもいなくても、同じ大きさになった',
+    'ストーリーで「セーブしました」が出つづけないようにした',
     'タイトルに「アプリにする方法」「友だちに教える」「タブレットにおくる」をつけた。スマホでは「タブレットがおすすめ」も出る',
     'ゲームの文字を、読みやすい丸いゴシックにした',
     'スマホで虫をつれてかえったとき、家のタブレットにおくれることを教えてくれるようにした',
@@ -1670,8 +1682,8 @@ function migrate(s){   // 古いセーブ（v1）を v2 のかたちにする
   return s;
 }
 const newLog = ()=> ({feed:0, feedFull:0, wet:0, clean:0, over:0, lowH:0, hours:0});
-function save(){ if(QS.has('demo') || QS.has('mihon')) return;   // 確認用のURL（?demo=…）で遊んだときは、ほんとうのセーブを上書きしない
-  try{ if(S.story) storyCommit(); localStorage.setItem(S.story ? STORY_KEY : SAVE_KEY, JSON.stringify(S)); const m = $('saveMark'); m.classList.add('on'); setTimeout(()=>m.classList.remove('on'), 900); }catch(e){} }
+function save(quiet){ if(QS.has('demo') || QS.has('mihon')) return;   // 確認用のURL（?demo=…）で遊んだときは、ほんとうのセーブを上書きしない
+  try{ if(S.story) storyCommit(); localStorage.setItem(S.story ? STORY_KEY : SAVE_KEY, JSON.stringify(S)); if(quiet) return; const m = $('saveMark'); m.classList.add('on'); setTimeout(()=>m.classList.remove('on'), 900); }catch(e){} }
 function load(){ try{ const j = JSON.parse(localStorage.getItem(SAVE_KEY)); return j && j.v ? migrate(j) : null; }catch(e){ return null; } }
 function clearSave(){ try{ localStorage.removeItem(SAVE_KEY); }catch(e){} }
 const AUTO_KEY = 'munakata-autosave-v1';
@@ -2296,7 +2308,10 @@ let tab = 'home', openCase = null;
 const view = $('view');
 function refresh(){ tickAll(); handleGone(); hud(); render(); }
 setInterval(()=>{ if(S && !QS.has('mihon') && !document.querySelector('.toolObj.drag, #findField.busy, .found') && document.body.dataset.slot && document.body.dataset.slot !== slotOf()) refresh(); }, 60000);   // 朝・昼・夕方・夜がかわったら、絵の色もかえる
-const hudSleep = ()=>{ if(!storyOn() || !S.story.ch || S.story.done || storySp().m <= 1) return ''; const sl = slotOf(), h = new Date(now()).getHours(); return sl === 'yu' || sl === 'yoru' ? `<button type="button" class="hudSleep norb${h >= STORY_BED - 1 || h < 5 ? ' late' : ''}" data-sleep="1">🌙 ねる</button>` : ''; };
+const hudSleep = ()=>{ if(!storyOn() || !S.story.ch || S.story.done || storySp().m <= 1) return ''; const sl = slotOf(), h = new Date(now()).getHours(), hold = !!S.story.hold;
+  // 時計を止める・うごかす（はやい・ゆっくり のとき。止めているあいだは、虫もおなかがへらない）
+  return `<button type="button" class="hudHold norb${hold ? ' on' : ''}" data-hold="1">${hold ? '▶ うごかす' : '⏸ とめる'}</button>` + ((sl === 'yu' || sl === 'yoru') && !hold ? `<button type="button" class="hudSleep norb${h >= STORY_BED - 1 || h < 5 ? ' late' : ''}" data-sleep="1">🌙 ねる</button>` : ''); };
+function storyHold(){ if(!storyOn()) return; storyCommit(); S.story.hold = !S.story.hold; storyRT = Date.now(); save(true); hud(); if(!S.story.hold) storyCheck(); }
 const hudHtml = ()=>{ const slot = slotOf(); return (storyOn() && S.story.ch && !S.story.done ? `<span class="slot sch">${S.story.ch}章 ${S.story.day}日目</span>` : '') + `<span class="slot">${SLOT_ICON[slot]} ${SLOT_NAMES[slot]}</span><span>${dateStr()} ${hhmm()}</span><span class="money" title="どんぐり">🌰 ${dg(S.money)}</span>`; };
 // 上の時計の札：文字だけを書きかえる。「ねる」ボタンは、出す・かえるときだけ作りなおす（500msごとに作りなおすと、指でおせない）
 function hudSet(){ const el = $('hud'); let t = el.querySelector('.hudT'), b = el.querySelector('.hudS');
@@ -2501,7 +2516,7 @@ async function renderObs(){
   const ownDeco = Object.keys(ITEMS).filter(k=>ITEMS[k].cat && (S.items[k]||0) > 0);
   const bigGuide = st.k === 'pupa' ? 'さなぎの間は、大そうじはできない。' : (!big || big.step === 1) ? ((c.soilAge||0) > 72 || big ? '' : 'まだ大そうじはいらない（3日に1回くらい）。') + '虫の上をさわって止めると、🤏でそっとつまめる。右上のひなんケースへ運ぼう。すばやくぶつけると虫がいやがる。' : big.step === 2 ? `土の上をさわって、🧹を左右に動かして入れかえよう（あと${3 - big.pass}回）` : '🤏をひなんケースの上で止めて虫をつまみ、ケースの中へもどそう。';
   const guides = {big:bigGuide, kazari:ownDeco.length ? (decoSel ? (ITEMS[decoSel].cat === 'mat' ? 'マットは、えらぶとすぐにしきかえる。' : 'ケースの中の、置きたいところをさわってはなす。置いたものは、直接つまんで動かせる。左下の「しまう」に入れるともどる。') : '下から、置きたいかざりをえらぼう。') : 'かざりは、「おみせ」で買えるよ。',
-    yubi:'', fukin:dirtN || oldN ? `ケースの中のよごれを、指でこすろう（のこり${dirtN + oldN}）` : 'ガラスはきれい。', kiri:'ケースの中の、かけたいところをさわったまま止めると水が出る。ケースぜんたいに少しずつ。左上の5本の棒が、場所ごとのしめりけ。', esa:st.k === 'pupa' ? 'さなぎは、なにも食べない。' : `ケースの中の、置きたいところをさわる（${esc(food.name)}${food.price ? ` ×${S.items[foodKey]||0}` : ''}）`, furu:'ケースをつかんで、左右に動かすとゆれる。何回もゆらすと、虫がおどろくよ。', megane:'ケースの中をさわると、そこが大きく見える。指を動かして、虫の上でじっと見てみよう。'}, guide = guides[tool];
+    yubi:'', fukin:dirtN || oldN ? `ケースの中のよごれを、指でこすろう（のこり${dirtN + oldN}）` : 'ガラスはきれい。', kiri:'ケースの中をタップすると、きりふきの先から シュッと水が出る。何回かタップして、ケースぜんたいに少しずつ。左上の5本の棒が、場所ごとのしめりけ。', esa:st.k === 'pupa' ? 'さなぎは、なにも食べない。' : `ケースの中の、置きたいところをさわる（${esc(food.name)}${food.price ? ` ×${S.items[foodKey]||0}` : ''}）`, furu:'ケースをつかんで、左右に動かすとゆれる。何回もゆらすと、虫がおどろくよ。', megane:'ケースの中をさわると、そこが大きく見える。指を動かして、虫の上でじっと見てみよう。'}, guide = guides[tool];
   const showGuide = obsSession.guide; obsSession.guide = false;   // 道具をえらんだすぐあとは、文の欄に道具のつかいかたを出す
   const esaGuide = st.k === 'pupa' ? '' : `ケースの中の、置きたいところをさわる`;
   const bornTag = `<span class="tag born">${esc((BORN[c.born]||BORN.any).name)}</span>${c.bornSlot === 'yoru' ? ' <span class="tag">夜型</span>' : ''}`;
@@ -2568,7 +2583,7 @@ async function renderObs(){
     if(d && rigCtl && LOOK[key]){ d.mi = d.mi || {}; if(!d.mi[key]){ d.mi[key] = 1; first = true; save(); } }
     setTxt(key === 'plain' ? '虫めがねで見ると…からだのもようや、こまかい毛まで、よく見える！' : key === 'buried' ? '虫めがねで見ると…土の中に、虫のからだが少しだけ見える。ねているみたい。' : LOOK[key] + (first ? '（はじめて見た！）' : ''));
   };
-  const TIP = {megane:'取っ手を持って、見たいところにレンズをかざす', fukin:'よごれの上をこする', kiri:'さわったまま止めると、水が出る', esa:'さわったところに、エサをおく', kazari:'さわったところに、かざりをおく', big:'虫の上をさわって、そっとつまむ'};
+  const TIP = {megane:'取っ手を持って、見たいところにレンズをかざす', fukin:'よごれの上をこする', kiri:'タップすると、シュッと水が出る', esa:'さわったところに、エサをおく', kazari:'さわったところに、かざりをおく', big:'虫の上をさわって、そっとつまむ'};
   const toolOff = ()=> tool === 'yubi' || tool === 'furu' || (tool === 'big' && st.k === 'pupa') || (tool === 'esa' && st.k === 'pupa') || (tool === 'kazari' && (!decoSel || ITEMS[decoSel].cat === 'mat'));
   // 道具をえらんだら、ケースの上に「いま持っている道具」と使い方を出す。道具の絵は、ケースの中をさわったところに出る
   const showTool = ()=>{ toolObj.hidden = true; let tp = sceneEl.querySelector('.toolTip');
@@ -2578,6 +2593,9 @@ async function renderObs(){
   const toolHere = (e, off={dx:0, dy:0})=>{ toolObj.innerHTML = toolIc(); toolObj.hidden = false; toolObj.style.transition = 'none'; grab = off; dragTo(e); void toolObj.offsetWidth; toolObj.style.transition = ''; };
   const placeRest = ()=>{ const r = restPos(); toolObj.style.transition = 'none'; setObj(r.x, r.y, 'rest'); void toolObj.offsetWidth; toolObj.style.transition = ''; };
   const hk = ()=> (parseFloat(getComputedStyle(toolObj).fontSize) || 84) / 84;
+  // 指でつかんだとき、道具は指の左上に出す（2026-11-09 指で道具の絵がかくれていた）。grab は「指 − 道具の中心」
+  const LIFT = ()=>{ const k = hk(); return {dx:34*k, dy:78*k}; };
+  window.__hotOff = ()=>{ const h = HOT[tool] || {x:0, y:0}, k = hk(), g = grab || LIFT(); return {x:h.x*k - g.dx, y:h.y*k - g.dy}; };   // テスト用：指から「きくところ」までのずれ
   // 虫めがねの取っ手：指がここをにぎる（レンズの中心から右下へ。レンズ 2.1em、取っ手は 82% のところから）。見る場所はレンズの中心
   const megGrip = ()=>{ const em = parseFloat(getComputedStyle(toolObj).fontSize) || 84; return {dx:MEG_GRIP[0]*em, dy:MEG_GRIP[1]*em}; };
   const hotXY = ()=>{ const r = sceneEl.getBoundingClientRect(), h0 = HOT[tool], h = {x:h0.x*hk(), y:h0.y*hk()}; return toXYc(r.left + objPos.x + h.x, r.top + objPos.y + h.y); };
@@ -2660,8 +2678,9 @@ async function renderObs(){
   const sprayStart = ()=>{
     if(sprayTimer) return; if(!sprayed){ sprayStartWet = c.wet; sprayed = true; obsSession.sprayed = true; }
     toolObj.classList.add('spray');
-    sprayTimer = setInterval(()=>{
-      if(!down || !sceneEl.isConnected){ sprayStop(); return; }
+    sprayTimer = setInterval(()=> sprayTick(), 120);
+  };
+  const sprayTick = ()=>{ if(!sceneEl.isConnected){ sprayStop(); return; } {
       const {x, y} = hotXY(), z = clamp(Math.floor(x/20), 0, WZ-1);
       [[z, 6], [z-1, 1.5], [z+1, 1.5]].forEach(([k, a])=>{ if(k < 0 || k >= WZ) return; if(c.wetZ[k] < 100) c.wetZ[k] = Math.min(100, c.wetZ[k] + a); else if(a > 2) c.soakZ[k] = Math.min(100, c.soakZ[k] + 7); });
       syncWet(c);
@@ -2670,9 +2689,17 @@ async function renderObs(){
       if(Math.hypot(x - bugPos.x, (y + 8) - bugPos.y) < 16 && !bugPos.hidden) annoy(3, '虫に水がかかっている！ いやがって、元気が少しへった。虫には直接かけないでね。');
       refreshWetBar(); updateMini();
       const sp = $('sprayLayer'); if(sp){ for(let i=0;i<4;i++){ const d = document.createElementNS('http://www.w3.org/2000/svg','circle'); d.setAttribute('cx', x + (Math.random()*18-9)); d.setAttribute('cy', y + 2 + (Math.random()*14-4)); d.setAttribute('r', (.6+Math.random()*.8).toFixed(1)); d.setAttribute('fill', '#cfe8ff'); d.setAttribute('class', 'drop'); sp.appendChild(d); setTimeout(()=>d.remove(), 500); } }
-    }, 120);
-  };
+    } };
   const sprayStop = ()=>{ if(sprayTimer){ clearInterval(sprayTimer); sprayTimer = null; } toolObj.classList.remove('spray'); };
+  // シュッ：1回で、きりふき3回ぶん（その場所に少し。何回もタップして、ケースぜんたいに）
+  let puffing = false;
+  const sprayPuff = async ()=>{ if(puffing) return; puffing = true;
+    if(!sprayed){ sprayStartWet = c.wet; sprayed = true; obsSession.sprayed = true; }
+    toolObj.hidden = false; toolObj.classList.add('spray');
+    for(let i = 0; i < 3; i++){ sprayTick(); await wait(90); }
+    toolObj.classList.remove('spray'); puffing = false;
+    clearTimeout(sprayEndT); sprayEndT = setTimeout(()=>{ if(!down) sprayEnd(); }, 1200); };   // 何回かタップしたあとで、しめりけのぐあいを教える
+  let sprayEndT = 0;
   const refreshWetBar = ()=>{ const bars = [...view.querySelectorAll('.meters .bar')]; const idx = st.k !== 'pupa' ? 1 : 0; const i = bars[idx] && bars[idx].querySelector('i'); if(i){ i.style.width = c.wet + '%'; i.className = meterCls(c.wet); } };
   const sprayEnd = async ()=>{
     sprayStop(); if(!sprayed) return; sprayed = false;
@@ -2771,8 +2798,7 @@ async function renderObs(){
     if(tool !== k){ tool = k; view.querySelectorAll('#toolTray [data-tool]').forEach(b=> b.classList.toggle('on', b.dataset.tool === k)); sceneEl.className = `scene tool-${k}`; showTool(); lensSaid = ''; updateMini(); }
     setTxt(guides[k] || '');
     fromTray = {in:false, again:was === k}; trayDragK = k; down = true; sceneEl.setPointerCapture(e.pointerId);
-    if(!toolOff()) toolHere(e, tool === 'megane' ? megGrip() : undefined); lastMove = Date.now();
-    if(tool === 'kiri') kiriWatch();
+    if(!toolOff()) toolHere(e, tool === 'megane' ? megGrip() : LIFT()); lastMove = Date.now();
   });
   view.querySelectorAll('#toolTray [data-tool]').forEach(bt=>{ const oc = bt.onclick; bt.onclick = e=>{ if(Date.now() - trayDragT < 700 && bt.dataset.tool === trayDragK) return; oc && oc(e); }; });
   sceneEl.onpointerdown = e=>{ e.preventDefault();
@@ -2785,15 +2811,14 @@ async function renderObs(){
     down = true; sceneEl.setPointerCapture(e.pointerId);
     if(!toolObj.hidden && nearObj(e)){ const r = sceneEl.getBoundingClientRect(); grab = {dx:e.clientX - r.left - objPos.x, dy:e.clientY - r.top - objPos.y}; dragTo(e); }   // 置いてある虫めがねは、そのままつかめる
     else if(tool === 'megane') toolHere(e, megGrip());   // 虫めがねは、取っ手が指の下（レンズが指にかくれない）
-    else { const h = HOT[tool], k = hk(); toolHere(e, {dx:h.x*k, dy:h.y*k}); }   // 道具の「きくところ」が指の下にくる
-    lastMove = Date.now();
-    if(tool === 'kiri') kiriWatch(); };
+    else toolHere(e, LIFT());   // 道具は指の左上（指にかくれない）
+    lastMove = Date.now(); };
   sceneEl.onpointermove = e=>{ if(!down) return;
     if(fromTray) fromTray.in = inScene(e);
     if(dragItem){ if(!itemDown.moved && Math.hypot(e.clientX - itemDown.x, e.clientY - itemDown.y) < 8) return; itemDown.moved = true; moveItem(e); return; }
     if(tool === 'furu'){ furuMove(e); return; }
     const r = sceneEl.getBoundingClientRect(), nx = e.clientX - r.left - grab.dx, ny = e.clientY - r.top - grab.dy;
-    if(Math.hypot(nx - objPos.x, ny - objPos.y) > 2.5){ lastMove = Date.now(); if(tool === 'kiri') sprayStop(); }
+    if(Math.hypot(nx - objPos.x, ny - objPos.y) > 2.5) lastMove = Date.now();
     dragTo(e);
     if(tool === 'fukin'){ const q = hotXY(); wipeAt(q.x, q.y); }
     if(tool === 'big') bigTick(e); };
@@ -2806,8 +2831,8 @@ async function renderObs(){
       c.log.over += di.type === 'food' ? 0 : 0; save(); renderObs(); setTimeout(()=> setTxt(di.type === 'food' ? 'エサの場所をかえた。' : `${ITEMS[di.it.k].name}の場所をかえた。`), 50); return; }
     if(tool === 'furu'){ await furuEnd(); return; }
     if(tool === 'megane'){ setObj(objPos.x, objPos.y, ''); return; }   // 虫めがねは、はなした場所にのこる
+    if(tool === 'kiri'){ await sprayPuff(); return; }   // きりふきは、はなしたところでシュッ。道具はそこにのこる
     const q = hotXY(); toolObj.hidden = true;   // つかったら、道具はしまう（もう一度さわれば、また出る）
-    if(tool === 'kiri'){ await sprayEnd(); return; }
     if(tool === 'fukin'){ await wipeDone(); return; }
     if(tool === 'esa'){ await placeFood(q.x, q.y); return; }
     if(tool === 'kazari'){ if(!decoSel) return; const soilTop = soilTopOf(b); c.deco.push({id:Date.now(), k:decoSel, x:clamp(q.x, 8 - (noteUI() ? caseExtra(c) : 0), 92 + (noteUI() ? caseExtra(c) : 0)), y:clamp(q.y, soilTop - 28, soilTop + 2)}); S.items[decoSel]--; if(!(S.items[decoSel] > 0)) decoSel = null; save(); renderObs(); setTimeout(()=> setTxt('かざりを置いた。つまんで動かせるよ。'), 50); await yakusoku('deco', 'かくれ家やとまり木があると、虫は落ちついてくらせる。\n本物の虫かごでも、同じだよ。'); return; }
@@ -3790,7 +3815,7 @@ const STORY_SRC = [   // 参考にしたページ（資料_宗像.md の出典�
 /* ---- 時計 ---- */
 let storyRT = Date.now(), storyBusy = false;
 const storySp = ()=> STORY_SPEED[S.story.speed] || STORY_SPEED.hayai;
-function storyPaused(){ return document.hidden || storyBusy || !!document.querySelector('#msgLayer, #evLayer, #arena, #matsuri, .full'); }
+function storyPaused(){ return document.hidden || storyBusy || !!(S && S.story && S.story.hold) || !!document.querySelector('#msgLayer, #evLayer, #arena, #matsuri, .full'); }
 function storyNow(){ const st = S.story, m = storySp().m, t = Date.now(); if(m > 1 && storyPaused()){ storyRT = t; return st.gt; } const dt = Math.max(0, t - storyRT); st.gt += (m > 1 ? Math.min(dt, 3000) : dt) * m; storyRT = t; return st.gt; }   // 進めるたびにきざむ（止まったときに時計がもどらないように）
 function storyCommit(){ if(!S || !S.story) return; S.story.gt = storyNow(); storyRT = Date.now(); S.story.rt = storyRT; }
 const storyIdx = (t=now())=>{ const d = new Date(t); return Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - new Date(STORY_Y, 6, 19)) / D); };   // 7月19日が 0
@@ -4005,7 +4030,7 @@ function storyRelease(ch){
 function notePage(ch, c, txt){ S.story.note[ch] = {bug:c ? c.bug : null, name:c ? dispName(c) : '', st:c ? stageOf(c).k : null, size:c && c.size || 0, genki:c ? genkiOf(c) : 0, rare:c && c.rare, txt, date:dateStr()}; }
 /* ---- 日のすすみ ---- */
 function storyGoal(t){ S.story.goal = t; save(); }
-let storyRunning = false;
+let storyRunning = false, storyQuietSave = 0;
 async function storyCheck(){
   if(!storyOn() || storyRunning || S.story.done) return;
   if(openCase !== null || storyPaused() || document.querySelector('#findField.busy, .toolObj.drag, .found')) return;
@@ -4023,7 +4048,7 @@ async function storyCheck(){
       else if(S.story.seen[key] && !S.story.eve[key] && (slotOf() === 'yu' || slotOf() === 'yoru') && h >= 16){ const f = STORY_EVE[key]; S.story.eve[key] = 1; save(); if(f){ ran = true; outState = null; setTab('home'); await f(); } }
       else if((S.story.seen[key] || h < 5) && storySp().m > 1 && storyLate(h) && !S.story.done){ ran = true; await storyBedtime(); }   // 夜9時：ねる時間
     }
-  } finally { storyRunning = false; storyBusy = false; save(); }
+  } finally { storyRunning = false; storyBusy = false; if(ran) save(); else if(Date.now() - storyQuietSave > 10000){ storyQuietSave = Date.now(); save(true); } }   // 何もおきなかったときは、10秒に1回だけ だまってセーブ（ゲームの時計をのこすため。とじるときは autoSaveNow でもセーブ）
   if(ran && S && S.story) render();
 }
 async function storyDay(ch, day){
