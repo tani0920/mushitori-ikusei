@@ -639,6 +639,21 @@ html.tall #arena .fighter{max-width:280px}
 #arena .log .my{color:var(--sun)}
 #arena .log .ko{color:#ff9}
 #arena .ctl{display:flex;justify-content:flex-end;gap:.5em;margin-top:8px}
+#matsuri{position:fixed;inset:0;z-index:150;display:flex;flex-direction:column;gap:6px;padding:max(10px,env(safe-area-inset-top,0px)) 12px max(10px,env(safe-area-inset-bottom,0px));color:#f7f1df;background:radial-gradient(circle at 50% 120%,#5a3a6a,transparent 60%),linear-gradient(#0c1026,#1d2550 70%,#2a2a52)}
+#matsuri::before{content:'';position:absolute;left:0;right:0;top:0;height:30px;pointer-events:none;background:radial-gradient(circle at 50% 62%,#ff7a3d 0 7px,#ffc078 8px,transparent 11px) 0 0/46px 30px repeat-x,linear-gradient(#0000 13px,#e8d8a8 13px 14px,#0000 14px)}
+#matsuri .mhead{display:flex;align-items:center;gap:12px;font-size:1.15rem;padding-top:22px}
+#matsuri .mstat{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:.95rem}
+#matsuri .mbar{display:inline-block;width:110px;height:12px;border-radius:6px;background:#0007;overflow:hidden;border:1px solid #fff6}
+#matsuri .mbar i{display:block;height:100%;background:linear-gradient(90deg,#ffd27a,#fff2c8)}
+#matsuri .ydot{display:inline-block;width:14px;height:14px;border-radius:50%;border:1px solid #fff8}
+#matsuri .mstage{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
+#matsuri #mSvg{width:100%;height:100%;touch-action:none;user-select:none;-webkit-user-select:none}
+#matsuri .mctl{display:flex;align-items:center;gap:8px}
+#matsuri .mhint{flex:1;font-size:.85rem;opacity:.85;line-height:1.45}
+#matsuri .kj{cursor:pointer;transition:transform .3s}
+#matsuri .kj.open path{fill:#fff;stroke:#c8483c;stroke-width:2}
+#matsuri #wPr .won{opacity:.45}
+html.land #matsuri{padding-left:calc(12px + var(--sl));padding-right:calc(12px + var(--sr))}
 #arena .cheer{position:absolute;font-size:22px;animation:cheerUp 1s forwards;pointer-events:none}
 @keyframes cheerUp{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-50px)}}
 @media (min-width:600px) and (orientation:portrait){ #tabs button{font-size:15px} }
@@ -983,9 +998,10 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261109-0908';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261109-0940';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-08', items:[
+    'ストーリーの七夕祭（3章）で、出店を回れるようになった。ヨーヨーつり・輪なげ・くじびきで遊べるよ',
     'ストーリーモードができた！ 夏休みの6週間、毎週ちがう場所で虫を見つけて、育てて、記録して、もとの場所にかえそう。とちゅうで、ふしぎなたまごに出会うよ',
     'ストーリーは、ゲームの時計の速さをえらべる（はやい：4分で1日／ゆっくり：1時間で1日／まいにち：スマホの時計と同じ）',
     '「その他」に「参考にしたもの」をつけた。物語はフィクションで、場所や行事は宗像大社・宗像市などのページを参考にしているよ',
@@ -3370,7 +3386,7 @@ function renderOpt(){
   <div class="demoBox" style="margin-top:14px"><h3>デモ用（本番にはありません）</h3>
     <p class="small">本番では、虫は本物の時間で育ちます（プレイヤーが時間を速めることはできません）。デモで成長を見るために、時間をすすめられます。いま、本物の時間より <b>${Math.round((S.demoOff||0)/H)}時間</b> 先。</p>
     <div class="row"><button type="button" class="btn" data-h="6">6時間すすめる</button><button type="button" class="btn" data-h="24">1日すすめる</button><button type="button" class="btn sub" data-h="0">もとにもどす</button></div>
-    ${storyOn() ? '<div class="row" style="margin-top:8px"><button type="button" class="btn" id="oNext">ストーリー：つぎの日の朝へ</button><button type="button" class="btn" id="oCh">ストーリー：章をえらぶ</button></div>' : ''}
+    ${storyOn() ? '<div class="row" style="margin-top:8px"><button type="button" class="btn" id="oNext">ストーリー：つぎの日の朝へ</button><button type="button" class="btn" id="oCh">ストーリー：章をえらぶ</button><button type="button" class="btn" id="oMini">七夕祭の出店で遊ぶ</button></div>' : ''}
     <div class="row" style="margin-top:8px"><button type="button" class="btn" id="oMoney">どんぐりを +50</button><button type="button" class="btn sub" id="oClear">セーブを消す</button></div></div>`;
   $('oFuri').onclick = ()=>{ setFuri(!furiMode); renderOpt(); };
   $('oAuto').onclick = ()=>{ setAutoSave(!autoSave); renderOpt(); };
@@ -3383,6 +3399,7 @@ function renderOpt(){
   if($('oNote')) $('oNote').onclick = showNote;
   if($('oSpeed')) $('oSpeed').onclick = async ()=>{ const ks = Object.keys(STORY_SPEED), i = await say('ゲームの時計の速さ', {ans:ks.map(k=> `${STORY_SPEED[k].name}：${STORY_SPEED[k].txt}`).concat(['やめる'])}); if(i >= ks.length) return; storyCommit(); S.story.speed = ks[i]; storyRT = Date.now(); save(); renderOpt(); };
   if($('oNext')) $('oNext').onclick = ()=>{ storyCommit(); S.story.gt = atHour(storyIdx() + 1, 7); storyRT = Date.now(); save(); setTab('home'); refresh(); };
+  if($('oMini')) $('oMini').onclick = async ()=>{ storyBusy = true; try{ await tanabataStalls(); } finally { storyBusy = false; } refresh(); };
   if($('oCh')) $('oCh').onclick = async ()=>{ const i = await say('何章へとぶ？（その章の1日目の朝へ。とちゅうの章は見たことにする）', {ans:['1章','2章','3章','4章','5章','6章','やめる']}); if(i > 5) return; const ch = i + 1;
     for(let k=1; k<ch; k++) for(let d=1; d<=7; d++) S.story.seen[k + '-' + d] = 1;
     if(ch > 3 && !S.story.egg) S.story.egg = {day:dayKey(), glow:0, txt:'大島で見つけた、金色のたまご。'};
@@ -3673,7 +3690,7 @@ const STORY_SRC = [   // 参考にしたページ（資料_宗像.md の出典�
 /* ---- 時計 ---- */
 let storyRT = Date.now(), storyBusy = false;
 const storySp = ()=> STORY_SPEED[S.story.speed] || STORY_SPEED.hayai;
-function storyPaused(){ return document.hidden || storyBusy || !!document.querySelector('#msgLayer, #evLayer, #arena, .full'); }
+function storyPaused(){ return document.hidden || storyBusy || !!document.querySelector('#msgLayer, #evLayer, #arena, #matsuri, .full'); }
 function storyNow(){ const st = S.story, m = storySp().m, t = Date.now(); if(m > 1 && storyPaused()){ storyRT = t; return st.gt; } const dt = Math.max(0, t - storyRT); st.gt += (m > 1 ? Math.min(dt, 3000) : dt) * m; storyRT = t; return st.gt; }   // 進めるたびにきざむ（止まったときに時計がもどらないように）
 function storyCommit(){ if(!S || !S.story) return; S.story.gt = storyNow(); storyRT = Date.now(); S.story.rt = storyRT; }
 const storyIdx = (t=now())=>{ const d = new Date(t); return Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - new Date(STORY_Y, 6, 19)) / D); };   // 7月19日が 0
@@ -3689,6 +3706,178 @@ const SPK = {'ぼく':{'':'boku','ふつう':'boku','うれしい':'boku_joy','�
   'おとうさん':{'':'papa','ふつう':'papa','教える':'papa_teach','しんぱい':'papa_worry','にっこり':'papa_happy'}, 'おじさん':{'':'ojisan','わらう':'ojisan_laugh'},
   'ゆうた':'yuta','はるか':'haruka','けんた':'kenta','そうま':'soma','だいち':'daichi','れん':'ren',
   'おばあちゃん':'oba','水のおじさん':'mizu','じいちゃん':'jii','おねえさん':'eki','観察員さん':'kansatsu','神社の人':'jinja','ゆうたのおかあさん':'yutamama','島の子':'shimakko','来た人':'kyaku'};
+/* ---- 七夕祭の出店（ミニゲーム）：ヨーヨーつり・輪なげ・くじびき（3章5日目。2026-11-09） ----
+   絵は画面の中で描く（GPTの絵は使わない）。#matsuri がひらいているあいだは、ストーリーの時計は止まる。 */
+let miniSt = null;   // いま遊んでいるミニゲームのようす（テストでも見る）
+function miniOpen(title, hint){
+  const M = document.createElement('div'); M.id = 'matsuri';
+  M.innerHTML = `<div class="mhead norb"><b>${title}</b><span class="mstat" id="mStat"></span></div>
+    <div class="mstage"><svg id="mSvg" viewBox="0 0 400 230" preserveAspectRatio="xMidYMid meet"></svg></div>
+    <div class="mctl"><span class="mhint">${hint}</span><button type="button" class="btn pri" id="mAct" hidden></button><button type="button" class="btn" id="mQuit">おしまい</button></div>`;
+  document.body.appendChild(M); return M;
+}
+const miniPt = (svg, e)=>{ const p = svg.createSVGPoint(); p.x = e.clientX; p.y = e.clientY; return p.matrixTransform(svg.getScreenCTM().inverse()); };
+// 遊びのおわり：止める → ひとこと → 画面をとじる
+function miniEnd(M, st, res){ return async msg=>{ if(st.done) return; st.done = true; cancelAnimationFrame(st.raf); if(msg) await say(msg); M.remove(); miniSt = null; res(st); }; }
+
+/* ヨーヨーつり：水をさわったまま（フックを水に入れたまま）輪ゴムに近づけて、指をはなすとつれる。
+   水に入れているあいだ、こよりが弱っていく（動かすと、もっと弱る）。0 になると切れる。3こまで。 */
+function miniYoyo(){
+  const M = miniOpen('ヨーヨーつり', '水をさわったまま、フックを輪ゴムの輪に近づけて、はなすとつれるよ。水につけているあいだ、こよりが弱くなる。');
+  const svg = $('mSvg');
+  const COLS = [['#e8506a','#fff4d6'],['#4a90e2','#ffe14d'],['#ffd23f','#e8506a'],['#5cc98a','#fff4d6'],['#b07ce8','#fff4d6'],['#ff9a3c','#4a90e2'],['#ff7eb6','#5cc98a']];
+  const ys = COLS.map((c, i)=>{ const a = Math.random()*Math.PI*2; return {i, x:70 + (i%4)*85 + Math.random()*20, y:100 + Math.floor(i/4)*62 + Math.random()*14, vx:Math.cos(a)*9, vy:Math.sin(a)*5, col:c, la:-Math.PI/2 + (Math.random() - .5)*1.8, ph:Math.random()*6, got:false}; });
+  const st = miniSt = {kind:'yoyo', ys, str:100, got:[], hook:{x:200, y:70, down:false, seen:false}, done:false, raf:0};
+  const R = 17, L = 27;   // ヨーヨーの半径・輪ゴムの長さ
+  const loopAt = y=> ({x:y.x + Math.cos(y.la)*L, y:y.y + Math.sin(y.la)*L});
+  svg.innerHTML = `<defs><linearGradient id="yWat" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fd0f0"/><stop offset="1" stop-color="#2f8ec4"/></linearGradient></defs>
+    <rect x="12" y="36" width="376" height="190" rx="16" fill="#d9e3ea"/><rect x="20" y="44" width="360" height="176" rx="11" fill="url(#yWat)"/>
+    <g opacity=".35" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round">${[70,120,170,205].map((y, k)=>`<path d="M${40 + k*30},${y} q12,-5 24,0 t24,0"/><path d="M${230 + k*20},${y + 18} q12,-5 24,0 t24,0"/>`).join('')}</g>
+    <g id="yRip"></g>
+    ${ys.map(y=>`<g id="yb${y.i}"><line class="yband" stroke="#f3e9c8" stroke-width="1.6"/><circle r="${R}" fill="${y.col[0]}" stroke="#0003" stroke-width="1"/>
+      <path d="M${-R},0 Q0,-7 ${R},0" stroke="${y.col[1]}" stroke-width="3" fill="none"/><path d="M${-R + 3},6 Q0,0 ${R - 3},6" stroke="${y.col[1]}" stroke-width="2" fill="none" opacity=".8"/>
+      <ellipse cx="-6" cy="-7" rx="5" ry="3" fill="#fff" opacity=".5"/><circle class="yloop" r="4" fill="none" stroke="#f3e9c8" stroke-width="2.2"/></g>`).join('')}
+    <g id="yHook" opacity="0"><line id="yStr" stroke="#fff8e8" stroke-width="1.4"/><path id="yHk" d="M0,-10 L0,4 Q0,10 -5,10 Q-9,10 -9,5" stroke="#c9c9c9" stroke-width="2.4" fill="none" stroke-linecap="round"/></g>`;
+  const stat = ()=>{ $('mStat').innerHTML = `こより <span class="mbar"><i style="width:${Math.max(0, st.str)}%"></i></span> とれた ${st.got.map(c=>`<i class="ydot" style="background:${c}"></i>`).join('') || '0'}`; };
+  stat();
+  return new Promise(res=>{
+    const fin = miniEnd(M, st, res);
+    const draw = ()=>{ for(const y of ys){ const g = $('yb' + y.i); if(y.got){ g.style.display = 'none'; continue; }
+        const lp = {x:Math.cos(y.la)*L, y:Math.sin(y.la)*L};
+        g.setAttribute('transform', `translate(${y.x.toFixed(1)},${y.y.toFixed(1)})`);
+        const b = g.querySelector('.yband'); b.setAttribute('x1', (Math.cos(y.la)*R).toFixed(1)); b.setAttribute('y1', (Math.sin(y.la)*R).toFixed(1)); b.setAttribute('x2', lp.x.toFixed(1)); b.setAttribute('y2', lp.y.toFixed(1));
+        const o = g.querySelector('.yloop'); o.setAttribute('cx', lp.x.toFixed(1)); o.setAttribute('cy', lp.y.toFixed(1)); }
+      const h = st.hook; $('yHook').setAttribute('opacity', h.seen ? 1 : 0);
+      $('yStr').setAttribute('x1', h.x); $('yStr').setAttribute('y1', 0); $('yStr').setAttribute('x2', h.x); $('yStr').setAttribute('y2', h.y - 10);
+      $('yHk').setAttribute('transform', `translate(${h.x},${h.y})`); $('yHk').setAttribute('stroke', h.down ? '#9fb7c6' : '#c9c9c9');
+      $('yRip').innerHTML = h.down ? `<ellipse cx="${h.x}" cy="${h.y + 4}" rx="${9 + Math.sin(performance.now()/120)*2}" ry="3.5" fill="none" stroke="#fff" stroke-width="1.5" opacity=".7"/>` : ''; };
+    let last = performance.now();
+    const step = t=>{ const dt = Math.min(.05, (t - last)/1000); last = t;
+      for(const y of ys){ if(y.got) continue; y.ph += dt; y.x += (y.vx + Math.sin(y.ph*.7)*3)*dt; y.y += (y.vy + Math.cos(y.ph*.9)*2)*dt; y.la += Math.sin(y.ph*1.3)*dt*.5;
+        if(y.x < 20 + R + 6 && y.vx < 0 || y.x > 380 - R - 6 && y.vx > 0) y.vx *= -1;
+        if(y.y < 44 + R + 26 && y.vy < 0 || y.y > 220 - R - 4 && y.vy > 0) y.vy *= -1;
+        const lp = loopAt(y); if(lp.y < 50) y.la += dt*.8; }
+      if(st.hook.down){ st.str -= dt*13 + st.move*.06; st.move = 0; stat(); if(st.str <= 0){ st.str = 0; stat(); draw();
+          return fin(st.got.length ? `こよりが切れた！　でも、${st.got.length}こ つれたよ。` : 'あっ、こよりが切れちゃった…！'); } }
+      draw(); st.raf = requestAnimationFrame(step); };
+    st.move = 0;
+    const inWater = p=> p.x > 20 && p.x < 380 && p.y > 44 && p.y < 220;
+    svg.onpointerdown = e=>{ e.preventDefault(); const p = miniPt(svg, e); st.hook.x = p.x; st.hook.y = p.y; st.hook.seen = true; st.hook.down = inWater(p); try{ svg.setPointerCapture(e.pointerId); }catch(_){} };
+    svg.onpointermove = e=>{ const p = miniPt(svg, e); if(st.hook.down) st.move += Math.hypot(p.x - st.hook.x, p.y - st.hook.y); st.hook.x = p.x; st.hook.y = p.y; st.hook.seen = true; if(!st.hook.down && e.buttons && inWater(p)) st.hook.down = true; };
+    const up = ()=>{ if(!st.hook.down || st.done) return; st.hook.down = false;
+      const tip = {x:st.hook.x - 9, y:st.hook.y + 5};   // フックの先
+      let best = null, bd = 13; for(const y of ys){ if(y.got) continue; const lp = loopAt(y), d = Math.min(Math.hypot(lp.x - tip.x, lp.y - tip.y), Math.hypot(lp.x - st.hook.x, lp.y - st.hook.y)); if(d < bd){ bd = d; best = y; } }
+      if(best){ best.got = true; st.got.push(best.col[0]); st.str -= 12; stat(); draw();
+        if(st.got.length >= 3) return fin('3こ つれた！　ヨーヨーは、ひとり3こまで。');
+        if(st.str <= 0){ st.str = 0; stat(); return fin(`つれた！…と思ったら、こよりが切れた。${st.got.length}こ つれたよ。`); } } };
+    svg.onpointerup = up; svg.onpointercancel = up; svg.onpointerleave = e=>{ if(e.pointerType === 'mouse') up(); };
+    $('mQuit').onclick = ()=> fin(st.got.length ? `${st.got.length}こ つれたよ。` : '');
+    st.raf = requestAnimationFrame(step);
+  });
+}
+
+/* 輪なげ：ゆれる矢じるしで「ねらう」→ 上下するちからで「なげる」。景品の棒に入ったら、その景品がもらえる。輪は5本。
+   景品は、虫かごのかざり（もらうと、もちものにふえる）。 */
+function miniWanage(){
+  const M = miniOpen('輪なげ', 'ボタンを2回おすよ。1回目でむき、2回目でとおさ。遠くの景品ほど、むずかしい。');
+  const svg = $('mSvg');
+  const P = [{k:'ko_ishi', x:118, y:178, s:1}, {k:'ha_kusa', x:282, y:178, s:1}, {k:'eda_tsuru', x:88, y:128, s:.8}, {k:'ko_sara', x:200, y:128, s:.8}, {k:'ha_shida', x:312, y:128, s:.8}, {k:'ie_coco', x:150, y:92, s:.64}, {k:'ha_hana', x:250, y:92, s:.64}];
+  const st = miniSt = {kind:'wanage', P, rings:5, won:[], ph:'aim', a:0, p:0, t0:performance.now(), done:false, raf:0, landed:[]};
+  const sc = y=> .5 + (y - 60)/130*.5;
+  svg.innerHTML = `<defs><linearGradient id="wFl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7a2430"/><stop offset="1" stop-color="#b8394a"/></linearGradient></defs>
+    <path d="M60,60 L340,60 L398,230 L2,230 Z" fill="url(#wFl)"/><path d="M60,60 L340,60" stroke="#f4b63c" stroke-width="3"/>
+    ${[60,100,150].map(y=>`<line x1="${200 - (140 + (y - 60)*.58)}" y1="${y + 26}" x2="${200 + 140 + (y - 60)*.58}" y2="${y + 26}" stroke="#fff" stroke-opacity=".12" stroke-width="1"/>`).join('')}
+    <g id="wPr">${P.map((q, i)=>`<g id="wp${i}"><ellipse cx="${q.x}" cy="${q.y}" rx="${17*q.s}" ry="${6*q.s}" fill="#0004"/>
+      <svg x="${q.x - 28*q.s}" y="${q.y - 40*q.s}" width="${56*q.s}" height="${56*q.s}" viewBox="0 0 100 100">${decoSVG(q.k)}</svg></g>`).join('')}</g>
+    <g id="wLand"></g>
+    <line id="wAim" x1="200" y1="222" stroke="#fff" stroke-width="3" stroke-dasharray="6 6" stroke-linecap="round"/>
+    <g id="wPow"><rect x="372" y="90" width="14" height="120" rx="7" fill="#0006" stroke="#fff8" stroke-width="1"/><rect id="wPowI" x="374" width="10" rx="5" fill="#f4b63c"/></g>
+    <ellipse id="wRing" cx="200" cy="214" rx="20" ry="8" fill="none" stroke="#ffd23f" stroke-width="5"/>`;
+  const stat = ()=>{ $('mStat').innerHTML = `のこりの輪 ${'◯'.repeat(st.rings) || 'なし'}　とれた ${st.won.length}`; };
+  const act = $('mAct'); act.hidden = false;
+  const label = ()=>{ act.textContent = st.ph === 'aim' ? 'ねらう' : st.ph === 'pow' ? 'なげる！' : '…'; act.disabled = st.ph === 'fly'; };
+  stat(); label();
+  return new Promise(res=>{
+    const fin = miniEnd(M, st, res);
+    const step = t=>{ const k = (t - st.t0)/1000;
+      if(st.ph === 'aim') st.a = Math.sin(k*2.1)*.62;
+      if(st.ph === 'pow') st.p = (1 - Math.cos(k*3.2))/2;
+      const L = 70; $('wAim').setAttribute('x2', 200 + Math.sin(st.a)*L); $('wAim').setAttribute('y2', 222 - Math.cos(st.a)*L); $('wAim').style.display = st.ph === 'fly' ? 'none' : '';
+      $('wPow').style.display = st.ph === 'pow' ? '' : 'none'; const h = 116*st.p; $('wPowI').setAttribute('y', 208 - h); $('wPowI').setAttribute('height', Math.max(4, h));
+      st.raf = requestAnimationFrame(step); };
+    const throwRing = ()=>{ st.ph = 'fly'; label(); st.rings--; stat();
+      const ty = 206 - st.p*150, tx = 200 + Math.tan(st.a)*(222 - ty), t1 = performance.now(), dur = 700, ring = $('wRing');
+      return new Promise(done=>{ const fly = t=>{ const u = Math.min(1, (t - t1)/dur), x = 200 + (tx - 200)*u, y = 214 + (ty - 214)*u - Math.sin(u*Math.PI)*60*(.5 + st.p*.6), s = 1 + (sc(ty) - 1)*u;
+          ring.setAttribute('cx', x); ring.setAttribute('cy', y); ring.setAttribute('rx', 20*s); ring.setAttribute('ry', 8*s); ring.setAttribute('stroke-width', 5*s);
+          if(u < 1) requestAnimationFrame(fly); else done({x:tx, y:ty}); }; requestAnimationFrame(fly); }); };
+    const press = async ()=>{ if(st.done) return;
+      if(st.ph === 'aim'){ st.ph = 'pow'; st.t0 = performance.now(); label(); return; }
+      if(st.ph !== 'pow') return;
+      const at = await throwRing();
+      const hit = P.findIndex((q, i)=> !st.won.includes(i) && Math.abs(at.x - q.x) < 20*q.s && Math.abs(at.y - q.y) < 15*q.s);
+      const s = sc(at.y);
+      if(hit >= 0){ const q = P[hit]; st.won.push(hit); S.items[q.k] = (S.items[q.k]||0) + 1; save();
+        $('wLand').insertAdjacentHTML('beforeend', `<ellipse cx="${q.x}" cy="${q.y - 4*q.s}" rx="${15*q.s}" ry="${6*q.s}" fill="none" stroke="#ffd23f" stroke-width="${4*q.s}"/>`);
+        $('wp' + hit).classList.add('won'); stat();
+        await say(`入った！　「${ITEMS[q.k].name}」をもらった。`); }
+      else $('wLand').insertAdjacentHTML('beforeend', `<ellipse cx="${at.x}" cy="${at.y}" rx="${18*s}" ry="${7*s}" fill="none" stroke="#ffd23f" stroke-opacity=".55" stroke-width="${4*s}"/>`);
+      const ring = $('wRing'); ring.setAttribute('cx', 200); ring.setAttribute('cy', 214); ring.setAttribute('rx', 20); ring.setAttribute('ry', 8); ring.setAttribute('stroke-width', 5);
+      if(!st.rings || st.won.length === P.length){ ring.style.display = 'none'; return fin(st.won.length ? `輪なげ、おしまい。景品を ${st.won.length}こ もらった！（もちもの に入れたよ）` : '輪なげ、おしまい。…ざんねん、ひとつも入らなかった。'); }
+      st.ph = 'aim'; st.t0 = performance.now(); label(); };
+    act.onclick = press; svg.onpointerdown = e=>{ e.preventDefault(); press(); };
+    $('mQuit').onclick = ()=> fin('');
+    st.raf = requestAnimationFrame(step);
+  });
+}
+
+/* くじびき：1回10どんぐり、3回まで。箱の中のくじを1まいえらんで、ひらく。 */
+const KUJI = {1:{t:'1等', p:'ヤシのから と クヌギの枝', give:()=>{ giveItem('ie_coco', 1); giveItem('eda_kunugi', 1); }},
+  2:{t:'2等', p:'腐葉土マット', give:()=> giveItem('mat_fuyo', 1)}, 3:{t:'3等', p:'こん虫ゼリー 3こ', give:()=> giveItem('zeri', 3)}, 4:{t:'4等', p:'ラムネ 1本', give:()=>{}}};
+function miniKuji(){
+  const M = miniOpen('くじびき', '1回 10どんぐり。箱の中のくじを、1まい えらんでね（3回まで）。');
+  const svg = $('mSvg');
+  const box = [1,2,2,3,3,3,3,4,4,4,4,4,4,4,4]; for(let i = box.length - 1; i > 0; i--){ const j = Math.floor(Math.random()*(i + 1)); [box[i], box[j]] = [box[j], box[i]]; }
+  const COL = ['#fff4d6','#ffd9e0','#d8f0ff','#e6ffd9','#fff0b8'];
+  const st = miniSt = {kind:'kuji', box, opened:[], left:3, got:[], done:false, raf:0, busy:false};
+  const pos = i=> ({x:38 + (i%5)*40, y:80 + Math.floor(i/5)*48});
+  svg.innerHTML = `<rect x="10" y="44" width="216" height="176" rx="12" fill="#c8483c"/><rect x="18" y="52" width="200" height="160" rx="8" fill="#7a2a22"/>
+    <text x="118" y="36" text-anchor="middle" font-size="18" font-weight="bold" fill="#ffd23f">くじ 1回 10どんぐり</text>
+    ${box.map((_, i)=>{ const q = pos(i); return `<g id="kj${i}" class="kj" data-i="${i}" transform="translate(${q.x},${q.y})"><path d="M-18,-12 L18,-12 L0,16 Z" fill="${COL[i%5]}" stroke="#0004" stroke-width="1" transform="rotate(${(i*37)%20 - 10})"/><text class="kjt" y="2" text-anchor="middle" font-size="12" font-weight="bold" fill="#7a2a22"></text></g>`; }).join('')}
+    <rect x="236" y="44" width="156" height="176" rx="10" fill="#fff4d6"/><text x="314" y="66" text-anchor="middle" font-size="14" font-weight="bold" fill="#7a2a22">けいひん</text>
+    ${[1,2,3,4].map((r, k)=>`<text x="246" y="${90 + k*33}" font-size="12" font-weight="bold" fill="#c8483c">${KUJI[r].t}</text><text x="246" y="${106 + k*33}" font-size="11" fill="#2c2418">${KUJI[r].p}</text>`).join('')}`;
+  const stat = ()=>{ $('mStat').innerHTML = `あと ${st.left}回　🌰 ${dg(S.money)}`; };
+  stat();
+  return new Promise(res=>{
+    const fin = miniEnd(M, st, res);
+    svg.onpointerdown = async e=>{ e.preventDefault(); if(st.busy || st.done) return; const g = e.target.closest('.kj'); if(!g) return; const i = +g.dataset.i; if(st.opened.includes(i)) return;
+      if(S.money < 10){ st.busy = true; await say('どんぐりが たりない…。'); st.busy = false; return fin(''); }
+      st.busy = true; S.money -= 10; st.left--; st.opened.push(i); const r = box[i]; st.got.push(r); KUJI[r].give(); save(); hud(); stat();
+      g.classList.add('open'); g.querySelector('.kjt').textContent = KUJI[r].t;
+      await new Promise(z=> setTimeout(z, 450));
+      await say(r === 1 ? `大当たり！　1等「${KUJI[1].p}」！` : r === 4 ? `4等。ラムネをもらった。しゅわっと、つめたい。` : `${KUJI[r].t}！　「${KUJI[r].p}」をもらった。`);
+      st.busy = false;
+      if(!st.left) return fin('くじびき、おしまい。（もらったものは、もちもの に入れたよ）'); };
+    $('mQuit').onclick = ()=> fin('');
+  });
+}
+
+// 3章5日目：けんたと出店をまわる
+async function tanabataStalls(){
+  const G = [['yoyo', 'ヨーヨーつり', miniYoyo], ['wanage', '輪なげ', miniWanage], ['kuji', 'くじびき', miniKuji]], done = {};
+  const F = S.story ? (S.story.flags.matsuri = S.story.flags.matsuri || {}) : {};
+  await play('けんた：出店、まわろうぜ！ ヨーヨーつりに、輪なげに、くじびきもあるぞ。');
+  for(;;){ const left = G.filter(g=> !done[g[0]]); if(!left.length) break;
+    const i = await say('どの出店に行く？', {ans:[...left.map(g=> g[1]), 'もう行く'], face:'boku'}); if(i >= left.length) break;
+    const g = left[i]; done[g[0]] = 1; const r = await g[2]();
+    if(g[0] === 'yoyo'){ F.yoyo = r.got.length;
+      if(r.got.length) await play(r.got.length >= 3 ? 'けんた：3こも！？ すげー、名人じゃん！' : 'けんた：おっ、うまいじゃん！ おれ、すぐ切れちゃった。');
+      else { F.yoyo = 1; await play('けんた：あー、切れた！ でも、切れても ひとつもらえるんだぜ。ほら。\n＊おみせの人が、ヨーヨーをひとつ くれた。'); } }
+    if(g[0] === 'wanage'){ F.wanage = r.won.length;
+      await play(r.won.length ? 'けんた：すげー！ それ、虫かごにかざれるじゃん。' : 'けんた：輪なげって、むずかしいよなー。おれも ぜんぶはずれた。'); }
+    if(g[0] === 'kuji'){ F.kuji = r.got;
+      await play(r.got.includes(1) ? 'けんた：1等！？ まじかよ！' : r.got.length ? 'けんた：おれ、ラムネばっかりだった。…いっしょに飲もうぜ。' : 'けんた：くじは、また来年だな。'); }
+    save(); }
+}
 async function play(txt){
   for(const raw of String(txt).split('\n')){ const l = raw.trim(); if(!l) continue;
     const m = l.match(/^([^：（\s]+)(?:（([^）]*)）)?：([\s\S]+)$/), s = m && SPK[m[1]];
@@ -3919,8 +4108,9 @@ const STORY_DAY = {
       じいちゃん：わしら大島の漁師も、沖ノ島のものは持ち帰らん。むかしからの、やくそくだ。
       ぼく（びっくり）：石も？ 草も？
       おとうさん（教える）：その土地のものは、その土地にあるのがいちばん。虫も同じだね。`); },
-  '3-5': async ()=>{ await play(`＊8月7日。夕方、港のそばの広場でお祭り。出店や、ステージ。けんたと出店をまわった。
-      ＊夜8時、中津宮の織女神社の前で、七夕祭。「${S.story.flags.wish || '虫が元気に育ちますように'}」の短冊も、おさめられた。`); storyGoal('七夕祭の夜'); },
+  '3-5': async ()=>{ await play(`＊8月7日。夕方、港のそばの広場でお祭り。出店や、ステージ。けんたと出店をまわる。`);
+    await tanabataStalls();
+    await play(`＊夜8時、中津宮の織女神社の前で、七夕祭。「${S.story.flags.wish || '虫が元気に育ちますように'}」の短冊も、おさめられた。`); storyGoal('七夕祭の夜'); },
   '3-6': async ()=>{ await play(`＊かんす海水浴場の近くの海べ。海の中に、朱色の鳥居が立つ小さな島（夢の小夜島）が見える。
       けんた：すもう、やろうぜ！ ノコギリのはさみで、土俵の外へなげとばしてやる！（「すもう」で、けんたとできるよ）`); },
   '3-7': async ()=>{ const c = stCase();
