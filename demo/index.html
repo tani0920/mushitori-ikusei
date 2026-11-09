@@ -339,6 +339,8 @@ body.noteUI #msgLayer input{border-color:#c9a978}
 .demoBadge{position:fixed;right:var(--sr,0px);top:var(--st,0px);z-index:9999;background:#c0392b;color:#fff;font-size:10px;letter-spacing:.1em;padding:1px 7px;border-radius:0 0 0 6px;opacity:.9;pointer-events:none}
 .saveMark{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(80px + env(safe-area-inset-bottom,0px));z-index:60;background:#0009;color:#fff;font-size:11px;border-radius:999px;padding:.1em .8em;opacity:0;transition:opacity .3s;pointer-events:none}
 .saveMark.on{opacity:1}
+.timeToast{position:fixed;left:50%;top:calc(var(--st,0px) + 46px);transform:translateX(-50%);z-index:180;background:#14284ae8;color:#fff;font-weight:700;font-size:16px;border:2px solid #f7f1df;border-radius:999px;padding:.35em 1.2em;pointer-events:none;animation:toastIn 2.6s ease both;white-space:nowrap}
+@keyframes toastIn{0%{opacity:0;transform:translate(-50%,-8px)}12%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
 
 /* 虫のアニメーション（パーツ分けした2D：はね・足・体のふしを動かす） */
 .bug *{transform-box:fill-box;transform-origin:center}
@@ -1055,7 +1057,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261110-0107';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261110-0143';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-08', items:[
     'ストーリーの七夕祭（3章）で、出店を回れるようになった。ヨーヨーつり・輪なげ・くじびきで遊べるよ',
@@ -1065,7 +1067,7 @@ const CHANGELOG = [
     '「⏸ ポーズ」をおすと画面にふたがかかり、タップするとつづきから',
     '時計の数字は、はやい は30分、ゆっくり は15分ごとに動く',
     '夜9時半をすぎても時計が進みつづけて、ねる時間をのがすことがあったのを直した',
-    'ストーリーで、虫の世話をしているあいだと、そとで虫をさがしているあいだは、時計が止まるようにした（世話をしているうちに次の日になっていた）',
+    'ストーリーで、虫の世話や虫さがしのあいだは時計が止まり、おわったら まとめて時間が進む（世話は30分、虫さがしは1時間＋さがした回数×30分）',
     'きりふき・ふきん・エサなどの道具が、指の左上に大きく出るようになった（指で道具がかくれない）',
     'きりふきは、タップするとシュッと1回 水が出るようにした（おしたままでは出ない）',
     'ストーリーの時計を「⏸ とめる」で止められるようにした（上の時計の札。止めているあいだは、虫もおなかがへらない）',
@@ -4546,7 +4548,26 @@ async function storyFinal(c){
   await play(won ? 'れん：参った。…いい虫だ。ちゃんと、元気でいてほしいって育てたのが、わかるよ。' : 'れん：来年の夏、またやろう。…きみの虫、いい顔してた。');
   await play('おじさん（わらう）：いい勝負だった！ 育て方が、ちゃんと虫に出とるよ。'); storyGoal('ふしぎな幼虫のお世話'); save();
 }
-setInterval(()=>{ if(!storyOn()) return; storyCommit();
+/* 世話・外出のあいだは時計を止めて、おわったら まとめて時間を進める（2026-11-10 ユーザー）
+   世話：虫かごをとじたら 30分（3びょうより短く見ただけなら、進めない）／外出：家にもどったら 1時間 ＋ さがした回数×30分（3時間まで） */
+let stWas = {cs:false, t0:0, out:false, v0:0, key:''};
+function storyAdvance(min, why){
+  if(!storyOn() || storySp().m <= 1 || !min || S.story.done) return;
+  storyCommit(); const g0 = S.story.gt, bed = atHour(storyIdx(g0), STORY_BED) + 30*60e3;
+  let g = g0 + min*60e3; if(g0 < bed && g > bed) g = bed;   // ねる時間（夜9時半）はこえない
+  S.story.gt = g; storyRT = Date.now(); save(true); hud();
+  const h = Math.floor(min/60), m = min % 60, d = document.createElement('div'); d.className = 'timeToast norb';
+  d.textContent = '⏱ ' + why + '　' + (h ? h + '時間' : '') + (m ? m + '分' : '') + 'たった'; document.body.appendChild(d); setTimeout(()=> d.remove(), 2600);
+}
+function storyWatchBusy(){
+  const cs = openCase !== null, out = tab === 'out' && !!outState && !!outState.spot;
+  if(cs && !stWas.cs) stWas.t0 = Date.now();
+  if(!cs && stWas.cs && Date.now() - stWas.t0 > 3000) storyAdvance(30, '世話をしていたら');
+  if(out && !stWas.out){ stWas.key = outState.spot.key + '|' + dayKey(); stWas.v0 = (S.visits && S.visits[stWas.key]) || 0; }
+  if(!out && stWas.out){ const n = ((S.visits && S.visits[stWas.key]) || 0) - stWas.v0; storyAdvance(Math.min(180, 60 + 30*Math.max(0, n)), '虫さがしから帰ったら'); }
+  stWas.cs = cs; stWas.out = out;
+}
+setInterval(()=>{ if(!storyOn()) return; if(!storyBusy) storyWatchBusy(); storyCommit();
   if(!document.querySelector('#msgLayer, #evLayer, #arena, .full')){ const el = $('hud'); if(el && !el.hidden) hudSet();
     if(document.body.dataset.slot && document.body.dataset.slot !== slotOf() && !document.querySelector('.toolObj.drag, #findField.busy, .found, #matsuri') && !(tab === 'out' && outState && outState.spot)) refresh(); }   // 出かけている場所の画面（さがす・見つけた）は、とちゅうで書きかえない
   storyCheck(); }, 500);
