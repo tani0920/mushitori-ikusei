@@ -220,6 +220,7 @@ html.land body.noteUI .shopNav{background:#f6ead2;border-radius:0 0 10px 10px;pa
 #findField .fieldMsg{position:absolute;left:0;right:0;top:0;margin:0 auto;width:max-content;max-width:100%;padding:.2em 1em;border-radius:999px;background:#fffaf0e6;border:1px solid #c9a978;color:#4a3320;font:600 13px/1.5 "M PLUS Rounded 1c",sans-serif;pointer-events:none}
 /* ボタンまわり */
 .search .papaHint{display:flex;align-items:center;gap:.6em;text-align:left;margin-bottom:.4em;font-size:14px}
+.search .papaHint .who{display:block;font-size:12px;color:#8a5a20}
 .search .papaHint .fimg{width:44px;height:44px;border-radius:10px;border:2px solid #fff;box-shadow:0 1px 3px #0003;object-fit:cover;flex:none}
 .search .findRow{display:flex;align-items:center;justify-content:center;gap:1em}
 .search .findBtn{width:92px;height:92px;border-radius:50%;border:3px solid #fff;background:radial-gradient(circle at 35% 30%,#ffe58a,#f6c446 60%,#e4a92a);box-shadow:0 4px 0 #b9862066,0 6px 14px #0003;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;cursor:pointer;font:inherit;color:#3a2410;animation:findPulse 2s ease-in-out infinite}
@@ -298,9 +299,17 @@ html.land #msgLayer.kanaL .kana{--kh:clamp(24px,calc((var(--H,100vh) - 190px) / 
 html.land #msgLayer.kanaL .win.kanaWin{width:min(100%,680px)}
 
 .shopHi{display:flex;align-items:center;gap:.7em;margin:.2em 0 .5em;padding:.5em .7em;background:#fffaf0e6;border:1px solid #d8c3a0;border-radius:12px;color:#4a3320;font-size:14px;line-height:1.5}
-.shopHi .fimg{width:64px;height:64px;flex:none;border-radius:12px;border:2px solid #fff;box-shadow:0 1px 3px #0003;object-fit:cover}
+.shopHi .fimg{display:none;width:64px;height:64px;flex:none;border-radius:12px;border:2px solid #fff;box-shadow:0 1px 3px #0003;object-fit:cover}
 .shopHi b{display:block;font-size:12px;color:#8a5a20}
 #msgLayer .win{position:relative}
+/* おみせのおじさん・そとのおとうさん（2026-11-13）：会話と同じ立ち絵を、左のあいているところに立たせる */
+#standee{position:fixed;bottom:0;left:calc(var(--sl,0px) + 92px);height:min(88%,780px);width:auto;pointer-events:none;z-index:0;filter:drop-shadow(0 4px 10px #0005);animation:actorIn .4s ease-out}
+#papaPop{position:fixed;left:calc(var(--sl,0px) + 84px);bottom:0;height:min(62%,560px);z-index:5;pointer-events:none;animation:papaPop 5.2s ease both}
+#papaPop img{height:100%;width:auto;filter:drop-shadow(0 4px 10px #0005)}
+#papaPop .bub{position:absolute;left:calc(100% - 30px);top:6%;width:max-content;max-width:min(330px,38vw);background:#fffaf0;color:#4a3320;border:2px solid #c9a978;border-radius:16px;padding:.5em .8em;font-size:15px;font-weight:700;line-height:1.5;box-shadow:0 4px 12px #0003}
+#papaPop .bub b{display:block;font-size:12px;color:#8a5a20}
+#papaPop .bub::before{content:"";position:absolute;left:-12px;top:22px;border:8px solid transparent;border-right:12px solid #c9a978}
+@keyframes papaPop{0%{transform:translateX(-40px);opacity:0}8%,82%{transform:none;opacity:1}100%{transform:translateX(-30px);opacity:0}}
 #msgLayer .actors{position:absolute;left:0;right:0;top:0;height:var(--ach,60%);overflow:hidden;pointer-events:none;--ah:220px}
 #msgLayer .actor{position:absolute;bottom:var(--ab,0px);height:calc(var(--ah) * var(--sc,1));width:auto;filter:drop-shadow(0 4px 8px #0005);animation:actorIn .35s ease-out}
 #msgLayer .actor.r{right:max(4%,calc(var(--sr,0px) + 70px))}
@@ -1057,7 +1066,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261112-2335';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261113-0052';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-08', items:[
     'ストーリーの七夕祭（3章）で、出店を回れるようになった。ヨーヨーつり・輪なげ・くじびきで遊べるよ',
@@ -1067,6 +1076,8 @@ const CHANGELOG = [
     '「⏸ ポーズ」をおすと画面にふたがかかり、タップするとつづきから',
     '時計の数字は、はやい は30分、ゆっくり は15分ごとに動く',
     '夜9時半をすぎても時計が進みつづけて、ねる時間をのがすことがあったのを直した',
+    'おみせでは、虫具店のおじさんが左に大きく立つ。そとの場所に着くと、おとうさんが出てきて ひとこと教えてくれる',
+    'ストーリー2章の「ため池と田んぼ」の絵を、釣川の近くのため池と田んぼの絵にかえた',
     '会話で出る人の絵が、頭から ふとももまでの大きな絵になった（ぼく・おとうさん・おじさん・すもうの子どもたち・ストーリーで会う人たち）。そうまはメガネ、神社の人は新しい絵に',
     'ストーリーで、虫の世話や虫さがしのあいだは時計が止まり、おわったら まとめて時間が進む（世話は30分、虫さがしは1時間＋さがした回数×30分）',
     'きりふき・ふきん・エサなどの道具が、指の左上に大きく出るようになった（指で道具がかくれない）',
@@ -2413,6 +2424,22 @@ $('rtCase').onclick = ()=> setSide(sidePanel === 'case' ? null : 'case');
 document.querySelector('#rtabs [data-t=home]').onclick = ()=>{ setSide(null); setTab('home'); };
 function setTab(t){ tab = t; openCase = null; document.querySelectorAll('#tabs button, #rtabs [data-t]').forEach(b=> b.classList.toggle('on', b.dataset.t === t)); render(); (scrollTo(0,0), view.scrollTop = 0); }
 document.querySelectorAll('#tabs button').forEach(b=> b.onclick = ()=> setTab(b.dataset.t));
+// 左のあいているところに立つ人（おみせのおじさん）。同じ人ならそのまま（買い物のたびに出なおさない）
+function setStandee(k){ let e = $('standee');
+  if(!k || !html_land()){ if(e) e.remove(); return; }
+  if(e && e.dataset.k === k) return; if(e) e.remove();
+  e = document.createElement('img'); e.id = 'standee'; e.dataset.k = k; e.alt = ''; e.draggable = false; e.src = `img/chara/cut/${k}.webp`; document.body.appendChild(e);
+}
+// そとの場所に着いたとき、おとうさんが左下に出て、ひとこと言って下がる（さわってもじゃまにならない）
+function papaPop(text){ const old = $('papaPop'); if(old) old.remove(); if(!html_land()) return;
+  const e = document.createElement('div'); e.id = 'papaPop'; e.className = 'norb';
+  e.innerHTML = `<img src="img/chara/cut/papa_teach.webp" alt="" draggable="false"><div class="bub"><b>おとうさん</b>${esc(text)}</div>`;
+  document.body.appendChild(e); setTimeout(()=> e.remove(), 5300);
+}
+// ストーリーの章で場所の絵をかえる（2章は「ため池と田んぼ」の絵。じゆうに育てる では釣川の絵のまま）
+const spotCh = sp=> { const cn = storyOn() && CH[S.story.ch]; return cn && cn.spot === sp.key ? cn : null; };
+const spotName = sp=> (spotCh(sp) || {}).place || sp.name, spotEnv = sp=> (spotCh(sp) || {}).env || sp.env;
+const spotArt = sp=> { const cn = storyOn() && CH[S.story.ch]; return cn && cn.img && cn.spot === sp.key ? cn.img : sp.key; };
 function render(){
   document.body.classList.toggle('obsMode', !!S && openCase !== null); document.body.classList.toggle('title', !S); document.body.classList.toggle('noteUI', !!S);
   const atSpot = !!S && openCase === null && tab === 'out' && outState && outState.spot;
@@ -2420,9 +2447,10 @@ function render(){
   document.body.dataset.tab = openCase !== null ? 'case' : atSpot ? 'spot' : tab; document.body.dataset.slot = slotOf();
   document.querySelectorAll('body > #drawer').forEach(e=>e.remove()); $('rtCase').hidden = true;   // ケースのこと は、ケースの画面のときだけ
   if(sidePanel === 'case') sidePanel = null; setSide(sidePanel); $('rtabs').hidden = !S;
+  setStandee(S && openCase === null && tab === 'shop' ? 'ojisan' : null); if(!atSpot && $('papaPop')) $('papaPop').remove();
   if(!S){ renderTitle(); return; }
   if(openCase !== null){ renderObs(); return; }
-  paintPlace(atSpot ? 'spot_' + outState.spot.key : tab === 'home' ? 'place_heya' : 'scr_' + tab, slotOf());
+  paintPlace(atSpot ? 'spot_' + spotArt(outState.spot) : tab === 'home' ? 'place_heya' : 'scr_' + tab, slotOf());
   view.onscroll = null;
   ({home:renderHome, out:renderOut, sumo:renderSumo, shop:renderShop, dex:renderDex, opt:renderOpt})[tab]();
 }
@@ -3178,16 +3206,17 @@ const filledCases = ()=> S.cases.map((c,i)=> c ? i : -1).filter(i=> i >= 0);
 function caseNav(){ const L = filledCases(), i = L.indexOf(openCase), many = L.length > 1;
   return `<div class="caseNav norb">${many ? '<button type="button" class="btn sub navBtn" data-go="-1" aria-label="まえの虫かご">◀</button>' : ''}<button type="button" class="btn sub backBtn" id="btnBack">↩ もどる${many ? `<small> ${i+1}/${L.length}</small>` : ''}</button>${many ? '<button type="button" class="btn sub navBtn" data-go="1" aria-label="つぎの虫かご">▶</button>' : ''}</div>`; }
 function renderSpot(){
+  if(outState.popKey !== outState.spot.key + slotOf()){ outState.popKey = outState.spot.key + slotOf(); setTimeout(()=> { if(!$('msgLayer')) papaPop(SLOT_HINT[slotOf()]); }, 500); }
   const sp = outState.spot, slot = slotOf(), today = dayKey(), key = sp.key + '|' + today, used = S.visits[key]||0, left = FINDS_PER_VISIT + (storyOn() ? 2 : 0) - used;
   const here = spotBugs(sp.key, slot), all = findable(sp.key, slot), later = all.filter(id=>!here.includes(id));   // ストーリーでは、その章のなかまだけ（下でおきかえる）
   const egg = !storyOn() && sp.key === 'taisha' && S.link.kin && !S.link.kinEgg;
   if(storyOn()){ const cn = CH[S.story.ch] || {}; all.splice(0, all.length, ...(cn.nakama || [])); here.splice(0, here.length, ...all.filter(id=> BUGS[id].time.includes(slot))); later.splice(0, later.length, ...all.filter(id=> !here.includes(id))); }
-  view.innerHTML = `<div class="row" style="justify-content:space-between"><h2>${esc(sp.name)}</h2><button type="button" class="btn sub" id="btnLeave">おうちにかえる</button></div>
-    <div class="spot here"><div class="small">${esc(sp.env)}　いまは${SLOT_NAMES[slot]}</div>
+  view.innerHTML = `<div class="row" style="justify-content:space-between"><h2>${esc(spotName(sp))}</h2><button type="button" class="btn sub" id="btnLeave">おうちにかえる</button></div>
+    <div class="spot here"><div class="small">${esc(spotEnv(sp))}　いまは${SLOT_NAMES[slot]}</div>
       <div>いま活動中：${here.map(nmQ).join('・') || 'いない'}</div>
       ${later.length ? `<div class="bugs">ねむっているけど、さがせる：${later.map(id=>`${nmQ(id)}（${BUGS[id].time.map(t=>SLOT_NAMES[t]).join('・')}に活動）`).join('・')}</div>` : ''}
       ${egg ? '<div class="small" style="color:var(--sun)">…木の根もとで、なにかが金色に光っている。</div>' : ''}</div>
-    <div id="findBox" class="search"><div class="papaHint norb">${faceImg('papa')}<span>${esc(SLOT_HINT[slot])}</span></div>
+    <div id="findBox" class="search"><div class="papaHint norb"><span><b class="who">おとうさん</b>${esc(SLOT_HINT[slot])}</span></div>
       <div class="findRow"><button type="button" class="findBtn" id="btnFind" ${left <= 0 || (!all.length && !egg) ? 'disabled' : ''}><img src="img/tools/megane.webp" alt="" draggable="false"><b>さがす</b></button>
       <div class="left"><div class="small">今日ここで さがせるのは</div><div class="acorns">${Array.from({length:FINDS_PER_VISIT}, (_, i)=> `<i class="${i < left ? 'on' : ''}"></i>`).join('')}</div><div class="small">あと${Math.max(0, left)}回</div></div></div></div>
     <div class="spot photoBox" ${storyOn() ? 'hidden' : ''}><b>📷 本物の虫の写真をとる</b>　<span class="small">今日のこり ${photoLeft()}まい</span>
@@ -3864,7 +3893,7 @@ const NPC_NAME = {oba:'畑のおばあちゃん', mizu:'水を見回るおじさ
 const CH = [
   {ttl:'夏休みのはじまり'},
   {spot:'akama',     place:'赤間の畑',             ttl:'はじめての いもむし',         nakama:['monshiro','ageha'],          gift:['kyabetsu','mikan'], kid:'yuta'},
-  {spot:'tsurikawa', place:'ため池と田んぼ',       ttl:'夜の音と光',                 nakama:['suzumushi','kamakiri'],      gift:['nasu','koorogi'],   kid:'haruka'},
+  {spot:'tsurikawa', img:'tameike', env:'釣川の近く。ため池のほとりと、田んぼのあぜ', place:'ため池と田んぼ',       ttl:'夜の音と光',                 nakama:['suzumushi','kamakiri'],      gift:['nasu','koorogi'],   kid:'haruka'},
   {spot:'oshima',    place:'大島の森',             ttl:'七夕の島と、ふしぎなたまご',   nakama:['karasu','miyama','ookuwa'],  gift:['zeri','mikan'],     kid:'kenta'},
   {spot:'matsubara', place:'さつき松原の草むら',    ttl:'台風がくる',                 nakama:['tonosama','shoryo','kamakiri'], gift:['kusa','koorogi'], kid:'soma'},
   {spot:'joyama',    place:'城山の山道',           ttl:'山のすずしい朝',             nakama:['kabuto','miyama','oomurasaki'], gift:['zeri','enoki'],  kid:'daichi'},
@@ -4582,7 +4611,7 @@ function renderOutStory(){
   if(!cn || !cn.spot){ view.innerHTML = '<h2>そと</h2><p class="win">いまは、出かける日ではないみたい。</p>'; return; }
   const sp = SPOTS.find(x=> x.key === cn.spot), rain = S.story.flags.noOut === dayKey();
   view.innerHTML = `<h2>そとへ虫をさがしに行く</h2><p class="small">いまは<b style="color:var(--ink)">${SLOT_NAMES[slot]}</b>。今週の虫しらべは「${esc(cn.place)}」。おとうさんといっしょに行こう。</p>
-    <div class="spots" style="margin-top:10px"><div class="spot"><img class="spotPic" src="img/ui/spot_${sp.key}.webp" alt="" loading="lazy" draggable="false"><b>${esc(cn.place)}</b>　<span class="small">${esc(sp.env)}</span>
+    <div class="spots" style="margin-top:10px"><div class="spot"><img class="spotPic" src="img/ui/spot_${spotArt(sp)}.webp" alt="" loading="lazy" draggable="false"><b>${esc(cn.place)}</b>　<span class="small">${esc(spotEnv(sp))}</span>
       <div class="bugs">今週のなかま：${cn.nakama.map(id=> S.dex[id] && S.dex[id].known ? BUGS[id].name : '？？？').join('・')}</div>
       <div class="row" style="margin-top:6px"><button type="button" class="btn pri" id="btnGoS" ${rain ? 'disabled' : ''}>${rain ? 'きょうは雨…' : '行く'}</button></div></div></div>`;
   $('btnGoS').onclick = async ()=>{ const today = dayKey(), sp2 = Object.assign({}, sp, {name:cn.place});
