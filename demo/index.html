@@ -301,8 +301,8 @@ html.land #msgLayer.kanaL .win.kanaWin{width:min(100%,680px)}
 .shopHi .fimg{width:64px;height:64px;flex:none;border-radius:12px;border:2px solid #fff;box-shadow:0 1px 3px #0003;object-fit:cover}
 .shopHi b{display:block;font-size:12px;color:#8a5a20}
 #msgLayer .win{position:relative}
-#msgLayer .actors{position:absolute;left:0;right:0;bottom:30%;height:0;pointer-events:none;--ah:220px}
-#msgLayer .actor{position:absolute;bottom:0;height:var(--ah);width:auto;filter:drop-shadow(0 4px 8px #0005);animation:actorIn .35s ease-out}
+#msgLayer .actors{position:absolute;left:0;right:0;top:0;height:var(--ach,60%);overflow:hidden;pointer-events:none;--ah:220px}
+#msgLayer .actor{position:absolute;bottom:var(--ab,0px);height:calc(var(--ah) * var(--sc,1));width:auto;filter:drop-shadow(0 4px 8px #0005);animation:actorIn .35s ease-out}
 #msgLayer .actor.r{right:max(4%,calc(var(--sr,0px) + 70px))}
 #msgLayer .actor.l{left:max(6%,calc(var(--sl,0px) + 96px))}
 #msgLayer .actor.off{filter:brightness(.6) saturate(.8);animation:none}
@@ -1057,7 +1057,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261112-2300';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261112-2335';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-08', items:[
     'ストーリーの七夕祭（3章）で、出店を回れるようになった。ヨーヨーつり・輪なげ・くじびきで遊べるよ',
@@ -1067,7 +1067,7 @@ const CHANGELOG = [
     '「⏸ ポーズ」をおすと画面にふたがかかり、タップするとつづきから',
     '時計の数字は、はやい は30分、ゆっくり は15分ごとに動く',
     '夜9時半をすぎても時計が進みつづけて、ねる時間をのがすことがあったのを直した',
-    'すもうの子どもたち6人と、ストーリーで会う人たち（畑のおばあちゃん・水のおじさん・漁師のじいちゃん・道の駅のおねえさん・自然観察員さん・神社の人）の絵ができた',
+    '会話で出る人の絵が、頭から ふとももまでの大きな絵になった（ぼく・おとうさん・おじさん・すもうの子どもたち・ストーリーで会う人たち）。そうまはメガネ、神社の人は新しい絵に',
     'ストーリーで、虫の世話や虫さがしのあいだは時計が止まり、おわったら まとめて時間が進む（世話は30分、虫さがしは1時間＋さがした回数×30分）',
     'きりふき・ふきん・エサなどの道具が、指の左上に大きく出るようになった（指で道具がかくれない）',
     'きりふきは、タップするとシュッと1回 水が出るようにした（おしたままでは出ない）',
@@ -2279,6 +2279,9 @@ const FACES = {boku:'ぼく', boku_joy:'ぼく', boku_angry:'ぼく', boku_sad:'
   papa:'おとうさん', papa_teach:'おとうさん', papa_worry:'おとうさん', papa_happy:'おとうさん', ojisan:'虫具店のおじさん', ojisan_laugh:'虫具店のおじさん'};
 // すもうの子どもたち（2026-11-12 に絵ができた）
 const RIVAL_NAME = {yuta:'ゆうた', haruka:'はるか', kenta:'けんた', soma:'そうま', daichi:'だいち', ren:'れん'};
+// 立ち絵の大きさ（おとな＝1）。同じ足もとに立つので、小さい子は頭が低くなる
+const CHARA_SC = {boku:.8, yuta:.68, haruka:.76, kenta:.8, soma:.85, daichi:.9, ren:.94, oba:.86};
+const charaWho = k=> String(k).split('_')[0];
 const FACE_ART = new Set([...Object.keys(FACES), ...Object.keys(RIVAL_NAME), 'oba', 'mizu', 'jii', 'eki', 'kansatsu', 'jinja']);   // 絵がある人（ゆうたのおかあさん・島の子・来た人は、まだ名前だけ）（img/chara/キー.webp と img/chara/cut/キー.webp）
 const faceName = k=> FACES[k] || RIVAL_NAME[k] || NPC_NAME[k] || '';
 const faceImg = (k, cls='')=> FACE_ART.has(k) ? `<img class="fimg ${cls}" src="img/chara/${k}.webp" alt="${esc(faceName(k))}" draggable="false">` : '';
@@ -2289,12 +2292,13 @@ function talkActors(L, w, opts){
   const k = opts.face, side = isBoku(k) ? 'l' : 'r', other = opts.with;
   const list = [[k, side, true]]; if(other) list.push([other, side === 'l' ? 'r' : 'l', false]);
   const A = document.createElement('div'); A.className = 'actors';
-  A.innerHTML = list.filter(([x])=> FACE_ART.has(x)).map(([x, sd, on])=> `<img class="actor ${sd} ${on ? 'on' : 'off'}" src="img/chara/cut/${x}.webp" alt="" draggable="false">`).join('');
+  A.innerHTML = list.filter(([x])=> FACE_ART.has(x)).map(([x, sd, on])=> `<img class="actor ${sd} ${on ? 'on' : 'off'}" style="--sc:${CHARA_SC[charaWho(x)] || 1}" src="img/chara/cut/${x}.webp" alt="" draggable="false">`).join('');
   L.insertBefore(A, w);
-  // 胸が、セリフの枠のすぐ上に来るように（絵の下のはしを、枠の上のふちに少し重ねる）
+  // 立ち絵（頭から ふとももまで）は会話の窓のうしろに立つ。おとなの こしが窓の上のふちに来る大きさ。子どもは同じ足もとで小さく（CHARA_SC）
   const fit = ()=>{ if(!L.isConnected) return; const lr = L.getBoundingClientRect(), wr = w.getBoundingClientRect(), top = wr.top - lr.top;
-    A.style.bottom = Math.round(lr.height - top - Math.min(16, wr.height*.12)) + 'px';
-    A.style.setProperty('--ah', Math.round(Math.max(120, Math.min(top - 6, lr.height*.62))) + 'px'); };
+    const ach = Math.round(wr.bottom - lr.top - 4), head = Math.max(12, lr.height * .08), feet = ach;   // 絵の下のはしは、窓の下のふち（窓にかくれる）
+    const full = Math.max(160, Math.min(feet - head, (top - head) / .55));   // おとなの頭が上から8%。大きくなりすぎない（こしより上が窓の上に出るくらい）
+    A.style.setProperty('--ach', ach + 'px'); A.style.setProperty('--ab', Math.round(ach - feet) + 'px'); A.style.setProperty('--ah', Math.round(full) + 'px'); };
   fit(); requestAnimationFrame(fit); addEventListener('resize', fit, {once:true});
 }
 function say(text, opts={}){
