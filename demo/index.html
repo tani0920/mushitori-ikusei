@@ -1057,7 +1057,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261110-0143';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261112-2300';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-08', items:[
     'ストーリーの七夕祭（3章）で、出店を回れるようになった。ヨーヨーつり・輪なげ・くじびきで遊べるよ',
@@ -1067,6 +1067,7 @@ const CHANGELOG = [
     '「⏸ ポーズ」をおすと画面にふたがかかり、タップするとつづきから',
     '時計の数字は、はやい は30分、ゆっくり は15分ごとに動く',
     '夜9時半をすぎても時計が進みつづけて、ねる時間をのがすことがあったのを直した',
+    'すもうの子どもたち6人と、ストーリーで会う人たち（畑のおばあちゃん・水のおじさん・漁師のじいちゃん・道の駅のおねえさん・自然観察員さん・神社の人）の絵ができた',
     'ストーリーで、虫の世話や虫さがしのあいだは時計が止まり、おわったら まとめて時間が進む（世話は30分、虫さがしは1時間＋さがした回数×30分）',
     'きりふき・ふきん・エサなどの道具が、指の左上に大きく出るようになった（指で道具がかくれない）',
     'きりふきは、タップするとシュッと1回 水が出るようにした（おしたままでは出ない）',
@@ -2276,9 +2277,9 @@ function sceneSVG(c, slot, o={}){
 /* 人物の顔（img/chara/キー.webp）。say(文, {face:'papa_teach'}) で、会話の窓の左に顔と名前を出す */
 const FACES = {boku:'ぼく', boku_joy:'ぼく', boku_angry:'ぼく', boku_sad:'ぼく', boku_fun:'ぼく', boku_surprise:'ぼく',
   papa:'おとうさん', papa_teach:'おとうさん', papa_worry:'おとうさん', papa_happy:'おとうさん', ojisan:'虫具店のおじさん', ojisan_laugh:'虫具店のおじさん'};
-// すもうの子どもたち：名前の札は出す。絵はまだない（描けたら FACE_ART に足す）
+// すもうの子どもたち（2026-11-12 に絵ができた）
 const RIVAL_NAME = {yuta:'ゆうた', haruka:'はるか', kenta:'けんた', soma:'そうま', daichi:'だいち', ren:'れん'};
-const FACE_ART = new Set(Object.keys(FACES));   // 絵がある人（img/chara/キー.webp と img/chara/cut/キー.webp）
+const FACE_ART = new Set([...Object.keys(FACES), ...Object.keys(RIVAL_NAME), 'oba', 'mizu', 'jii', 'eki', 'kansatsu', 'jinja']);   // 絵がある人（ゆうたのおかあさん・島の子・来た人は、まだ名前だけ）（img/chara/キー.webp と img/chara/cut/キー.webp）
 const faceName = k=> FACES[k] || RIVAL_NAME[k] || NPC_NAME[k] || '';
 const faceImg = (k, cls='')=> FACE_ART.has(k) ? `<img class="fimg ${cls}" src="img/chara/${k}.webp" alt="${esc(faceName(k))}" draggable="false">` : '';
 /* 会話：話す人を、大きな切りぬきの絵で出す（ノベルゲームのように）。ぼくは左、ほかの人は右。
