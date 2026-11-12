@@ -302,14 +302,17 @@ html.land #msgLayer.kanaL .win.kanaWin{width:min(100%,680px)}
 .shopHi .fimg{display:none;width:64px;height:64px;flex:none;border-radius:12px;border:2px solid #fff;box-shadow:0 1px 3px #0003;object-fit:cover}
 .shopHi b{display:block;font-size:12px;color:#8a5a20}
 #msgLayer .win{position:relative}
+/* とくべつな日の絵（2026-11-13）：play() の「＠絵 キー」で、会話のうしろに全画面で出す。話（STORY_DAY / STORY_EVE）がおわると消える */
+#cgLayer{position:fixed;inset:0;z-index:140;background:#1a120a center/cover no-repeat;animation:cgIn .7s ease both;pointer-events:none}
+@keyframes cgIn{0%{opacity:0;transform:scale(1.04)}100%{opacity:1;transform:none}}
 /* おみせのおじさん・そとのおとうさん（2026-11-13）：会話と同じ立ち絵を、左のあいているところに立たせる */
 #standee{position:fixed;bottom:0;left:calc(var(--sl,0px) + 92px);height:min(88%,780px);width:auto;pointer-events:none;z-index:0;filter:drop-shadow(0 4px 10px #0005);animation:actorIn .4s ease-out}
-#papaPop{position:fixed;left:calc(var(--sl,0px) + 84px);bottom:0;height:min(62%,560px);z-index:5;pointer-events:none;animation:papaPop 5.2s ease both}
+#papaPop{position:fixed;right:calc(var(--sr,0px) + 64px);bottom:0;height:min(62%,560px);z-index:5;pointer-events:none;animation:papaPop 5.2s ease both}
 #papaPop img{height:100%;width:auto;filter:drop-shadow(0 4px 10px #0005)}
-#papaPop .bub{position:absolute;left:calc(100% - 30px);top:6%;width:max-content;max-width:min(330px,38vw);background:#fffaf0;color:#4a3320;border:2px solid #c9a978;border-radius:16px;padding:.5em .8em;font-size:15px;font-weight:700;line-height:1.5;box-shadow:0 4px 12px #0003}
+#papaPop .bub{position:absolute;right:calc(100% - 30px);top:6%;width:max-content;max-width:min(330px,38vw);background:#fffaf0;color:#4a3320;border:2px solid #c9a978;border-radius:16px;padding:.5em .8em;font-size:15px;font-weight:700;line-height:1.5;box-shadow:0 4px 12px #0003}
 #papaPop .bub b{display:block;font-size:12px;color:#8a5a20}
-#papaPop .bub::before{content:"";position:absolute;left:-12px;top:22px;border:8px solid transparent;border-right:12px solid #c9a978}
-@keyframes papaPop{0%{transform:translateX(-40px);opacity:0}8%,82%{transform:none;opacity:1}100%{transform:translateX(-30px);opacity:0}}
+#papaPop .bub::before{content:"";position:absolute;right:-12px;top:22px;border:8px solid transparent;border-left:12px solid #c9a978}
+@keyframes papaPop{0%{transform:translateX(40px);opacity:0}8%,82%{transform:none;opacity:1}100%{transform:translateX(30px);opacity:0}}
 #msgLayer .actors{position:absolute;left:0;right:0;top:0;height:var(--ach,60%);overflow:hidden;pointer-events:none;--ah:220px}
 #msgLayer .actor{position:absolute;bottom:var(--ab,0px);height:calc(var(--ah) * var(--sc,1));width:auto;filter:drop-shadow(0 4px 8px #0005);animation:actorIn .35s ease-out}
 #msgLayer .actor.r{right:max(4%,calc(var(--sr,0px) + 70px))}
@@ -1066,7 +1069,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261113-0113';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261113-0151';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-08', items:[
     'ストーリーの七夕祭（3章）で、出店を回れるようになった。ヨーヨーつり・輪なげ・くじびきで遊べるよ',
@@ -1076,11 +1079,12 @@ const CHANGELOG = [
     '「⏸ ポーズ」をおすと画面にふたがかかり、タップするとつづきから',
     '時計の数字は、はやい は30分、ゆっくり は15分ごとに動く',
     '夜9時半をすぎても時計が進みつづけて、ねる時間をのがすことがあったのを直した',
+    'ストーリーの とくべつな日（雨の畑・ホタルの夜・フェリー・中津宮と天の川・御嶽山の展望台・七夕祭の夜・台風・道の駅の昆虫展・山の朝・高宮祭場・沖津宮遙拝所の夜・発表会）に、大きな絵が出るようになった',
     'カマキリのエサ：そとの「草むら」をさがすと、エサになる小さなバッタやコオロギがつかまえられる',
     'おみせでは、虫具店のおじさんが左に大きく立つ。そとの場所に着くと、おとうさんが出てきて ひとこと教えてくれる',
     'ストーリー2章の「ため池と田んぼ」の絵を、釣川の近くのため池と田んぼの絵にかえた',
     '会話で出る人の絵が、頭から ふとももまでの大きな絵になった（ぼく・おとうさん・おじさん・すもうの子どもたち・ストーリーで会う人たち）。そうまはメガネ、神社の人は新しい絵に',
-    'ストーリーで、虫の世話や虫さがしのあいだは時計が止まり、おわったら まとめて時間が進む（世話は30分、虫さがしは1時間＋さがした回数×30分）',
+    'ストーリーで、虫の世話や虫さがしのあいだも時計が進む（夕方の話やねる時間は、家にもどってから）',
     'きりふき・ふきん・エサなどの道具が、指の左上に大きく出るようになった（指で道具がかくれない）',
     'きりふきは、タップするとシュッと1回 水が出るようにした（おしたままでは出ない）',
     'ストーリーの時計を「⏸ とめる」で止められるようにした（上の時計の札。止めているあいだは、虫もおなかがへらない）',
@@ -3924,7 +3928,7 @@ let storyRT = Date.now(), storyBusy = false;
 const storySp = ()=> STORY_SPEED[S.story.speed] || STORY_SPEED.hayai;
 // 時計が止まるとき：会話・お祭り・すもうのほか、虫の世話をしている（虫かごをひらいている）あいだと、そとで虫をさがしているあいだも止める
 // （2026-11-09 実機：「はやい」は1びょうで6分。午前に世話をしていたら夜になって、そとへ行こうとしたら次の日になっていた）
-function storyPaused(){ return document.hidden || storyBusy || !!(S && S.story && S.story.hold) || openCase !== null || (tab === 'out' && !!outState && !!outState.spot) || !!document.querySelector('#msgLayer, #evLayer, #arena, #matsuri, .full'); }
+function storyPaused(){ return document.hidden || storyBusy || !!(S && S.story && S.story.hold) || !!document.querySelector('#msgLayer, #evLayer, #arena, #matsuri, .full'); }
 function storyNow(){ const st = S.story, m = storySp().m, t = Date.now(); if(m > 1 && storyPaused()){ storyRT = t; return st.gt; } const dt = Math.max(0, t - storyRT), g0 = st.gt; st.gt += (m > 1 ? Math.min(dt, 3000) : dt) * m; storyRT = t;
   if(m > 1 && st.ch && !st.done){ const bed = atHour(storyIdx(g0), STORY_BED) + 30*60e3; if(g0 < bed && st.gt > bed) st.gt = bed; }   // 夜9時半で止めて、おとうさんが「ねよう」と言いに来るのを待つ（夜中まで進まない）
   return st.gt; }   // 進めるたびにきざむ（止まったときに時計がもどらないように）
@@ -4114,8 +4118,15 @@ async function tanabataStalls(){
       await play(r.got.includes(1) ? 'けんた：1等！？ まじかよ！' : r.got.length ? 'けんた：おれ、ラムネばっかりだった。…いっしょに飲もうぜ。' : 'けんた：くじは、また来年だな。'); }
     save(); }
 }
+const CG = ['ame', 'hotaru', 'ferry', 'amanogawa', 'tenbodai', 'matsuri', 'taifu', 'eki', 'yamaasa', 'takamiya', 'yohaisho', 'happyo'];   // img/ui/ev/キー.webp
+function cgShow(k){ let e = $('cgLayer');
+  if(!k || k === 'off' || !CG.includes(k)){ if(e) e.remove(); return; }
+  if(e && e.dataset.k === k) return; if(e) e.remove();
+  e = document.createElement('div'); e.id = 'cgLayer'; e.dataset.k = k; e.style.backgroundImage = `url(img/ui/ev/${k}.webp)`; document.body.appendChild(e);
+}
 async function play(txt){
   for(const raw of String(txt).split('\n')){ const l = raw.trim(); if(!l) continue;
+    if(l.startsWith('＠絵')){ cgShow(l.slice(2).trim()); continue; }   // とくべつな日の絵
     const m = l.match(/^([^：（\s]+)(?:（([^）]*)）)?：([\s\S]+)$/), s = m && SPK[m[1]];
     const body = (m && s ? m[3] : l).replace(/\/\//g, '\n');
     if(s) await say(body, {face: typeof s === 'string' ? s : (s[m[2] || ''] || s[''])}); else await say(body);
@@ -4144,7 +4155,7 @@ function storyGoal(t){ S.story.goal = t; save(); }
 let storyRunning = false, storyQuietSave = 0;
 async function storyCheck(){
   if(!storyOn() || storyRunning || S.story.done) return;
-  if(openCase !== null || storyPaused() || document.querySelector('#findField.busy, .toolObj.drag, .found')) return;
+  if(openCase !== null || (tab === 'out' && outState && outState.spot) || storyPaused() || document.querySelector('#findField.busy, .toolObj.drag, .found')) return;   // 世話・虫さがしのとちゅうでは、話を出さない（時計は進む）
   const i = storyIdx(), ch = chOfIdx(i), day = dayOfIdx(i), h = new Date(now()).getHours();
   const key = ch + '-' + day;
   storyRunning = true; storyBusy = true; let ran = false;   // 話があったときだけ、あとで画面をかきなおす（500msごとに書きかえると、見つけたカードなどが消える）
@@ -4157,7 +4168,7 @@ async function storyCheck(){
       if(!S.story.seen[ch + '-1'] && day > 1){ ran = true; await storyDay(ch, 1); }
       if(!S.story.seen[key] && h >= 5){ ran = true; if(day === 7 && ch <= 5) await storyDay7Intro(ch); else await storyDay(ch, day); }
       else if(day === 7 && ch <= 5 && S.story.seen[key] && !day7Done(ch) && h >= STORY_D7){ ran = true; S.story.seen[key + 'm'] = 1; await storyDay(ch, 7, true); }   // 夕方4時：虫をかえす
-      else if(S.story.seen[key] && !S.story.eve[key] && (slotOf() === 'yu' || slotOf() === 'yoru') && h >= 16){ const f = STORY_EVE[key]; S.story.eve[key] = 1; save(); if(f){ ran = true; outState = null; setTab('home'); await f(); } }
+      else if(S.story.seen[key] && !S.story.eve[key] && (slotOf() === 'yu' || slotOf() === 'yoru') && h >= 16){ const f = STORY_EVE[key]; S.story.eve[key] = 1; save(); if(f){ ran = true; outState = null; setTab('home'); await f(); cgShow('off'); } }
       else if((S.story.seen[key] || h < 5) && storySp().m > 1 && storyLate(h) && !S.story.done){ ran = true; await storyBedtime(); }   // 夜9時：ねる時間
     }
   } finally { storyRunning = false; storyBusy = false; if(ran) save(); else if(Date.now() - storyQuietSave > 10000){ storyQuietSave = Date.now(); save(true); } }   // 何もおきなかったときは、10秒に1回だけ だまってセーブ（ゲームの時計をのこすため。とじるときは autoSaveNow でもセーブ）
@@ -4168,7 +4179,7 @@ async function storyDay(ch, day, noCard){
   outState = null; $('findField') && $('findField').remove(); setTab('home');
   if(day === 1) await chapterCard(ch);
   else if(!noCard) await dayCard(ch, day);
-  const f = STORY_DAY[key]; if(f) await f();
+  const f = STORY_DAY[key]; if(f){ await f(); cgShow('off'); }
   save(); hud();
 }
 function cardShow(html, ms=2600){ return new Promise(r=>{ const L = document.createElement('div'); L.id = 'evLayer'; L.className = 'storyCard'; L.innerHTML = html; document.body.appendChild(L); const done = ()=>{ L.remove(); r(); }; L.onclick = done; setTimeout(done, ms); }); }
@@ -4307,7 +4318,8 @@ const STORY_DAY = {
   '1-2': async ()=>{ await play('おとうさん（教える）：いもむしは、たくさん食べて、たくさんフンをする。//葉は毎日かえて、フンはそうじしよう。');
     const c = stCase(); if(c) await play(genkiOf(c) >= 60 ? '＊いもむしが、ころころ太ってきた。' : 'おとうさん（しんぱい）：葉がかわいて、元気が少しへっているね。葉は、しおれる前にかえよう。'); },
   '1-3': async ()=>{ S.story.flags.noOut = dayKey(); giveItem('kyabetsu');
-    await play(`＊朝から雨。外へさがしには行けない。
+    await play(`＠絵 ame
+      ＊朝から雨。外へさがしには行けない。
       ＊畑のおばあちゃんが、ぬれた葉をとどけてくれた。
       おばあちゃん：雨で、畑に行けんでしょう。きょうの分だよ。
       おとうさん（教える）：ぬれた葉は、水をふいてから入れよう。//ケースがしめりすぎると、いもむしが弱ってしまう。`); storyGoal('雨の日。ケースをしめらせすぎない'); },
@@ -4359,24 +4371,28 @@ const STORY_DAY = {
       ぼく（たのしい）：島！ フェリー！`); },
   /* ---- 3章 大島 ---- */
   '3-1': async ()=>{ meet('kenta'); giveItem('zeri');
-    await play(`＊神湊からフェリーで約25分。海の向こうから、大島が近づいてくる。港のまわりに、七夕のふきながし。
+    await play(`＠絵 ferry
+      ＊神湊からフェリーで約25分。海の向こうから、大島が近づいてくる。港のまわりに、七夕のふきながし。
       けんた：おー！ おまえが虫しらべの子？ おれ、けんた。夏休みは、じいちゃんちにいるんだ。島のこと、ぜんぶ教えてやるよ！
       じいちゃん：よう来たね。うちにとまっていきなさい。
       おとうさん（教える）：「そと」から、大島の森へ行ってみよう。`); storyGoal('大島の森で、虫をさがす'); },
-  '3-2': async ()=>{ await play(`＊港の近くの中津宮へ。鳥居は、海の向こうの辺津宮と向かい合っている。
+  '3-2': async ()=>{ await play(`＠絵 amanogawa
+      ＊港の近くの中津宮へ。鳥居は、海の向こうの辺津宮と向かい合っている。
       けんた：鳥居の近くに、ほんとに「天の川」って川が流れてるんだぜ。ほら、看板もある。//こっちが牽牛神社、川の向こうが織女神社。
       けんた：短冊、書こうぜ！`);
     const w = await choose('短冊に、なんて書く？', ['虫が元気に育ちますように', 'すもうで勝てますように', 'ふしぎなものに会えますように'], 'boku');
     S.story.flags.wish = ['虫が元気に育ちますように', 'すもうで勝てますように', 'ふしぎなものに会えますように'][w];
     await play('おとうさん（教える）：神社の境内の木や虫は、とらずに見るだけにしよう。'); },
-  '3-3': async ()=>{ await play(`＊島でいちばん高い、御嶽山の展望台へ。宗像の町、福岡のほう、そして反対がわの水平線に、うすく島が見える。
+  '3-3': async ()=>{ await play(`＠絵 tenbodai
+      ＊島でいちばん高い、御嶽山の展望台へ。宗像の町、福岡のほう、そして反対がわの水平線に、うすく島が見える。
       じいちゃん：あれが沖ノ島。島そのものが神さまでな、ふだんは人は入れん。//木も草も石も、ひとつも持ち帰っちゃならん。島で見聞きしたことは、よそで話しちゃならん、とも言われとる。だから「お言わずさま」ともよばれたんだ。
       じいちゃん：わしら大島の漁師も、沖ノ島のものは持ち帰らん。むかしからの、やくそくだ。
       ぼく（びっくり）：石も？ 草も？
       おとうさん（教える）：その土地のものは、その土地にあるのがいちばん。虫も同じだね。`); },
   '3-5': async ()=>{ await play(`＊8月7日。夕方、港のそばの広場でお祭り。出店や、ステージ。けんたと出店をまわる。`);
     await tanabataStalls();
-    await play(`＊夜8時、中津宮の織女神社の前で、七夕祭。「${S.story.flags.wish || '虫が元気に育ちますように'}」の短冊も、おさめられた。`); storyGoal('七夕祭の夜'); },
+    await play(`＠絵 matsuri
+      ＊夜8時、中津宮の織女神社の前で、七夕祭。「${S.story.flags.wish || '虫が元気に育ちますように'}」の短冊も、おさめられた。`); storyGoal('七夕祭の夜'); },
   '3-6': async ()=>{ await play(`＊かんす海水浴場の近くの海べ。海の中に、朱色の鳥居が立つ小さな島（夢の小夜島）が見える。
       けんた：すもう、やろうぜ！ ノコギリのはさみで、土俵の外へなげとばしてやる！（「すもう」で、けんたとできるよ）`); },
   '3-7': async ()=>{ const c = stCase();
@@ -4403,7 +4419,8 @@ const STORY_DAY = {
     if(c && stageOf(c).k === 'larva') await play(`＊脱皮のとちゅうで、うまく皮がぬげないみたい…。
       おとうさん（しんぱい）：手を出しちゃだめだ。しめりけと、つかまる枝があれば、自分でぬげる。
       ＊きりふきを少しかけて、そっと見守った。`); },
-  '4-4': async ()=>{ await play(`＊空が暗くなり、風が強くなってきた。さつき松原で記録をしていたら、雨が降りだした。
+  '4-4': async ()=>{ await play(`＠絵 taifu
+      ＊空が暗くなり、風が強くなってきた。さつき松原で記録をしていたら、雨が降りだした。
       おねえさん：こっちで雨やどりしていって！ 台風が近づいてるから、海に近いところはあぶないよ。
       ＊道の駅で雨やどり。
       おねえさん：今週末、ここで「夏休み昆虫展」をやるの。育てた虫、出してみない？
@@ -4415,7 +4432,7 @@ const STORY_DAY = {
       そうま：それ、なに…？ 金色…？ ほんのりあったかい…。`); } },
   '4-6': async ()=>{ await play('そうま：夏の王様カブトムシと、すもうしてみる？（「すもう」で、そうまとできるよ）'); storyGoal('昆虫展にむけて、ケースをきれいに'); },
   '4-7': async ()=>{ const c = stCase();
-    await play('＊道の駅の一角に、子どもたちの虫かごがならんだ。夏休み昆虫展だ。');
+    await play('＠絵 eki\n＊道の駅の一角に、子どもたちの虫かごがならんだ。夏休み昆虫展だ。');
     let rib = '';
     if(c){ const s = careScore(c);
       if(s >= .7){ rib = '金のリボン'; await play('＊金のリボン「大きくて、元気いっぱい！」\n来た人：この子が育てたの？\nぼく（うれしい）：うん！'); }
@@ -4437,7 +4454,8 @@ const STORY_DAY = {
     hot.forEach(c=>{ c.wetZ = c.wetZ.map(v=> Math.max(0, v - 30)); syncWet(c); c.stress = (c.stress||0) + 20; });
     await play(hot.length ? 'おとうさん（しんぱい）：ベランダの虫かごが、暑さでぐったりしている…。//山の虫は、暑すぎると弱ってしまう。日かげの、風が通るすずしいところへ。' : 'おとうさん（教える）：山の虫は、暑すぎると弱ってしまう。日かげの、風が通るすずしいところに置こう。');
     storyGoal('すずしい場所に置く（げんかん・へや）'); },
-  '5-4': async ()=>{ await play(`＊夜明け前に出発。自然観察員さんの観察会。朝もやの山で、クヌギの木にカブトやクワガタが集まっている。
+  '5-4': async ()=>{ await play(`＠絵 yamaasa
+      ＊夜明け前に出発。自然観察員さんの観察会。朝もやの山で、クヌギの木にカブトやクワガタが集まっている。
       観察員さん：むかしは、もっとたくさんいたんですよ。森が明るくなりすぎたり、くさった木が少なくなったりして、すむ場所がへっているんです。
       おとうさん（ふつう）：だから、調べて、記録して、守り方を考えるんだ。
       ぼく（ふつう）：ぼくのノートも、役に立つ？
@@ -4457,6 +4475,7 @@ const STORY_DAY = {
       神社の人：宗像大社はね、三人の女神さまを、三つのお宮でおまつりしているんです。//いちばん上のお姉さんの田心姫神（たごりひめのかみ）は沖ノ島の沖津宮、まん中の湍津姫神（たぎつひめのかみ）は大島の中津宮、いちばん下の市杵島姫神（いちきしまひめのかみ）が、ここ辺津宮。三つあわせて、宗像大社とよぶんですよ。
       ぼく（びっくり）：大島の中津宮も、宗像大社なの？
       神社の人：そう。本殿のうしろの第二宮・第三宮には、沖津宮と中津宮の女神さまもおまつりしているので、ここで三人の女神さまにお参りできるんですよ。
+      ＠絵 takamiya
       ＊社殿の横から道を進んで、高宮祭場へ。神さまがおりてきたと伝えられる、むかしのおまつりの場所。木々のあいだから、釣川と、海の向こうに大島が見える。
       おとうさん（ふつう）：ここから、大島が見えるんだね。ここからは見えないけれど、そのずっと先に、沖ノ島がある。
       おとうさん（ふつう）：このまえ大島に行ったとき、御嶽山の上から見えたね。でも、晴れていても、いつも見えるわけじゃないんだよ。それだけ遠いってこと。`);
@@ -4496,7 +4515,8 @@ const STORY_DAY = {
       if(a === 1) await play('ぼく（なみだ）：…もう少しだけ、そばにいてほしい。\nおとうさん（にっこり）：その気持ちが、育てたってことなんだよ。');
       await play(`＊ふたをあけると、${dispName(k)}がゆっくり飛びたち、森の上をひとまわりして、木のあいだに見えなくなった。`);
       S.cases[S.cases.indexOf(k)] = null; const d = S.dex.kinkabuto; if(d){ d.released = (d.released||0) + 1; d.adult = d.adult || dayKey(); } S.story.flags.kin = dispName(k); save(); }
-    await play(`＊夜、島の北の海べの、沖津宮遙拝所へ。沖ノ島へわたれない人たちが、ここから沖ノ島をおがんできた場所。
+    await play(`＠絵 yohaisho
+      ＊夜、島の北の海べの、沖津宮遙拝所へ。沖ノ島へわたれない人たちが、ここから沖ノ島をおがんできた場所。
       じいちゃん：むかし、田心姫神さまが馬に乗って、この島から沖ノ島へ飛んでいかれたんだと。そのときのひづめのあとが、島の岩にのこっとる。
       じいちゃん：わしら漁師は、海がおだやかで、魚がたくさんとれるように、沖ノ島をおがんできた。
       じいちゃん：秋になったら、10月1日に「みあれ祭」がある。沖津宮と中津宮の女神さまを船にお乗せして、大漁旗をかかげた漁船がみんなで、大島から神湊まで海をわたるんだ。辺津宮の女神さまに会いに行くんだと。わしの船も出るぞ。
@@ -4508,7 +4528,7 @@ const STORY_DAY = {
   '6-7': async ()=>{ const c = stCase();
     if(c) await play(`＊朝、辺津宮の近くのクヌギの林へ、${dispName(c)}をかえした。`);
     notePage(6, c, `宗像大社。${S.story.flags.champ ? 'れんとのすもう決勝に勝った。' : S.story.flags.finalDone ? 'れんと、すもう決勝をした。' : ''}ふしぎなたまごから生まれた${S.story.flags.kin || '金色の虫'}を、大島へかえした。`); storyRelease(6); save();
-    await play('＊学校で、自由研究の発表。');
+    await play('＠絵 happyo\n＊学校で、自由研究の発表。');
     for(let ch=1; ch<=6; ch++){ const p = S.story.note[ch];
       await cardShow(`<div class="sc notepage"><div class="sch norb">${ch}ページめ　${esc(CH[ch].place.replace(/の(畑|森|草むら|山道)$/, ''))}</div>${p && p.bug ? `<div class="npic">${svgBest(p.bug, {rare:p.rare})}</div>` : ''}<div class="sdt">${esc(p ? p.txt : '')}</div></div>`, 3000); }
     await play(`ぼく（ふつう）：さいしょは、強い虫や、めずらしい虫を、つかまえたかった。
@@ -4551,7 +4571,8 @@ const STORY_EVE = {
       ぼく（なみだ）：死んじゃったの…？
       おとうさん（にっこり）：だいじょうぶ。さなぎになる用意をしているんだ。そっとしておこう。`); } },
   '2-4': async ()=>{
-    await play(`＊水のおじさんが、夜のため池に案内してくれた。水路のまわりで、ゲンジボタルが光っている。
+    await play(`＠絵 hotaru
+      ＊水のおじさんが、夜のため池に案内してくれた。水路のまわりで、ゲンジボタルが光っている。
       ぼく（びっくり）：つかまえて、ケースで育てたい！
       おとうさん（教える）：ホタルは、きれいな水と、エサのカワニナがないと生きられない。ケースでは育てられないんだ。だから、見るだけにしよう。
       水のおじさん：田んぼの水をきれいにしとくと、毎年ちゃんともどってくる。おじさんの自まんなんだ。`);
@@ -4595,26 +4616,8 @@ async function storyFinal(c){
   await play(won ? 'れん：参った。…いい虫だ。ちゃんと、元気でいてほしいって育てたのが、わかるよ。' : 'れん：来年の夏、またやろう。…きみの虫、いい顔してた。');
   await play('おじさん（わらう）：いい勝負だった！ 育て方が、ちゃんと虫に出とるよ。'); storyGoal('ふしぎな幼虫のお世話'); save();
 }
-/* 世話・外出のあいだは時計を止めて、おわったら まとめて時間を進める（2026-11-10 ユーザー）
-   世話：虫かごをとじたら 30分（3びょうより短く見ただけなら、進めない）／外出：家にもどったら 1時間 ＋ さがした回数×30分（3時間まで） */
-let stWas = {cs:false, t0:0, out:false, v0:0, key:''};
-function storyAdvance(min, why){
-  if(!storyOn() || storySp().m <= 1 || !min || S.story.done) return;
-  storyCommit(); const g0 = S.story.gt, bed = atHour(storyIdx(g0), STORY_BED) + 30*60e3;
-  let g = g0 + min*60e3; if(g0 < bed && g > bed) g = bed;   // ねる時間（夜9時半）はこえない
-  S.story.gt = g; storyRT = Date.now(); save(true); hud();
-  const h = Math.floor(min/60), m = min % 60, d = document.createElement('div'); d.className = 'timeToast norb';
-  d.textContent = '⏱ ' + why + '　' + (h ? h + '時間' : '') + (m ? m + '分' : '') + 'たった'; document.body.appendChild(d); setTimeout(()=> d.remove(), 2600);
-}
-function storyWatchBusy(){
-  const cs = openCase !== null, out = tab === 'out' && !!outState && !!outState.spot;
-  if(cs && !stWas.cs) stWas.t0 = Date.now();
-  if(!cs && stWas.cs && Date.now() - stWas.t0 > 3000) storyAdvance(30, '世話をしていたら');
-  if(out && !stWas.out){ stWas.key = outState.spot.key + '|' + dayKey(); stWas.v0 = (S.visits && S.visits[stWas.key]) || 0; }
-  if(!out && stWas.out){ const n = ((S.visits && S.visits[stWas.key]) || 0) - stWas.v0; storyAdvance(Math.min(180, 60 + 30*Math.max(0, n)), '虫さがしから帰ったら'); }
-  stWas.cs = cs; stWas.out = out;
-}
-setInterval(()=>{ if(!storyOn()) return; if(!storyBusy) storyWatchBusy(); storyCommit();
+/* 世話・外出のあいだの時計：2026-11-10 は止めて、あとでまとめて進めていたが、2026-11-13 に「やっぱり進める」にもどした（storyWatchBusy・storyAdvance はなくした） */
+setInterval(()=>{ if(!storyOn()) return; storyCommit();
   if(!document.querySelector('#msgLayer, #evLayer, #arena, .full')){ const el = $('hud'); if(el && !el.hidden) hudSet();
     if(document.body.dataset.slot && document.body.dataset.slot !== slotOf() && !document.querySelector('.toolObj.drag, #findField.busy, .found, #matsuri') && !(tab === 'out' && outState && outState.spot)) refresh(); }   // 出かけている場所の画面（さがす・見つけた）は、とちゅうで書きかえない
   storyCheck(); }, 500);
