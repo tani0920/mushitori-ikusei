@@ -1066,7 +1066,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261113-0052';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261113-0113';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-08', items:[
     'ストーリーの七夕祭（3章）で、出店を回れるようになった。ヨーヨーつり・輪なげ・くじびきで遊べるよ',
@@ -1076,6 +1076,7 @@ const CHANGELOG = [
     '「⏸ ポーズ」をおすと画面にふたがかかり、タップするとつづきから',
     '時計の数字は、はやい は30分、ゆっくり は15分ごとに動く',
     '夜9時半をすぎても時計が進みつづけて、ねる時間をのがすことがあったのを直した',
+    'カマキリのエサ：そとの「草むら」をさがすと、エサになる小さなバッタやコオロギがつかまえられる',
     'おみせでは、虫具店のおじさんが左に大きく立つ。そとの場所に着くと、おとうさんが出てきて ひとこと教えてくれる',
     'ストーリー2章の「ため池と田んぼ」の絵を、釣川の近くのため池と田んぼの絵にかえた',
     '会話で出る人の絵が、頭から ふとももまでの大きな絵になった（ぼく・おとうさん・おじさん・すもうの子どもたち・ストーリーで会う人たち）。そうまはメガネ、神社の人は新しい絵に',
@@ -3230,6 +3231,11 @@ function renderSpot(){
   $('btnFind').onclick = ()=>{ const F = $('findField'); if(!F){ doFind(sp, all, egg, slot, null); return; }
     F.classList.remove('call'); void F.offsetWidth; F.classList.add('call'); const m = $('fieldMsg'); if(m) m.textContent = '光っているところに、指をおいて、じっと待とう'; };
 }
+/* エサの虫を草むらでつかまえる（2026-11-13 ユーザー）。カマキリなど、生きた虫しか食べない虫を飼っているとき、
+   「草むら」をさがすと、小さなバッタやコオロギがとれる（何も見つからなかったときはかならず、虫が見つかったときは半分くらい）。
+   ストーリーでは おみせで売らないので、これがエサの手に入れ方（脚本：はるか「草むらで、小さいバッタやコオロギをつかまえて」） */
+const needFeeder = ()=> S.cases.some(c=> c && (BUGS[c.bug].food === 'koorogi' || BUGS[c.bug].foodAdult === 'koorogi'));
+const feederTxt = n=> `<b class="yk">草むらで、エサになる小さなバッタを ${n}ぴき つかまえた！</b><br><small>生きた虫しか食べない虫の ごはんにしよう。（もちもの：${S.items.koorogi}ぴき）</small>`;
 async function doFind(sp, here, egg, slot, h){
   const key = sp.key + '|' + dayKey(); S.visits[key] = (S.visits[key]||0) + 1; save();
   const box = $('findBox'), F = $('findField');
@@ -3240,6 +3246,12 @@ async function doFind(sp, here, egg, slot, h){
   if(egg){ id = 'kinkabuto'; S.link.kinEgg = 1; }
   else { const pool = []; here.forEach(b=>{ const w = {1:5, 2:3, 3:2, 4:1, 5:1}[BUGS[b].rank] * (BUGS[b].time.includes(slot) ? 2 : 1) * photoBoost(BUGS[b].shape); const hw = h ? (h.like.includes(BUGS[b].shape) ? 3 : .5) : 1; for(let i=0;i<Math.round(w*hw*2);i++) pool.push(b); }); for(let i=0;i<8;i++) pool.push(null); id = pick(pool); }
   const spotEl = F && h ? F.querySelector(`.hide[data-k="${h.k}"]`) : null;
+  const feed = !egg && h && h.k === 'kusa' && needFeeder() && (!id || Math.random() < .5) ? (Math.random() < .5 ? 2 : 1) : 0;
+  if(feed){ giveItem('koorogi', feed); save(); }
+  if(!id && feed){   // 虫はいなかったけど、エサの虫がとれた
+    if(spotEl){ spotEl.classList.remove('rustle'); spotEl.insertAdjacentHTML('beforeend', '<span class="gasa">ガサッ</span>'); await wait(700); }
+    F && F.remove();
+    box.innerHTML = `<p>${feederTxt(feed)}</p><button type="button" class="btn" id="btnAgain">もどる</button>`; $('btnAgain').onclick = renderSpot; return; }
   if(!id){ if(spotEl){   // 何もいなかった：かげが、さっとにげる
       const cand = here.length ? BUGS[pick(here)] : null; spotEl.classList.remove('rustle'); spotEl.insertAdjacentHTML('beforeend', `<span class="shadow">${cand ? svgBug(Object.keys(BUGS).find(k=>BUGS[k] === cand), 'larva', {instar:0}) : ''}</span>`);
       const m = $('fieldMsg'); if(m) m.textContent = '…かげが、さっとにげていった。'; await wait(900); }
@@ -3255,7 +3267,7 @@ async function doFind(sp, here, egg, slot, h){
   const oddTxt = odd ? `<br><b class="yk">【めずらしい】</b>こんな時間に会えるなんて！ ${esc(b.name)}は、ほんとうは${b.time.map(t=>SLOT_NAMES[t]).join('や')}に活動する虫なんだ。いまは、かくれてねむっているところを見つけたんだね。` : '';
   setTimeout(()=>{ const fb = $('findBox'); fb && fb.scrollIntoView({block:'center', behavior:'smooth'}); }, 60);   // 見つけたカードが見えるように
   box.innerHTML = `<div class="found tier-${tier.k}"><span class="ex norb">！</span>${tier.name ? `<span class="tierTag norb">${tier.name}</span>` : ''}${first && know ? '<span class="stamp norb">はじめて！</span>' : ''}<div class="pic peek">${b.watch ? svgBest(id) : svgBug(id, 'larva', {instar:0})}</div>
-    <div class="win" style="width:100%">${fmtMsg(findTxt)}${whoTxt}${know ? oddTxt : ''}${first && know ? '<br><b class="yk">はじめてみつけた！ ずかんに登録。</b>' : first ? '<br><b class="yk">ずかんに「？？？」で登録。</b>' : ''}</div>
+    <div class="win" style="width:100%">${fmtMsg(findTxt)}${whoTxt}${know ? oddTxt : ''}${first && know ? '<br><b class="yk">はじめてみつけた！ ずかんに登録。</b>' : first ? '<br><b class="yk">ずかんに「？？？」で登録。</b>' : ''}${feed ? '<br>' + feederTxt(feed) : ''}</div>
     <div class="row" id="foundBtns"></div></div>`;
   const btns = $('foundBtns');
   if(b.watch){
@@ -4325,7 +4337,8 @@ const STORY_DAY = {
   '2-2': async ()=>{ await play('おとうさん（教える）：草むらの虫は、しめった空気がすき。でも、びしょびしょだとカビが出る。//きりふきは、ケースぜんたいに少しずつ。');
     if(stBug() === 'kamakiri'){ giveItem('koorogi'); await play(`はるか：カマキリは、生きて動いている虫しか食べないの。草むらで、小さいバッタやコオロギをつかまえて、入れてあげて。
       おとうさん（教える）：つかまえられない日は、ピンセットでエサをつまんで、生きているみたいに少しずつ動かしてみせる方法もあるよ。
-      ＊草むらで、エサにする小さな虫をつかまえた。（エサの虫 ×2）`); } },
+      ＊草むらで、エサにする小さな虫をつかまえた。（エサの虫 ×2）
+      おとうさん（教える）：そとの「草むら」をさがすと、エサになる小さな虫もつかまえられるよ。`); } },
   '2-3': async ()=>{ const c = stCase();
     if(c && c.trouble === 'kabi') await play('おとうさん（しんぱい）：カビは虫の体にもよくない。ふきんでとって、きりふきをひかえよう。');
     else if(c) await play(`はるか：…わたしのケース、カビが出ちゃった…。どうしたらいい？
