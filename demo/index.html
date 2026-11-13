@@ -720,8 +720,10 @@ html.tall #arena .fighter{max-width:280px}
 #matsuri #mSvg{width:100%;height:100%;touch-action:none;user-select:none;-webkit-user-select:none}
 #matsuri .mctl{display:flex;align-items:center;gap:8px}
 #matsuri .mhint{flex:1;font-size:.85rem;opacity:.85;line-height:1.45}
+#matsuri{background:linear-gradient(#0b0f2a99,#0b0f2a40 30%,#0b0f2a40 70%,#0b0f2acc),url(img/ui/mini/bg.webp) center/cover no-repeat,#0c1026}
+#matsuri .mhead,#matsuri .mhint{text-shadow:0 1px 3px #000c}
 #matsuri .kj{cursor:pointer;transition:transform .3s}
-#matsuri .kj.open path{fill:#fff;stroke:#c8483c;stroke-width:2}
+#matsuri .kj.open image{opacity:.35}#matsuri .kj.open .kjt{font-size:14px;paint-order:stroke;stroke:#fff8e8;stroke-width:3px}
 #matsuri #wPr .won{opacity:.45}
 html.land #matsuri{padding-left:calc(12px + var(--sl));padding-right:calc(12px + var(--sr))}
 #arena .cheer{position:absolute;font-size:22px;animation:cheerUp 1s forwards;pointer-events:none}
@@ -1070,7 +1072,8 @@ const CG_OTO = {
   amanogawa:{bgm:'bgm_fushigi', amb:{waves:40, night:40}}, tenbodai:{bgm:'bgm_soto', amb:{wind:70}}, matsuri:{bgm:'bgm_soto', amb:{night:30}},
   taifu:{bgm:null, amb:{typhoon:80, rain:70}}, eki:{bgm:'bgm_ouchi', amb:{}}, yamaasa:{bgm:'bgm_soto', bgmV:70, amb:{wind:50, cicada:30}},
   takamiya:{bgm:'bgm_fushigi', amb:{wind:45, cicada:20}}, yohaisho:{bgm:'bgm_fushigi', amb:{waves:45, night:40}}, happyo:{bgm:'bgm_wakare', amb:{}},
-  gakko:{bgm:'bgm_ouchi', amb:{cicada:40, wind:25}}, obaa:{bgm:'bgm_ouchi', amb:{cicada:25, wind:30}}, tosho:{bgm:'bgm_ouchi', bgmV:50, amb:{}}
+  gakko:{bgm:'bgm_ouchi', amb:{cicada:40, wind:25}}, obaa:{bgm:'bgm_ouchi', amb:{cicada:25, wind:30}}, tosho:{bgm:'bgm_ouchi', bgmV:50, amb:{}},
+  jousen:{bgm:'bgm_soto', amb:{waves:45, wind:40}}, oshimako:{bgm:'bgm_soto', amb:{waves:55, wind:30}}
 };
 let otoForce = null;   // とくべつな場面（虫をかえす・章のおわり）では、この音にする
 const NAKU = {suzumushi:{id:'v_suzu', slots:{asa:30, hiru:25, yu:80, yoru:100}}, abura:{id:'v_abura', slots:{asa:70, hiru:100, yu:60}}};   // 鳴くのはオスの成虫だけ
@@ -2121,7 +2124,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261114-0239';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261114-0304';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-08', items:[
     'ストーリーの七夕祭（3章）で、出店を回れるようになった。ヨーヨーつり・輪なげ・くじびきで遊べるよ',
@@ -2132,6 +2135,7 @@ const CHANGELOG = [
     '時計の数字は、はやい は30分、ゆっくり は15分ごとに動く',
     '夜9時半をすぎても時計が進みつづけて、ねる時間をのがすことがあったのを直した',
     'すもうで勝つと あいての子はくやしい顔、負けると うれしい顔になる。ゆうたのおかあさん・島の子の絵もできた',
+    '七夕祭の出店（ヨーヨーつり・輪なげ・くじびき）が、お祭りの夜の絵になった。3章で大島へ行くとき、神湊の渡船ターミナルでフェリーに乗る絵と、大島の港に着く絵が出る',
     'ストーリーに「いのちのつながり」の話がふえた。虫も人も、いのちは つながっている。おばあちゃんのキャベツと花粉をはこぶ虫、ホタルの一生、むかしの海の人、はるかのカマキリ、たおれた木、そして発表会',
     '「そと」から、夏休みの学校・おばあちゃんの家・図書館に行けるようになった。図書館では、育てている虫のことを くわしく しらべられる（ずかんにも のる）。大島にいる3章は、島の中（港・中津宮・海べ）を回れる',
     '2・4・6日目の夕方は、えんがわで おとうさんと話せる。おみせや場所に、その日だけ だれかが来ていることもある',
@@ -5036,13 +5040,11 @@ function miniYoyo(){
   const st = miniSt = {kind:'yoyo', ys, str:100, got:[], hook:{x:200, y:70, down:false, seen:false}, done:false, raf:0};
   const R = 17, L = 27;   // ヨーヨーの半径・輪ゴムの長さ
   const loopAt = y=> ({x:y.x + Math.cos(y.la)*L, y:y.y + Math.sin(y.la)*L});
-  svg.innerHTML = `<defs><linearGradient id="yWat" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fd0f0"/><stop offset="1" stop-color="#2f8ec4"/></linearGradient></defs>
-    <rect x="12" y="36" width="376" height="190" rx="16" fill="#d9e3ea"/><rect x="20" y="44" width="360" height="176" rx="11" fill="url(#yWat)"/>
-    <g opacity=".35" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round">${[70,120,170,205].map((y, k)=>`<path d="M${40 + k*30},${y} q12,-5 24,0 t24,0"/><path d="M${230 + k*20},${y + 18} q12,-5 24,0 t24,0"/>`).join('')}</g>
+  svg.innerHTML = `<image href="img/ui/mini/pool.webp" x="12" y="36" width="376" height="190" preserveAspectRatio="none"/>
+    <g opacity=".18" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round">${[70,120,170,205].map((y, k)=>`<path d="M${40 + k*30},${y} q12,-5 24,0 t24,0"/><path d="M${230 + k*20},${y + 18} q12,-5 24,0 t24,0"/>`).join('')}</g>
     <g id="yRip"></g>
-    ${ys.map(y=>`<g id="yb${y.i}"><line class="yband" stroke="#f3e9c8" stroke-width="1.6"/><circle r="${R}" fill="${y.col[0]}" stroke="#0003" stroke-width="1"/>
-      <path d="M${-R},0 Q0,-7 ${R},0" stroke="${y.col[1]}" stroke-width="3" fill="none"/><path d="M${-R + 3},6 Q0,0 ${R - 3},6" stroke="${y.col[1]}" stroke-width="2" fill="none" opacity=".8"/>
-      <ellipse cx="-6" cy="-7" rx="5" ry="3" fill="#fff" opacity=".5"/><circle class="yloop" r="4" fill="none" stroke="#f3e9c8" stroke-width="2.2"/></g>`).join('')}
+    ${ys.map(y=>`<g id="yb${y.i}"><ellipse cx="2" cy="${R - 2}" rx="${R}" ry="5" fill="#1a4a6a" opacity=".25"/><line class="yband" stroke="#f3e9c8" stroke-width="1.6"/>
+      <image href="img/ui/mini/yoyo${y.i}.webp" x="${-R*1.3}" y="${-R*1.38}" width="${R*2.6}" height="${R*2.6}"/><circle class="yloop" r="4" fill="none" stroke="#f3e9c8" stroke-width="2.2"/></g>`).join('')}
     <g id="yHook" opacity="0"><line id="yStr" stroke="#fff8e8" stroke-width="1.4"/><path id="yHk" d="M0,-10 L0,4 Q0,10 -5,10 Q-9,10 -9,5" stroke="#c9c9c9" stroke-width="2.4" fill="none" stroke-linecap="round"/></g>`;
   const stat = ()=>{ $('mStat').innerHTML = `こより <span class="mbar"><i style="width:${Math.max(0, st.str)}%"></i></span> とれた ${st.got.map(c=>`<i class="ydot" style="background:${c}"></i>`).join('') || '0'}`; };
   stat();
@@ -5090,8 +5092,9 @@ function miniWanage(){
   const P = [{k:'ko_ishi', x:118, y:178, s:1}, {k:'ha_kusa', x:282, y:178, s:1}, {k:'eda_tsuru', x:88, y:128, s:.8}, {k:'ko_sara', x:200, y:128, s:.8}, {k:'ha_shida', x:312, y:128, s:.8}, {k:'ie_coco', x:150, y:92, s:.64}, {k:'ha_hana', x:250, y:92, s:.64}];
   const st = miniSt = {kind:'wanage', P, rings:5, won:[], ph:'aim', a:0, p:0, t0:performance.now(), done:false, raf:0, landed:[]};
   const sc = y=> .5 + (y - 60)/130*.5;
-  svg.innerHTML = `<defs><linearGradient id="wFl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7a2430"/><stop offset="1" stop-color="#b8394a"/></linearGradient></defs>
-    <path d="M60,60 L340,60 L398,230 L2,230 Z" fill="url(#wFl)"/><path d="M60,60 L340,60" stroke="#f4b63c" stroke-width="3"/>
+  svg.innerHTML = `<defs><linearGradient id="wFl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".45"/><stop offset="1" stop-color="#000" stop-opacity="0"/></linearGradient>
+      <pattern id="wMat" patternUnits="userSpaceOnUse" width="200" height="134"><image href="img/ui/mini/mat.webp" width="200" height="134"/></pattern></defs>
+    <path d="M60,60 L340,60 L398,230 L2,230 Z" fill="url(#wMat)"/><path d="M60,60 L340,60 L398,230 L2,230 Z" fill="url(#wFl)"/><path d="M60,60 L340,60" stroke="#c99a52" stroke-width="4"/><path d="M60,60 L2,230 M340,60 L398,230" stroke="#c99a52" stroke-width="3"/>
     ${[60,100,150].map(y=>`<line x1="${200 - (140 + (y - 60)*.58)}" y1="${y + 26}" x2="${200 + 140 + (y - 60)*.58}" y2="${y + 26}" stroke="#fff" stroke-opacity=".12" stroke-width="1"/>`).join('')}
     <g id="wPr">${P.map((q, i)=>`<g id="wp${i}"><ellipse cx="${q.x}" cy="${q.y}" rx="${17*q.s}" ry="${6*q.s}" fill="#0004"/>
       <svg x="${q.x - 28*q.s}" y="${q.y - 40*q.s}" width="${56*q.s}" height="${56*q.s}" viewBox="0 0 100 100">${decoSVG(q.k)}</svg></g>`).join('')}</g>
@@ -5146,9 +5149,9 @@ function miniKuji(){
   const COL = ['#fff4d6','#ffd9e0','#d8f0ff','#e6ffd9','#fff0b8'];
   const st = miniSt = {kind:'kuji', box, opened:[], left:3, got:[], done:false, raf:0, busy:false};
   const pos = i=> ({x:38 + (i%5)*40, y:80 + Math.floor(i/5)*48});
-  svg.innerHTML = `<rect x="10" y="44" width="216" height="176" rx="12" fill="#c8483c"/><rect x="18" y="52" width="200" height="160" rx="8" fill="#7a2a22"/>
+  svg.innerHTML = `<image href="img/ui/mini/box.webp" x="10" y="44" width="216" height="176" preserveAspectRatio="none"/>
     <text x="118" y="36" text-anchor="middle" font-size="18" font-weight="bold" fill="#ffd23f">くじ 1回 10どんぐり</text>
-    ${box.map((_, i)=>{ const q = pos(i); return `<g id="kj${i}" class="kj" data-i="${i}" transform="translate(${q.x},${q.y})"><path d="M-18,-12 L18,-12 L0,16 Z" fill="${COL[i%5]}" stroke="#0004" stroke-width="1" transform="rotate(${(i*37)%20 - 10})"/><text class="kjt" y="2" text-anchor="middle" font-size="12" font-weight="bold" fill="#7a2a22"></text></g>`; }).join('')}
+    ${box.map((_, i)=>{ const q = pos(i); return `<g id="kj${i}" class="kj" data-i="${i}" transform="translate(${q.x},${q.y})"><image href="img/ui/mini/kuji${i%5}.webp" x="-21" y="-19" width="42" height="42" transform="rotate(${(i*37)%20 - 10})"/><text class="kjt" y="2" text-anchor="middle" font-size="12" font-weight="bold" fill="#7a2a22"></text></g>`; }).join('')}
     <rect x="236" y="44" width="156" height="176" rx="10" fill="#fff4d6"/><text x="314" y="66" text-anchor="middle" font-size="14" font-weight="bold" fill="#7a2a22">けいひん</text>
     ${[1,2,3,4].map((r, k)=>`<text x="246" y="${90 + k*33}" font-size="12" font-weight="bold" fill="#c8483c">${KUJI[r].t}</text><text x="246" y="${106 + k*33}" font-size="11" fill="#2c2418">${KUJI[r].p}</text>`).join('')}`;
   const stat = ()=>{ $('mStat').innerHTML = `あと ${st.left}回　🌰 ${dg(S.money)}`; };
@@ -5184,7 +5187,7 @@ async function tanabataStalls(){
       await play(r.got.includes(1) ? 'けんた：1等！？ まじかよ！' : r.got.length ? 'けんた：おれ、ラムネばっかりだった。…いっしょに飲もうぜ。' : 'けんた：くじは、また来年だな。'); }
     save(); }
 }
-const CG = ['ame', 'hotaru', 'ferry', 'amanogawa', 'tenbodai', 'matsuri', 'taifu', 'eki', 'yamaasa', 'takamiya', 'yohaisho', 'happyo', 'gakko', 'obaa', 'tosho'];   // img/ui/ev/キー.webp（gakko・obaa・tosho は ほかの場所の絵。2026-11-14）
+const CG = ['ame', 'hotaru', 'ferry', 'amanogawa', 'tenbodai', 'matsuri', 'taifu', 'eki', 'yamaasa', 'takamiya', 'yohaisho', 'happyo', 'gakko', 'obaa', 'tosho', 'jousen', 'oshimako'];   // img/ui/ev/キー.webp（gakko・obaa・tosho は ほかの場所の絵。2026-11-14）
 function cgShow(k){ let e = $('cgLayer');
   if(!k || k === 'off' || !CG.includes(k)){ if(e){ e.remove(); otoScene(); } return; }
   if(e && e.dataset.k === k) return; if(e) e.remove();
@@ -5473,8 +5476,14 @@ const STORY_DAY = {
       ぼく（たのしい）：島！ フェリー！`); },
   /* ---- 3章 大島 ---- */
   '3-1': async ()=>{ meet('kenta'); giveItem('zeri');
-    await play(`＠絵 ferry
-      ＊神湊からフェリーで約25分。海の向こうから、大島が近づいてくる。港のまわりに、七夕のふきながし。
+    await play(`＠絵 jousen
+      ＊朝、神湊の渡船ターミナル。白と青のフェリー「おおしま」が、桟橋で待っている。
+      ぼく（たのしい）：フェリーだ！ 大きい！
+      おとうさん（にっこり）：屋根のある桟橋をわたって、乗りこもう。虫かごは、ゆれないように、ひざの上でね。
+      ＠絵 ferry
+      ＊神湊からフェリーで約25分。デッキに出ると、しおかぜが気持ちいい。海の向こうから、大島が近づいてくる。
+      ＠絵 oshimako
+      ＊大島の港に着いた。渡船ターミナルのまわりに、七夕のふきながしが ゆれている。
       けんた：おー！ おまえが虫しらべの子？ おれ、けんた。夏休みは、じいちゃんちにいるんだ。島のこと、ぜんぶ教えてやるよ！
       じいちゃん：よう来たね。うちにとまっていきなさい。
       おとうさん（教える）：「そと」から、大島の森へ行ってみよう。`); storyGoal('大島の森で、虫をさがす'); },
@@ -5670,7 +5679,10 @@ const STORY_DAY = {
     await play('＊ふしぎな虫かごが、朝からずっと光っている…。（虫かごをのぞいてみよう）');
     storyGoal('ふしぎな虫かごを、のぞく'); },
   '6-6': async ()=>{ meet('kenta'); const k = S.cases.find(c=> c && c.bug === 'kinkabuto');
-    await play(`＊ふたたびフェリーで、大島へ。港で、けんたと漁師のじいちゃんが待っていた。
+    await play(`＠絵 jousen
+      ＊ふたたび神湊から、フェリーで大島へ。ふしぎな虫かごは、ずっと ひざの上。
+      ＠絵 oshimako
+      ＊港で、けんたと漁師のじいちゃんが待っていた。
       けんた：生まれたんだ…！ 金色じゃん！
       ＊夕方、たまごを見つけた、中津宮のそばの、天真名井へ向かう階段の近くへ。`);
     if(k){ let a = await choose('ぼく（ふつう）：…ここで、かえすんだね。', ['森にかえす', 'もう少しだけ、そばにいてほしい'], 'boku');
@@ -5865,7 +5877,7 @@ const PLACES_X = [
 ];
 // 3章（大島にとまっている週）は、島の中を回る（2026-11-14 ユーザー）。絵は写真をもらってから描く。いまは大島の絵を仮に使う
 const PLACES_SHIMA = [
-  {k:'minato',  name:'大島の港', desc:'漁船とフェリーのりば。じいちゃんの船もここ', pic:'img/ui/ev/ferry.webp', cg:'ferry'},
+  {k:'minato',  name:'大島の港', desc:'漁船とフェリーのりば。じいちゃんの船もここ', pic:'img/ui/ev/oshimako.webp', cg:'oshimako'},
   {k:'nakatsu', name:'中津宮', desc:'港の近くのお宮。境内に天の川が流れる', pic:'img/ui/ev/amanogawa.webp', cg:'amanogawa'},
   {k:'umibe',   name:'島の海べ', desc:'岩場と砂浜。島の子たちの遊び場', pic:'img/ui/spot_oshima.webp'},
 ];
