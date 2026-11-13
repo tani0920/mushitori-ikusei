@@ -1069,7 +1069,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261113-0151';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261113-2327';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-08', items:[
     'ストーリーの七夕祭（3章）で、出店を回れるようになった。ヨーヨーつり・輪なげ・くじびきで遊べるよ',
@@ -1079,6 +1079,7 @@ const CHANGELOG = [
     '「⏸ ポーズ」をおすと画面にふたがかかり、タップするとつづきから',
     '時計の数字は、はやい は30分、ゆっくり は15分ごとに動く',
     '夜9時半をすぎても時計が進みつづけて、ねる時間をのがすことがあったのを直した',
+    'すもうで勝つと あいての子はくやしい顔、負けると うれしい顔になる。ゆうたのおかあさん・島の子の絵もできた',
     'ストーリーの とくべつな日（雨の畑・ホタルの夜・フェリー・中津宮と天の川・御嶽山の展望台・七夕祭の夜・台風・道の駅の昆虫展・山の朝・高宮祭場・沖津宮遙拝所の夜・発表会）に、大きな絵が出るようになった',
     'カマキリのエサ：そとの「草むら」をさがすと、エサになる小さなバッタやコオロギがつかまえられる',
     'おみせでは、虫具店のおじさんが左に大きく立つ。そとの場所に着くと、おとうさんが出てきて ひとこと教えてくれる',
@@ -2296,10 +2297,10 @@ const FACES = {boku:'ぼく', boku_joy:'ぼく', boku_angry:'ぼく', boku_sad:'
 // すもうの子どもたち（2026-11-12 に絵ができた）
 const RIVAL_NAME = {yuta:'ゆうた', haruka:'はるか', kenta:'けんた', soma:'そうま', daichi:'だいち', ren:'れん'};
 // 立ち絵の大きさ（おとな＝1）。同じ足もとに立つので、小さい子は頭が低くなる
-const CHARA_SC = {boku:.8, yuta:.68, haruka:.76, kenta:.8, soma:.85, daichi:.9, ren:.94, oba:.86};
+const CHARA_SC = {boku:.8, yuta:.68, haruka:.76, kenta:.8, soma:.85, daichi:.9, ren:.94, oba:.86, shimakko:.74};
 const charaWho = k=> String(k).split('_')[0];
-const FACE_ART = new Set([...Object.keys(FACES), ...Object.keys(RIVAL_NAME), 'oba', 'mizu', 'jii', 'eki', 'kansatsu', 'jinja']);   // 絵がある人（ゆうたのおかあさん・島の子・来た人は、まだ名前だけ）（img/chara/キー.webp と img/chara/cut/キー.webp）
-const faceName = k=> FACES[k] || RIVAL_NAME[k] || NPC_NAME[k] || '';
+const FACE_ART = new Set([...Object.keys(FACES), ...Object.keys(RIVAL_NAME), ...Object.keys(RIVAL_NAME).flatMap(k=> [k + '_joy', k + '_sad']), 'oba', 'mizu', 'jii', 'eki', 'kansatsu', 'jinja', 'yutamama', 'shimakko', 'shimakko_wow']);   // 絵がある人（来た人は、名前だけ）。すもうの子は うれしい(_joy)・くやしい(_sad) も（img/chara/キー.webp と img/chara/cut/キー.webp）
+const faceName = k=> FACES[k] || RIVAL_NAME[k] || NPC_NAME[k] || RIVAL_NAME[charaWho(k)] || NPC_NAME[charaWho(k)] || '';
 const faceImg = (k, cls='')=> FACE_ART.has(k) ? `<img class="fimg ${cls}" src="img/chara/${k}.webp" alt="${esc(faceName(k))}" draggable="false">` : '';
 /* 会話：話す人を、大きな切りぬきの絵で出す（ノベルゲームのように）。ぼくは左、ほかの人は右。
    say(文, {face:'papa_teach'})。すもうなど2人のときは {face:'yuta', with:'boku'}（with の人は少し暗く、反対がわに） */
@@ -3533,8 +3534,8 @@ async function sumoBattle(r, c){
   // 結果：勝因・敗因を育て方にむすびつける
   const first = !S.sumo[r.key];
   if(won){ S.stats.wins++; S.sumo[r.key] = dayKey(); const m = first ? r.money : SUMO_REWIN; S.money += m; if(r.key === 'ren') S.sumoChamp = true;
-    await say(`${r.short}「${r.win}」\nどんぐり ${dg(m)} をもらった！${first && r.key === 'ren' ? '\n【チャンピオン】きみの虫が、宗像でいちばん強い！' : ''}`, {face:r.key, with:'boku'}); }
-  else { S.stats.loses++; if(c.pers !== 'makezu' && Math.random() < .3){ c.pers = 'makezu'; await say(`${r.short}「${r.lose}」\n${me.name}は、くやしそうに相手をにらんでいる…。性格が「まけずぎらい」になった！`, {face:r.key, with:'boku'}); } else await say(`${r.short}「${r.lose}」`, {face:r.key, with:'boku'}); }
+    await say(`${r.short}「${r.win}」\nどんぐり ${dg(m)} をもらった！${first && r.key === 'ren' ? '\n【チャンピオン】きみの虫が、宗像でいちばん強い！' : ''}`, {face:r.key + '_sad', with:'boku'}); }
+  else { S.stats.loses++; if(c.pers !== 'makezu' && Math.random() < .3){ c.pers = 'makezu'; await say(`${r.short}「${r.lose}」\n${me.name}は、くやしそうに相手をにらんでいる…。性格が「まけずぎらい」になった！`, {face:r.key + '_joy', with:'boku'}); } else await say(`${r.short}「${r.lose}」`, {face:r.key + '_joy', with:'boku'}); }
   save();
   const cmp = {atk:me.atk/op.atk, hp:me.maxhp/op.maxhp, spd:(me.spd+1)/(op.spd+1), def:op.def/me.def, heal:me.heal/op.heal};
   const keys = Object.keys(cmp).sort((a,b)=>cmp[a]-cmp[b]), low = keys[0], high = keys[keys.length-1];
@@ -3944,8 +3945,8 @@ const storyOn = ()=> !!(S && S.story);
 /* ---- 会話の書き方：「人（顔）：セリフ」を1行ずつ。人の名前がない行は、地の文 ---- */
 const SPK = {'ぼく':{'':'boku','ふつう':'boku','うれしい':'boku_joy','ぷんぷん':'boku_angry','なみだ':'boku_sad','たのしい':'boku_fun','びっくり':'boku_surprise'},
   'おとうさん':{'':'papa','ふつう':'papa','教える':'papa_teach','しんぱい':'papa_worry','にっこり':'papa_happy'}, 'おじさん':{'':'ojisan','わらう':'ojisan_laugh'},
-  'ゆうた':'yuta','はるか':'haruka','けんた':'kenta','そうま':'soma','だいち':'daichi','れん':'ren',
-  'おばあちゃん':'oba','水のおじさん':'mizu','じいちゃん':'jii','おねえさん':'eki','観察員さん':'kansatsu','神社の人':'jinja','ゆうたのおかあさん':'yutamama','島の子':'shimakko','来た人':'kyaku'};
+  ...Object.fromEntries([['ゆうた','yuta'],['はるか','haruka'],['けんた','kenta'],['そうま','soma'],['だいち','daichi'],['れん','ren']].map(([n, k])=> [n, {'':k, 'ふつう':k, 'うれしい':k + '_joy', 'くやしい':k + '_sad'}])),
+  'おばあちゃん':'oba','水のおじさん':'mizu','じいちゃん':'jii','おねえさん':'eki','観察員さん':'kansatsu','神社の人':'jinja','ゆうたのおかあさん':'yutamama','島の子':{'':'shimakko', 'びっくり':'shimakko_wow'},'来た人':'kyaku'};
 /* ---- 七夕祭の出店（ミニゲーム）：ヨーヨーつり・輪なげ・くじびき（3章5日目。2026-11-09） ----
    絵は画面の中で描く（GPTの絵は使わない）。#matsuri がひらいているあいだは、ストーリーの時計は止まる。 */
 let miniSt = null;   // いま遊んでいるミニゲームのようす（テストでも見る）
