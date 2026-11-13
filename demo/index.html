@@ -2121,7 +2121,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261114-0224';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261114-0239';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-08', items:[
     'ストーリーの七夕祭（3章）で、出店を回れるようになった。ヨーヨーつり・輪なげ・くじびきで遊べるよ',
@@ -2133,7 +2133,7 @@ const CHANGELOG = [
     '夜9時半をすぎても時計が進みつづけて、ねる時間をのがすことがあったのを直した',
     'すもうで勝つと あいての子はくやしい顔、負けると うれしい顔になる。ゆうたのおかあさん・島の子の絵もできた',
     'ストーリーに「いのちのつながり」の話がふえた。虫も人も、いのちは つながっている。おばあちゃんのキャベツと花粉をはこぶ虫、ホタルの一生、むかしの海の人、はるかのカマキリ、たおれた木、そして発表会',
-    '「そと」から、夏休みの学校・おばあちゃんの家・図書館に行けるようになった。図書館では、育てている虫のことを くわしく しらべられる（ずかんにも のる）',
+    '「そと」から、夏休みの学校・おばあちゃんの家・図書館に行けるようになった。図書館では、育てている虫のことを くわしく しらべられる（ずかんにも のる）。大島にいる3章は、島の中（港・中津宮・海べ）を回れる',
     '2・4・6日目の夕方は、えんがわで おとうさんと話せる。おみせや場所に、その日だけ だれかが来ていることもある',
     '会話で えらぶと、子どもたちと なかよしになる。ふしぎのかけら（18まい）を集めよう。虫しらべノートのうしろで見られる',
     '音が出るようになった。場面ごとに曲（タイトル・おうち・そと・夜・ふしぎ・すもう・おわかれ）と、まわりの音（風・セミ・夜の虫・波・雨・台風・せせらぎ・カエル）が入れかわる。さがす・見つけた・きりふき・脱皮のときにも音が出る。オプションで OFF にできる',
@@ -5863,19 +5863,27 @@ const PLACES_X = [
   {k:'obaa',  name:'おばあちゃんの家', desc:'赤間の畑のおばあちゃん。えんがわでお茶をいただく', pic:'img/ui/ev/obaa.webp'},
   {k:'tosho', name:'図書館', desc:'いま育てている虫のことを、本でくわしく しらべる', pic:'img/ui/ev/tosho.webp'},
 ];
+// 3章（大島にとまっている週）は、島の中を回る（2026-11-14 ユーザー）。絵は写真をもらってから描く。いまは大島の絵を仮に使う
+const PLACES_SHIMA = [
+  {k:'minato',  name:'大島の港', desc:'漁船とフェリーのりば。じいちゃんの船もここ', pic:'img/ui/ev/ferry.webp', cg:'ferry'},
+  {k:'nakatsu', name:'中津宮', desc:'港の近くのお宮。境内に天の川が流れる', pic:'img/ui/ev/amanogawa.webp', cg:'amanogawa'},
+  {k:'umibe',   name:'島の海べ', desc:'岩場と砂浜。島の子たちの遊び場', pic:'img/ui/spot_oshima.webp'},
+];
+const placesNow = ()=> S.story.ch === 3 ? PLACES_SHIMA : PLACES_X;
 const plDone = k=> !!SX().talk[k + '|' + dayKey()];
 const plMark = k=>{ SX().talk[k + '|' + dayKey()] = 1; save(); };
 const plNew = k=>{ const ch = S.story.ch, f = S.story.flags;   // 「！」：まだ見ていない大事な話がある
   if(plDone(k)) return false;
   if(k === 'gakko') return !f['gakko' + ch];
   if(k === 'obaa') return ch === 1 ? !f.obaaMikan : !f['obaa' + ch];
+  if(['minato', 'nakatsu', 'umibe'].includes(k)) return !f['shima_' + k];
   if(k === 'tosho') return ch >= 4 && !SX().kakera.includes('shinbun') || stCase() && !(S.dex[stCase().bug] || {}).shirabe;
   return false; };
 async function goPlace(k){
   if(storyBusy) return; storyBusy = true;
-  try{ const P = PLACES_X.find(p=> p.k === k);
+  try{ const P = [...PLACES_X, ...PLACES_SHIMA].find(p=> p.k === k);
     if(plDone(k)) await play(`＊${P.name}。きょうは、もう行ったよ。`);
-    else { plMark(k); await PLACE_TALK[k](S.story.ch); cgShow('off'); }
+    else { plMark(k); if(P.cg) cgShow(P.cg); await PLACE_TALK[k](S.story.ch); cgShow('off'); }
   } finally { storyBusy = false; }
   save(); render();
 }
@@ -5954,6 +5962,41 @@ const PLACE_TALK = {
       await play(`おばあちゃん：夏休みも、もうすぐ おしまいだねえ。発表、がんばってね。
         おばあちゃん：…来年の夏も、ミカンの木を見においで。チョウも、きっと来てるよ。`); giveItem('mikan', 1); return; }
     await play(pick(['おばあちゃん：よう来たねえ。トマト、持っていきなさい。', 'おばあちゃん：暑いねえ。むぎ茶、もう1ぱい のんでいきなさい。', 'おばあちゃん：ミカンの木のアゲハ、きのうも来とったよ。'])); },
+  async minato(){ const f = S.story.flags, first = !f.shima_minato; f.shima_minato = 1;
+    if(!first){ await play(pick(['＊漁船が、ゆらゆらゆれている。カモメが、船のまわりを飛んでいる。', '＊港のはしで、イカを干していた。島の夏のにおいがする。', 'じいちゃん：おう、また来たか。きょうは波がおだやかで、いい漁だったぞ。'])); return; }
+    meet('kenta');
+    await play(`＊大島の港。漁から帰ってきた じいちゃんの船に、けんたと のせてもらった。
+      じいちゃん：見てみい、きょうの魚だ。
+      ＊じいちゃんは、小さい魚を何びきか、そっと海にもどした。
+      ぼく（ふつう）：どうして、にがしちゃうの？
+      じいちゃん：小さいのは、まだ子どもだ。大きくなって、たまごを産んでもらわんと、来年も、さ来年も、魚がとれんようになる。
+      じいちゃん：海の魚は、海からの あずかりもの。とりすぎんのが、漁師の やくそくだ。
+      けんた：じいちゃん、いつも それ言うよな。`);
+    const a = await choose('けんた：…おれも、大きくなったら、じいちゃんみたいな漁師になろうかな。', ['「けんたなら、なれるよ」', '「ぼくも、船にのってみたい！」'], 'boku');
+    await play(a === 0 ? 'けんた：…へへっ。じいちゃん、聞いたか！\nじいちゃん：はっはっは。まずは、およげるようにならんとな。' : 'じいちゃん：おう、こんど沖まで つれてってやろう。\nけんた：おれが案内してやるよ！');
+    naka('kenta'); },
+  async nakatsu(){ const f = S.story.flags, first = !f.shima_nakatsu; f.shima_nakatsu = 1;
+    if(!first){ await play(pick(['＊天の川の水が、さらさら流れている。つめたくて、きもちいい。', '＊鳥居から、海の向こうの宗像の町が見える。', '＊境内の木の上で、セミが鳴いている。とらずに、聞くだけにした。'])); return; }
+    await play(`＊中津宮。鳥居の前で、けんたが おまいりの しかたを教えてくれた。
+      けんた：おじぎを2回、手を2回たたいて、さいごに もう1回おじぎ。じいちゃんに教わったんだ。
+      ＊鳥居をふりかえると、海の向こうに、宗像の町が見える。
+      けんた：この鳥居、海の向こうの辺津宮と、向かい合ってるんだぜ。それから、もっと遠くの沖ノ島とも、つながってるんだって。
+      ぼく（ふつう）：海で、はなれてるのに？
+      けんた：うん。三人の女神さまは姉妹なんだ。はなれてても、家族なんだって。`);
+    const a = await choose('…なにを おいのりする？', ['「虫が、元気に育ちますように」', '「みんなが、海で ぶじでいられますように」'], 'boku');
+    await play(a === 1 ? 'けんた：…それ、じいちゃんが毎日おいのりしてることと、同じだ。' : 'けんた：おれは、じいちゃんの船が ぶじに帰ってきますように、だ。'); naka('kenta'); },
+  async umibe(){ const f = S.story.flags, first = !f.shima_umibe; f.shima_umibe = 1;
+    if(!first){ await play(pick(['＊波打ちぎわで、小さな魚が すいすい およいでいた。', '＊砂浜に、きれいな貝がらが落ちていた。…見るだけにして、そのままにした。', '＊岩のくぼみの水たまりに、ヤドカリが何びきも いた。'])); return; }
+    await play(`＊島の海べの岩場。島の子たちが、石をひっくりかえして、カニをさがしていた。
+      島の子（びっくり）：いたー！ カニ！ おなかに、たまごを だいてる！
+      おとうさん（教える）：カニのお母さんは、たまごを おなかにかかえて守るんだ。たまごから生まれた赤ちゃんは、小さすぎて、海をただよって大きくなる。
+      おとうさん（教える）：そして、カニのすがたになったら、どこかの海べに たどりつく。…この岩場のカニも、遠くの海から、海をわたってきたのかもしれないね。
+      ぼく（ふつう）：海をわたって、生まれた場所から…。`);
+    const a = await choose('島の子：このカニ、つれてかえっていい？', ['「赤ちゃんが生まれるから、石の下にもどそう」', '「見たら、もとの場所にかえそうね」'], 'boku');
+    await play(`${a === 0 ? 'ぼく（ふつう）：おなかに赤ちゃんがいるから、石の下にもどしてあげよう。' : 'ぼく（ふつう）：よく見たら、もとの場所にかえそうね。'}
+      島の子：…わかった！ 石も、もとどおりにしとく！
+      ＊ひっくりかえした石は、もとの向きに もどした。石の下は、小さな生きものの おうちだから。
+      けんた：おまえ、ほんとに虫の先生…いや、海の先生だな。`); naka('kenta'); },
   async tosho(ch){ const f = S.story.flags;
     await play('＠絵 tosho\n＊図書館。すずしくて、しずか。\n図書館の人：虫の本は、こちらのたなですよ。');
     if(ch === 4){ meet('soma'); if(!f.toshoSoma){ f.toshoSoma = 1; await play('そうま：あ、きみも来たんだ。ここ、ぼくの いちばん好きな場所なんだ。'); naka('soma'); } }
@@ -6107,8 +6150,8 @@ function renderOutStory(){
     <div class="spots" style="margin-top:10px"><div class="spot"><img class="spotPic" src="img/ui/spot_${spotArt(sp)}.webp" alt="" loading="lazy" draggable="false"><b>${esc(cn.place)}</b>　<span class="small">${esc(spotEnv(sp))}</span>
       <div class="bugs">今週のなかま：${cn.nakama.map(id=> S.dex[id] && S.dex[id].known ? BUGS[id].name : '？？？').join('・')}</div>
       <div class="row" style="margin-top:6px"><button type="button" class="btn pri" id="btnGoS" ${rain ? 'disabled' : ''}>${rain ? 'きょうは雨…' : '行く'}</button></div></div></div>
-    <h3 style="margin-top:12px">ほかの場所</h3>${ch === 3 ? '<p class="small">大島にとまっているあいだは、行けない。</p>' : `<div class="spots plx">${PLACES_X.map(P=> `<div class="spot"><img class="spotPic" src="${P.pic}" alt="" loading="lazy" draggable="false"><b>${esc(P.name)}</b>${plNew(P.k) ? '<span class="newMark norb">！</span>' : ''}　<span class="small">${esc(P.desc)}</span>
-      <div class="row" style="margin-top:6px"><button type="button" class="btn" data-pl="${P.k}" ${rain || plDone(P.k) ? 'disabled' : ''}>${plDone(P.k) ? 'きょうは行った' : rain ? 'きょうは雨…' : '行く'}</button></div></div>`).join('')}</div>`}`;
+    <h3 style="margin-top:12px">${ch === 3 ? '島の中を回る' : 'ほかの場所'}</h3><div class="spots plx">${placesNow().map(P=> `<div class="spot"><img class="spotPic" src="${P.pic}" alt="" loading="lazy" draggable="false"><b>${esc(P.name)}</b>${plNew(P.k) ? '<span class="newMark norb">！</span>' : ''}　<span class="small">${esc(P.desc)}</span>
+      <div class="row" style="margin-top:6px"><button type="button" class="btn" data-pl="${P.k}" ${rain || plDone(P.k) ? 'disabled' : ''}>${plDone(P.k) ? 'きょうは行った' : rain ? 'きょうは雨…' : '行く'}</button></div></div>`).join('')}</div>`;
   view.querySelectorAll('[data-pl]').forEach(b=> b.onclick = ()=> goPlace(b.dataset.pl));
   $('btnGoS').onclick = async ()=>{ const today = dayKey(), sp2 = Object.assign({}, sp, {name:cn.place});
     let gift = '';
