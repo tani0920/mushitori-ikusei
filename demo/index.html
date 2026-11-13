@@ -1020,6 +1020,14 @@ html.land.tall body.noteUI #rtabs .rt{font-size:15px}
 .storyCard .hatch{width:60px;height:76px;border-radius:50% 50% 46% 46%/58% 58% 42% 42%;background:radial-gradient(circle at 35% 30%,#fff8c8,#f0c040 45%,#b07810);box-shadow:0 0 30px 12px #ffe070;animation:eggGlow 1s ease-in-out infinite}
 @keyframes scIn{from{opacity:0;transform:translateY(8px)}}
 @keyframes glowFly{0%{transform:translate(-30vw,10vh) scale(.6);opacity:0}15%{opacity:1}100%{transform:translate(30vw,-12vh) scale(.3);opacity:0}}
+.visitCard{display:flex;align-items:center;gap:.6em;margin:.3em 0 .5em;padding:.45em .7em;background:#fffaf0f0;border:2px solid #c9a978;border-radius:12px;color:#4a3320;font-weight:700}
+.visitCard img{width:46px;height:46px;border-radius:10px;object-fit:cover;border:2px solid #fff;box-shadow:0 1px 3px #0003}.visitCard span{flex:1}.visitCard .btn{padding:.3em .9em}
+.plx .spot{position:relative}.newMark{position:absolute;top:8px;left:8px;z-index:1;width:1.6em;height:1.6em;border-radius:50%;background:#e8603a;color:#fff;font-weight:900;display:grid;place-items:center;box-shadow:0 2px 4px #0004;animation:nmk 1.2s ease-in-out infinite}
+@keyframes nmk{50%{transform:scale(1.15)}}
+.kakeraH{margin-top:14px}.kakeraList{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
+.kakeraList .kk{padding:.4em .6em;border-radius:10px;border:1px dashed #c8a060;background:#fff8e8;color:#9a8a70;min-height:2.4em}
+.kakeraList .kk.on{border:1px solid #d8a830;background:linear-gradient(#fffbe8,#fff1c4);color:var(--ink)}.kakeraList .kk b{display:block}.kakeraList .kk small{font-size:.82em;line-height:1.4}
+.storyCard .kakeraCard .sch{color:#c89820}
 .noteBook{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
 .npage{background:#fffdf4;border:1px solid #d8c8a0;border-radius:8px;padding:6px 8px;display:flex;flex-direction:column;gap:3px;color:#4a3418}
 .npage.empty{opacity:.6}.npage .npic{width:84px;height:84px;align-self:center}.npage small{font-size:.78em;line-height:1.5}
@@ -1061,7 +1069,8 @@ const CG_OTO = {
   ame:{bgm:'bgm_ouchi', bgmV:60, amb:{rain:85}}, hotaru:{bgm:'bgm_yoru', amb:{night:50, frogs:45, stream:45}}, ferry:{bgm:'bgm_soto', amb:{waves:70, wind:50}},
   amanogawa:{bgm:'bgm_fushigi', amb:{waves:40, night:40}}, tenbodai:{bgm:'bgm_soto', amb:{wind:70}}, matsuri:{bgm:'bgm_soto', amb:{night:30}},
   taifu:{bgm:null, amb:{typhoon:80, rain:70}}, eki:{bgm:'bgm_ouchi', amb:{}}, yamaasa:{bgm:'bgm_soto', bgmV:70, amb:{wind:50, cicada:30}},
-  takamiya:{bgm:'bgm_fushigi', amb:{wind:45, cicada:20}}, yohaisho:{bgm:'bgm_fushigi', amb:{waves:45, night:40}}, happyo:{bgm:'bgm_wakare', amb:{}}
+  takamiya:{bgm:'bgm_fushigi', amb:{wind:45, cicada:20}}, yohaisho:{bgm:'bgm_fushigi', amb:{waves:45, night:40}}, happyo:{bgm:'bgm_wakare', amb:{}},
+  gakko:{bgm:'bgm_ouchi', amb:{cicada:40, wind:25}}, obaa:{bgm:'bgm_ouchi', amb:{cicada:25, wind:30}}, tosho:{bgm:'bgm_ouchi', bgmV:50, amb:{}}
 };
 let otoForce = null;   // とくべつな場面（虫をかえす・章のおわり）では、この音にする
 const NAKU = {suzumushi:{id:'v_suzu', slots:{asa:30, hiru:25, yu:80, yoru:100}}, abura:{id:'v_abura', slots:{asa:70, hiru:100, yu:60}}};   // 鳴くのはオスの成虫だけ
@@ -2112,7 +2121,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261114-0057';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261114-0224';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-08', items:[
     'ストーリーの七夕祭（3章）で、出店を回れるようになった。ヨーヨーつり・輪なげ・くじびきで遊べるよ',
@@ -2123,6 +2132,10 @@ const CHANGELOG = [
     '時計の数字は、はやい は30分、ゆっくり は15分ごとに動く',
     '夜9時半をすぎても時計が進みつづけて、ねる時間をのがすことがあったのを直した',
     'すもうで勝つと あいての子はくやしい顔、負けると うれしい顔になる。ゆうたのおかあさん・島の子の絵もできた',
+    'ストーリーに「いのちのつながり」の話がふえた。虫も人も、いのちは つながっている。おばあちゃんのキャベツと花粉をはこぶ虫、ホタルの一生、むかしの海の人、はるかのカマキリ、たおれた木、そして発表会',
+    '「そと」から、夏休みの学校・おばあちゃんの家・図書館に行けるようになった。図書館では、育てている虫のことを くわしく しらべられる（ずかんにも のる）',
+    '2・4・6日目の夕方は、えんがわで おとうさんと話せる。おみせや場所に、その日だけ だれかが来ていることもある',
+    '会話で えらぶと、子どもたちと なかよしになる。ふしぎのかけら（18まい）を集めよう。虫しらべノートのうしろで見られる',
     '音が出るようになった。場面ごとに曲（タイトル・おうち・そと・夜・ふしぎ・すもう・おわかれ）と、まわりの音（風・セミ・夜の虫・波・雨・台風・せせらぎ・カエル）が入れかわる。さがす・見つけた・きりふき・脱皮のときにも音が出る。オプションで OFF にできる',
     '飼っているスズムシ（オスの成虫）は、夕方から夜にリーンリーンと鳴く。アブラゼミのオスは昼に鳴く。ケースを開くと近くで聞こえる（メスは鳴かない）',
     '会話の人の絵の切りぬきを直した（かみの毛の先・指のあいだ・足のあいだに のこっていた背景を消した）',
@@ -3345,9 +3358,10 @@ const RIVAL_NAME = {yuta:'ゆうた', haruka:'はるか', kenta:'けんた', som
 // 立ち絵の大きさ（おとな＝1）。同じ足もとに立つので、小さい子は頭が低くなる
 const CHARA_SC = {boku:.8, yuta:.68, haruka:.76, kenta:.8, soma:.85, daichi:.9, ren:.94, oba:.86, shimakko:.74};
 const charaWho = k=> String(k).split('_')[0];
-const FACE_ART = new Set([...Object.keys(FACES), ...Object.keys(RIVAL_NAME), ...Object.keys(RIVAL_NAME).flatMap(k=> [k + '_joy', k + '_sad']), 'oba', 'mizu', 'jii', 'eki', 'kansatsu', 'jinja', 'yutamama', 'shimakko', 'shimakko_wow']);   // 絵がある人（来た人は、名前だけ）。すもうの子は うれしい(_joy)・くやしい(_sad) も（img/chara/キー.webp と img/chara/cut/キー.webp）
+const FACE_ART = new Set([...Object.keys(FACES), ...Object.keys(RIVAL_NAME), ...Object.keys(RIVAL_NAME).flatMap(k=> [k + '_joy', k + '_sad']), 'oba', 'mizu', 'jii', 'eki', 'kansatsu', 'jinja', 'siro', 'yutamama', 'shimakko', 'shimakko_wow']);
+const CHARA_ALIAS = {siro:'jinja'};   // 白いかみの人は、神社の人の絵（6章で同じ人とわかる）   // 絵がある人（来た人は、名前だけ）。すもうの子は うれしい(_joy)・くやしい(_sad) も（img/chara/キー.webp と img/chara/cut/キー.webp）
 const faceName = k=> FACES[k] || RIVAL_NAME[k] || NPC_NAME[k] || RIVAL_NAME[charaWho(k)] || NPC_NAME[charaWho(k)] || '';
-const faceImg = (k, cls='')=> FACE_ART.has(k) ? `<img class="fimg ${cls}" src="img/chara/${k}.webp" alt="${esc(faceName(k))}" draggable="false">` : '';
+const faceImg = (k, cls='')=> FACE_ART.has(k) ? `<img class="fimg ${cls}" src="img/chara/${CHARA_ALIAS[k] || k}.webp" alt="${esc(faceName(k))}" draggable="false">` : '';
 /* 会話：話す人を、大きな切りぬきの絵で出す（ノベルゲームのように）。ぼくは左、ほかの人は右。
    say(文, {face:'papa_teach'})。すもうなど2人のときは {face:'yuta', with:'boku'}（with の人は少し暗く、反対がわに） */
 const isBoku = k=> /^boku/.test(k || '');
@@ -3355,7 +3369,7 @@ function talkActors(L, w, opts){
   const k = opts.face, side = isBoku(k) ? 'l' : 'r', other = opts.with;
   const list = [[k, side, true]]; if(other) list.push([other, side === 'l' ? 'r' : 'l', false]);
   const A = document.createElement('div'); A.className = 'actors';
-  A.innerHTML = list.filter(([x])=> FACE_ART.has(x)).map(([x, sd, on])=> `<img class="actor ${sd} ${on ? 'on' : 'off'}" style="--sc:${CHARA_SC[charaWho(x)] || 1}" src="img/chara/cut/${x}.webp" alt="" draggable="false">`).join('');
+  A.innerHTML = list.filter(([x])=> FACE_ART.has(x)).map(([x, sd, on])=> `<img class="actor ${sd} ${on ? 'on' : 'off'}" style="--sc:${CHARA_SC[charaWho(x)] || 1}" src="img/chara/cut/${CHARA_ALIAS[x] || x}.webp" alt="" draggable="false">`).join('');
   L.insertBefore(A, w);
   // 立ち絵（頭から ふとももまで）は会話の窓のうしろに立つ。おとなの こしが窓の上のふちに来る大きさ。子どもは同じ足もとで小さく（CHARA_SC）
   const fit = ()=>{ if(!L.isConnected) return; const lr = L.getBoundingClientRect(), wr = w.getBoundingClientRect(), top = wr.top - lr.top;
@@ -3505,6 +3519,7 @@ function render(){
   paintPlace(atSpot ? 'spot_' + spotArt(outState.spot) : tab === 'home' ? 'place_heya' : 'scr_' + tab, slotOf());
   view.onscroll = null;
   ({home:renderHome, out:renderOut, sumo:renderSumo, shop:renderShop, dex:renderDex, opt:renderOpt})[tab]();
+  if(storyOn() && (tab === 'shop' || atSpot)) visitInject(tab === 'shop' ? 'shop' : 'spot');
   otoScene();
 }
 
@@ -4385,7 +4400,7 @@ function showDexDetail(id){
       ${b.watch ? '<tr><td>そだてる</td><td>見るだけ（飼えない）</td></tr>' : `<tr><td>ゲームでの育ちかた</td><td>${stages}</td></tr><tr><td>ごはん</td><td>${esc(ITEMS[b.food].name)}${b.foodAdult !== b.food ? `（成虫は${esc(ITEMS[b.foodAdult].name)}）` : ''}</td></tr>
       <tr><td>基本わざ</td><td>${esc(MOVES[b.shape].name)}（${esc(MOVES[b.shape].info)}）</td></tr>
       <tr><td>得意わざ</td><td>${['atk','def','spd'].filter(k=>MOVES[b.shape+'_'+k]).map(k=>`${{atk:'ちから型',def:'まもり型',spd:'すばやさ型'}[k]}：${esc(MOVES[b.shape+'_'+k].name)}`).join('<br>') || 'なし'}</td></tr>`}
-      <tr><td>じっさいは</td><td>${esc(b.real)}</td></tr>
+      <tr><td>じっさいは</td><td>${esc(b.real)}</td></tr>${d.shirabe && SHIRABE[id] ? `<tr><td>図書館でしらべた</td><td>${fmtMsg(SHIRABE[id])}</td></tr>` : ''}
       <tr><td>飼いかた</td><td>${esc(b.care)}</td></tr>
       <tr><td>きろく</td><td>${esc(d.found)} に ${esc(d.where)} でみつけた${d.adult ? `<br>${esc(d.adult)} に羽化した` : ''}${d.best ? `<br>さいだい ${d.best}mm` : ''}${d.released ? `<br>${d.released}回、さいごまでそだててかえした` : ''}${bornList ? `<br>生まれ：${bornList}` : ''}</td></tr></table>`
     : '<p>まだみつけていない虫。</p>'}</div>`);
@@ -4954,7 +4969,7 @@ function startMihon(){
 const STORY_KEY = KEY_PRE + 'munakata-mushisodate-story-v1';
 const STORY_SPEED = {hayai:{name:'はやい', m:360, txt:'4分で1日。1章が30分くらい（おすすめ）'}, yukkuri:{name:'ゆっくり', m:24, txt:'1時間で1日。毎日少しずつ'}, mainichi:{name:'まいにち', m:1, txt:'スマホの時計と同じ。1章が1週間'}};
 const STORY_Y = 2026;
-const NPC_NAME = {oba:'畑のおばあちゃん', mizu:'水を見回るおじさん', jii:'漁師のじいちゃん', eki:'道の駅のおねえさん', kansatsu:'自然観察員さん', jinja:'神社の人', yutamama:'ゆうたのおかあさん', shimakko:'島の子どもたち', kyaku:'来た人'};
+const NPC_NAME = {oba:'畑のおばあちゃん', mizu:'水を見回るおじさん', jii:'漁師のじいちゃん', eki:'道の駅のおねえさん', kansatsu:'自然観察員さん', jinja:'神社の人', yutamama:'ゆうたのおかあさん', shimakko:'島の子どもたち', kyaku:'来た人', siro:'白いかみの人', sensei:'学校の先生', shisho:'図書館の人'};
 // 章：場所（SPOTS の key）・なかま（さがすと出る虫）・その日もらえるエサ・出会う子
 const CH = [
   {ttl:'夏休みのはじまり'},
@@ -4971,6 +4986,7 @@ const STORY_SRC = [   // 参考にしたページ（資料_宗像.md の出典�
   ['宗像市アーカイブ「七夕伝説」','www.munakata-archives.asia'],
   ['「神宿る島」宗像・沖ノ島と関連遺産群（沖津宮・辺津宮・沖津宮遙拝所・キッズページ）','www.okinoshima-heritage.jp'],
   ['クロスロードふくおか（沖津宮遙拝所・宗像大島・御嶽山展望台・中津宮・みあれ祭）','www.crossroadfukuoka.jp'],
+  ['海の道むなかた館「船〜海にこぎだした人々〜」','www.city.munakata.lg.jp/searoad/'], ['「神宿る島」宗像・沖ノ島と関連遺産群 特別研究事業 成果報告書（航海と島のネットワーク）','www.okinoshima-heritage.jp/lectures/'],
   ['日本アンリ・ファーブル会「昆虫採集などで注意すべきこと」','fabre.jp'], ['よめるば「虫をかう」','yomeruba.com'], ['SUUMOジャーナル（2013年9月）','suumo.jp/journal'],
 ];
 /* ---- 時計 ---- */
@@ -4995,7 +5011,7 @@ const storyOn = ()=> !!(S && S.story);
 const SPK = {'ぼく':{'':'boku','ふつう':'boku','うれしい':'boku_joy','ぷんぷん':'boku_angry','なみだ':'boku_sad','たのしい':'boku_fun','びっくり':'boku_surprise'},
   'おとうさん':{'':'papa','ふつう':'papa','教える':'papa_teach','しんぱい':'papa_worry','にっこり':'papa_happy'}, 'おじさん':{'':'ojisan','わらう':'ojisan_laugh'},
   ...Object.fromEntries([['ゆうた','yuta'],['はるか','haruka'],['けんた','kenta'],['そうま','soma'],['だいち','daichi'],['れん','ren']].map(([n, k])=> [n, {'':k, 'ふつう':k, 'うれしい':k + '_joy', 'くやしい':k + '_sad'}])),
-  'おばあちゃん':'oba','水のおじさん':'mizu','じいちゃん':'jii','おねえさん':'eki','観察員さん':'kansatsu','神社の人':'jinja','ゆうたのおかあさん':'yutamama','島の子':{'':'shimakko', 'びっくり':'shimakko_wow'},'来た人':'kyaku'};
+  'おばあちゃん':'oba','水のおじさん':'mizu','じいちゃん':'jii','おねえさん':'eki','観察員さん':'kansatsu','神社の人':'jinja','白いかみの人':'siro','先生':'sensei','図書館の人':'shisho','ゆうたのおかあさん':'yutamama','島の子':{'':'shimakko', 'びっくり':'shimakko_wow'},'来た人':'kyaku'};
 /* ---- 七夕祭の出店（ミニゲーム）：ヨーヨーつり・輪なげ・くじびき（3章5日目。2026-11-09） ----
    絵は画面の中で描く（GPTの絵は使わない）。#matsuri がひらいているあいだは、ストーリーの時計は止まる。 */
 let miniSt = null;   // いま遊んでいるミニゲームのようす（テストでも見る）
@@ -5168,7 +5184,7 @@ async function tanabataStalls(){
       await play(r.got.includes(1) ? 'けんた：1等！？ まじかよ！' : r.got.length ? 'けんた：おれ、ラムネばっかりだった。…いっしょに飲もうぜ。' : 'けんた：くじは、また来年だな。'); }
     save(); }
 }
-const CG = ['ame', 'hotaru', 'ferry', 'amanogawa', 'tenbodai', 'matsuri', 'taifu', 'eki', 'yamaasa', 'takamiya', 'yohaisho', 'happyo'];   // img/ui/ev/キー.webp
+const CG = ['ame', 'hotaru', 'ferry', 'amanogawa', 'tenbodai', 'matsuri', 'taifu', 'eki', 'yamaasa', 'takamiya', 'yohaisho', 'happyo', 'gakko', 'obaa', 'tosho'];   // img/ui/ev/キー.webp（gakko・obaa・tosho は ほかの場所の絵。2026-11-14）
 function cgShow(k){ let e = $('cgLayer');
   if(!k || k === 'off' || !CG.includes(k)){ if(e){ e.remove(); otoScene(); } return; }
   if(e && e.dataset.k === k) return; if(e) e.remove();
@@ -5276,18 +5292,19 @@ function storyBanner(){
   if(st.done) return `<div class="storyBar norb"><b>ストーリー　おしまい</b><span>この夏の記録は、虫しらべノートにのこっている。</span><button type="button" class="btn" id="sbNote">虫しらべノート</button></div>`;
   const egg = st.egg && !st.egg.hatched ? `<div class="eggCard norb" id="sbEgg"><span class="egg${st.egg.glow ? ' glow' : ''}"></span><span><b>ふしぎなたまご</b><small>${esc(st.egg.txt || '大島で見つけた、金色のたまご。')}</small></span></div>` : '';
   return `<div class="storyBar norb"><b>${ch ? `${ch}章　${st.day}日目` : '序章'}</b><span class="sttl">${ch ? esc(CH[ch].ttl) : ''}</span>${st.goal ? `<span class="goal">めあて：${esc(st.goal)}</span>` : ''}
-    <span class="sbBtns"><button type="button" class="btn" id="sbNote">虫しらべノート</button>${(sl === 'yu' || sl === 'yoru') && storySp().m > 1 ? '<button type="button" class="btn pri" id="sbSleep">ねる（あしたへ）</button>' : ''}</span></div>${egg}`;
+    <span class="sbBtns">${engawaOpen() ? '<button type="button" class="btn pri" id="sbEngawa">えんがわで おとうさんと話す</button>' : ''}<button type="button" class="btn" id="sbNote">虫しらべノート</button>${(sl === 'yu' || sl === 'yoru') && storySp().m > 1 ? '<button type="button" class="btn pri" id="sbSleep">ねる（あしたへ）</button>' : ''}</span></div>${egg}`;
 }
 function storyBannerWire(){
   if($('sbNote')) $('sbNote').onclick = showNote;
   if($('sbSleep')) $('sbSleep').onclick = storySleep;
+  if($('sbEngawa')) $('sbEngawa').onclick = engawaTalk;
   if($('sbEgg')) $('sbEgg').onclick = ()=> say(S.story.egg.glow ? 'たまごが、ほんのり光っている…。\nそっと手をあてると、あたたかい。' : '金色の、大きなたまご。\nかわかないように、しめった落ち葉の上にのせてある。', {face:'boku'});
 }
 function showNote(){
   const st = S.story, pages = [1,2,3,4,5,6].map(ch=>{ const p = st.note[ch];
     if(!p) return `<div class="npage empty"><b>${ch}ページめ</b><span>${ch <= st.ch && st.seen[ch + '-1'] ? '（とちゅう）' : '（まだ）'}</span></div>`;
     return `<div class="npage"><b>${ch}ページめ　${esc(CH[ch].place.replace(/の(畑|森|草むら|山道)$/, ''))}</b><div class="npic">${p.bug ? svgBest(p.bug, {rare:p.rare}) : ''}</div><span>${p.bug ? `${esc(p.name)}（${esc(BUGS[p.bug].name)}）${p.size ? `　${p.size}mm` : ''}` : ''}</span><small>${esc(p.txt || '')}</small></div>`; }).join('');
-  openPanel(`${st.name ? st.name + 'の' : ''}虫しらべノート`, `<p class="small">夏休みの自由研究。毎週1ぴき、虫を見つけて、そだてて、記録して、見つけた場所にかえす。</p><div class="noteBook">${pages}</div>`);
+  openPanel(`${st.name ? st.name + 'の' : ''}虫しらべノート`, `<p class="small">夏休みの自由研究。毎週1ぴき、虫を見つけて、そだてて、記録して、見つけた場所にかえす。</p><div class="noteBook">${pages}</div>${kakeraHTML()}`);
 }
 function showSources(){
   openPanel('参考にしたもの', `<p><b>この物語はフィクションです。</b><br><small>実在する場所や行事が出てきますが、登場する人や、ふしぎな出来事は作り話です。ミアレカブトは、このゲームのための架空の虫です。</small></p>
@@ -5306,11 +5323,24 @@ async function storyBegin(){
     おとうさん（ふつう）：手伝ってくれないか？ 毎週1ぴき、虫を見つけて、1週間そだてて、記録して、見つけた場所にかえす。
     ぼく（びっくり）：1週間で、虫が大きくなるの？
     おとうさん（にっこり）：ほんとうは、もっと長くかかる虫もいる。でも、この夏は、とくべつな1週間にしよう。
-    おとうさん（教える）：それから、やくそくがひとつ。//つかまえた虫は、かならず、つかまえた場所にかえすこと。`);
+    おとうさん（ふつう）：虫を育てるのは、小さな いのちを あずかるってことなんだ。だから、やくそくを3つしよう。
+    おとうさん（教える）：ひとつ、毎日 ようすを見ること。//ふたつ、さいごまで 面倒をみること。//みっつ、つかまえた虫は、かならず、つかまえた場所にかえすこと。
+    ぼく（ふつう）：…うん。やくそくする。`);
   S.yk.release = 1;
   const nm = await askText('おとうさんから「虫しらべノート」をもらった。\n表紙に、名前を書こう！', '');
   S.story.name = (nm || 'ぼく').slice(0, 10);
   await play(`おとうさん（にっこり）：「${S.story.name}の虫しらべノート」か。いい名前だ。
+    ＊そのとき、本だなから、古いノートが1さつ落ちてきた。表紙に、子どもの字で「虫しらべノート」。
+    ぼく（びっくり）：これ、おとうさんの？
+    おとうさん（にっこり）：…なつかしいな。おとうさんが、ちょうど きみくらいのときに書いたノートだ。
+    ＊セミやカブトムシの絵が、たくさん。でも、いちばん最後のページだけ、のりでくっついたように開かない。
+    おとうさん（ふつう）：最後のページ？ …さあ、なにを書いたんだったかな。`);
+  await kakera('note');
+  await play(`＊その夜。えんがわから海のほうを見ていると、大島のあたりで、一瞬だけ、金色の光が見えた。
+    ぼく（びっくり）：…いまの、なに？
+    ＊おとうさんをよびに行って もどると、もう、なにも見えなかった。`);
+  await kakera('hikari');
+  await play(`ぼく（ふつう）：（流れ星…？ それとも…）
     ＊ゲームの時計の速さは、「その他」でかえられるよ。いまは「${storySp().name}」（${storySp().txt}）。
     ＊夜の9時になったら、ねる時間。つぎの日の朝になるよ。//夕方からは、上の時計の「🌙 ねる」で、早めにねることもできる。`);
   S.story.seen['0-0'] = 1; S.story.gt = atHour(1, 7); storyRT = Date.now(); save();
@@ -5366,7 +5396,24 @@ const STORY_DAY = {
       おばあちゃん：あらまあ、虫さがしかい。うちのキャベツは、いもむしだらけだよ。
       おばあちゃん：葉っぱも、持っていきなさい。（キャベツの葉とミカンの葉をもらった）
       おとうさん（教える）：「そと」から赤間の畑へ行って、葉のうらをさがしてみよう。`); storyGoal('赤間の畑で、いもむしをさがす'); },
-  '1-2': async ()=>{ await play('おとうさん（教える）：いもむしは、たくさん食べて、たくさんフンをする。//葉は毎日かえて、フンはそうじしよう。');
+  '1-2': async ()=>{
+    await play(`＊朝、おとうさんと畑へ。おばあちゃんが、穴だらけのキャベツを見ている。
+      おばあちゃん：まあ、きのうより穴がふえとる。
+      ＊ゆうたも来ていた。
+      ゆうた：いもむし、ぜんぶ とっちゃえば？`);
+    const a = await choose('…どうする？', ['「とってあげる」', '「少し、のこしてあげたい」'], 'boku');
+    await play(a === 0 ? 'ぼく（ふつう）：おばあちゃん、とってあげようか？' : 'ぼく（ふつう）：…少し、のこしてあげたいな。チョウになるところ、見たいもん。');
+    await play(`おばあちゃん：ふふ。ぜんぶ とったら、チョウがいなくなってしまうからねえ。うちのキャベツは、半分は虫の分なの。
+      おばあちゃん：チョウがおらんと、花の粉が はこばれんでしょう。
+      ぼく（ふつう）：花の粉？
+      おとうさん（教える）：チョウやハチは、花のみつをすいに来るとき、体に花の粉…「花粉」をつけて、ほかの花へ はこぶんだ。//花は、花粉がとどくと、実や たねができる。
+      おとうさん（教える）：キャベツも、そのままにしておくと黄色い花がさいて、たねができる。ミカンも、リンゴも、カボチャも、虫が花粉をはこんで、実ができるんだよ。
+      ぼく（びっくり）：虫が、野菜や くだものを作るのを、手伝ってるの？
+      おとうさん（にっこり）：そう。花は みつを ごちそうして、虫は 花粉をはこぶ。おたがいに 助けあっているんだ。//花粉をはこぶ虫のことを「ポリネーター」っていうんだよ。
+      ゆうた：じゃあ、いもむしは…チョウになったら、おばあちゃんの畑を手伝うんだ！
+      おばあちゃん：そういうこと。だから、ちょっとくらい葉っぱを食べても、おたがいさま。`);
+    naka('yuta');
+    await play('おとうさん（教える）：いもむしは、たくさん食べて、たくさんフンをする。//葉は毎日かえて、フンはそうじしよう。');
     const c = stCase(); if(c) await play(genkiOf(c) >= 60 ? '＊いもむしが、ころころ太ってきた。' : 'おとうさん（しんぱい）：葉がかわいて、元気が少しへっているね。葉は、しおれる前にかえよう。'); },
   '1-3': async ()=>{ S.story.flags.noOut = dayKey(); giveItem('kyabetsu');
     await play(`＠絵 ame
@@ -5379,7 +5426,10 @@ const STORY_DAY = {
     await play(stStage() === 'adult' ? 'ゆうた：ほんとにチョウになってる…！ すげー。' : 'ゆうた：まだ、いもむしなの？ …でも、ちょっと大きくなったね。');
     await play(`ゆうた：…ぼくのセミは、すぐ死んじゃった。セミって、育てられないの？
       おとうさん（教える）：セミは、何年も土の中でくらして、外に出たら1〜2週間しか生きないんだ。//だから、外で鳴いているのを聞くのが、いちばんいいかもね。
-      ゆうた：そっか…。じゃあ、きょうは、木にかえしてくる。`); },
+      ゆうた：そっか…。`);
+    const a = await choose('ゆうた：…ぼく、セミに わるいことしたかな。', ['「こんどは、いっしょに見に行こう」', '「知らなかったんだから、しかたないよ」'], 'boku');
+    await play(a === 0 ? 'ぼく（ふつう）：こんどは、いっしょに見に行こう。外で鳴いてるセミ。\nゆうた（うれしい）：…うん！ じゃあ、きょうは、木にかえしてくる。' : 'ぼく（ふつう）：知らなかったんだから、しかたないよ。いま、知ったんだもん。\nゆうた：…うん。つぎは、ちゃんとする。');
+    naka('yuta'); },
   '1-6': async ()=>{ await play('おとうさん（ふつう）：きょうは、ノートにチョウの絵をかいてみよう。//虫めがねで、はねのもようや、口や、触角を、よく見てごらん。'); storyGoal('虫めがねで、よく見る'); },
   '1-7': async ()=>{ const c = stCase();
     await play(`＊畑に、おばあちゃん・ゆうた・ゆうたのおかあさんが集まった。チョウを見送る会だ。`);
@@ -5390,6 +5440,7 @@ const STORY_DAY = {
       await play(s >= .7 ? 'おばあちゃん：まあ、なんてきれいなはね。毎日ちゃんと葉をかえたからだね。\nゆうた：ぼくも、こんど育てる！' : s >= .45 ? 'おばあちゃん：元気にとんでいったねえ。' : 'おとうさん（教える）：さわりすぎると、はねの粉が取れてしまうんだ。次は、そっとね。');
     } else await play(`おとうさん（ふつう）：まだチョウにはならなかったね。でも、ここまで育ったのも、りっぱな記録だ。//見つけた畑に、そっとかえしてあげよう。`);
     await play('ぼく（うれしい）：元気でね！');
+    if(stageOf(c).k === 'adult') await play(S.story.flags.obaaMikan ? '＊チョウは、おばあちゃんの家のミカンの木のほうへ、ひらひら飛んでいった。\nおばあちゃん：…おじいさんの木のほうへ行ったねえ。\n＊おばあちゃんは、そっと手をあわせた。' : 'おばあちゃん：あのチョウも、どこかの花の花粉を はこぶんだねえ。');
     await endChapter(1, `赤間の畑で見つけた${BUGS[c.bug].name}。${stageOf(c).k === 'adult' ? 'チョウになって、空へかえっていった。' : '畑にかえした。'}`, 'おとうさん（にっこり）：来週は、田んぼへ行こう。夜にしか会えない生きものがいるんだ。'); },
   /* ---- 2章 ため池と田んぼ ---- */
   '2-1': async ()=>{ giveItem('nasu');
@@ -5433,19 +5484,35 @@ const STORY_DAY = {
       けんた：短冊、書こうぜ！`);
     const w = await choose('短冊に、なんて書く？', ['虫が元気に育ちますように', 'すもうで勝てますように', 'ふしぎなものに会えますように'], 'boku');
     S.story.flags.wish = ['虫が元気に育ちますように', 'すもうで勝てますように', 'ふしぎなものに会えますように'][w];
-    await play('おとうさん（教える）：神社の境内の木や虫は、とらずに見るだけにしよう。'); },
+    await play('おとうさん（教える）：神社の境内の木や虫は、とらずに見るだけにしよう。');
+    await play(`＊短冊を書いて顔をあげると、天の川の橋の上に、白い長いかみの人。
+      白いかみの人：七夕のころ、この川には、遠くの光が うつるのです。
+      ＊けんたに知らせようとふりむいて、もう一度見ると、もう いなかった。`); siroSeen(); await kakera('tenohikari'); },
   '3-3': async ()=>{ await play(`＠絵 tenbodai
       ＊島でいちばん高い、御嶽山の展望台へ。宗像の町、福岡のほう、そして反対がわの水平線に、うすく島が見える。
       じいちゃん：あれが沖ノ島。島そのものが神さまでな、ふだんは人は入れん。//木も草も石も、ひとつも持ち帰っちゃならん。島で見聞きしたことは、よそで話しちゃならん、とも言われとる。だから「お言わずさま」ともよばれたんだ。
       じいちゃん：わしら大島の漁師も、沖ノ島のものは持ち帰らん。むかしからの、やくそくだ。
       ぼく（びっくり）：石も？ 草も？
-      おとうさん（教える）：その土地のものは、その土地にあるのがいちばん。虫も同じだね。`); },
+      おとうさん（教える）：その土地のものは、その土地にあるのがいちばん。虫も同じだね。
+      ぼく（ふつう）：沖ノ島まで、どれくらいあるの？
+      じいちゃん：ここからでも、50キロくらいある。いまはエンジンのついた船で、2時間くらいで行ける。
+      じいちゃん：だがな、わしの じいちゃんの、そのまた じいちゃんの ころは、手でこぐ船や、帆をはった船で行ったんだ。風がなければ、何日も海の上だ。
+      じいちゃん：もっと むかしには、宗像の海の人たちは、玄界灘をこえて、朝鮮半島や、中国の大陸まで わたっていた。
+      ぼく（びっくり）：こぐ船で！？
+      じいちゃん：玄界灘は、波があらい。嵐にあって、海で いのちを落とした人も、きっと たくさん おったろう。
+      じいちゃん：それでも、魚をとって家族を食べさせて、海の向こうと 品物や知恵を 行き来させてきた。そういう人たちが おったから、いまの わしらが おるんだ。
+      けんた：…じいちゃんの船も、そういう船の、子どもの子どもの…なんだな。
+      じいちゃん：はっはっは、そうだな。だから漁師は、沖ノ島をおがんで、海の安全をいのる。むかしの人も、同じように いのってきたんだ。`); },
   '3-5': async ()=>{ await play(`＊8月7日。夕方、港のそばの広場でお祭り。出店や、ステージ。けんたと出店をまわる。`);
     await tanabataStalls();
     await play(`＠絵 matsuri
       ＊夜8時、中津宮の織女神社の前で、七夕祭。「${S.story.flags.wish || '虫が元気に育ちますように'}」の短冊も、おさめられた。`); storyGoal('七夕祭の夜'); },
   '3-6': async ()=>{ await play(`＊かんす海水浴場の近くの海べ。海の中に、朱色の鳥居が立つ小さな島（夢の小夜島）が見える。
-      けんた：すもう、やろうぜ！ ノコギリのはさみで、土俵の外へなげとばしてやる！（「すもう」で、けんたとできるよ）`); },
+      けんた：…おれさ、じいちゃんの むかしの船の話、きいてから、ちょっと考えたんだ。
+      けんた：おれ、ふだんは町の子だから、島のこと、ちゃんと知らなかった。じいちゃんが どんな海で 漁をしてるのかも。`);
+    const a = await choose('けんた：来年も、じいちゃんの船に のせてもらうんだ。', ['「いいね。ぼくも、また島に来る」', '「みあれ祭も、見てみたい！」'], 'boku');
+    await play(a === 0 ? 'けんた：ほんとか！ やくそくだぞ！' : 'けんた：10月だな！ じいちゃんの船、大漁旗 かかげるんだぜ！'); naka('kenta');
+    await play(`けんた：すもう、やろうぜ！ ノコギリのはさみで、土俵の外へなげとばしてやる！（「すもう」で、けんたとできるよ）`); },
   '3-7': async ()=>{ const c = stCase();
     if(c) await play(`＊${dispName(c)}を、つかまえた島の森にかえした。`); else await goneLine();
     await play(`けんた：また来いよな！ たまご、生まれたら見せろよ！
@@ -5475,13 +5542,35 @@ const STORY_DAY = {
       おねえさん：こっちで雨やどりしていって！ 台風が近づいてるから、海に近いところはあぶないよ。
       ＊道の駅で雨やどり。
       おねえさん：今週末、ここで「夏休み昆虫展」をやるの。育てた虫、出してみない？
+      ＊雨やどりの人の中に、白い長いかみの人がいた。ぼくの虫かごの、たまごを見ている。
+      白いかみの人：…あたたかくして あげてください。その子は、海をわたる子です。
+      ＊雷が光って、目をつぶった。あけると、もう いなかった。
       おとうさん（教える）：外の虫たちは、葉のうらや石の下でじっとして、台風をやりすごすんだ。//家にもどったら、ベランダの虫かごは、へやに入れよう。`); storyGoal('台風。ベランダの虫かごを、へやへ'); },
   '4-5': async ()=>{ meet('soma');
     await play(`＊晴れ。草むらは、ところどころ、たおれている。
       そうま：だいじょうぶだった？ ぼくのカブトも、ちゃんと家に入れといたよ。`);
     if(S.story.egg){ S.story.egg.glow = 1; S.story.egg.txt = 'ほんのり、あたたかい。'; await play(`＊そうまが、たまごをのぞきこんだ。
-      そうま：それ、なに…？ 金色…？ ほんのりあったかい…。`); } },
-  '4-6': async ()=>{ await play('そうま：夏の王様カブトムシと、すもうしてみる？（「すもう」で、そうまとできるよ）'); storyGoal('昆虫展にむけて、ケースをきれいに'); },
+      そうま：それ、なに…？ 金色…？ ほんのりあったかい…。`); }
+    meet('haruka'); await play(`＊夕方、はるかが走ってきた。
+      はるか：ねえ、わたしのカマキリが、草のくきに、あわのかたまりみたいなのを産んだの！
+      おとうさん（教える）：それは「卵のう」だ。中に、たまごが100こ以上 入っている。あわが かたまって、冬の寒さから たまごを守るんだよ。
+      はるか（うれしい）：100こも！？`); S.story.flags.ranou = 1; },
+  '4-6': async ()=>{ meet('haruka');
+    await play(`＊朝、はるかが家に来た。目が赤い。
+      はるか：…カマキリが、動かなくなっちゃった。
+      はるか：ちゃんと エサもあげたし、きりふきもしたのに…。わたしのせい？`);
+    const a = await choose('…', ['「はるかのせいじゃないよ」', '（だまって、となりにすわる）'], 'boku');
+    await play(a === 0 ? 'ぼく（ふつう）：はるかのせいじゃないよ。毎日ちゃんと世話してたの、ぼく、知ってる。' : '＊なにも言えなくて、となりにすわった。はるかは、しばらく下を向いていた。');
+    await play(`おとうさん（ふつう）：…はるかちゃん。カマキリは、夏の終わりから秋に たまごを産んで、一生をおえるんだ。春に生まれて、半年くらい。それが、カマキリの いのちの長さなんだよ。
+      おとうさん（にっこり）：卵のうを産めたのは、さいごまで元気だった しるしだ。はるかちゃんは、さいごまで、ちゃんと育てたんだよ。
+      はるか：…さいごまで。
+      ＊みんなで、さつき松原へ行った。カマキリは、松の根もとに、そっとうめた。
+      ＊卵のうは、カマキリがいた草むらの、じょうぶな草のくきに むすびつけた。
+      おとうさん（教える）：春になったら、ここから 100ぴき以上の 赤ちゃんカマキリが生まれてくる。`);
+    const b = await choose('はるか：…来年の春、ここに見に来る。いっしょに来てくれる？', ['「うん、いっしょに来よう」', '「ぼくのノートにも、書いておく」'], 'boku');
+    await play(b === 0 ? 'はるか（うれしい）：…やくそくね。' : 'はるか：…うん。わすれないでね。');
+    await play('ぼく（ふつう）：（いのちが終わっても、次の いのちへ、わたっていくんだ…）'); naka('haruka', 2); S.story.flags.harukaMantis = 1;
+    await play('そうま：…すもう、してみる？ 元気だそうよ。夏の王様カブトムシで、相手するよ。（「すもう」で、そうまとできるよ）'); storyGoal('昆虫展にむけて、ケースをきれいに'); },
   '4-7': async ()=>{ const c = stCase();
     await play('＠絵 eki\n＊道の駅の一角に、子どもたちの虫かごがならんだ。夏休み昆虫展だ。');
     let rib = '';
@@ -5510,9 +5599,24 @@ const STORY_DAY = {
       観察員さん：むかしは、もっとたくさんいたんですよ。森が明るくなりすぎたり、くさった木が少なくなったりして、すむ場所がへっているんです。
       おとうさん（ふつう）：だから、調べて、記録して、守り方を考えるんだ。
       ぼく（ふつう）：ぼくのノートも、役に立つ？
-      観察員さん：もちろん。子どもの目で見た記録は、とても大切です。`); },
+      観察員さん：もちろん。子どもの目で見た記録は、とても大切です。
+      観察員さん：見て。このたおれた木、中が やわらかくなっているでしょう。カブトムシやクワガタの幼虫は、こういう木や落ち葉を食べて育つんです。
+      観察員さん：食べたあとは、ふかふかの土になって、その土で、また新しい木が育つ。森は、そうやって、ささえあっているんですよ。`);
+    await play(`＊朝もやの中。少しはなれた木の下に、白い長いかみの人が立っていた。
+      白いかみの人：…光は、帰る場所を知っています。
+      ぼく（ふつう）：観察員さん、あの人…。
+      観察員さん：え？ どこですか？
+      ＊もやが流れて、木の下には、だれもいなかった。`); siroSeen(); await kakera('kaeru'); },
   '5-5': async ()=>{ meet('daichi'); if(S.story.egg) S.story.egg.glow = 1; },
-  '5-6': async ()=>{ await play('だいち：すもう、やるか？ …おまえ、もし勝ったら、チャンピオンのれんに会ってみろよ。（「すもう」で、だいちとできるよ）'); },
+  '5-6': async ()=>{ meet('daichi');
+    await play(`だいち：…よう。
+      だいち：おれのミヤマ、さいきん、あんまり動かないんだ。ゼリーも、少ししか食べない。
+      おとうさん（教える）：ミヤマクワガタの成虫は、夏のあいだの、ひと月か ふた月くらいしか生きられないんだ。
+      だいち：…勝てなくなっても、こいつは、おれの相棒だ。`);
+    const a = await choose('…', ['「生まれた森に、かえしてあげる？」', '「さいごまで、そばにいてあげて」'], 'boku');
+    await play(a === 0 ? 'だいち：…そうだな。こいつが生まれた城山の森で、さいごを すごさせてやる。' : 'だいち：…ああ。さいごまで、ちゃんと見てる。そのあと、城山の森に かえしてやる。');
+    naka('daichi'); S.story.flags.daichiMiyama = 1;
+    await play('だいち：きょうのすもうが、こいつとの さいごの勝負だ。…おまえ、もし勝ったら、チャンピオンのれんに会ってみろよ。（「すもう」で、だいちとできるよ）'); },
   '5-7': async ()=>{ const c = stCase();
     await play('＊羽化した虫を、自然観察員さんのところへ持っていった。大きさをはかって、はねや角の形を見て、ノートに書いた。');
     if(c){ const big = c.size && c.size >= (BUGS[c.bug].size[0] + BUGS[c.bug].size[1])/2;
@@ -5522,8 +5626,13 @@ const STORY_DAY = {
     await endChapter(5, c ? `城山の${BUGS[c.bug].name}。${c.size ? c.size + 'mm。' : ''}観察員さんの調査に協力した。` : '城山。夜明けの観察会。', 'おとうさん（ふつう）：さいごの週は、宗像大社だ。…あのたまごのことも、何かわかるかもしれない。'); },
   /* ---- 6章 宗像大社 ---- */
   '6-1': async ()=>{ giveItem('zeri');
-    await play(`＊釣川のそば、田島の辺津宮へ。
-      神社の人：宗像大社はね、三人の女神さまを、三つのお宮でおまつりしているんです。//いちばん上のお姉さんの田心姫神（たごりひめのかみ）は沖ノ島の沖津宮、まん中の湍津姫神（たぎつひめのかみ）は大島の中津宮、いちばん下の市杵島姫神（いちきしまひめのかみ）が、ここ辺津宮。三つあわせて、宗像大社とよぶんですよ。
+    await play(`＊釣川のそば、田島の辺津宮へ。白い長いかみの人が、ほうきで参道をはいていた。`);
+    if(S.story.flags.siro) await play(`ぼく（びっくり）：あっ…！
+      神社の人：…また、会いましたね。
+      ぼく（びっくり）：あの、ずっと…畑や、ため池や、大島で…。
+      神社の人：ふふ。わたしは、ここで おつとめをしている者です。宗像の いろいろな場所に、おまいりに行くのですよ。`); else await play('神社の人：ようこそ、おまいりですか。');
+    await kakera('mataaimashita');
+    await play(`神社の人：宗像大社はね、三人の女神さまを、三つのお宮でおまつりしているんです。//いちばん上のお姉さんの田心姫神（たごりひめのかみ）は沖ノ島の沖津宮、まん中の湍津姫神（たぎつひめのかみ）は大島の中津宮、いちばん下の市杵島姫神（いちきしまひめのかみ）が、ここ辺津宮。三つあわせて、宗像大社とよぶんですよ。
       ぼく（びっくり）：大島の中津宮も、宗像大社なの？
       神社の人：そう。本殿のうしろの第二宮・第三宮には、沖津宮と中津宮の女神さまもおまつりしているので、ここで三人の女神さまにお参りできるんですよ。
       ＠絵 takamiya
@@ -5531,6 +5640,8 @@ const STORY_DAY = {
       おとうさん（ふつう）：ここから、大島が見えるんだね。ここからは見えないけれど、そのずっと先に、沖ノ島がある。
       おとうさん（ふつう）：このまえ大島に行ったとき、御嶽山の上から見えたね。でも、晴れていても、いつも見えるわけじゃないんだよ。それだけ遠いってこと。`);
     if(S.story.egg){ S.story.egg.glow = 1; S.story.egg.txt = 'ここに来てから、ずっと光っている。'; await play('＊虫かごのたまごが、ほんのり光った。'); }
+    await play(`神社の人：ここでは、千年より前から、海の安全と、いのちを いのってきたのです。海をわたる人たちが、無事に帰れますように、と。
+      神社の人：いのりも、こうやって、人から人へ、つながってきたのですよ。`);
     await play('おとうさん（教える）：境内の木や虫は、とらずに見るだけ。虫は、近くのクヌギの林でさがそう。'); storyGoal('近くのクヌギの林で、虫をさがす'); },
   '6-2': async ()=>{ meet('ren');
     await play(`＊クヌギの林で、中学生の子が、ケースをのぞきこんでいた。
@@ -5575,7 +5686,9 @@ const STORY_DAY = {
     await cardShow('<div class="sc night"><div class="glowLine"></div><div class="sdt">森のほうから、金色の光がひとつ、ふわりとのぼって、海の上を、沖ノ島の方角へまっすぐ飛んでいく。</div></div>', 5200);
     await play(`じいちゃん：…帰っていったなあ。
       ぼく（なみだ）：…。
-      ぼく（うれしい）：元気でね。`); storyGoal(''); },
+      ぼく（うれしい）：元気でね。`); await kakera('kinnoyoru');
+    await play(`＊ふりかえると、遙拝所の鳥居のそばに、神社の人が立っていた。だまって、海に向かって、深く頭を下げた。
+      ＊もう一度見ると、そこには、さかきの葉が1まい、のこっているだけだった。`); storyGoal(''); },
   '6-7': async ()=>{ const c = stCase();
     if(c) await play(`＊朝、辺津宮の近くのクヌギの林へ、${dispName(c)}をかえした。`);
     notePage(6, c, `宗像大社。${S.story.flags.champ ? 'れんとのすもう決勝に勝った。' : S.story.flags.finalDone ? 'れんと、すもう決勝をした。' : ''}ふしぎなたまごから生まれた${S.story.flags.kin || '金色の虫'}を、大島へかえした。`); storyRelease(6); save();
@@ -5584,19 +5697,30 @@ const STORY_DAY = {
       await cardShow(`<div class="sc notepage"><div class="sch norb">${ch}ページめ　${esc(CH[ch].place.replace(/の(畑|森|草むら|山道)$/, ''))}</div>${p && p.bug ? `<div class="npic">${svgBest(p.bug, {rare:p.rare})}</div>` : ''}<div class="sdt">${esc(p ? p.txt : '')}</div></div>`, 3000); }
     await play(`ぼく（ふつう）：さいしょは、強い虫や、めずらしい虫を、つかまえたかった。
       ぼく（ふつう）：でも、育ててみたら、どの虫にも、くらしている場所があって、食べるものがあって、なかまがいた。
-      ぼく（なみだ）：だから、ぼくは、見つけた場所にかえした。…さみしかったけど、それが「育てた」ってことだと思う。
+      ぼく（ふつう）：いもむしは、おばあちゃんの畑の葉っぱを食べて、チョウになって、花粉をはこぶ。ホタルは、きれいな水がないと生きられない。カマキリは、いのちが終わっても、卵のうで 次の春へ つながる。たおれた木は、カブトムシの幼虫のごはんになって、また森の土になる。
+      ぼく（ふつう）：ぼくも、ごはんを食べて、おとうさんや、おとうさんの おとうさんや、海をわたってきた むかしの人たちから、ずっと つながって、ここにいます。
+      ぼく（なみだ）：だから、育てた虫は、生まれた場所にかえしました。…さみしかったけど、それが、いのちを あずかるってことだと思う。
       ぼく（うれしい）：来年の夏も、また会いに行きます。
-      ＊みんなの拍手。
-      ゆうた：ぼくも、こんどチョウを育てる！
-      はるか：…いい発表だったわ。
-      けんた：大島のこと、ちゃんと書いてくれたな！
-      そうま：台風の日のこと、よくおぼえてるよ。
-      だいち：おまえ、ほんとに先生みたいだったぜ。
-      れん：来年の夏、またやろう。
-      おとうさん（にっこり）：この夏の記録は、宗像の虫を守る、だいじな資料になるよ。ありがとう。
+      ＊みんなの拍手。`);
+    const K = [['yuta', nakaOf('yuta') >= 2 ? 'ゆうた（うれしい）：ぼく、メダカの当番、夏休み さいごまで やったよ！ こんどはチョウも、さいごまで育てる！' : 'ゆうた：ぼくも、こんどチョウを育てる！'],
+      ['haruka', S.story.flags.harukaMantis && nakaOf('haruka') >= 2 ? 'はるか：…わたしのカマキリのことも、話してくれて、ありがとう。春になったら、卵のう、いっしょに見に行こうね。' : 'はるか：…いい発表だったわ。'],
+      ['kenta', nakaOf('kenta') >= 1 ? 'けんた：じいちゃんにも聞かせたかったぜ！ むかしの船の話、ちゃんと おぼえてたな！' : 'けんた：大島のこと、ちゃんと書いてくれたな！'],
+      ['soma', nakaOf('soma') >= 2 ? 'そうま：花粉をはこぶ虫の話、ぼくの発表と つながってたね。…ぼく、こんど 虫にさわってみるよ。' : 'そうま：台風の日のこと、よくおぼえてるよ。'],
+      ['daichi', S.story.flags.daichiMiyama ? 'だいち：…おれのミヤマも、城山の森に かえしたよ。さいごまで、いっしょだった。…おまえの言うとおりだったな。' : 'だいち：おまえ、ほんとに先生みたいだったぜ。'],
+      ['ren', 'れん：来年の夏、またやろう。']];
+    for(const [, l] of K) await play(l);
+    await play(`おとうさん（にっこり）：この夏の記録は、宗像の虫を守る、だいじな資料になるよ。ありがとう。
       ＊あとで、虫具店へ。
       おじさん（わらう）：金色のカブトムシ？ はっはっは、そりゃあ、夢でも見たんじゃないか？
-      おじさん：…でもな、そういう話は、むかしからあるんだよ。`);
+      おじさん：…でもな、そういう話は、むかしからあるんだよ。
+      ＊その夜。えんがわで、おとうさんの古いノートを ひらくと…くっついていた最後のページが、ぺりっと、はがれた。
+      ＊子どもの字で かいた、金色のカブトムシの絵。その下に、「大島で見た。だれも信じてくれない。でも、ぼくは見た。」
+      ぼく（びっくり）：おとうさん、これ…！
+      おとうさん（ふつう）：…ああ。思い出した。七夕の夜、大島で…金色の虫が、海のほうへ飛んでいったんだ。
+      おとうさん（にっこり）：…そうか。おとうさんも、あの夏、見ていたんだな。`); await kakera('saigo');
+    if(SX().kakera.length >= 15) await play(`＊ページのすみに、小さな字で、もう1行。「いつか、ぼくの子どもも、この光を見ますように。」
+      おとうさん（にっこり）：…ねがいごと、かなったみたいだ。
+      ぼく（うれしい）：…うん！`);
     S.story.done = true; S.stats.storyClear = (S.stats.storyClear||0) + 1; save();
     await cardShow('<div class="sc night end"><div class="glowLine slow"></div><div class="sdt">夏の終わりの夕方。宗像の海の上を、金色の光がひとつ、沖ノ島のほうへ、ゆっくりよこぎっていく。</div></div>', 6000);
     await cardShow(`<div class="sc"><div class="tlogoBox">${titleLogo()}</div><div class="stt">おしまい</div><div class="sdt">この物語はフィクションです。<br>Game Director: Ryohei Taniguchi</div></div>`, 6000);
@@ -5618,6 +5742,9 @@ STORY_DAY['3-4'] = async ()=>{ meet('kenta');
   S.story.flags.sensei = ok;
 };
 const STORY_EVE = {
+  '1-5': async ()=>{ await play(`＊夕方。畑からの帰り道、ふりかえると、ミカンの木の下に、白い長いかみの人が立っていた。
+      白いかみの人：…小さな いのちを、だいじにしているのですね。
+      ＊風がふいて、葉がゆれた。もう一度見ると、だれもいない。木の下に、つやつやした葉が1まい落ちていた。`); siroSeen(); await kakera('sakaki'); },
   '1-3': async ()=>{ const c = stCase(); if(c && stageOf(c).k === 'larva' && (c.pending || forecast(c))){ await play(`＊夜、いもむしが動かなくなった。
       ぼく（なみだ）：死んじゃったの…？
       おとうさん（にっこり）：だいじょうぶ。さなぎになる用意をしているんだ。そっとしておこう。`); } },
@@ -5626,10 +5753,18 @@ const STORY_EVE = {
       ＊水のおじさんが、夜のため池に案内してくれた。水路のまわりで、ゲンジボタルが光っている。
       ぼく（びっくり）：つかまえて、ケースで育てたい！
       おとうさん（教える）：ホタルは、きれいな水と、エサのカワニナがないと生きられない。ケースでは育てられないんだ。だから、見るだけにしよう。
-      水のおじさん：田んぼの水をきれいにしとくと、毎年ちゃんともどってくる。おじさんの自まんなんだ。`);
+      水のおじさん：田んぼの水をきれいにしとくと、毎年ちゃんともどってくる。おじさんの自まんなんだ。
+      おとうさん（教える）：ホタルはね、1年のほとんどを、幼虫として水の中ですごすんだ。光って飛べるのは、たった1〜2週間。
+      ぼく（ふつう）：セミと、にてるね。土の中に何年もいて、外に出たら、すぐ…。
+      おとうさん（にっこり）：そう。見えないところで長く育って、外の世界にいるのは、ほんの少し。だから、いまの光は、とくべつなんだよ。`);
     let a = await choose('…どうする？', ['つかまえる', '見るだけにする'], 'boku');
     if(a === 0){ await play('おとうさん（教える）：つかまえたら、ホタルは、すぐに弱ってしまうんだ。//ここでしか生きられない光なんだよ。見るだけにしよう。\nぼく（ふつう）：…うん。'); }
-    await play('はるか：…きれいね。'); S.dex.genji = S.dex.genji || {found:dayKey(), where:'ため池', known:1}; S.story.flags.hotaru = 1; storyGoal(''); },
+    await play('はるか：…きれいね。'); S.dex.genji = S.dex.genji || {found:dayKey(), where:'ため池', known:1}; S.story.flags.hotaru = 1;
+    await play(`＊…光の中に、ひとつだけ、金色の光がまじっている。`); await kakera('kinhotaru');
+    await play(`＊金色の光をおいかけると、ため池の向こう岸に、白い長いかみの人が立っていた。
+      白いかみの人：…よく見ていますね。この夏は、光がよく見える夏になりそうです。
+      ぼく（びっくり）：おとうさん、あそこに人が…！
+      おとうさん（ふつう）：…ん？ だれもいないよ。`); siroSeen(); await kakera('mukogishi'); storyGoal(''); },
   '3-4': async ()=>{ await play(`＊夜、えんがわで。漁師のじいちゃんの、七夕の話。
       じいちゃん：むかし、唐の国へわたった若者が、はたおりのむすめたちをつれて帰ってきた。若者は、その中のひとりと仲よくなった。でも、帰ったあと、ふたりははなればなれ。
       じいちゃん：かなしむ若者の夢に、宗像の神さまがあらわれて「中津宮へ行きなさい」と言うた。若者は島へ来て、神さまにつかえるようになった。
@@ -5648,17 +5783,308 @@ const STORY_EVE = {
     if(a === 1) await play('＊たまごの光が、すうっと弱くなった。\nぼく（なみだ）：…。\nおとうさん（ふつう）：…育てて、かならずここにかえそう。やくそくだ。');
     else await play('おとうさん（にっこり）：よし。かならず、ここにかえそう。やくそくだ。');
     await play('じいちゃん：それは、だいじにしなさい。生まれたら、きっとこの島へ帰りたがる。');
-    S.story.egg = {day:dayKey(), glow:0, txt:'大島で見つけた、金色のたまご。'}; save();
+    S.story.egg = {day:dayKey(), glow:0, txt:'大島で見つけた、金色のたまご。'}; save(); await kakera('tamago');
     await say('ふしぎなたまごを、虫かごの一覧に入れた。\n（虫かごの上に「ふしぎなたまご」が出るよ）'); },
   '4-4': async ()=>{ const out = S.cases.filter(c=> c && c.place === 'beranda');
     if(out.length){ out.forEach(c=>{ c.clean = clamp(c.clean - 30, 0, 100); c.stress = (c.stress||0) + 30; c.hunger = clamp(c.hunger - 15, 0, 100); });
       await play('＊夜、風と雨がはげしくなった。ベランダの虫かごに、雨がふきこんでいる！\nおとうさん（しんぱい）：はやく、へやに入れよう！'); out.forEach(c=> c.place = 'heya'); }
     else await play('＊夜、風と雨がはげしくなった。でも、虫かごはへやの中。\nおとうさん（にっこり）：ちゃんと守れたね。');
     if(S.story.egg) S.story.egg.glow = 1;
-    await play('＊たまごが、ほんのりあたたかい。'); storyGoal('昆虫展にむけて、育てる'); },
+    await play('＊たまごが、ほんのりあたたかい。');
+    await play(`＊ねる前、おとうさんの古いノートを見ると、雨のしめりけで、くっついていた最後のページが、少しだけ はがれていた。
+      ＊すきまから読めたのは、子どもの字で「…大島で…七夕の夜…」だけ。
+      ぼく（びっくり）：大島…七夕の夜…？ ぼくが たまごを見つけたのと、同じ…。`); await kakera('hagareta');
+    storyGoal('昆虫展にむけて、育てる'); },
   '5-5': async ()=>{ if(!S.story.egg) return; await play(`＊夜、たまごが、かすかに光った。遊びに来ていた、だいちが見ていた。
-      だいち：…いま、光ったよな？`); },
+      だいち：…いま、光ったよな？`); await kakera('hikaru'); },
 };
+/* ==== いのちのつながり（2026-11-14 ユーザーと決めた、ストーリーの追加。脚本_追加案.md 第4稿） ====
+   ・ふしぎのかけら（KAKERA、18まい）：話したり、とくべつな日を見たりすると集まる。虫しらべノートのうしろに出る
+   ・なかよし（S.story.x.naka）：会話でえらぶと、その子と なかよしになる（見えない数）。発表会で、なかよしの子は一言ふえる
+   ・ほかの場所（PLACES_X）：夏休みの学校・おばあちゃんの家・図書館。「そと」から行ける（大島にいる3章はなし）
+   ・夜のえんがわ（ENGAWA）：2・4・6日目の夕方から、おとうさんと話せる（虫のこと・おとうさんの子どものころ・きょうのこと）
+   ・来ている人（VISITORS）：その日だけ、おみせ・そとの場所に だれかがいて、「話す」ができる */
+const SX = ()=> (S.story.x = S.story.x || {naka:{}, kakera:[], talk:{}, engawa:{}});
+const naka = (k, n=1)=>{ const x = SX(); x.naka[k] = (x.naka[k]||0) + n; save(); };
+const nakaOf = k=> SX().naka[k] || 0;
+const KAKERA = {
+  hikari:      {ch:0, name:'海の上の金色の光',         txt:'夏休みの前の夜、大島のほうで、一瞬だけ光った。'},
+  note:        {ch:0, name:'開かない最後のページ',     txt:'おとうさんの古い虫しらべノート。最後のページだけ、くっついて開かない。'},
+  sakaki:      {ch:1, name:'さかきの葉',               txt:'白いかみの人がいたところに、1まい落ちていた。'},
+  kinhotaru:   {ch:2, name:'金色のホタル',             txt:'ホタルの光の中に、ひとつだけ、金色の光がまじっていた。'},
+  mukogishi:   {ch:2, name:'向こう岸の人',             txt:'ため池の向こう岸に、白いかみの人が立っていた。'},
+  enogu:       {ch:2, name:'ページのはしの金色',       txt:'くっついたページのすきまから、金色の絵の具が少し見えた。'},
+  tenohikari:  {ch:3, name:'天の川の光',               txt:'「七夕のころ、この川には、遠くの光がうつるのです」'},
+  tamago:      {ch:3, name:'あたたかいたまご',         txt:'天真名井へ向かう階段の近くで見つけた、金色のたまご。'},
+  papashima:   {ch:3, name:'おとうさんの大島の夜',     txt:'おとうさんも子どものころ、大島にとまったことがある。…その夜のことは「わすれた」らしい。'},
+  wataru:      {ch:4, name:'「海をわたる子」',         txt:'白いかみの人は、たまごを見て「その子は、海をわたる子です」と言った。'},
+  hagareta:    {ch:4, name:'はがれかけたページ',       txt:'台風の夜。最後のページが少しはがれて「…大島で…七夕の夜…」とだけ読めた。'},
+  shinbun:     {ch:4, name:'むかしの新聞',             txt:'図書館で見つけた、30年前の夏の新聞。「大島で 金色の虫を見た」という小学生の話。'},
+  kaeru:       {ch:5, name:'「光は、帰る場所を知っている」', txt:'朝もやの中で、白いかみの人が言った。'},
+  hikaru:      {ch:5, name:'光るたまご',               txt:'夜、たまごが、かすかに光った。だいちも見ていた。'},
+  papanatsu:   {ch:5, name:'おとうさんの夏',           txt:'「おとうさんも、あの夏、何かを見た気がするんだ。…夢だったのかもしれない」'},
+  mataaimashita:{ch:6, name:'「また、会いましたね」',  txt:'白いかみの人は、宗像大社の神社の人だった。'},
+  kinnoyoru:   {ch:6, name:'沖ノ島へ飛ぶ光',           txt:'金色の光は、海の上を、沖ノ島の方角へまっすぐ飛んでいった。'},
+  saigo:       {ch:6, name:'最後のページ',             txt:'子どものおとうさんがかいた、金色のカブトムシの絵。「でも、ぼくは見た。」'},
+};
+async function kakera(id){
+  const x = SX(); if(!KAKERA[id] || x.kakera.includes(id)) return; x.kakera.push(id); save();
+  await cardShow(`<div class="sc small1 kakeraCard"><div class="sch norb">ふしぎのかけら　${x.kakera.length} / ${Object.keys(KAKERA).length}</div><div class="stt">${esc(KAKERA[id].name)}</div><div class="sdt">${esc(KAKERA[id].txt)}</div></div>`, 2600);
+}
+const kakeraHTML = ()=>{ const x = SX(), all = Object.keys(KAKERA);
+  return `<h3 class="kakeraH">ふしぎのかけら　${x.kakera.length} / ${all.length}</h3><div class="kakeraList">${all.map(k=> x.kakera.includes(k) ? `<div class="kk on"><b>${esc(KAKERA[k].name)}</b><small>${esc(KAKERA[k].txt)}</small></div>` : '<div class="kk"><b>？</b></div>').join('')}</div>`; };
+// 白いかみの人（＝神社の人。6章1日目に わかる）。出てきた回数
+const siroSeen = ()=>{ S.story.flags.siro = (S.story.flags.siro||0) + 1; };
+
+/* ---- 図書館で しらべる：そのとき育てている虫のこと（本に書いてあるような、少しくわしい話） ---- */
+const SHIRABE = {
+  monshiro:'【一生】たまご→幼虫→さなぎ→成虫を、夏は1か月くらいでまわる。成虫は2〜3週間。\n【たべもの】幼虫はキャベツなどアブラナのなかまの葉。成虫は花のみつ。\n【つながり】花から花へ花粉をはこぶ。小さなハチが幼虫にたまごを産みつけることもあって、全部がチョウになれるわけではない。',
+  ageha:'【一生】夏は1か月半くらいで成虫に。成虫は2〜3週間。\n【たべもの】幼虫はミカン・サンショウなど、ミカンのなかまの葉だけ。\n【ひみつ】小さいうちは鳥のフンのふり。大きくなると緑になり、つつくと頭からオレンジ色の「角」を出して、くさいにおいで身を守る。',
+  karasu:'【一生】幼虫はミカンのなかま（カラスザンショウなど）の葉を食べる。成虫は2〜3週間。\n【ひみつ】黒いはねは、光が当たると青や緑にかがやく。島や山の、木の多いところにすむ。\n【つながり】チョウが花のみつをすうと、花粉がはこばれる。',
+  oomurasaki:'【一生】幼虫で冬をこす。エノキの根もとの落ち葉の下で、じっと春を待つ。成虫は夏のひと月くらい。\n【たべもの】幼虫はエノキの葉だけ。成虫はクヌギの樹液。\n【ひみつ】日本の「国チョウ」。エノキと雑木林がへって、数がへっている。',
+  suzumushi:'【一生】土の中のたまごで冬をこし、春に生まれて、夏の終わりに成虫。成虫は1〜2か月。\n【鳴き声】鳴くのはオスだけ。はねをこすりあわせて「リーン」。メスをよぶための歌。\n【たべもの】ナスやキュウリ。たんぱく質（かつおぶし など）も食べる。',
+  kamakiri:'【一生】春、卵のう（あわのかたまり）から100ぴき以上が生まれる。7回くらい脱皮して夏に成虫。秋に卵のうを産んで、一生をおえる。半年ほどのいのち。\n【たべもの】生きて動いている虫だけ。\n【つながり】カマキリは虫を食べ、カマキリも鳥やカエルに食べられる。',
+  tonosama:'【一生】土の中のたまごで冬をこす。夏に成虫。\n【たべもの】イネのなかまの草。\n【ひみつ】うしろあしで、自分の体の何十倍も遠くへとぶ。とぶときは、はねも使って、遠くまで飛べる。',
+  shoryo:'【一生】土の中のたまごで冬をこす。夏から秋に成虫。\n【ひみつ】メスは8cmにもなる、日本でいちばん大きいくらいのバッタ。オスは小さくて、飛ぶとき「キチキチ」と音を出す。\n【たべもの】イネのなかまの草。',
+  kabuto:'【一生】幼虫は土の中で10か月くらい。くさった木や落ち葉の土（腐葉土）を食べて大きくなる。成虫は夏の1〜3か月だけ。\n【ひみつ】成虫は夜に活動して、クヌギやコナラの樹液をすう。\n【つながり】幼虫が落ち葉を食べたフンは、また森の土になる。',
+  miyama:'【一生】幼虫はくさった木の中で1〜2年。成虫は夏のひと月〜ふた月。\n【ひみつ】暑さが苦手で、すずしい山にすむ。オスの頭には、耳のような でっぱりがある。',
+  ookuwa:'【一生】成虫が何年も生きることがある、めずらしいクワガタ。\n【ひみつ】大きくて古い木の、うろの中にかくれてすむ。古い木がへって、数がへっている。',
+  nokogiri:'【一生】幼虫はくさった木の中で1〜2年。成虫は夏のあいだ。\n【ひみつ】オスのあごは、大きさで形がかわる。大きいとギザギザが長く、弓のようにまがる。',
+  hirata:'【一生】成虫で冬をこして、次の夏も生きることがある。\n【ひみつ】体が平たく、木のすきまにもぐりこめる。海に近いあたたかい場所に多い。',
+  kokuwa:'【一生】成虫で冬をこすことがある。くさった木の中で育つ。\n【ひみつ】小さいけれど、町の近くの林にもすむ、身近なクワガタ。',
+  genji:'【一生】1年のほとんどを幼虫として水の中ですごし、カワニナという貝を食べる。成虫は1〜2週間。水しか飲まない。\n【ひみつ】光は、オスとメスの合図。きれいな水と、カワニナと、土の岸がそろったところにしかいない。',
+  abura:'【一生】幼虫は土の中で何年もくらし、木の根のしるをすう。外に出て成虫になってからは、数週間。\n【鳴き声】鳴くのはオスだけ。おなかの中の「まく」をふるわせて鳴く。',
+  kinkabuto:'…どの本にも、のっていない。\n図書館の人：金色のカブトムシ？ 宗像の古い言い伝えの本なら、むこうのたなにありますよ。',
+};
+
+/* ---- ほかの場所（学校・おばあちゃんの家・図書館） ---- */
+const PLACES_X = [
+  {k:'gakko', name:'夏休みの学校', desc:'生きもの当番。メダカやウサギも、夏休みのあいだ、だれかがお世話をしている', pic:'img/ui/ev/gakko.webp'},
+  {k:'obaa',  name:'おばあちゃんの家', desc:'赤間の畑のおばあちゃん。えんがわでお茶をいただく', pic:'img/ui/ev/obaa.webp'},
+  {k:'tosho', name:'図書館', desc:'いま育てている虫のことを、本でくわしく しらべる', pic:'img/ui/ev/tosho.webp'},
+];
+const plDone = k=> !!SX().talk[k + '|' + dayKey()];
+const plMark = k=>{ SX().talk[k + '|' + dayKey()] = 1; save(); };
+const plNew = k=>{ const ch = S.story.ch, f = S.story.flags;   // 「！」：まだ見ていない大事な話がある
+  if(plDone(k)) return false;
+  if(k === 'gakko') return !f['gakko' + ch];
+  if(k === 'obaa') return ch === 1 ? !f.obaaMikan : !f['obaa' + ch];
+  if(k === 'tosho') return ch >= 4 && !SX().kakera.includes('shinbun') || stCase() && !(S.dex[stCase().bug] || {}).shirabe;
+  return false; };
+async function goPlace(k){
+  if(storyBusy) return; storyBusy = true;
+  try{ const P = PLACES_X.find(p=> p.k === k);
+    if(plDone(k)) await play(`＊${P.name}。きょうは、もう行ったよ。`);
+    else { plMark(k); await PLACE_TALK[k](S.story.ch); cgShow('off'); }
+  } finally { storyBusy = false; }
+  save(); render();
+}
+const PLACE_TALK = {
+  async gakko(ch){ const f = S.story.flags, first = !f['gakko' + ch]; f['gakko' + ch] = 1;
+    await play(`＠絵 gakko\n＊夏休みの学校。校庭のすみの池と、ウサギ小屋。`);
+    if(!first){ await play(pick([`＊メダカに えさをあげた。…夏休みでも、毎日だれかが 世話をしているんだ。`, `＊ウサギ小屋の そうじを手伝った。ウサギが、鼻をひくひくさせている。`, `＊花だんの水やりを手伝った。花に、ハチがきていた。`])); return; }
+    if(ch === 1){ meet('yuta');
+      await play(`先生：おっ、手伝いに来てくれたの？ きょうの生きもの当番は、ゆうたくんだよ。
+        ゆうた：メダカの えさ、どれくらいあげればいいの？
+        先生：2分くらいで食べきれる分だけ。あげすぎると、のこったえさで水がよごれて、メダカが弱ってしまうんだ。
+        ゆうた：…夏休みのあいだ、だれも来なかったら、メダカはどうなるの？
+        先生：だから、当番があるんだよ。生きものを飼うって、休みの日もずっと、ってことなんだ。`);
+      const a = await choose('ゆうた：ぼく、ちゃんとできるかな…。', ['「いっしょにやろう」', '「ゆうたなら、できるよ」'], 'boku');
+      await play(a === 0 ? 'ぼく（たのしい）：いっしょにやろう！\nゆうた（うれしい）：うん！ じゃあ、えさは、ぼくがあげる！' : 'ぼく（ふつう）：ゆうたなら、できるよ。毎日来てるんだもん。\nゆうた（うれしい）：…へへ。');
+      naka('yuta'); }
+    else if(ch === 2){ meet('haruka');
+      await play(`＊理科室の前で、はるかが虫かごを持って待っていた。
+        はるか：来週の「虫の音の夕べ」の じゅんび。先生に、鳴く虫のことを教えてもらうの。
+        先生：スズムシやコオロギは、はねをこすりあわせて鳴くんだ。ギザギザのところと、かたいところをこすって、音を出す。`);
+      const a = await choose('先生：では、問題。スズムシで、鳴くのは オスとメスの どっち？', ['オス', 'メス', '両方'], 'boku');
+      await play(a === 0 ? 'ぼく（たのしい）：オス！\n先生：正解！ メスをよぶための歌なんだ。\nはるか（うれしい）：…やるじゃない。' : 'はるか：ざんねん、オスだけなの。メスをよぶための歌なのよ。\nぼく（ふつう）：へえ…！');
+      await play('はるか：…ねえ。夕べの日、いっしょに聞こうね。'); naka('haruka'); }
+    else if(ch === 4){ meet('soma');
+      await play(`＊花だんに、ヒマワリがさいている。そうまが、しゃがんで 何かを見ていた。
+        そうま：見て。ハチが、ヒマワリの花粉で 黄色くなってる。
+        そうま：本で読んだんだ。花粉をはこぶ虫がいないと、実ができない作物が たくさんあるって。リンゴも、カボチャも、イチゴも。
+        ぼく（ふつう）：1章で、おとうさんも同じこと言ってた！
+        そうま：…本だけじゃなくて、こうやって見ると、ほんとなんだって思うね。`);
+      const a = await choose('そうま：ぼく、虫にさわるの、ほんとはちょっと こわいんだ。本ばっかり読んでて。', ['「見るだけでも、りっぱな虫しらべだよ」', '「こんど、いっしょに さわってみよう」'], 'boku');
+      await play(a === 0 ? 'そうま（うれしい）：…そっか。じゃあ、ぼくは見るのと調べるのが得意な係だね。' : 'そうま：…うん。そっと、ならね。');
+      naka('soma'); }
+    else if(ch === 5){ meet('daichi');
+      await play(`＊鉄ぼうの横の サクラの木の下に、セミのぬけがらが たくさん。だいちと、ゆうたがいた。
+        ゆうた：見て！ ぬけがら！ …でも、セミは つかまえないよ。外で鳴いてるのが いちばんなんだ。
+        だいち：…へえ。ちびのくせに、わかってるじゃん。
+        だいち：おれ、強い虫が いちばんだと思ってた。でも、こいつら、何年も土の中にいて、やっと外に出てきたんだよな。`);
+      const a = await choose('だいち：…強いって、なんだろうな。', ['「さいごまで、いっしょにいることかな」', '「どの虫も、生きてるだけで強いよ」'], 'boku');
+      await play(a === 0 ? 'だいち：…さいごまで、か。' : 'だいち：…生きてるだけで、か。おまえ、たまに いいこと言うな。');
+      naka('daichi'); naka('yuta'); }
+    else if(ch === 6){
+      await play(`＊教室で、自由研究の発表の じゅんび。ゆうた・はるか・そうま・だいちも来ていた。
+        先生：みんな、どんなことを発表するの？
+        ゆうた：チョウの育てかた！
+        はるか：…カマキリの卵のうのこと。
+        そうま：花粉をはこぶ虫の しらべもの。
+        だいち：…城山の森のこと。`);
+      const a = await choose('先生：きみは？', ['「いのちが、つながっていること」', '「虫を、もとの場所にかえすこと」'], 'boku');
+      f.happyoTheme = a; await play('先生：いいね。発表の日が、楽しみだよ。'); } },
+  async obaa(ch){ const f = S.story.flags; cgShow('obaa');
+    if(ch === 1 && !f.obaaMikan){ f.obaaMikan = 1;
+      await play(`＊おばあちゃんの家の えんがわ。冷たいむぎ茶をいただいた。庭のすみに、大きなミカンの木。
+        おばあちゃん：あのミカンの木はね、おじいさんが植えたんだよ。もう、なくなって10年になるけどねえ。
+        おばあちゃん：毎年、夏になると、アゲハがあの木に たまごを産みにくる。おじいさんは、それを見るのが好きでねえ。「葉っぱは、虫にもわけてやれ」って。
+        ぼく（ふつう）：…おじいさんは、もういないのに、チョウは来るんだね。
+        おばあちゃん：そう。おじいさんが植えた木で、チョウが育って、そのチョウが、また花粉をはこんで、ミカンが実る。
+        おばあちゃん：人のいのちも、虫のいのちも、そうやって、どこかで つながっていくんだねえ。`);
+      await choose('おばあちゃん：…あんたの育てとる子も、だいじにしてやってね。', ['「うん。さいごまで、ちゃんと育てる」', '「おじいさんのぶんまで、見ておくね」'], 'boku');
+      await play('おばあちゃん：ありがとうねえ。（ミカンの葉をもらった）'); giveItem('mikan', 2); return; }
+    if(ch === 2 && !f.obaa2){ f.obaa2 = 1;
+      await play(`おばあちゃん：あんたが帰した チョウかねえ。ミカンの木に、また たまごが産んであったよ。
+        ぼく（びっくり）：ほんと！？
+        おばあちゃん：ほら、葉っぱの先に、小さな黄色いつぶ。…こうして、来年も、さ来年も、つづいていくんだよ。`); giveItem('mikan', 1); return; }
+    if(ch === 4 && !f.obaa4){ f.obaa4 = 1;
+      await play(`＊お盆。おばあちゃんの家に、ちょうちんが かざってある。
+        おばあちゃん：お盆にはね、なくなった ご先祖さまが、家に帰ってくるって言うんだよ。だから、迎え火をたいて、おむかえするの。
+        おばあちゃん：おじいさんも、おじいさんの お父さんも お母さんも…ずうっと前の人たちが いたから、わたしがいて、あんたのおとうさんの世代がいて、あんたがいる。
+        ぼく（ふつう）：…ずっと前から、つながってるんだね。
+        おばあちゃん：そう。だから、いまのいのちを、だいじにせんとね。`); return; }
+    if(ch === 5 && !f.obaa5){ f.obaa5 = 1;
+      await play(`おばあちゃん：わたしが子どものころはね、城山にも、このへんの林にも、カブトムシが もっと たくさんおったよ。
+        おばあちゃん：まきや炭を作るのに、林の木を切って、また生えて…人が手を入れとったから、明るい林でねえ。
+        ぼく（ふつう）：人が、森の手伝いをしてたんだ。
+        おばあちゃん：そうかもしれんねえ。`); return; }
+    if(ch === 6 && !f.obaa6){ f.obaa6 = 1;
+      await play(`おばあちゃん：夏休みも、もうすぐ おしまいだねえ。発表、がんばってね。
+        おばあちゃん：…来年の夏も、ミカンの木を見においで。チョウも、きっと来てるよ。`); giveItem('mikan', 1); return; }
+    await play(pick(['おばあちゃん：よう来たねえ。トマト、持っていきなさい。', 'おばあちゃん：暑いねえ。むぎ茶、もう1ぱい のんでいきなさい。', 'おばあちゃん：ミカンの木のアゲハ、きのうも来とったよ。'])); },
+  async tosho(ch){ const f = S.story.flags;
+    await play('＠絵 tosho\n＊図書館。すずしくて、しずか。\n図書館の人：虫の本は、こちらのたなですよ。');
+    if(ch === 4){ meet('soma'); if(!f.toshoSoma){ f.toshoSoma = 1; await play('そうま：あ、きみも来たんだ。ここ、ぼくの いちばん好きな場所なんだ。'); naka('soma'); } }
+    const L = [...new Set(S.cases.filter(c=> c).map(c=> c.bug))];
+    if(!L.length) await play('＊いまは、育てている虫がいない。虫の図かんを ながめた。');
+    else { const i = L.length === 1 ? 0 : await choose('どの虫を しらべる？', L.map(b=> caseKnown(S.cases.find(c=> c && c.bug === b)) ? BUGS[b].name : 'なぞの幼虫'), 'boku');
+      const b = L[i], c = S.cases.find(x=> x && x.bug === b);
+      if(!caseKnown(c)) await play('＊まだ、なんの虫かわからない。脱皮して大きくなったら、もう一度しらべよう。');
+      else { const t = SHIRABE[b] || `${BUGS[b].real || ''}`;
+        await say(`【${BUGS[b].name}のこと】\n${t}`, {face:'boku'}); if(S.dex[b]) S.dex[b].shirabe = 1; save();
+        await play(b === 'kamakiri' ? 'ぼく（ふつう）：…はるかのカマキリも、秋には…。' : b === 'kabuto' || b === 'miyama' ? 'ぼく（ふつう）：成虫でいられるのって、こんなに短いんだ…。' : 'ぼく（ふつう）：（ノートに書いておこう）'); } }
+    if(ch >= 4 && !SX().kakera.includes('shinbun')){
+      await play(`＊帰ろうとしたとき、たなのすみに、古い新聞をとじた本。ぱらっと開いたページに、目がとまった。
+        ＊30年前の夏の記事。「大島で 金色の虫を見た？ ― 宗像の小学生、七夕の夜に」
+        ぼく（びっくり）：…金色の虫！？
+        ＊名前のところは、インクがにじんで、読めない。`); await kakera('shinbun'); } },
+};
+
+/* ---- 夜のえんがわ：おとうさんと話す（2・4・6日目の夕方から。話すことは えらぶ。1つの章で、それぞれ1回） ---- */
+const ENGAWA = {
+  1:{mushi:`おとうさん（教える）：いもむしは、さなぎの中で、体をいったん とかして、チョウの体に作りかえるんだ。
+      ぼく（びっくり）：とけちゃうの！？
+      おとうさん（にっこり）：ふしぎだろう。たまご、幼虫、さなぎ、成虫。すがたが まるっきりかわることを「完全変態」っていうんだよ。`,
+     papa:`おとうさん（ふつう）：おとうさんも、きみくらいのとき、毎日 虫をさがしてたよ。虫の名前は、おじいちゃんが教えてくれたんだ。
+      おとうさん（にっこり）：おじいちゃんは、そのまた おじいちゃんに教わったんだって。虫が好きなのも、つながってるのかもな。`,
+     kyou:`おとうさん（ふつう）：きょうは、どうだった？
+      ぼく（ふつう）：…いもむし、ちゃんと食べてた。
+      おとうさん（にっこり）：毎日 見ること。それが、ひとつめの やくそくだったね。ちゃんと守れてるよ。`},
+  2:{mushi:`おとうさん（教える）：スズムシやコオロギは、秋の虫って よばれるけど、ほんとうは夏の終わりから鳴きはじめるんだ。
+      おとうさん（教える）：秋に、土の中にたまごを産んで、冬は たまごのまま すごす。親は、冬をこせないんだよ。
+      ぼく（ふつう）：親は、子どもに会えないの？
+      おとうさん（ふつう）：…そうだね。でも、毎年ちゃんと、同じ草むらで、また鳴きだす。`,
+     papa:`＊おとうさんの古いノートを、もう一度 ひらいてみた。
+      ＊くっついた最後のページの すきまから、金色の絵の具が、ほんの少し見える。
+      ぼく（びっくり）：おとうさん、ここ、金色！
+      おとうさん（ふつう）：…ほんとだ。なにを かいたんだろうな。`, kakera:'enogu',
+     kyou:`おとうさん（ふつう）：きょうは、どうだった？
+      ぼく（ふつう）：はるかと、虫の話をした。
+      おとうさん（にっこり）：友だちと話すと、自分だけでは気づかないことに 気づくよね。`},
+  3:{mushi:`＊じいちゃんの家の えんがわ。波の音がきこえる。
+      ぼく（ふつう）：島の虫って、どうやって島に来たの？ 海をわたって？
+      おとうさん（教える）：チョウやトンボは、海の上を飛んでくることがある。木の実や たまごが、流れてきた木に のってくることもある。
+      おとうさん（教える）：何百年も、何千年もかけて、少しずつ島に来て、島の森で くらすようになったんだ。`,
+     papa:`＊じいちゃんの家の えんがわ。
+      おとうさん（ふつう）：じつは おとうさんも、きみくらいのとき、大島にとまったことがあるんだ。
+      ぼく（びっくり）：え！ なにしたの？
+      おとうさん（ふつう）：七夕のころだったかな…。夜、海を見ていて…。…なんだったかな。わすれちゃったよ。`, kakera:'papashima',
+     kyou:`＊じいちゃんの家の えんがわ。星がたくさん見える。
+      じいちゃん：あれが北斗七星。ひしゃくの柄の 三つ星を「カジボシ」、ますの 四つ星を「フナボシ」とよんでな。むかしの漁師は、星を見て、方角を知ったんだ。
+      ぼく（びっくり）：星が、地図のかわりなんだ。
+      じいちゃん：むかしの人は、そうやって、海をわたってきたんだよ。`},
+  4:{mushi:`おとうさん（教える）：カマキリは、春に生まれて、夏に大きくなって、秋に たまごを産む。そして、一生をおえる。半年くらいの いのちなんだ。
+      ぼく（ふつう）：…半年。はるかのカマキリも？
+      おとうさん（ふつう）：うん。だから、いまの毎日を、だいじにしてあげたいね。`,
+     papa:`おとうさん（ふつう）：おとうさんが子どものとき、いちばん かなしかった虫の話をしようか。
+      おとうさん（ふつう）：大好きだったカブトムシが、夏の終わりに動かなくなってね。何日も泣いたよ。
+      おとうさん（にっこり）：でも、おじいちゃんが言ったんだ。「おまえが毎日 世話したから、あいつは さいごまで元気だった」って。
+      ぼく（ふつう）：…さいごまで。`,
+     kyou:`おとうさん（ふつう）：きょうは、どうだった？
+      ぼく（ふつう）：${'はるかのこと…'}
+      おとうさん（にっこり）：だれかを心配できるのは、やさしいってことだよ。`},
+  5:{mushi:`おとうさん（教える）：森には「そうじや」がいるんだ。たおれた木や落ち葉を食べる、虫やキノコや、土の中の小さな生きもの。
+      おとうさん（教える）：かれらが食べて、ふかふかの土にするから、また木が育つ。もし そうじやがいなかったら、森は落ち葉だらけになってしまう。
+      ぼく（ふつう）：カブトムシの幼虫も、そうじやなんだね。`,
+     papa:`おとうさん（ふつう）：…最近、子どものころの夢を見るんだ。夜の海で、何かが光っていた夢。
+      おとうさん（ふつう）：あの夏、おとうさんも、何かを見た気がする。…夢だったのかもしれないけどね。`, kakera:'papanatsu',
+     kyou:`おとうさん（ふつう）：きょうは、どうだった？
+      ぼく（ふつう）：だいちのミヤマ、元気なかった。
+      おとうさん（ふつう）：…いのちには、長さがある。だから、いっしょにいる時間が、たいせつなんだよ。`},
+  6:{mushi:`おとうさん（教える）：カブトムシは、土の中で10か月も幼虫ですごして、成虫でいられるのは、夏のあいだの1〜3か月。
+      ぼく（ふつう）：土の中のほうが、ずっと長いんだね。
+      おとうさん（にっこり）：見えないところで、ちゃんと生きている時間が長いんだ。いのちって、目に見えるところだけじゃないんだね。`,
+     papa:`おとうさん（ふつう）：発表では、何を話すんだい？
+      ぼく（ふつう）：…まだ、まとまらない。
+      おとうさん（にっこり）：この夏に会った虫と、人のことを、思い出してごらん。きっと、ぜんぶ つながってるよ。`,
+     kyou:`おとうさん（ふつう）：もうすぐ、夏休みも おしまいだね。
+      ぼく（ふつう）：…あっというまだった。
+      おとうさん（にっこり）：たくさんの いのちに会った夏だったね。`},
+};
+const engawaDay = ()=> [2, 4, 6].includes(S.story.day) && S.story.ch >= 1 && S.story.ch <= 6;
+const engawaOpen = ()=> storyOn() && !S.story.done && engawaDay() && ['yu', 'yoru'].includes(slotOf()) && !SX().engawa[dayKey()] && Object.keys(ENGAWA[S.story.ch] || {}).some(t=> ['mushi', 'papa', 'kyou'].includes(t) && !SX().engawa[S.story.ch + t]);
+async function engawaTalk(){
+  if(storyBusy || !engawaOpen()) return; storyBusy = true;
+  try{ const ch = S.story.ch, E = ENGAWA[ch], x = SX(), T = [['mushi', '虫のこと'], ['papa', 'おとうさんの子どものころ'], ['kyou', 'きょうのこと']].filter(([t])=> !x.engawa[ch + t]);
+    await play(ch === 3 ? '＊夜。じいちゃんの家の えんがわで、おとうさんと すずんだ。' : '＊夜。えんがわで、おとうさんと すずんだ。虫の声がきこえる。');
+    const i = await choose('おとうさん（ふつう）：…なにを話そうか。', [...T.map(t=> t[1]), 'やっぱり、ねる'], 'papa');
+    if(i < T.length){ const t = T[i][0]; x.engawa[ch + t] = 1; x.engawa[dayKey()] = 1; save();
+      await play(t === 'kyou' && ch === 4 ? E.kyou.replace('はるかのこと…', S.story.flags.harukaMantis ? 'はるかの カマキリのこと、まだ考えてる。' : 'はるかと、カマキリの話をした。') : E[t]);
+      if(t === 'papa' && E.kakera) await kakera(E.kakera); }
+  } finally { storyBusy = false; }
+  save(); render();
+}
+
+/* ---- 来ている人：おみせ・そとの場所に、その日だけ だれかがいる（1日1回 話せる。話さなくても進む） ---- */
+const VISITORS = {
+  '1-2':{shop:['yutamama', `ゆうたのおかあさん：あら、こんにちは。ゆうたがね、きのうから いもむしの話ばっかりなのよ。
+      ゆうたのおかあさん：セミのときは すぐ あきちゃったのに。…あなたのおかげかしら。`]},
+  '1-4':{spot:['yuta', `ゆうた：見て見て、セミのぬけがら！ …セミは つかまえないで、ぬけがらだけ もらっていくんだ。
+      ゆうた：ぬけがらって、セミが土から出てきて、さいごに ぬいだ服なんだって。`, 'yuta']},
+  '1-6':{shop:['oba', `おばあちゃん：あらまあ、ここで会うとはねえ。畑の、鳥よけのネットを買いにきたの。
+      おばあちゃん：鳥も、虫を食べにくるからねえ。…でも、鳥も生きとるから、ぜんぶは追いはらわんの。`]},
+  '2-3':{shop:['haruka', `はるか：…カマキリのエサ、ここでは売ってないのよね。
+      はるか：草むらで、小さいバッタをつかまえるしかないの。…食べられちゃうバッタには、ちょっとわるいけど。`, 'haruka']},
+  '2-5':{spot:['mizu', `水のおじさん：この水路の水はな、田んぼをまわって、釣川に入って、さいごは海まで行くんだ。
+      水のおじさん：だから、ここをきれいにしとくと、川の魚も、海の魚も よろこぶ。みーんな、つながっとるんだよ。`]},
+  '4-3':{spot:['soma', `そうま：台風が来る前の日って、虫が ひくいところに集まるんだって。本に書いてあった。
+      そうま：…ほんとかどうか、いっしょに見てみない？`, 'soma']},
+  '4-5':{shop:['eki', `おねえさん：あ、このまえの！ 昆虫展のポスター、おみせにも はらせてもらってるの。
+      おねえさん：育てた虫を見てもらうと、みんな「虫って、こんなにきれいなんだ」って気づくのよ。`]},
+  '5-2':{spot:['kansatsu', `観察員さん：この木、根もとに穴があいているでしょう。カブトムシの幼虫が育った あとかもしれません。
+      観察員さん：大きな木が 一本たおれると、そこに たくさんの いのちが集まるんですよ。`]},
+  '5-3':{shop:['daichi', `だいち：…保冷剤、買いにきた。ミヤマは暑いのが だめなんだ。
+      だいち：おれ、強くするための世話は してたけど、すずしくするのは、考えてなかった。`, 'daichi']},
+  '6-2':{shop:['haruka', `はるか：卵のう、毎日 見に行ってるの。なにも かわらないけど。
+      はるか：…でも、中で、ちゃんと生きてるんだよね。春まで。`, 'haruka']},
+  '6-3':{spot:['jinja', `神社の人：このクヌギの林も、むかしから、まつりの まきや炭のために、人が手を入れてきた林なのですよ。
+      神社の人：人と森と虫は、ずっと いっしょに生きてきたのです。`]},
+  '6-5':{shop:['soma', `そうま：図書館で、宗像の言い伝えの本を読んだんだ。沖ノ島には、むかし たくさんの宝物が おさめられたんだって。
+      そうま：海をわたる人たちが、無事に帰れますようにって、いのって。`, 'soma']},
+};
+function visitNow(where){ if(!storyOn() || S.story.done) return null; const v = VISITORS[S.story.ch + '-' + S.story.day]; const w = v && v[where]; if(!w || SX().talk['v' + where + '|' + dayKey()]) return null; return w; }
+function visitInject(where){ const w = visitNow(where); if(!w) return;
+  const tgt = where === 'shop' ? view.querySelector('.shopHi') : view.querySelector('.spot.here'); if(!tgt) return;
+  const d = document.createElement('div'); d.className = 'visitCard norb';
+  d.innerHTML = `${FACE_ART.has(w[0]) ? `<img src="img/chara/${w[0]}.webp" alt="" draggable="false">` : ''}<span><b>${esc(faceName(w[0]))}</b>が来ている。</span><button type="button" class="btn pri" id="btnVisit">話す</button>`;
+  tgt.insertAdjacentElement('afterend', d);
+  $('btnVisit').onclick = async ()=>{ if(storyBusy) return; storyBusy = true;
+    try{ SX().talk['v' + where + '|' + dayKey()] = 1; save(); await play(w[1]); if(w[2]){ naka(w[2]); meet(w[2]); } } finally { storyBusy = false; }
+    render(); };
+}
+
 /* すもう決勝（6章）。すもうタブからも出られる */
 async function storyFinal(c){
   const r = RIVALS.find(x=> x.key === 'ren');
@@ -5680,7 +6106,10 @@ function renderOutStory(){
   view.innerHTML = `<h2>そとへ虫をさがしに行く</h2><p class="small">いまは<b style="color:var(--ink)">${SLOT_NAMES[slot]}</b>。今週の虫しらべは「${esc(cn.place)}」。おとうさんといっしょに行こう。</p>
     <div class="spots" style="margin-top:10px"><div class="spot"><img class="spotPic" src="img/ui/spot_${spotArt(sp)}.webp" alt="" loading="lazy" draggable="false"><b>${esc(cn.place)}</b>　<span class="small">${esc(spotEnv(sp))}</span>
       <div class="bugs">今週のなかま：${cn.nakama.map(id=> S.dex[id] && S.dex[id].known ? BUGS[id].name : '？？？').join('・')}</div>
-      <div class="row" style="margin-top:6px"><button type="button" class="btn pri" id="btnGoS" ${rain ? 'disabled' : ''}>${rain ? 'きょうは雨…' : '行く'}</button></div></div></div>`;
+      <div class="row" style="margin-top:6px"><button type="button" class="btn pri" id="btnGoS" ${rain ? 'disabled' : ''}>${rain ? 'きょうは雨…' : '行く'}</button></div></div></div>
+    <h3 style="margin-top:12px">ほかの場所</h3>${ch === 3 ? '<p class="small">大島にとまっているあいだは、行けない。</p>' : `<div class="spots plx">${PLACES_X.map(P=> `<div class="spot"><img class="spotPic" src="${P.pic}" alt="" loading="lazy" draggable="false"><b>${esc(P.name)}</b>${plNew(P.k) ? '<span class="newMark norb">！</span>' : ''}　<span class="small">${esc(P.desc)}</span>
+      <div class="row" style="margin-top:6px"><button type="button" class="btn" data-pl="${P.k}" ${rain || plDone(P.k) ? 'disabled' : ''}>${plDone(P.k) ? 'きょうは行った' : rain ? 'きょうは雨…' : '行く'}</button></div></div>`).join('')}</div>`}`;
+  view.querySelectorAll('[data-pl]').forEach(b=> b.onclick = ()=> goPlace(b.dataset.pl));
   $('btnGoS').onclick = async ()=>{ const today = dayKey(), sp2 = Object.assign({}, sp, {name:cn.place});
     let gift = '';
     if(!S.yk['sg|' + today]){ S.yk['sg|' + today] = 1; S.money += 10; cn.gift.forEach(k=> giveItem(k, 1)); gift = `\nどんぐり ${dg(10)} と、${cn.gift.map(k=> k === 'koorogi' ? 'エサにする小さな虫' : ITEMS[k].name).join('・')}を手に入れた。`; }
