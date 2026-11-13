@@ -710,8 +710,8 @@ html.tall #arena .fighter{max-width:280px}
 #arena .log .ko{color:#ff9}
 #arena .ctl{display:flex;justify-content:flex-end;gap:.5em;margin-top:8px}
 #matsuri{position:fixed;inset:0;z-index:150;display:flex;flex-direction:column;gap:6px;padding:max(10px,env(safe-area-inset-top,0px)) 12px max(10px,env(safe-area-inset-bottom,0px));color:#f7f1df;background:radial-gradient(circle at 50% 120%,#5a3a6a,transparent 60%),linear-gradient(#0c1026,#1d2550 70%,#2a2a52)}
-#matsuri::before{content:'';position:absolute;left:0;right:0;top:0;height:30px;pointer-events:none;background:radial-gradient(circle at 50% 62%,#ff7a3d 0 7px,#ffc078 8px,transparent 11px) 0 0/46px 30px repeat-x,linear-gradient(#0000 13px,#e8d8a8 13px 14px,#0000 14px)}
-#matsuri .mhead{display:flex;align-items:center;gap:12px;font-size:1.15rem;padding-top:22px}
+#matsuri::before{content:'';position:absolute;left:0;right:0;top:-6px;height:62px;pointer-events:none;z-index:1;background:url(img/ui/mini/chochin.webp) 0 0/auto 62px repeat-x;filter:drop-shadow(0 0 6px #ffb05a99) drop-shadow(0 3px 3px #0008)}   /* ちょうちん（GPT の絵、2026-11-14） */
+#matsuri .mhead{display:flex;align-items:center;gap:12px;font-size:1.15rem;padding-top:46px}
 #matsuri .mstat{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:.95rem}
 #matsuri .mbar{display:inline-block;width:110px;height:12px;border-radius:6px;background:#0007;overflow:hidden;border:1px solid #fff6}
 #matsuri .mbar i{display:block;height:100%;background:linear-gradient(90deg,#ffd27a,#fff2c8)}
@@ -2124,7 +2124,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261114-0304';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261114-0310';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-08', items:[
     'ストーリーの七夕祭（3章）で、出店を回れるようになった。ヨーヨーつり・輪なげ・くじびきで遊べるよ',
