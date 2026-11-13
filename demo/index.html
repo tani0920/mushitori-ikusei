@@ -1073,7 +1073,7 @@ const CG_OTO = {
   taifu:{bgm:null, amb:{typhoon:80, rain:70}}, eki:{bgm:'bgm_ouchi', amb:{}}, yamaasa:{bgm:'bgm_soto', bgmV:70, amb:{wind:50, cicada:30}},
   takamiya:{bgm:'bgm_fushigi', amb:{wind:45, cicada:20}}, yohaisho:{bgm:'bgm_fushigi', amb:{waves:45, night:40}}, happyo:{bgm:'bgm_wakare', amb:{}},
   gakko:{bgm:'bgm_ouchi', amb:{cicada:40, wind:25}}, obaa:{bgm:'bgm_ouchi', amb:{cicada:25, wind:30}}, tosho:{bgm:'bgm_ouchi', bgmV:50, amb:{}},
-  jousen:{bgm:'bgm_soto', amb:{waves:45, wind:40}}, oshimako:{bgm:'bgm_soto', amb:{waves:55, wind:30}}
+  jousen:{bgm:'bgm_soto', amb:{waves:45, wind:40}}, note:{bgm:'bgm_fushigi', amb:{night:30}}, ranou:{bgm:'bgm_wakare', amb:{waves:35, wind:30}}, oshimako:{bgm:'bgm_soto', amb:{waves:55, wind:30}}
 };
 let otoForce = null;   // とくべつな場面（虫をかえす・章のおわり）では、この音にする
 const NAKU = {suzumushi:{id:'v_suzu', slots:{asa:30, hiru:25, yu:80, yoru:100}}, abura:{id:'v_abura', slots:{asa:70, hiru:100, yu:60}}};   // 鳴くのはオスの成虫だけ
@@ -2124,7 +2124,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261114-0310';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261114-0323';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-08', items:[
     'ストーリーの七夕祭（3章）で、出店を回れるようになった。ヨーヨーつり・輪なげ・くじびきで遊べるよ',
@@ -2135,6 +2135,7 @@ const CHANGELOG = [
     '時計の数字は、はやい は30分、ゆっくり は15分ごとに動く',
     '夜9時半をすぎても時計が進みつづけて、ねる時間をのがすことがあったのを直した',
     'すもうで勝つと あいての子はくやしい顔、負けると うれしい顔になる。ゆうたのおかあさん・島の子の絵もできた',
+    '学校の先生・図書館の人の絵ができた。4章のはるかが かなしむ場面と、カマキリを松原にうめる場面、6章のノートの最後のページにも、絵が出る',
     '七夕祭の出店（ヨーヨーつり・輪なげ・くじびき）が、お祭りの夜の絵になった。3章で大島へ行くとき、神湊の渡船ターミナルでフェリーに乗る絵と、大島の港に着く絵が出る',
     'ストーリーに「いのちのつながり」の話がふえた。虫も人も、いのちは つながっている。おばあちゃんのキャベツと花粉をはこぶ虫、ホタルの一生、むかしの海の人、はるかのカマキリ、たおれた木、そして発表会',
     '「そと」から、夏休みの学校・おばあちゃんの家・図書館に行けるようになった。図書館では、育てている虫のことを くわしく しらべられる（ずかんにも のる）。大島にいる3章は、島の中（港・中津宮・海べ）を回れる',
@@ -3362,7 +3363,7 @@ const RIVAL_NAME = {yuta:'ゆうた', haruka:'はるか', kenta:'けんた', som
 // 立ち絵の大きさ（おとな＝1）。同じ足もとに立つので、小さい子は頭が低くなる
 const CHARA_SC = {boku:.8, yuta:.68, haruka:.76, kenta:.8, soma:.85, daichi:.9, ren:.94, oba:.86, shimakko:.74};
 const charaWho = k=> String(k).split('_')[0];
-const FACE_ART = new Set([...Object.keys(FACES), ...Object.keys(RIVAL_NAME), ...Object.keys(RIVAL_NAME).flatMap(k=> [k + '_joy', k + '_sad']), 'oba', 'mizu', 'jii', 'eki', 'kansatsu', 'jinja', 'siro', 'yutamama', 'shimakko', 'shimakko_wow']);
+const FACE_ART = new Set([...Object.keys(FACES), ...Object.keys(RIVAL_NAME), ...Object.keys(RIVAL_NAME).flatMap(k=> [k + '_joy', k + '_sad']), 'oba', 'mizu', 'jii', 'eki', 'kansatsu', 'jinja', 'siro', 'yutamama', 'shimakko', 'shimakko_wow', 'haruka_cry', 'sensei', 'shisho']);
 const CHARA_ALIAS = {siro:'jinja'};   // 白いかみの人は、神社の人の絵（6章で同じ人とわかる）   // 絵がある人（来た人は、名前だけ）。すもうの子は うれしい(_joy)・くやしい(_sad) も（img/chara/キー.webp と img/chara/cut/キー.webp）
 const faceName = k=> FACES[k] || RIVAL_NAME[k] || NPC_NAME[k] || RIVAL_NAME[charaWho(k)] || NPC_NAME[charaWho(k)] || '';
 const faceImg = (k, cls='')=> FACE_ART.has(k) ? `<img class="fimg ${cls}" src="img/chara/${CHARA_ALIAS[k] || k}.webp" alt="${esc(faceName(k))}" draggable="false">` : '';
@@ -5016,6 +5017,7 @@ const SPK = {'ぼく':{'':'boku','ふつう':'boku','うれしい':'boku_joy','�
   'おとうさん':{'':'papa','ふつう':'papa','教える':'papa_teach','しんぱい':'papa_worry','にっこり':'papa_happy'}, 'おじさん':{'':'ojisan','わらう':'ojisan_laugh'},
   ...Object.fromEntries([['ゆうた','yuta'],['はるか','haruka'],['けんた','kenta'],['そうま','soma'],['だいち','daichi'],['れん','ren']].map(([n, k])=> [n, {'':k, 'ふつう':k, 'うれしい':k + '_joy', 'くやしい':k + '_sad'}])),
   'おばあちゃん':'oba','水のおじさん':'mizu','じいちゃん':'jii','おねえさん':'eki','観察員さん':'kansatsu','神社の人':'jinja','白いかみの人':'siro','先生':'sensei','図書館の人':'shisho','ゆうたのおかあさん':'yutamama','島の子':{'':'shimakko', 'びっくり':'shimakko_wow'},'来た人':'kyaku'};
+SPK['はるか']['なみだ'] = 'haruka_cry';   // 4章でカマキリが死ぬ場面（2026-11-14）
 /* ---- 七夕祭の出店（ミニゲーム）：ヨーヨーつり・輪なげ・くじびき（3章5日目。2026-11-09） ----
    絵は画面の中で描く（GPTの絵は使わない）。#matsuri がひらいているあいだは、ストーリーの時計は止まる。 */
 let miniSt = null;   // いま遊んでいるミニゲームのようす（テストでも見る）
@@ -5187,7 +5189,7 @@ async function tanabataStalls(){
       await play(r.got.includes(1) ? 'けんた：1等！？ まじかよ！' : r.got.length ? 'けんた：おれ、ラムネばっかりだった。…いっしょに飲もうぜ。' : 'けんた：くじは、また来年だな。'); }
     save(); }
 }
-const CG = ['ame', 'hotaru', 'ferry', 'amanogawa', 'tenbodai', 'matsuri', 'taifu', 'eki', 'yamaasa', 'takamiya', 'yohaisho', 'happyo', 'gakko', 'obaa', 'tosho', 'jousen', 'oshimako'];   // img/ui/ev/キー.webp（gakko・obaa・tosho は ほかの場所の絵。2026-11-14）
+const CG = ['ame', 'hotaru', 'ferry', 'amanogawa', 'tenbodai', 'matsuri', 'taifu', 'eki', 'yamaasa', 'takamiya', 'yohaisho', 'happyo', 'gakko', 'obaa', 'tosho', 'jousen', 'oshimako', 'note', 'ranou'];   // img/ui/ev/キー.webp（gakko・obaa・tosho は ほかの場所の絵。2026-11-14）
 function cgShow(k){ let e = $('cgLayer');
   if(!k || k === 'off' || !CG.includes(k)){ if(e){ e.remove(); otoScene(); } return; }
   if(e && e.dataset.k === k) return; if(e) e.remove();
@@ -5566,13 +5568,14 @@ const STORY_DAY = {
       はるか（うれしい）：100こも！？`); S.story.flags.ranou = 1; },
   '4-6': async ()=>{ meet('haruka');
     await play(`＊朝、はるかが家に来た。目が赤い。
-      はるか：…カマキリが、動かなくなっちゃった。
-      はるか：ちゃんと エサもあげたし、きりふきもしたのに…。わたしのせい？`);
+      はるか（なみだ）：…カマキリが、動かなくなっちゃった。
+      はるか（なみだ）：ちゃんと エサもあげたし、きりふきもしたのに…。わたしのせい？`);
     const a = await choose('…', ['「はるかのせいじゃないよ」', '（だまって、となりにすわる）'], 'boku');
     await play(a === 0 ? 'ぼく（ふつう）：はるかのせいじゃないよ。毎日ちゃんと世話してたの、ぼく、知ってる。' : '＊なにも言えなくて、となりにすわった。はるかは、しばらく下を向いていた。');
     await play(`おとうさん（ふつう）：…はるかちゃん。カマキリは、夏の終わりから秋に たまごを産んで、一生をおえるんだ。春に生まれて、半年くらい。それが、カマキリの いのちの長さなんだよ。
       おとうさん（にっこり）：卵のうを産めたのは、さいごまで元気だった しるしだ。はるかちゃんは、さいごまで、ちゃんと育てたんだよ。
-      はるか：…さいごまで。
+      はるか（なみだ）：…さいごまで。
+      ＠絵 ranou
       ＊みんなで、さつき松原へ行った。カマキリは、松の根もとに、そっとうめた。
       ＊卵のうは、カマキリがいた草むらの、じょうぶな草のくきに むすびつけた。
       おとうさん（教える）：春になったら、ここから 100ぴき以上の 赤ちゃんカマキリが生まれてくる。`);
@@ -5725,6 +5728,7 @@ const STORY_DAY = {
       ＊あとで、虫具店へ。
       おじさん（わらう）：金色のカブトムシ？ はっはっは、そりゃあ、夢でも見たんじゃないか？
       おじさん：…でもな、そういう話は、むかしからあるんだよ。
+      ＠絵 note
       ＊その夜。えんがわで、おとうさんの古いノートを ひらくと…くっついていた最後のページが、ぺりっと、はがれた。
       ＊子どもの字で かいた、金色のカブトムシの絵。その下に、「大島で見た。だれも信じてくれない。でも、ぼくは見た。」
       ぼく（びっくり）：おとうさん、これ…！
