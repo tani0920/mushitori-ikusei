@@ -1133,7 +1133,7 @@ html.land body.obsMode #view{padding-top:0;font-weight:600;overflow:hidden}
 html.land body.obsMode .obsGrid{gap:6px;box-sizing:border-box;height:100%;grid-template-rows:minmax(0,1fr);align-items:stretch}
 html.land body.obsMode .obsL{width:calc(var(--sih) * 1.78);flex:none;justify-content:flex-end;gap:4px;padding-bottom:4px;box-sizing:border-box;align-items:center;height:100%}
 html.land body.obsMode .caseBox{position:relative;flex:none}
-.tipBar{display:none}
+.tipBar{display:none}.tipBar .tTxt,.toolTip .tTxt{display:inline-block;white-space:nowrap}
 html.land body.obsMode .obsL .tipBar{display:flex;align-items:center;justify-content:center;gap:.4em;height:var(--tiph);flex:none;max-width:100%;box-sizing:border-box;padding:0 .9em;font-size:clamp(12px,calc(var(--H) * .019),17px);font-weight:700;color:#4a3320;white-space:nowrap;overflow:hidden;border-radius:999px;visibility:hidden}
 html.land body.obsMode .obsL .tipBar.on{visibility:visible;background:#fbf3dfee;border:1.5px solid #d9a93a;box-shadow:0 2px 4px #3a241233}
 html.land body.obsMode .obsL .tipBar .tIc{width:1.6em;height:1.6em;display:flex;align-items:center;justify-content:center}html.land body.obsMode .obsL .tipBar .tIc .tim,html.land body.obsMode .obsL .tipBar .tIc svg{width:100%;height:100%}   /* 道具の使い方：虫かごと道具のあいだ（2026-11-15） */
@@ -1179,7 +1179,15 @@ html.land body.noteUI.noteTabs .obsR.flip{animation:pageFlip .32s ease-out}
 html.land body.noteUI:not(.noteTabs) #rtabs #rtItems,html.land body.noteUI:not(.noteTabs) #rtabs #rtNote{writing-mode:horizontal-tb;width:auto;min-height:0;padding:.35em .55em .3em;margin-right:6px;border-radius:12px;background:url(img/ui/card.webp) center/100% 100% no-repeat;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;letter-spacing:0}
 html.land body.noteUI:not(.noteTabs) #rtabs #rtItems .rtIc,html.land body.noteUI:not(.noteTabs) #rtabs #rtNote .rtIc{display:block;width:38px;height:46px;object-fit:contain;filter:drop-shadow(1px 1px 1px #3a241255)}
 html.land.tall body.noteUI:not(.noteTabs) #rtabs #rtItems,html.land.tall body.noteUI:not(.noteTabs) #rtabs #rtNote{font-size:14px}html.land.tall body.noteUI:not(.noteTabs) #rtabs #rtItems .rtIc,html.land.tall body.noteUI:not(.noteTabs) #rtabs #rtNote .rtIc{width:48px;height:58px}
-body.noteTabs #rtabs #rtNote{display:none}   /* 虫しらべノート：右の「もちもの」の下（ストーリーだけ、虫かごの中では出さない。2026-11-15 ユーザー） */
+body.noteTabs #rtabs #rtNote,body.noteTabs #rtabs #rtNext{display:none}
+html.land body.noteUI:not(.noteTabs) #rtabs #rtNext{writing-mode:horizontal-tb;width:auto;min-height:0;padding:.35em .45em .3em;margin-right:6px;border-radius:12px;background:#f6cf5b;border:2px solid #fff;box-shadow:0 2px 0 #d9a93a,0 3px 6px #3a241244;display:flex;flex-direction:column;align-items:center;gap:1px;font-size:12px;letter-spacing:0;color:#3a2410;filter:none}
+html.land body.noteUI:not(.noteTabs) #rtabs #rtNext .nxIc{font-size:22px;line-height:1.1}html.land body.noteUI:not(.noteTabs) #rtabs #rtNext .nxL{font-weight:900;white-space:nowrap}
+html.land.tall body.noteUI:not(.noteTabs) #rtabs #rtNext{font-size:14px}html.land.tall body.noteUI:not(.noteTabs) #rtabs #rtNext .nxIc{font-size:28px}
+html:not(.land) #rtabs #rtNext .nxIc{display:none}
+/* 右のアイコンと、おうちの画面の中身が かさならないように（2026-11-15 ユーザー）。上の札の「虫しらべノート」「次の日へ」は 右に移したので かくす */
+html.land body.noteUI:not(.obsMode):not([data-tab=out]):not([data-tab=spot]) #view{padding-right:calc(var(--sr,0px) + 92px)}
+html.land.tall body.noteUI:not(.obsMode):not([data-tab=out]):not([data-tab=spot]) #view{padding-right:calc(var(--sr,0px) + 108px)}   /* そと（カードは左がわ）と虫さがしの場所はのぞく */
+html.land body.noteUI .storyBar #sbSleep,html.land body.noteUI .storyBar #sbNote{display:none}   /* 虫しらべノート：右の「もちもの」の下（ストーリーだけ、虫かごの中では出さない。2026-11-15 ユーザー） */
 html.land body.noteUI.noteTabs #rtabs .rt{min-height:clamp(52px,calc((var(--nH) - 40px) / 3 - 6px),96px)}
 html.land:not(.tall) body.noteUI #rtabs .rt{font-size:13px;letter-spacing:.02em;min-height:0;padding-top:.4em;padding-bottom:.4em}html.land:not(.tall) body.noteUI #rtabs{gap:4px}
 html.land:not(.tall) body.noteUI #tabs button{min-height:0;flex:1 1 0;max-height:62px}html.land:not(.tall) body.noteUI #tabs{bottom:var(--sb,0px)}   /* おうちがふえて6こ：スマホは高さに合わせて ちぢめる */
@@ -1353,6 +1361,7 @@ body.noteUI #hud .sch{color:#b0601a}   /* 明るい札の上でも読めるよ�
   <button type="button" class="rt" id="rtMushi" hidden><span class="ic">🐛</span>むしのこと</button>
   <button type="button" class="rt" id="rtItems"><span class="ic">🎒</span><img class="rtIc" src="img/ui/ic_mochimono.webp" alt="" draggable="false">もちもの</button>
   <button type="button" class="rt" id="rtNote" hidden><span class="ic">📒</span><img class="rtIc" src="img/ui/ic_note.webp" alt="" draggable="false">ノート</button>
+  <button type="button" class="rt" id="rtNext" hidden><span class="nxIc">☀</span><b class="nxL">次の日へ</b></button>
   <button type="button" class="rt" id="rtCase" hidden><span class="ic">📋</span>ケースの<br>こと</button>
 </div>
 <div class="drawer norb" id="itemsPanel" data-p="items"><div class="dHead"><b>もちもの</b></div><div id="itemsBody"></div></div>
@@ -2423,7 +2432,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.17.1';
-const BUILD = '20261115-0114';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261115-0138';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.17.1', date:'2026-11-14', items:[
     'ふりがなに「ぜんぶ」をふやした。すべての漢字にふりがながつくので、小学校に入る前の子も、おうちの人といっしょに遊べるよ（タイトルの「ふりがな」か「その他」で切りかえ）',
@@ -3964,7 +3973,8 @@ function renderItems(){
   $('itemsShop').onclick = ()=>{ setSide(null); setTab('shop'); };
 }
 $('rtItems').onclick = ()=> setSide(sidePanel === 'items' ? null : 'items');
-$('rtNote').onclick = ()=>{ setSide(null); showNote(); };   // 虫しらべノート
+$('rtNote').onclick = ()=>{ setSide(null); showNote(); };
+$('rtNext').onclick = ()=>{ setSide(null); storySleep(); };   // 虫しらべノート
 $('rtMushi').onclick = ()=>{ const was = sidePanel; setSide(null);   // 虫かごの中：ノートの さいしょのページ（虫のこと）にもどる
   const o = document.querySelector('#obs .obsR'); if(was && o){ o.classList.remove('flip'); void o.offsetWidth; o.classList.add('flip'); } };   // もどるときも ページをめくる
 $('rtCase').onclick = ()=> setSide(sidePanel === 'case' ? null : 'case');
@@ -4062,6 +4072,8 @@ function render(){
   document.querySelectorAll('body > #drawer').forEach(e=>e.remove()); $('rtCase').hidden = true; $('rtMushi').hidden = true; document.body.classList.remove('noteTabs');   // ケースのこと は、ケースの画面のときだけ
   if(sidePanel === 'case') sidePanel = null; setSide(sidePanel); $('rtabs').hidden = !S;
   if($('rtNote')) $('rtNote').hidden = !(S && S.story && openCase === null);
+  if($('rtNext')){ const on = !!(S && S.story && openCase === null && !S.story.done && S.story.ch && storySp().m > 1); $('rtNext').hidden = !on;   // 右のアイコンの下に「次の日へ」（ねる・次の章へ）。おすと、もう一度きく（storySleep）
+    if(on){ const lb = nextLabel(); $('rtNext').querySelector('.nxL').textContent = lb.replace('（あしたへ）', ''); $('rtNext').querySelector('.nxIc').textContent = lb === '次の章へ' ? '📖' : /ねる/.test(lb) ? '🌙' : '☀'; } }
   setStandee(S && openCase === null && tab === 'shop' ? 'ojisan' : null); if(!atSpot && $('papaPop')){ $('papaPop').remove(); $('papaBub')?.remove(); }
   if(!S){ renderTitle(); otoScene(); return; }
   if(openCase !== null){ renderObs(); otoScene(); setTimeout(tutCheck, 900); return; }
@@ -4396,7 +4408,7 @@ async function renderObs(){
     if(toolOff()){ if(tp === bar){ bar.innerHTML = ''; bar.classList.remove('on'); } else tp && tp.remove(); return; }
     if(!tp){ tp = document.createElement('div'); tp.className = 'toolTip norb'; sceneEl.appendChild(tp); }
     if(tp === bar) bar.classList.add('on');
-    tp.innerHTML = `<span class="tIc">${tool === 'kazari' ? `<svg viewBox="0 0 100 100">${decoSVG(decoSel)}</svg>` : TOOLS[tool].ic}</span>${tool === 'big' && (obsSession.big||{}).step === 2 ? 'ほうきで、土をはく' : TIP[tool] || ''}${tool === 'esa' && undoFood() ? '<button type="button" class="tUndo">↩ エサを1こ もどす</button>' : ''}`;
+    tp.innerHTML = `<span class="tIc">${tool === 'kazari' ? `<svg viewBox="0 0 100 100">${decoSVG(decoSel)}</svg>` : TOOLS[tool].ic}</span><span class="tTxt">${tool === 'big' && (obsSession.big||{}).step === 2 ? 'ほうきで、土をはく' : TIP[tool] || ''}</span>${tool === 'esa' && undoFood() ? '<button type="button" class="tUndo">↩ エサを1こ もどす</button>' : ''}`;
     const ub = tp.querySelector('.tUndo'); if(ub){ ['pointerdown', 'mousedown', 'touchstart'].forEach(ev=> ub.addEventListener(ev, e=> e.stopPropagation()));
       ub.onclick = e=>{ e.stopPropagation(); const f = undoFood(); if(!f) return; c.foods.splice(c.foods.indexOf(f), 1); if(ITEMS[f.k] && ITEMS[f.k].price) S.items[f.k] = (S.items[f.k]||0) + 1; c.log.feed = Math.max(0, c.log.feed - 1); save(); renderObs(); setTimeout(()=> setTxt(`${ITEMS[f.k] ? ITEMS[f.k].name : 'エサ'}を、ひとつ もどした。`), 50); }; } };
   // さっき置いて、まだ食べていないエサ（まちがえて置いたときに もどせる。2026-11-15 ユーザー）
