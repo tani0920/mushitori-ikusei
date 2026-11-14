@@ -2481,7 +2481,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.17.1';
-const BUILD = '20261115-0208';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261115-0215';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.17.1', date:'2026-11-14', items:[
     'ふりがなに「ぜんぶ」をふやした。すべての漢字にふりがながつくので、小学校に入る前の子も、おうちの人といっしょに遊べるよ（タイトルの「ふりがな」か「その他」で切りかえ）',
@@ -5500,6 +5500,9 @@ function showChangelog(){
     <p class="small">新しい版が出ると、画面の上に「こうしんする」が出ます。</p>
     <div class="chlog">${CHANGELOG.map((c,i)=>`<h3>ver ${esc(c.v)}${i===0 ? '<span class="now norb">いまのバージョン</span>' : ''}<small> ${esc(c.date)}</small></h3><ul>${c.items.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`).join('')}</div>`);
 }
+/* お問い合わせ用の Google フォーム（虫とり日記と共通。2026-11-15 ユーザー）。「どのゲームのこと？」と「ゲームのバージョン」は、はじめから入れておく */
+const CONTACT_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSe_zcg7xhwYmuiL0ZI5Jf-wYDQlA8dgGuMUL83l-c8jO5b14g/viewform';
+const contactURL = ()=> CONTACT_URL + '?usp=pp_url&entry.1905087587=' + encodeURIComponent('むなかた虫そだて日記〈1週間〉') + '&entry.72780852=' + encodeURIComponent('ver ' + GAME_VER);
 function showPrivacy(){
   openWin('プライバシーについて', `
     <h3>こどものみんなへ</h3>
@@ -5520,7 +5523,8 @@ function showPrivacy(){
     <label class="gaoff"><input type="checkbox" id="gaOffChk" ${gaOff() ? 'checked' : ''}><span>この端末では計測しない</span></label>
     <p class="small">${window.DEMO ? '※デモ版では、もともと計測していません。' : 'チェックを入れると、この端末からは何も送らなくなります。'}</p>
     <p><b>4. セーブデータ</b><br>ゲームの記録は、お使いの端末のブラウザの中（localStorage）にだけ保存されます。</p>
-    <p><b>5. 屋外での採集</b><br>保護者の方のスマートフォンで、お子さんと一緒に行う前提で設計しています。アプリは1日1回「おうちの人といっしょ？」と確認します。</p>`);
+    <p><b>5. 屋外での採集</b><br>保護者の方のスマートフォンで、お子さんと一緒に行う前提で設計しています。アプリは1日1回「おうちの人といっしょ？」と確認します。</p>
+    <p><b>6. お問い合わせ</b><br>Game Director: Ryohei Taniguchi<br><a href="${contactURL()}" target="_blank" rel="noopener">お問い合わせフォーム</a>（ご意見・ご感想・不具合の報告はこちらから）</p>`);
   const c = $('gaOffChk'); if(c) c.onchange = ()=> setGaOff(c.checked);
 }
 function showInstall(){ track('open_install');
