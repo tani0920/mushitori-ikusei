@@ -28,7 +28,7 @@ if(DEMO){
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800;900&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yusei+Magic&text=%E3%82%80%E3%81%AA%E3%81%8B%E3%81%9F%E8%99%AB%E3%81%9D%E3%81%A0%E3%81%A6%E6%97%A5%E8%A8%98%E9%80%B1%E9%96%93%E3%81%AE%E3%81%8B%E3%81%94%E3%81%8D%E3%82%8D%E3%81%84%E3%81%A1%E3%81%AB%E3%81%A1%EF%BD%9E1234567&display=swap">
 <style>
 /* 見た目は「むなかた虫とり日記」の家族：森のフレーム＋RPGウィンドウ。こちらは昼の飼育ケースなので、少し明るい苔色 */
@@ -797,6 +797,81 @@ html.tall #arena .fighter{max-width:280px}
 #arena .log div{animation:fadein .3s}
 @keyframes fadein{from{opacity:0;transform:translateY(4px)}to{opacity:1}}
 #arena .log .my{color:var(--sun)}
+/* ===== 虫ずもう：見せ方（2026-11-15 ユーザー：太い丸ゴシック・VS・軍配・対戦カード・必殺わざ・顔・見せ場の大きい文字） ===== */
+#arena,#arena button{font-family:"M PLUS Rounded 1c","Hiragino Maru Gothic ProN","Hiragino Sans",sans-serif;font-weight:800}
+#arena .info b{font-weight:900}
+#arena .log{background:linear-gradient(#1b2f55,#132342);border-radius:14px;font-size:16px;line-height:1.65;padding:.6em .9em}
+#arena .log div{padding:.08em 0}
+#arena .log div.big{font-size:1.32em;font-weight:900;line-height:1.4;margin:.25em 0;padding:.2em .5em;border-radius:10px;background:#ffffff14;color:#ffe27a;text-shadow:0 2px 0 #0008;animation:logPop .45s cubic-bezier(.2,1.6,.4,1)}
+#arena .log div.big.my{color:#ffd23a;background:#2f7ad033}#arena .log div.big:not(.my){color:#ffb4a0;background:#d04a2f2e}#arena .log div.big.ko{color:#fff6b0}
+@keyframes logPop{0%{transform:scale(.6);opacity:0}100%{transform:none;opacity:1}}
+/* 顔（ぼく・あいて）：上のすみ */
+#arena .tface{position:absolute;top:8px;z-index:3;display:flex;flex-direction:column;align-items:center;pointer-events:none}
+#arena .tface.l{left:8px}#arena .tface.r{right:8px}
+#arena .tface img{width:clamp(54px,9vh,92px);height:clamp(54px,9vh,92px);border-radius:50%;object-fit:cover;object-position:50% 20%;background:#fff6dc;border:4px solid #2f7ad0;box-shadow:0 4px 10px #0007}
+#arena .tface.r img{border-color:#d04a2f}
+#arena .tface b{margin-top:-10px;font-size:13px;font-weight:900;color:#fff;background:#2f7ad0;border:2px solid #fff;border-radius:999px;padding:0 .7em}
+#arena .tface.r b{background:#d04a2f}
+#arena .tface.pop img{animation:facePop .45s cubic-bezier(.2,1.8,.4,1)}
+@keyframes facePop{0%{transform:scale(.7)}100%{transform:none}}
+/* 軍配 */
+#arena .gyoji{font-size:0;width:clamp(34px,5.5vh,56px);bottom:15%;transform:translateX(-50%) rotate(0deg);transform-origin:50% 90%;transition:transform .5s cubic-bezier(.3,1.5,.5,1);filter:drop-shadow(0 4px 3px #0009);z-index:2}
+#arena .gyoji svg{width:100%;height:auto;display:block}
+#arena .gyoji.swing{animation:gbSwing .5s ease-in-out infinite alternate}
+#arena .gyoji.winL{transform:translateX(-50%) rotate(-55deg)}#arena .gyoji.winR{transform:translateX(-50%) rotate(55deg)}
+@keyframes gbSwing{from{transform:translateX(-50%) rotate(-14deg)}to{transform:translateX(-50%) rotate(14deg)}}
+/* VS（試合中の小さいもの） */
+#arena .vs{font-size:clamp(40px,9vh,76px);font-weight:900;font-style:italic;color:#ffe27a;-webkit-text-stroke:3px #7a2a08;text-shadow:0 0 18px #ffb020,4px 4px 0 #3a1404;letter-spacing:-.04em}
+/* 対戦カード */
+#arena .vsIntro{position:absolute;inset:0;z-index:7;pointer-events:none;overflow:hidden}
+#arena .vsSide{position:absolute;top:0;bottom:0;width:62%;display:flex;flex-direction:column;justify-content:center;padding:4% 5%;color:#fff;text-shadow:0 2px 0 #0008}
+#arena .vsSide.me{left:0;clip-path:polygon(0 0,100% 0,72% 100%,0 100%);background:linear-gradient(120deg,#0f3d84 0%,#2f7ad0 60%,#64a8ff 100%);align-items:flex-start;animation:vsInL .55s cubic-bezier(.2,1.1,.3,1) both}
+#arena .vsSide.op{right:0;clip-path:polygon(28% 0,100% 0,100% 100%,0 100%);background:linear-gradient(240deg,#7a1608 0%,#d04a2f 60%,#ff8a5a 100%);align-items:flex-end;text-align:right;animation:vsInR .55s .25s cubic-bezier(.2,1.1,.3,1) both}
+#arena .vsSide::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(115deg,#ffffff10 0 8px,#0000 8px 22px);pointer-events:none}
+#arena .vsDir{position:absolute;top:5%;font-size:clamp(40px,9vh,80px);font-weight:900;opacity:.25;line-height:1}
+#arena .vsSide.me .vsDir{left:5%}#arena .vsSide.op .vsDir{right:5%}
+#arena .vsFace{position:absolute;top:6%;width:clamp(70px,16vh,150px);height:clamp(70px,16vh,150px);border-radius:50%;object-fit:cover;object-position:50% 20%;background:#fff6dc;border:5px solid #fff;box-shadow:0 6px 14px #0008}
+#arena .vsSide.me .vsFace{left:24%}#arena .vsSide.op .vsFace{right:24%}
+#arena .vsBug{width:min(58%,360px);margin-top:12%;filter:drop-shadow(0 8px 6px #0009)}
+#arena .vsBug img,#arena .vsBug svg{width:100%;height:auto;display:block}
+#arena .vsSide.op .vsBug{transform:scaleX(-1)}
+#arena .vsName{font-size:clamp(22px,5vh,44px);font-weight:900;line-height:1.1;-webkit-text-stroke:1px #0005}
+#arena .vsName small{display:block;font-size:.45em;opacity:.9}
+#arena .vsSub{font-size:clamp(12px,2.1vh,17px);font-weight:700;opacity:.95;margin-top:.3em}
+#arena .vsMark{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:clamp(70px,17vh,150px);font-weight:900;font-style:italic;color:#ffe27a;-webkit-text-stroke:5px #6a2006;text-shadow:0 0 30px #ffb020,0 0 60px #ff7a20,6px 6px 0 #2a0c02;letter-spacing:-.06em;animation:vsSlam .6s .55s cubic-bezier(.2,1.6,.4,1) both;z-index:2}
+#arena .vsIntro.out{animation:vsOut .35s ease-in forwards}
+@keyframes vsInL{from{transform:translateX(-100%)}}@keyframes vsInR{from{transform:translateX(100%)}}
+@keyframes vsSlam{0%{transform:translate(-50%,-50%) scale(3) rotate(-12deg);opacity:0}100%{transform:translate(-50%,-50%) scale(1) rotate(-6deg);opacity:1}}
+@keyframes vsOut{to{opacity:0;transform:scale(1.08)}}
+/* はっけよい・かち・まけ */
+#arena .banner{font-weight:900;font-size:clamp(34px,9vh,80px);color:#fff6d0;-webkit-text-stroke:3px #7a2a08;text-shadow:0 0 20px #ffb020,5px 5px 0 #3a1404;letter-spacing:.06em}
+#arena .banner.win{color:#ffe27a;font-size:clamp(50px,13vh,120px)}#arena .banner.lose{color:#cfe0ff;-webkit-text-stroke-color:#1a2a5a;text-shadow:0 0 16px #6a8aff,5px 5px 0 #0a1434}
+#arena .banner.kimarite{font-size:clamp(22px,5vh,40px);-webkit-text-stroke:1.5px #3a1404;background:#3a2410dd;padding:.25em .9em;border-radius:14px;border:3px solid #ffd860}
+/* 必殺わざのカットイン */
+#arena .cutin.big{top:20%;bottom:20%;padding:0;display:flex;align-items:center;overflow:hidden;font-size:inherit;white-space:normal;text-shadow:none;animation-duration:1.5s;z-index:7}
+#arena .cutin.big.me{background:linear-gradient(90deg,#0b2f6a 0%,#1d5aa8 60%,#2f7ad0 85%,#2f7ad0aa)}
+#arena .cutin.big.op{background:linear-gradient(270deg,#5e1006 0%,#a8321d 60%,#d04a2f 85%,#d04a2faa);flex-direction:row-reverse}
+#arena .cutin.big .ciLines{position:absolute;inset:0;background:repeating-linear-gradient(90deg,#ffffff14 0 2px,#0000 2px 26px);animation:ciLines .25s linear infinite}
+#arena .cutin.big.op .ciLines{animation-direction:reverse}
+@keyframes ciLines{to{background-position:26px 0}}
+#arena .cutin.big .ciBugBox{position:relative;flex:0 0 46%;align-self:stretch;overflow:hidden;z-index:1}
+#arena .cutin.big .ciBug{position:absolute;top:50%;right:-6%;height:175%;width:auto;max-width:none;transform:translateY(-50%);filter:drop-shadow(0 8px 8px #000a);animation:ciZoom 1.5s ease-out both}
+#arena .cutin.big .ciBug svg{height:100%;width:auto}
+#arena .cutin.big.op .ciBug{right:auto;left:-6%;transform:translateY(-50%) scaleX(-1)}   /* 虫の顔（絵の右がわ）が まん中に来るように、体は はしで切れる */
+@keyframes ciZoom{from{scale:.8}to{scale:1.06}}
+#arena .cutin.big .ciFace{position:absolute;bottom:6%;width:clamp(56px,12vh,110px);height:clamp(56px,12vh,110px);border-radius:50%;object-fit:cover;object-position:50% 20%;background:#fff6dc;border:4px solid #fff;box-shadow:0 4px 10px #0008;z-index:2}
+#arena .cutin.big.me .ciFace{left:3%}#arena .cutin.big.op .ciFace{right:3%}
+#arena .cutin.big .ciTxt{position:relative;z-index:2;flex:1;min-width:0;display:flex;flex-direction:column;padding:0 4%;color:#fff}
+#arena .cutin.big.op .ciTxt{align-items:flex-end;text-align:right}
+#arena .cutin.big .ciTxt small{font-size:clamp(13px,2.4vh,20px);font-weight:800;opacity:.95;display:block}
+#arena .cutin.big .ciName{white-space:nowrap;display:block;max-width:100%;overflow:visible;font-size:clamp(30px,7.5vh,68px);font-weight:900;line-height:1.1;color:#fff6c0;-webkit-text-stroke:2.5px #3a1404;text-shadow:0 0 16px #ffb020,4px 4px 0 #2a0c02;animation:ciName .5s cubic-bezier(.2,1.6,.4,1) both}
+#arena .cutin.big .ciTxt em{font-style:normal;font-size:clamp(14px,2.6vh,22px);font-weight:900;color:#ffe27a;letter-spacing:.2em;margin-top:.2em}
+@keyframes ciName{0%{transform:scale(2.2);opacity:0}100%{transform:none;opacity:1}}
+#arena .cutin.big.out{opacity:0;transition:opacity .2s}
+/* 見せ場の大きい文字（土俵の上） */
+#arena .bigTxt{position:absolute;left:50%;top:38%;z-index:6;pointer-events:none;font-size:clamp(30px,7vh,64px);font-weight:900;color:#fff;-webkit-text-stroke:2.5px #3a1404;text-shadow:0 0 18px #ffb020,4px 4px 0 #2a0c02;white-space:nowrap;animation:bigTxt 1.3s ease-out forwards}
+#arena .bigTxt.me{color:#bfe0ff;-webkit-text-stroke-color:#0f3d84}#arena .bigTxt.op{color:#ffd0c0;-webkit-text-stroke-color:#7a1608}
+@keyframes bigTxt{0%{transform:translate(-50%,-50%) scale(2.4);opacity:0}18%{transform:translate(-50%,-50%) scale(.95);opacity:1}26%{transform:translate(-50%,-50%) scale(1.05)}80%{opacity:1}100%{transform:translate(-50%,-62%) scale(1);opacity:0}}
 #arena .log .ko{color:#ff9}
 #arena .ctl{display:flex;justify-content:flex-end;gap:.5em;margin-top:8px}
 #arena .ctl .btn{min-height:56px;min-width:120px;font-size:18px;font-weight:800;border-radius:16px;padding:.35em 1.1em}
@@ -2271,7 +2346,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.17.1';
-const BUILD = '20261114-2358';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261115-0022';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.17.1', date:'2026-11-14', items:[
     'ふりがなに「ぜんぶ」をふやした。すべての漢字にふりがながつくので、小学校に入る前の子も、おうちの人といっしょに遊べるよ（タイトルの「ふりがな」か「その他」で切りかえ）',
@@ -2532,9 +2607,9 @@ const CHANGELOG = [
 ];
 document.querySelectorAll('.gver').forEach(e=> e.textContent = 'ver ' + GAME_VER + (window.DEMO ? ' デモ' : ''));
 /* アクセス解析（Google アナリティクス）：本番（tani0920.github.io の /demo/ でないところ）だけで動く。デモと手元の確認では動かない。「計測しない」にした端末では動かない。
-   測定IDは「むなかた虫とり日記」と同じ（同じ github.io の中で、ページの場所 /mushitori-ikusei/ で見分ける。イベントには game:'ikusei' も付ける）。
+   測定IDは虫そだて日記だけのプロパティ（2026-11-15 に虫とり日記と分けた）。イベントには game:'ikusei' も付ける。
    送るのは「ゲームのどこまで進んだか」などだけ。名前・写真・位置・虫の名前（つけた名前）は送らない。広告のための情報（Google シグナル）は使わない */
-const GA_ID = 'G-35Q20P88F6';
+const GA_ID = 'G-64ESZR3C2F';   // 2026-11-15：「谷口のサイト」アカウントの プロパティ「むなかた虫そだて日記」（ストリーム「虫そだて日記（本番）」）。虫とり日記とは分けた
 const GA_OFF_KEY = 'munakata-ikusei-analytics-off';
 const gaOff = ()=>{ try{ return localStorage.getItem(GA_OFF_KEY) === '1'; }catch(e){ return false; } };
 const GA_ON = !window.DEMO && location.hostname === 'tani0920.github.io' && !gaOff();
@@ -4938,6 +5013,12 @@ function renderSumo(){
 }
 let sumoLast = false;   // さいごのすもうに勝ったか（ストーリーの決勝で使う）
 function npcFighter(r){ return fighterOf({bug:r.bug, lv:r.lv, pers:'futsu'}, r.short + 'の' + BUGS[r.bug].name); }
+const GUNBAI_SVG = `<svg viewBox="0 0 100 150" aria-hidden="true"><defs><linearGradient id="gbG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe9a0"/><stop offset=".5" stop-color="#d9a12a"/><stop offset="1" stop-color="#8a5a10"/></linearGradient><radialGradient id="gbB" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#3a2a22"/><stop offset="1" stop-color="#120a08"/></radialGradient></defs>
+  <path d="M50 4 C82 4 96 26 94 52 C92 80 70 98 50 104 C30 98 8 80 6 52 C4 26 18 4 50 4Z" fill="url(#gbG)"/>
+  <path d="M50 11 C77 11 88 30 86 52 C84 76 66 91 50 96 C34 91 16 76 14 52 C12 30 23 11 50 11Z" fill="url(#gbB)"/>
+  <circle cx="50" cy="52" r="20" fill="#c8321e"/><circle cx="50" cy="52" r="20" fill="none" stroke="#ffd860" stroke-width="2"/>
+  <rect x="45" y="102" width="10" height="34" rx="3" fill="#6a3a14"/><rect x="45" y="102" width="10" height="6" fill="url(#gbG)"/>
+  <path d="M50 134 C44 140 42 146 44 149 L56 149 C58 146 56 140 50 134Z" fill="#c8321e"/><circle cx="50" cy="134" r="3.4" fill="url(#gbG)"/></svg>`;
 async function sumoBattle(r, c){
   const me = fighterOf(c), op = npcFighter(r), night = slotOf() === 'yoru';
   if(me.cond != null) await say(me.cond >= .75 ? `${me.name}は、きょうは ぜっこうちょう！ 力がみなぎっている。` : me.cond >= .45 ? `${me.name}の調子は、ふつう。` : `${me.name}は、きょうは 調子がいまいち…。おなかや元気がへっているみたい。`);
@@ -4946,22 +5027,30 @@ async function sumoBattle(r, c){
   await say(`${r.name}「${r.hi}」`, {face:r.key, with:'boku'});
   const A = document.createElement('div'); A.id = 'arena'; A.className = slotOf();
   const info = (f, side)=> `<div class="info ${side}"><b>${esc(f.name)}</b> <small>${f.t.name}</small><span class="bar"><i id="hp-${side}" style="width:100%"></i></span><small id="hpn-${side}">${f.hp}/${f.maxhp}</small></div>`;
-  A.innerHTML = `<div class="ring"><div class="dohyo"></div>${info(me,'l')}${info(op,'r')}<div class="vs norb" hidden>VS</div><div class="gyoji norb">🪭</div>
+  A.innerHTML = `<div class="ring"><div class="dohyo"></div>${info(me,'l')}${info(op,'r')}<div class="vs norb" hidden>VS</div><div class="gyoji norb" id="gunbai">${GUNBAI_SVG}</div>
+      <div class="tface l norb"><img id="tf-l" src="img/chara/boku.webp" alt="" draggable="false"><b>きみ</b></div><div class="tface r norb"><img id="tf-r" src="img/chara/${r.key}.webp" alt="" draggable="false"><b>${esc(r.short)}</b></div>
       <div class="fighter mine enter${me.b.shape === 'butterfly' ? ' flyer' : ''}" id="f-l"><div class="fbody">${svgBug(me.id, 'adult', {rare:c.rare, rig:true})}</div></div><div class="fighter enter${op.b.shape === 'butterfly' ? ' flyer' : ''}" id="f-r"><div class="fbody">${svgBug(op.id, 'adult', {rig:true})}</div></div></div>
     <div class="log" id="blog"></div><div class="ctl"><button type="button" class="btn sub" id="bCheer">おうえん！</button><button type="button" class="btn" id="bFast">はやおくり</button></div>`;
   document.body.appendChild(A);
   let fast = false, cheer = 0; $('bFast').onclick = ()=>{ fast = true; $('bFast').disabled = true; };
   $('bCheer').onclick = e=>{ cheer++; const s = document.createElement('span'); s.className = 'cheer norb'; s.textContent = pick(['がんばれ！','いけー！','負けるな！']); s.style.left = (20 + Math.random()*40) + '%'; s.style.bottom = '30%'; A.querySelector('.ring').appendChild(s); setTimeout(()=>s.remove(), 1000); spawn(me, 'conf', 6); };
   const logEl = $('blog');
+  // ぼくと あいての顔：ゆうせい（HPの割合が上）なら えがお、れっせいなら かなしい顔（2026-11-15 ユーザー）
+  const faces = ()=>{ if(!$('tf-l')) return; const d = me.hp/me.maxhp - op.hp/op.maxhp, fl = $('tf-l'), fr = $('tf-r');
+    const kl = d > .18 ? 'boku_joy' : d < -.18 ? 'boku_sad' : 'boku', kr = d > .18 ? r.key + '_sad' : d < -.18 ? r.key + '_joy' : r.key;
+    [[fl, kl], [fr, kr]].forEach(([e, k])=>{ const src = `img/chara/${k}.webp`; if(!e.src.endsWith(src)){ e.src = src; e.parentNode.classList.remove('pop'); void e.offsetWidth; e.parentNode.classList.add('pop'); } }); };
+  // 見せ場の大きい文字：右の文にも大きく、土俵の上にも ドンと出す
+  const bigText = (t, cls='')=>{ const d = document.createElement('div'); d.className = 'bigTxt norb ' + cls; d.textContent = t; ring.appendChild(d); setTimeout(()=> d.remove(), fast ? 500 : 1300); };
   // 文の先頭に、だれの番かを出す（きみ／あいての名前）
   const WHO = {me:'きみ', op:r.short};
-  const logLine = async (t, cls='', who='')=>{ const d = document.createElement('div'); d.className = cls; if(who){ const w = document.createElement('span'); w.className = 'who ' + who; w.textContent = WHO[who]; d.appendChild(w); } d.appendChild(document.createTextNode(t)); logEl.appendChild(d); logEl.scrollTop = 1e6; await wait(fast ? 90 : 700); };
+  const logLine = async (t, cls='', who='', big=false)=>{ const d = document.createElement('div'); d.className = cls + (big ? ' big' : ''); if(who){ const w = document.createElement('span'); w.className = 'who ' + who; w.textContent = WHO[who]; d.appendChild(w); } d.appendChild(document.createTextNode(t)); logEl.appendChild(d); logEl.scrollTop = 1e6; await wait(fast ? 90 : 700); };
   const center = el=>{ const rr = A.querySelector('.ring').getBoundingClientRect(), q = el.getBoundingClientRect(); return {x:q.left - rr.left + q.width/2, y:q.top - rr.top + q.height/2}; };
   const put = (cls, at, txt='', ms=1100)=>{ const d = document.createElement('div'); d.className = cls + ' norb'; d.style.left = at.x + 'px'; d.style.top = at.y + 'px'; if(txt) d.textContent = txt; A.querySelector('.ring').appendChild(d); setTimeout(()=>d.remove(), ms); return d; };
-  const drawHp = f=>{ const side = f === me ? 'l' : 'r';
+  let drawHp = f=>{ const side = f === me ? 'l' : 'r';
     const d = Math.round(Math.max(0, f.hp)) - Math.round(f.shown == null ? f.maxhp : f.shown); f.shown = Math.max(0, f.hp);
     if(d){ const el = elOf(f), q = center(el); put('hpPop ' + (d > 0 ? 'plus' : 'minus'), {x:q.x, y:q.y - el.offsetHeight*.3}, (d > 0 ? '+' : '') + d, 1150); } $('hp-'+side).style.width = Math.max(0, f.hp/f.maxhp*100) + '%'; $('hp-'+side).className = f.hp/f.maxhp < .3 ? 'low' : ''; $('hpn-'+side).textContent = `${Math.max(0,Math.round(f.hp))}/${f.maxhp}`; };
   const elOf = f=> $('f-' + (f === me ? 'l' : 'r'));
+  const drawHp0 = drawHp; drawHp = f=>{ drawHp0(f); faces(); };
   const fx = (f, cls, ms=450)=>{ const el = elOf(f); el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); setTimeout(()=>el.classList.remove(cls), ms); };
   const ring = A.querySelector('.ring');
   // 虫の足を、切りかぶの上（絵の高さの 73.5% のところ）にそろえる。画面のはばがかわっても同じ
@@ -4986,13 +5075,19 @@ async function sumoBattle(r, c){
       d.style.setProperty('--dx', (Math.random()*60 - 30) + 'px'); d.style.animationDelay = (Math.random()*.25) + 's';
       ring.appendChild(d); setTimeout(()=>d.remove(), 1800); } };
   const flash = ()=>{ const d = document.createElement('div'); d.className = 'flash'; ring.appendChild(d); setTimeout(()=>d.remove(), 600); };
-  const banner = async (t, ms)=>{ const d = document.createElement('div'); d.className = 'banner norb'; d.textContent = t; ring.appendChild(d); await wait(ms); d.remove(); };
+  const banner = async (t, ms, k='')=>{ const d = document.createElement('div'); d.className = 'banner norb ' + k; d.textContent = t; ring.appendChild(d); await wait(ms); d.remove(); };
   const idle = f=>{ const el = elOf(f); [...el.classList].filter(k=>k.startsWith('idle-')).forEach(k=>el.classList.remove(k)); const k = Object.keys(PERS).find(k=>PERS[k] === f.pers) || 'futsu'; el.classList.add('idle-' + k); };
   const slow = ms=> wait(fast ? Math.min(ms, 90) : ms);
   // 必殺技の動き（虫のなかまごと）
   const SP_ANIM = {beetle:'spToss', stag:'spPinch', butterfly:'spFly', grass:'spJump', mantis:'spSwing', cicada:'spFly', cricket:'spVibe', firefly:'spFly'};
   const quake = ()=>{ ring.classList.remove('quake'); void ring.offsetWidth; ring.classList.add('quake'); };
-  const cutin = async (f, t, sub)=>{ const d = document.createElement('div'); d.className = 'cutin norb ' + (f === me ? 'me' : 'op'); d.innerHTML = `${esc(t)}<small>${esc(sub)}</small>`; ring.appendChild(d); await slow(fast ? 200 : 1000); d.remove(); };
+  const bugPic = f=> BUG_IMG[f.id] && BUG_IMG[f.id].adult ? `<img class="ciBug" src="img/bugs/${BUG_IMG[f.id].adult}.webp" alt="" draggable="false">` : `<div class="ciBug">${svgBug(f.id, 'adult', {})}</div>`;
+  const cutin = async (f, t, sub)=>{ const my = f === me, d = document.createElement('div'); d.className = 'cutin big norb ' + (my ? 'me' : 'op');
+    const face = $(my ? 'tf-l' : 'tf-r'); const fsrc = face ? face.getAttribute('src') : '';
+    d.innerHTML = `<div class="ciLines"></div><div class="ciBugBox">${bugPic(f)}</div>${fsrc ? `<img class="ciFace" src="${fsrc}" alt="" draggable="false">` : ''}<div class="ciTxt"><small>${esc(sub)}</small><span class="ciName">${esc(t)}</span><em>ひっさつ わざ！</em></div>`;
+    ring.appendChild(d);
+    { const nmEl = d.querySelector('.ciName'), box = d.querySelector('.ciTxt'), wmax = Math.min(box.clientWidth * .94, nmEl.clientWidth); let fs = parseFloat(getComputedStyle(nmEl).fontSize); while(nmEl.scrollWidth > wmax && fs > 16){ fs -= 2; nmEl.style.fontSize = fs + 'px'; } }   // わざの名前は1行に
+    await slow(fast ? 250 : 1500); d.classList.add('out'); await slow(fast ? 60 : 220); d.remove(); };
   const fxImg = (i, at, size=140, ms=900, flip=false)=>{ const d = document.createElement('img'); d.className = 'sfx norb'; d.src = `img/ui/sumo/fx${i}.webp`; d.alt = ''; d.draggable = false;
     d.style.cssText = `left:${at.x}px;top:${at.y}px;width:${size}px;--fl:${flip ? -1 : 1};animation-duration:${fast ? Math.min(ms, 400) : ms}ms`; ring.appendChild(d); setTimeout(()=> d.remove(), ms + 50); };
   const SP_FX = {beetle:[0, 'o'], stag:[1, 'o'], butterfly:[2, 'o'], cicada:[2, 'o'], firefly:[2, 'o'], grass:[3, 'f'], mantis:[4, 'o'], cricket:[5, 'f']};
@@ -5028,7 +5123,8 @@ async function sumoBattle(r, c){
     const say1 = (t, k=cls)=> logLine(t, k, who);
     f.open = 1; f.guard = false; f.counter = false; elOf(f).classList.remove('shield');
     if(a === 'charm'){ elOf(f).classList.add('dizzy'); spawn(f, 'heart', 3); await say1(`${nm}は うっとりして 動けない！`); elOf(f).classList.remove('dizzy'); return; }
-    if(a === 'guard'){ f.guard = true; f.lastGuard = true; const h = Math.round(f.maxhp * f.heal); f.hp = Math.min(f.maxhp, f.hp + h); drawHp(f); elOf(f).classList.add('shield'); if(h > 0) spawn(f, 'heal', 3); await say1(`${nm}は ふんばった！ HPが${h}かいふく`); return; }
+    if(a === 'guard'){ const pinch = f.hp / f.maxhp < .3; f.guard = true; f.lastGuard = true; const h = Math.round(f.maxhp * f.heal); f.hp = Math.min(f.maxhp, f.hp + h); drawHp(f); elOf(f).classList.add('shield'); if(h > 0) spawn(f, 'heal', pinch ? 8 : 3);
+      if(pinch && h > 0){ bigText('ふんばった！', my ? 'me' : 'op'); await logLine(`土俵ぎわで ${nm}が ふんばった！ HPが${h}かいふく！`, cls, who, true); } else await say1(`${nm}は ふんばった！ HPが${h}かいふく`); return; }
     f.lastGuard = false;
     const mv = a === 'sp' ? (f.moves[1] || f.moves[0]) : null;
     const song = mv && /ソング|リーン|合唱|音量/.test(mv.name), dustMv = mv && (mv.blind && !song);
@@ -5036,9 +5132,9 @@ async function sumoBattle(r, c){
     if(mv){
       f.lastMv = mv.name;
       await cutin(f, `${mv.name}！`, `${my ? 'きみ' : r.short}の ${f.b.name}`);
-      await say1(`${nm}の ${mv.name}！`);
+      await logLine(`${nm}の ${mv.name}！`, cls, who, true);
       f.open = mv.open;
-      if(mv.heal){ const h = Math.round(f.maxhp*mv.heal); f.hp = Math.min(f.maxhp, f.hp + h); drawHp(f); fx(f, 'heal', 900); spawn(f, 'heal', 8); await say1(`${nm}の HPが${h}かいふくした`); return; }
+      if(mv.heal){ const pinch = f.hp / f.maxhp < .35, h = Math.round(f.maxhp*mv.heal); f.hp = Math.min(f.maxhp, f.hp + h); drawHp(f); fx(f, 'heal', 900); spawn(f, 'heal', 8); if(pinch) bigText('もちなおした！', my ? 'me' : 'op'); await logLine(`${nm}の HPが${h}かいふくした${pinch ? '！ もちなおした！' : ''}`, cls, who, pinch); return; }
       if(mv.counter){ f.guard = true; f.counter = true; elOf(f).classList.add('shield'); }
       if(song){ spawn(f, 'note', 8); if(f.id === 'genji') flash(); }
       if(dustMv){ spawn(o, 'dust', 14); }
@@ -5047,8 +5143,8 @@ async function sumoBattle(r, c){
       for(let i=0;i<hits;i++){
         if(mv.mult > 0 && !mv.counter){ if(i === 0) await spMove(f, o); else { aim(f, o); fx(f, 'lunge', 380); await slow(220); } }
         const acc = mv.acc * (f.blind > 0 ? .5 : 1); if(f.blind > 0) f.blind--;
-        if(Math.random() > acc){ fx(o, 'act', 300); await say1(`…${o.name}は ひらりとかわした！`); continue; }
-        if(mv.mult > 0){ const d = dmg(f, o, mv.mult, mv.pierce); o.hp -= d; drawHp(o); any = true; await hitFx(mv.mult >= 1.7); await say1(`${o.name}の HPが${d}へった！`); }
+        if(Math.random() > acc){ fx(o, 'act', 300); bigText('かわした！', my ? 'op' : 'me'); await logLine(`…${o.name}は ひらりとかわした！`, my ? '' : 'my', my ? 'op' : 'me', true); continue; }
+        if(mv.mult > 0){ const d = dmg(f, o, mv.mult, mv.pierce); o.hp -= d; drawHp(o); any = true; await hitFx(mv.mult >= 1.7); const heavy = d >= o.maxhp * .25; if(heavy) bigText('大ダメージ！', my ? 'me' : 'op'); await logLine(`${o.name}の HPが${d}へった！${heavy ? ' 大ダメージ！' : ''}`, cls, who, heavy); }
         if(o.hp <= 0) return;
       }
       if(any || mv.mult === 0){
@@ -5070,11 +5166,14 @@ async function sumoBattle(r, c){
   // 入場
   await slow(950); A.querySelector('.vs').hidden = false; idle(me); idle(op);
   const T = c.tot || {}, days = Math.max(1, Math.round((T.hours || 24) / 24));
-  { const cm = document.createElement('div'); cm.className = 'card me norb'; cm.innerHTML = `西<b>${esc(me.name)}</b>きみがそだてて ${days}日<br>${esc((BORN[c.born]||BORN.any).name)}　調子：${condName(me.cond == null ? .5 : me.cond)}`;
-    const co = document.createElement('div'); co.className = 'card op norb'; co.innerHTML = `東<b>${esc(BUGS[r.bug].name)}</b>${esc(r.name)}`;
-    ring.appendChild(cm); await slow(500); ring.appendChild(co); await slow(fast ? 300 : 1800); cm.remove(); co.remove(); }
+  { // 対戦カード：左（西・きみ）は青、右（東・あいて）は赤。まん中に VS（2026-11-15 ユーザー：かっこよく）
+    const vi = document.createElement('div'); vi.className = 'vsIntro norb';
+    vi.innerHTML = `<div class="vsSide me"><div class="vsDir">西</div><img class="vsFace" src="img/chara/boku.webp" alt="" draggable="false"><div class="vsBug">${bugPic(me)}</div><div class="vsName"><small>きみの</small>${esc(me.name)}</div><div class="vsSub">そだてて ${days}日・${esc((BORN[c.born]||BORN.any).name)}<br>調子：${condName(me.cond == null ? .5 : me.cond)}</div></div>
+      <div class="vsSide op"><div class="vsDir">東</div><img class="vsFace" src="img/chara/${r.key}.webp" alt="" draggable="false"><div class="vsBug">${bugPic(op)}</div><div class="vsName"><small>${esc(r.short)}の</small>${esc(BUGS[r.bug].name)}</div><div class="vsSub">${esc(r.name)}</div></div>
+      <div class="vsMark">VS</div>`;
+    ring.appendChild(vi); await slow(fast ? 350 : 2600); vi.classList.add('out'); await slow(fast ? 60 : 350); vi.remove(); }
   await logLine(`東、${op.name}。西、${me.name}（${(BORN[c.born]||BORN.any).name}）。`, 'ko');
-  await banner('はっけよい', fast ? 200 : 900); await banner('のこった！', fast ? 200 : 700);
+  $('gunbai').classList.add('swing'); await banner('はっけよい', fast ? 200 : 900); await banner('のこった！', fast ? 200 : 700); $('gunbai').classList.remove('swing');
   await logLine(`はっけよい、のこった！`, 'ko');
   A.querySelector('.vs').hidden = true;
   let round = 0, winner = null;
@@ -5086,7 +5185,7 @@ async function sumoBattle(r, c){
       const m = document.createElement('div'); m.className = 'memo norb'; m.innerHTML = `ピンチ！ …そのとき、${esc(me.name)}は思い出した。<br>${days}日間、<b>エサを${feed}回</b>、<b>そうじを${clean}回</b>してもらったこと。`; ring.appendChild(m);
       await slow(fast ? 400 : 2600); m.remove(); dim.remove();
       me.atk *= 1 + up; me.hp = Math.min(me.maxhp, me.hp + heal); drawHp(me); elOf(me).classList.add('awaken'); spawn(me, 'star', 10); flash();
-      await logLine(`${me.name}の目に、力がもどった！ HPが${heal}かいふく、ちからが上がった！`, 'my', 'me');
+      bigText('ここからだ！', 'me'); await logLine(`${me.name}の目に、力がもどった！ HPが${heal}かいふく、ちからが上がった！`, 'my', 'me', true);
     }
     if(me.pers === PERS.makezu && me.hp/me.maxhp < .3 && !me.leanSaid){ me.leanSaid = 1; await logLine(`${me.name}は まけずぎらい。ピンチで 前に出た！`, 'my'); }
     const am = choose(me, op), ao = choose(op, me);
@@ -5099,10 +5198,10 @@ async function sumoBattle(r, c){
   if(!winner) winner = me.hp/me.maxhp >= op.hp/op.maxhp ? me : op;
   const won = winner === me, loser = won ? op : me;
   flash(); quake(); await slow(250);
-  elOf(loser).classList.add('out'); if(won) spawn(me, 'conf', 20);
+  elOf(loser).classList.add('out'); if(won) spawn(me, 'conf', 20); $('gunbai').classList.add(won ? 'winL' : 'winR'); faces();
   { const d = document.createElement('div'); d.className = 'banner kimarite norb'; d.textContent = `決まり手：${winner.lastMv || 'つっこみ'}`; ring.appendChild(d); await slow(1400); d.remove(); }
   await logLine(won ? `${op.name}は 土俵の外へ！ ${me.name}の勝ち！` : `${me.name}は 土俵の外へ… ${op.name}の勝ち。`, 'ko');
-  await banner(won ? 'かち！' : 'まけ…', fast ? 300 : 1200);
+  await banner(won ? 'かち！' : 'まけ…', fast ? 300 : 1200, won ? 'win' : 'lose');
   await wait(fast ? 200 : 600);
   const ok = document.createElement('button'); ok.type = 'button'; ok.className = 'btn pri'; ok.textContent = 'つぎへ'; A.querySelector('.ctl').innerHTML = ''; A.querySelector('.ctl').appendChild(ok);
   await new Promise(r=> ok.onclick = r); A.remove();
