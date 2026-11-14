@@ -311,6 +311,10 @@ html.land #msgLayer.kanaL .win.kanaWin{width:min(100%,680px)}
 .shopHi .fimg{display:none;width:64px;height:64px;flex:none;border-radius:12px;border:2px solid #fff;box-shadow:0 1px 3px #0003;object-fit:cover}
 .shopHi b{display:block;font-size:12px;color:#8a5a20}
 #msgLayer .win{position:relative}
+#msgLayer .ans .btn.ansB,body.noteUI #msgLayer .ans .btn.ansB{background:#fffaf0;color:#4a3320;border:2px solid #c9a978;border-radius:12px;box-shadow:0 2px 0 #c9a97899;text-align:left;padding:.5em .9em .5em 2.1em;position:relative;font-weight:700}
+#msgLayer .ans .btn.ansB::before{content:'▶';position:absolute;left:.8em;top:50%;transform:translateY(-50%);font-size:.75em;color:#c9a978}
+#msgLayer .ans .btn.ansB:hover,#msgLayer .ans .btn.ansB:active{background:#ffe6a8;border-color:#e0a030}#msgLayer .ans .btn.ansB:hover::before,#msgLayer .ans .btn.ansB:active::before{color:#e07a20}
+#msgLayer .ans .btn.ansB.pic{padding-left:.6em}#msgLayer .ans .btn.ansB.pic::before{content:none}
 #msgLayer .ans .btn.pic{display:flex;align-items:center;gap:.7em;text-align:left;padding:.35em .6em}
 #msgLayer .ans .btn.pic img{width:104px;height:78px;flex:none;object-fit:cover;border-radius:8px;border:2px solid #fff;box-shadow:0 1px 3px #0003}
 html.land.tall #msgLayer .ans .btn.pic img{width:132px;height:99px}
@@ -2163,7 +2167,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.17.0';
-const BUILD = '20261114-1211';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261114-1230';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.17.0', date:'2026-11-14', items:[
     'はじめて遊ぶときに、おとうさんが ふきだしで教えてくれるようになった（おうち・虫さがし・虫かご）。光っているところを、じっさいにさわって進むよ。「その他」で、もう一度見られる',
@@ -2553,12 +2557,51 @@ const RUBY = {"宗像大社":"むなかたたいしゃ|7","宗像":"むなかた
   "身近":"みぢか|3","校庭":"こうてい|3","鼻":"はな|3","問":"もん|3","両方":"りょうほう|3","作物":"さくもつ|3","係":"かかり|3","鉄":"てつ|3","波打":"なみう|3","記事":"きじ|3",
   "追い":"おい|3","高宮祭場":"たかみやさいじょう|3","中央":"ちゅうおう|3","神宿":"かみやど|3","関連":"かんれん|4","遺産":"いさん|6","群":"ぐん|4","化":"か|3","部品":"ぶひん|3","観察眼":"かんさつがん|5",
   "飼育箱":"しいくばこ|5","言葉":"ことば|4","心配":"しんぱい|3","用心深":"ようじんぶか|3","全":"ぜん|3","勝":"しょう|3","保つ":"たもつ|5","大好物":"だいこうぶつ|4","起き":"おき|3","付い":"つい|4",
-  "漢字":"かんじ|3","付く":"つく|4","周目":"しゅうめ|4","周":"しゅう|4","描い":"かい|7","始まる":"はじまる|3"};
+  "漢字":"かんじ|3","付く":"つく|4","周目":"しゅうめ|4","周":"しゅう|4","描い":"かい|7","始まる":"はじまる|3","教":"おし|2","教わ":"おそわ|2","教室":"きょうしつ|2","光":"ひかり|2",
+  "光っ":"ひかっ|2","光る":"ひかる|2","光り":"ひかり|2","引":"ひ|2","時計":"とけい|2","時間":"じかん|2","夜":"よる|2","夜明":"よあ|2","今夜":"こんや|2","時":"じ|2",
+  "時半":"じはん|2","言":"い|2","来":"き|2","来い":"こい|2","来させ":"こさせ|2","来なか":"こなか|2","来よう":"こよう|2","来る":"くる|2","来年":"らいねん|2","来週":"らいしゅう|2",
+  "新":"あたら|2","朝":"あさ|2","毎朝":"まいあさ|2","絵":"え|2","色":"いろ|2","家":"いえ|2","止":"と|2","声":"こえ|2","風":"かぜ|2","台風":"たいふう|2",
+  "海風":"うみかぜ|2","風車":"ふうしゃ|2","聞":"き|2","回":"かい|2","回れ":"まわれ|2","回る":"まわる|2","回っ":"まわっ|2","見回":"みまわ|2","回目":"かいめ|2","回分":"かいぶん|2",
+  "今回":"こんかい|2","何回":"なんかい|2","書":"か|2","数字":"すうじ|2","分":"ぶん|2","分け":"わけ|2","分ごと":"ふんごと|2","2分":"にふん|2","4分":"よんぷん|2","5分":"ごふん|2",
+  "10分":"じっぷん|2","15分":"じゅうごふん|2","25分":"にじゅうごふん|2","30分":"さんじっぷん|2","半分":"はんぶん|2","自分":"じぶん|2","水分":"すいぶん|2","直":"なお|2","見直":"みなお|2","出直":"でなお|2",
+  "顔":"かお|2","行":"い|2","行う":"おこなう|2","行き来":"いきき|2","1行":"いちぎょう|2","話":"はなし|2","話し":"はなし|2","話す":"はなす|2","話せ":"はなせ|2","話そ":"はなそ|2",
+  "会話":"かいわ|2","地名":"ちめい|2","海":"うみ|2","会":"かい|2","会い":"あい|2","会う":"あう|2","会え":"あえ|2","会っ":"あっ|2","出会":"であ|2","夏休":"なつやす|2",
+  "昼":"ひる|2","近":"ちか|2","鳴":"な|2","切":"き|2","毛":"け|2","道":"みち|2","山道":"やまみち|2","池":"いけ|2","頭":"あたま|2","同":"おな|2",
+  "友":"とも|2","読":"よ|2","丸":"まる|2","週間":"しゅうかん|2","毎週":"まいしゅう|2","週":"しゅう|2","数週間":"すうしゅうかん|2","市":"し|2","合":"あ|2","合図":"あいず|2",
+  "思":"おも|2","細":"ほそ|2","方":"かた|2","方角":"ほうがく|2","紙":"かみ|2","体":"からだ|2","正体":"しょうたい|2","鳥":"とり|2","元気":"げんき|2","外":"そと|2",
+  "外国":"がいこく|2","明":"あか|2","明日":"あした|2","星":"ほし|2","台":"だい|2","広":"ひろ|2","広場":"ひろば|2","長":"なが|2","歩":"ある|2","古":"ふる|2",
+  "茶色":"ちゃいろ|2","茶":"ちゃ|2","高":"たか|2","組":"く|2","食":"た|2","食い":"くい|2","作":"つく|2","少":"すこ|2","少な":"すくな|2","買":"か|2",
+  "戸":"ど|2","前":"まえ|2","手前":"てまえ|2","年前":"ねんまえ|2","角":"つの|2","四角":"しかく|2","一角":"いっかく|2","形":"かたち|2","場":"ば|2","岩場":"いわば|2",
+  "入場":"にゅうじょう|2","今日":"きょう|2","知":"し|2","数時間":"すうじかん|2","数年":"すうねん|2","東西":"とうざい|2","店":"みせ|2","出店":"でみせ|2","黒土":"くろつち|2","黒":"くろ|2",
+  "間":"あいだ|2","日間":"にちかん|2","何":"なに|2","何ま":"なんま|2","何び":"なんび|2","何日":"なんにち|2","何年":"なんねん|2","何百年":"なんびゃくねん|2","何千年":"なんぜんねん|2","弱":"よわ|2",
+  "強":"つよ|2","用":"よう|2","公園":"こうえん|2","通":"とお|2","毎日":"まいにち|2","新聞":"しんぶん|2","黄色":"きいろ|2","国":"くに|2","国チョウ":"こくちょう|2","数":"かず|2",
+  "夏":"なつ|2","科":"か|2","理科室":"りかしつ|2","遠":"とお|2","原":"はら|2","太":"ふと|2","野生":"やせい|2","多":"おお|2","楽":"たの|2","当":"あ|2",
+  "当番":"とうばん|2","船":"ふね|2","帰":"かえ|2","父":"とう|2","母":"かあ|2","親":"おや|2","親子":"おやこ|2","半年":"はんとし|2","半":"はん|2","西":"にし|2",
+  "点":"てん|2","内":"ない|2","後":"ご|2","今週":"こんしゅう|2","魚":"さかな|2","考":"かんが|2","晴":"は|2","走":"はし|2","電話":"でんわ|2","北":"きた|2",
+  "馬":"うま|2","岩":"いわ|2","毎年":"まいとし|2","自":"じ|2","歌":"うた|2","弓":"ゆみ|2","姉妹":"しまい|2","図":"ず|2","地図":"ちず|2","売":"う|2",
+  "虫":"むし|1","虫の音":"むしのね|1","見":"み|1","見本":"みほん|1","名前":"なまえ|2","出":"で|1","出す":"だす|1","出し":"だし|1","出さ":"ださ|1","出せ":"だせ|1",
+  "出そ":"だそ|1","金色":"きんいろ|2","夕方":"ゆうがた|2","夕":"ゆう|1","夕べ":"ゆうべ|1","字":"じ|1","文字":"もじ|1","日":"ひ|1","日目":"にちめ|1","1日":"いちにち|1",
+  "2日":"ふつか|1","3日":"みっか|1","4日":"よっか|1","5日":"いつか|1","6日":"むいか|1","7日":"なのか|1","日くらい":"にちくらい|1","学校":"がっこう|1","先生":"せんせい|1","一生":"いっしょう|1",
+  "中":"なか|1","中1":"ちゅういち|1","中国":"ちゅうごく|2","中学生":"ちゅうがくせい|1","大":"おお|1","大人":"おとな|1","大当":"おおあ|2","下":"した|1","下げ":"さげ|1","下がっ":"さがっ|1",
+  "左下":"ひだりした|1","右下":"みぎした|1","音":"おと|1","音楽":"おんがく|2","子":"こ|1","人":"ひと|1","人々":"ひとびと|1","名人":"めいじん|1","三人":"さんにん|1","木":"き|1",
+  "木々":"きぎ|1","雨":"あめ|1","雨やど":"あまやど|1","入":"はい|1","入っ":"はいっ|1","入ら":"はいら|1","入る":"はいる|1","入れ":"いれ|1","入り":"いり|1","手入":"てい|1",
+  "先":"さき|1","先手":"せんて|1","足":"あし|1","足り":"たり|1","天":"てん|1","天の川":"あまのがわ|1","川":"かわ|1","山":"やま|1","草":"くさ|1","小":"ちい|1",
+  "小学生":"しょうがくせい|1","左":"ひだり|1","立":"た|1","田":"た|1","左上":"ひだりうえ|1","水":"みず|1","水門":"すいもん|2","上":"うえ|1","上が":"あが|1","上げ":"あげ|1",
+  "上手":"じょうず|1","右上":"みぎうえ|1","早":"はや|1","町":"まち|1","日々":"ひび|1","力":"ちから|1","右":"みぎ|1","手":"て|1","石":"いし|1","日記":"にっき|2",
+  "土":"つち|1","土地":"とち|2","目":"め|1","口":"くち|1","白":"しろ|1","左右":"さゆう|1","本":"ほん|1","一本":"いっぽん|1","本番":"ほんばん|2","本気":"ほんき|1",
+  "日本":"にほん|1","花":"はな|1","花だん":"かだん|1","文":"ぶん|1","生":"せい|1","生え":"はえ|1","生き":"いき|1","生まれ":"うまれ|1","年生":"ねんせい|1","森":"もり|1",
+  "月":"がつ|1","か月":"かげつ|1","青":"あお|1","青々":"あおあお|1","林":"はやし|1","年":"ねん|1","千年":"せんねん|1","気":"き|1","貝":"かい|1","休":"やす|1",
+  "車":"くるま|1","糸":"いと|1","赤":"あか|1","空気":"くうき|1","空":"そら|1","名":"な|1","耳":"みみ|1","七夕":"たなばた|1","三つ":"みっつ|1","四つ":"よっつ|1",
+  "金":"きん|1","火":"ひ|1","一":"いち|1","ての時":"てのとき|2","一か所":"いっかしょ|3","発表会":"はっぴょうかい|3","観察会":"かんさつかい|4","旅行中":"りょこうちゅう|3","活動中":"かつどうちゅう|3","何章":"なんしょう|3",
+  "全画面":"ぜんがめん|3","半径内":"はんけいない|4","品物":"しなもの|3","観察員":"かんさついん|4","問題":"もんだい|3","月1日":"がつついたち|1","表紙":"ひょうし|3","青緑":"あおみどり|3","緑色":"みどりいろ|3","牽牛":"けんぎゅう|7",
+  "湍津姫神":"たぎつひめのかみ|7","市杵島姫神":"いちきしまひめのかみ|7","連鎖":"れんさ|7","送る":"おくる|3","面倒":"めんどう|7","姉さん":"ねえさん|2","食物連鎖":"しょくもつれんさ|7"};
 const FURI_KEY = KEY_PRE + 'munakata-furigana-v1';   // 虫とり日記と同じキー名にしているので、どちらかで切りかえると両方にきく
-let furiMode = (()=>{ try{ return localStorage.getItem(FURI_KEY) === '1'; }catch(e){ return false; } })();
+// ふりがなの だん（2026-11-14 ユーザー：小学校に入る前の子も、親子でできるように「ぜんぶ」を足した）。保存は ''（ふつう）・'1'（たくさん）・'2'（ぜんぶ）
+const FURI_LV = [{n:'ふつう', t:'ふつう（小5から）', min:5}, {n:'たくさん', t:'たくさん（小3から）', min:3}, {n:'ぜんぶ', t:'ぜんぶ（すべての漢字）', min:1}];
+let furiLv = (()=>{ try{ const v = localStorage.getItem(FURI_KEY); return v === '2' ? 2 : v === '1' ? 1 : 0; }catch(e){ return 0; } })();
 let rubyMap = {}, rubyRe = null;
 function buildRuby(){
-  const min = furiMode ? 3 : 5; rubyMap = {};
+  const min = FURI_LV[furiLv].min; rubyMap = {};
   for(const w in RUBY){ const [rd, g] = RUBY[w].split('|'); if(+g >= min) rubyMap[w] = rd; }
   const keys = Object.keys(rubyMap).sort((a,b)=>b.length - a.length);
   rubyRe = keys.length ? new RegExp(keys.join('|'), 'g') : null;
@@ -2579,7 +2622,7 @@ function rubyNode(w){   // 送りがななど、ことばの前後のひらが�
 }
 function rubifyText(t){
   const p = t.parentNode;
-  if(!rubyRe || !p || p.nodeType !== 1 || p.closest('ruby,script,style,svg,textarea,title,.norb')) return;
+  if(!rubyRe || !p || p.nodeType !== 1 || p.closest(furiLv >= 2 ? 'ruby,script,style,svg,textarea,title,.nofuri,#hud,.credit,.kana' : 'ruby,script,style,svg,textarea,title,.norb')) return;   // ぜんぶ のときは、ボタンや札（.norb）にも付ける
   const v = t.nodeValue; rubyRe.lastIndex = 0;
   if(!rubyRe.test(v)) return;
   rubyRe.lastIndex = 0;
@@ -2598,12 +2641,12 @@ function rubify(root){
   while(w.nextNode()) list.push(w.currentNode);
   list.forEach(rubifyText);
 }
-function setFuri(on){
-  furiMode = on; try{ on ? localStorage.setItem(FURI_KEY, '1') : localStorage.removeItem(FURI_KEY); }catch(e){}
+function setFuri(lv){
+  furiLv = lv; try{ lv ? localStorage.setItem(FURI_KEY, String(lv)) : localStorage.removeItem(FURI_KEY); }catch(e){}
   document.querySelectorAll('ruby.fr').forEach(r=> r.replaceWith(document.createTextNode(r.firstChild.nodeValue)));
   document.body.normalize(); buildRuby(); rubify(document.body);
 }
-const furiLabel = ()=> 'ふりがな：' + (furiMode ? 'たくさん' : 'ふつう');
+const furiLabel = ()=> 'ふりがな：' + FURI_LV[furiLv].n;
 buildRuby();
 new MutationObserver(ms=>{ for(const m of ms){ if(m.type === 'characterData') rubifyText(m.target); else m.addedNodes.forEach(rubify); } })
   .observe(document.body, {childList:true, subtree:true, characterData:true});
@@ -3499,7 +3542,7 @@ function say(text, opts={}){
     const w = document.createElement('div'); w.className = 'win' + (talk ? ' talkWin' : '');
     w.innerHTML = (talk ? `<b class="who ${side} norb">${esc(nm)}</b>` : '') + fmtMsg(text) + (opts.ans ? '' : '<span class="tap">▼ タップでつぎへ</span>');
     if(opts.ans){ const a = document.createElement('div'); a.className = 'ans';
-      opts.ans.forEach((t,i)=>{ const b = document.createElement('button'); b.type = 'button'; b.className = 'btn' + (i===0 ? ' pri' : ''); const pic = opts.pics && opts.pics[i]; if(pic){ b.classList.add('pic'); b.innerHTML = `<img src="${pic}" alt="" draggable="false"><span>${esc(t)}</span>`; } else b.textContent = t; b.onclick = e=>{ e.stopPropagation(); L.remove(); res(i); }; a.appendChild(b); });
+      opts.ans.forEach((t,i)=>{ const b = document.createElement('button'); b.type = 'button'; b.className = 'btn ansB'; const pic = opts.pics && opts.pics[i]; if(pic){ b.classList.add('pic'); b.innerHTML = `<img src="${pic}" alt="" draggable="false"><span>${esc(t)}</span>`; } else b.textContent = t; b.onclick = e=>{ e.stopPropagation(); L.remove(); res(i); }; a.appendChild(b); });
       w.appendChild(a);
     } else { L.onclick = ()=>{ L.remove(); res(0); }; }
     L.appendChild(w); document.body.appendChild(L); if(talk) talkActors(L, w, opts);
@@ -3750,7 +3793,7 @@ function renderTitle(){
   $('btnModes').onclick = showModes;
   $('btnInstall').onclick = showInstall; $('btnShare').onclick = showShare; $('btnSendHow').onclick = showSendHow;
   $('btnVer').onclick = showChangelog; $('btnPriv').onclick = showPrivacy; if($('btnRot')) $('btnRot').onclick = flipRot;
-  $('btnFuri').onclick = ()=>{ setFuri(!furiMode); $('btnFuri').textContent = furiLabel(); };
+  $('btnFuri').onclick = ()=>{ setFuri((furiLv + 1) % 3); $('btnFuri').textContent = furiLabel(); };
 }
 /* ---- タイトル：ストーリーと じゆうに育てる のちがい（2026-11-14 ユーザー） ---- */
 const MODE_TXT = {
@@ -4852,7 +4895,7 @@ async function sumoBattle(r, c){
 /* ---- オプション ---- */
 function renderOpt(){
   view.innerHTML = `<h2>オプション</h2><div class="opt">
-    <button type="button" class="btn" id="oFuri"><span>ふりがな</span><span class="v">${furiMode ? 'たくさん（小3から）' : 'ふつう（小5から）'}</span></button>
+    <button type="button" class="btn" id="oFuri"><span>ふりがな</span><span class="v">${FURI_LV[furiLv].t}</span></button>
     <button type="button" class="btn" id="oAuto"><span>じどうセーブ<br><small class="small">ほかのアプリに切りかえたとき、セーブする</small></span><span class="v">${autoSave ? 'ON' : 'OFF'}</span></button>
     ${storyOn() ? `<button type="button" class="btn" id="oAibou"><span>相棒（じゆうに育てる の虫）<br><small class="small">${S.story.aibou ? esc((S.story.aibou.name || BUGS[S.story.aibou.bug].name)) + '（' + esc(BUGS[S.story.aibou.bug].name) + '）が相棒' : 'じゆうに育てる の成虫を、虫ずもうにつれてくる'}</small></span><span class="v">▶</span></button>` : ''}
     <button type="button" class="btn" id="oTut"><span>はじめての説明を、もう一度<br><small class="small">おうち・虫かご・虫さがしの画面で、また教えてくれる</small></span><span class="v">▶</span></button>
@@ -4871,7 +4914,7 @@ function renderOpt(){
     <div class="row"><button type="button" class="btn" data-h="6">6時間すすめる</button><button type="button" class="btn" data-h="24">1日すすめる</button><button type="button" class="btn sub" data-h="0">もとにもどす</button></div>
     ${storyOn() ? '<div class="row" style="margin-top:8px"><button type="button" class="btn" id="oNext">ストーリー：つぎの日の朝へ</button><button type="button" class="btn" id="oCh">ストーリー：章をえらぶ</button><button type="button" class="btn" id="oMini">七夕祭の出店で遊ぶ</button></div>' : ''}
     <div class="row" style="margin-top:8px"><button type="button" class="btn" id="oMoney">どんぐりを +50</button><button type="button" class="btn sub" id="oClear">セーブを消す</button></div></div>`;
-  $('oFuri').onclick = ()=>{ setFuri(!furiMode); renderOpt(); };
+  $('oFuri').onclick = ()=>{ setFuri((furiLv + 1) % 3); renderOpt(); };
   $('oAuto').onclick = ()=>{ setAutoSave(!autoSave); renderOpt(); };
   $('oOto').onclick = ()=>{ OTO.setOn(!OTO.on); renderOpt(); };
   if($('oAibou')) $('oAibou').onclick = async ()=>{ await pickAibou(); renderOpt(); };
