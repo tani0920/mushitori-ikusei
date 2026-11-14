@@ -119,7 +119,7 @@ html.land #titleScr .tbtn.qm{padding:.3em .85em;font-size:calc(var(--H) * .034)}
 /* スマホ（よこ・まわした画面）では小さめに。端末のふち（--st など）をよけて、×がかならず見える（2026-11-15 ユーザー） */
 .popWin{padding:max(12px,var(--st,0px)) max(12px,var(--sr,0px)) max(12px,var(--sb,0px)) max(12px,var(--sl,0px))}
 html.land .popWin .mwBox{font-size:clamp(12px,calc(var(--H) * .036),16px);width:min(760px,88%);max-height:90%}
-.popWin .mwT{font-size:1.25em}.popWin .dgHow{list-style:none;margin:.4em 0;padding:0}.popWin .dgHow li{padding:.45em .7em;margin:.35em 0;background:#fffaf0;border:1.5px solid #e0c890;border-radius:10px}
+.popWin .mwT{font-size:1.25em}.popWin .gaoff{display:flex;align-items:center;gap:.5em;background:#fffaf0;border:1.5px solid #e0c890;border-radius:10px;padding:8px 12px;cursor:pointer;margin:.5em 0}.popWin .gaoff input{width:22px;height:22px;flex:none}.popWin .dgHow{list-style:none;margin:.4em 0;padding:0}.popWin .dgHow li{padding:.45em .7em;margin:.35em 0;background:#fffaf0;border:1.5px solid #e0c890;border-radius:10px}
 .decoUp{color:#2a7a2a}.decoHint{color:#8a6a40;font-size:.95em}html.land:not(.tall) .decoHint{display:none}   /* スマホはノートに入らないので、すきなかざりの説明は出さない */.popWin .mwBox h3:not(.mwT){font-size:1.02em}
 .popWin .mwHead{position:sticky;top:-1em;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:.6em;margin:-1em -1.2em .6em;padding:.8em 1em .5em 1.2em;background:#fdf6e6;border-bottom:1.5px solid #ead8b4}
 .popWin .mwHead .mwT{margin:0;padding:0;flex:1}.popWin .mwX{position:static;flex:none;width:2.3em;height:2.3em;font-size:1em;margin:0}
@@ -1004,6 +1004,10 @@ html.land body.obsMode #obs .caseBox .scene{position:absolute;max-width:none;asp
 html.land body.obsMode .obsL .tools{width:100%;max-width:none;gap:3px}
 html.land body.obsMode .obsL .tools .tbtn{height:var(--toolh);color:var(--note-ink);background:url(img/ui/card.webp) center/100% 100% no-repeat;border:0;border-radius:8px;font-weight:600;font-size:clamp(10.5px,calc(var(--H) * .0165),16px);letter-spacing:-.1em;white-space:nowrap;filter:drop-shadow(0 1px 2px #3a241266)}
 html.land body.obsMode .obsL .tools .tbtn.on{background:#f6cf5b;box-shadow:inset 0 0 0 2px #fff8;color:#3a2410}
+html.land body.obsMode .obsL .decoPick .pk{flex:0 0 auto;min-width:calc(var(--toolh) * 1.05);height:var(--toolh);padding:2px .35em;color:var(--note-ink);background:url(img/ui/card.webp) center/100% 100% no-repeat;border:0;border-radius:8px;font-weight:600;font-size:clamp(10px,calc(var(--H) * .015),15px);letter-spacing:-.05em;white-space:nowrap;filter:drop-shadow(0 1px 2px #3a241266);justify-content:flex-end;gap:0}
+html.land body.obsMode .obsL .decoPick .pk svg{width:calc(var(--toolh) * .62);height:calc(var(--toolh) * .5);flex:none}
+html.land body.obsMode .obsL .decoPick .pk small{font-size:.85em;line-height:1}
+html.land body.obsMode .obsL .decoPick .pk.on{background:#f6cf5b;color:#3a2410;box-shadow:inset 0 0 0 2px #fff8}
 html.land body.noteUI #tabs button{background:url(img/ui/card.webp) center/100% 100% no-repeat;color:var(--note-ink);border:0;border-radius:8px;box-shadow:none;width:68px;margin-left:4px;min-height:58px;font-weight:600;font-size:12px;filter:drop-shadow(0 1px 2px #3a241266)}
 html.land body.noteUI #tabs{gap:6px;padding-top:max(6px,var(--st))}
 html.land body.noteUI #tabs .ic{display:none}
@@ -2257,7 +2261,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.17.1';
-const BUILD = '20261114-2320';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261114-2341';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.17.1', date:'2026-11-14', items:[
     'ふりがなに「ぜんぶ」をふやした。すべての漢字にふりがながつくので、小学校に入る前の子も、おうちの人といっしょに遊べるよ（タイトルの「ふりがな」か「その他」で切りかえ）',
@@ -2517,6 +2521,23 @@ const CHANGELOG = [
     '「虫とり日記」と同じ：じどうセーブ、ふりがな（ふつう／たくさん）、新しい版のお知らせ、プライバシーについて、おうちの人といっしょの確認']},
 ];
 document.querySelectorAll('.gver').forEach(e=> e.textContent = 'ver ' + GAME_VER + (window.DEMO ? ' デモ' : ''));
+/* アクセス解析（Google アナリティクス）：本番（tani0920.github.io の /demo/ でないところ）だけで動く。デモと手元の確認では動かない。「計測しない」にした端末では動かない。
+   測定IDは「むなかた虫とり日記」と同じ（同じ github.io の中で、ページの場所 /mushitori-ikusei/ で見分ける。イベントには game:'ikusei' も付ける）。
+   送るのは「ゲームのどこまで進んだか」などだけ。名前・写真・位置・虫の名前（つけた名前）は送らない。広告のための情報（Google シグナル）は使わない */
+const GA_ID = 'G-35Q20P88F6';
+const GA_OFF_KEY = 'munakata-ikusei-analytics-off';
+const gaOff = ()=>{ try{ return localStorage.getItem(GA_OFF_KEY) === '1'; }catch(e){ return false; } };
+const GA_ON = !window.DEMO && location.hostname === 'tani0920.github.io' && !gaOff();
+window['ga-disable-' + GA_ID] = !GA_ON;
+if(GA_ON){
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function(){ dataLayer.push(arguments); };
+  gtag('js', new Date());
+  gtag('config', GA_ID, {allow_google_signals:false, allow_ad_personalization_signals:false, game:'ikusei'});
+  const g = document.createElement('script'); g.async = true; g.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID; document.head.appendChild(g);
+}
+function track(name, params){ try{ if(GA_ON && !gaOff()) gtag('event', name, Object.assign({game:'ikusei', game_ver:GAME_VER}, params||{})); }catch(e){} }
+function setGaOff(off){ try{ off ? localStorage.setItem(GA_OFF_KEY, '1') : localStorage.removeItem(GA_OFF_KEY); }catch(e){} window['ga-disable-' + GA_ID] = off || !GA_ON; }
 
 /* =========================================================
    新しい版が公開されていたら知らせる（ホーム画面のアプリは古いページを覚えたままになりやすいので）
@@ -3940,18 +3961,18 @@ function renderTitle(){
     if(hasS){ const two = !!hasS.story.done, ans = two ? ['つづきから', `${(hasS.story.loop || 1) + 1}周目をはじめる（ずかん・かけら・名前を引きつぐ）`, 'はじめから', 'やめる'] : ['つづきから', 'はじめから', 'やめる'];
       let i = await say('ストーリー', {ans}); if(!two && i >= 1) i++;
       if(i === 3) return;
-      if(i === 0){ S = hasS; storyRT = S.story.speed === 'mainichi' ? (S.story.rt || Date.now()) : Date.now(); start(); return; }
+      if(i === 0){ S = hasS; storyRT = S.story.speed === 'mainichi' ? (S.story.rt || Date.now()) : Date.now(); track('game_continue', {mode:'story', chapter:S.story.ch}); start(); return; }
       if(i === 1){ prev = hasS; await say(`${(hasS.story.loop || 1) + 1}周目！\nずかん・ふしぎのかけら・ノートの名前は、そのまま。\n…この夏を、もう一度。前とは ちがう えらびかたも できるかもしれない。`); }
       else if(!(await ask('ストーリーのセーブを消して、はじめからにする？', 'はじめから', 'やめる'))) return; }
     if(tutOK() && !modePicked && !hasS && !prev && !(await ask('【ストーリー】\n' + MODE_TXT.story + '\n\nストーリーで はじめる？', 'はじめる', 'やめる'))) return;
     const sp = await say('ゲームの時計の速さを、えらんでね。\n（あとから「その他」でかえられるよ）', {ans:Object.values(STORY_SPEED).map(v=> `${v.name}：${v.txt}`)});
-    S = newStory(Object.keys(STORY_SPEED)[sp], prev); storyRT = Date.now(); save(); start(); };
+    S = newStory(Object.keys(STORY_SPEED)[sp], prev); storyRT = Date.now(); save(); track('game_start', {mode:'story', speed:Object.keys(STORY_SPEED)[sp], loop:S.story.loop || 1}); start(); };
   $('btnFree').onclick = async ()=>{
     if(has){ const i = await say('じゆうに育てる', {ans:['つづきから', 'はじめから', 'やめる']}); if(i === 2) return;
-      if(i === 0){ S = load(); start(); return; }
+      if(i === 0){ S = load(); track('game_continue', {mode:'free'}); start(); return; }
       if(!(await ask('いまのセーブを消して、はじめからにする？\n（そだてている虫も、いなくなります）', 'はじめから', 'やめる'))) return; }
     if(tutOK() && !modePicked && !has && !(await ask('【じゆうに育てる】\n' + MODE_TXT.free + '\n\nじゆうに育てる で はじめる？', 'はじめる', 'やめる'))) return;
-    S = newGame(); save(); start(); };
+    S = newGame(); save(); track('game_start', {mode:'free'}); start(); };
   $('btnModes').onclick = showModes;
   $('btnInstall').onclick = showInstall; $('btnShare').onclick = showShare; $('btnSendHow').onclick = showSendHow;
   $('btnVer').onclick = showChangelog; $('btnPriv').onclick = showPrivacy; if($('btnRot')) $('btnRot').onclick = flipRot;
@@ -4143,7 +4164,7 @@ async function renderObs(){
   view.innerHTML = `<div class="obsGrid" id="obs">
     <div class="obsL">
       <div class="caseBox" style="${caseBoxCSS(c)}"><img class="caseArt" src="img/ui/case_${(S.boxes||[])[boxIdx(c)] || 'futsu'}.webp" alt="" draggable="false"><div class="scene tool-${tool}" id="scene" style="${caseSceneCSS(c)}">${sc.svg}<div class="toolObj norb" id="toolObj" hidden></div><div class="binZone norb" id="binZone" hidden>しまう</div>${tool === 'big' && st.k !== 'pupa' ? `<div class="refuge norb ${big && big.step >= 1 ? 'on' : ''}" id="refuge"><small>ひなんケース</small><div class="rb" id="refugeBug">${big && big.step >= 2 ? svgBug(c.bug, st.k, {instar:instarOf(c), scale:.9}) : ''}</div></div>` : ''}<div class="mini norb" id="mini" hidden></div></div></div>
-      ${tool === 'kazari' ? `<div class="tools decoPick norb" id="decoPick"><button type="button" class="tbtn back" data-tool="yubi"><span class="ic">↩</span>道具へ</button>${ownDeco.map(k=>`<button type="button" class="pk ${decoSel===k?'on':''}" data-deco="${k}"><svg viewBox="0 0 100 100">${decoSVG(k)}</svg>${esc(ITEMS[k].name)}<small>×${S.items[k]}</small></button>`).join('')}</div>`
+      ${tool === 'kazari' ? `<div class="tools decoPick norb" id="decoPick"><button type="button" class="tbtn back" data-tool="yubi"><span class="ic">↩</span>道具へ</button>${ownDeco.map(k=>`<button type="button" class="pk ${decoSel===k?'on':''}" data-deco="${k}"><svg viewBox="4 0 92 74">${decoSVG(k)}</svg>${esc(ITEMS[k].name)}<small>×${S.items[k]}</small></button>`).join('')}</div>`
         : `<div class="tools norb" id="toolTray">${Object.keys(TOOLS).filter(k=> k !== 'yubi').map(k=>`<button type="button" class="tbtn ${tool===k?'on':''}" data-tool="${k}" ${k==='esa' && st.k==='pupa' ? 'disabled' : ''}><span class="ic">${TOOLS[k].ic}</span>${TOOLS[k].name}</button>`).join('')}</div>`}
     </div>
     <div class="obsR">
@@ -4528,6 +4549,7 @@ async function playEvent(c){
   // 次のすがたへ
   c.si++; c.prog = 0; c.pending = false; c.tick = now(); if(nx.k === 'pupa') c.hunger = 100;
   const bonus = DG.grow[kind]; S.money += bonus; S.stats[kind] = (S.stats[kind]||0) + 1;
+  track('bug_grow', {kind, bug:c.bug, mode:storyOn() ? 'story' : 'free'});
   if(kind === 'emerge'){ c.known = true; const d = S.dex[c.bug]; d.known = 1; d.raisedN = (d.adult ? (d.raisedN||1) + 1 : 1); d.adult = dayKey(); d.born = Object.assign(d.born||{}, {[c.born]:1}); if(!d.best || c.size > d.best) d.best = c.size; S.stats.raised++; }
   save();
   const learned = kind === 'molt' && ins === 0 ? `\n【わざ】「${MOVES[b.shape].name}」をおぼえた！` : kind === 'pupate' || (kind === 'molt' && ins >= 1) ? '\n体の中で、得意わざが育っているみたい…' : '';
@@ -5070,6 +5092,7 @@ async function sumoBattle(r, c){
   await new Promise(r=> ok.onclick = r); A.remove();
   // 結果：勝因・敗因を育て方にむすびつける
   const first = !S.sumo[r.key];
+  track(won ? 'sumo_win' : 'sumo_lose', {rival:r.key, mode:storyOn() ? 'story' : 'free'});
   if(won){ S.stats.wins++; S.sumo[r.key] = dayKey(); const m = first ? r.money : SUMO_REWIN; S.money += m; if(r.key === 'ren') S.sumoChamp = true;
     await say(`${r.short}「${r.win}」\nどんぐり ${dg(m)} をもらった！${first && r.key === 'ren' ? '\n【チャンピオン】きみの虫が、宗像でいちばん強い！' : ''}`, {face:r.key + '_sad', with:'boku'}); }
   else { S.stats.loses++; if(c.pers !== 'makezu' && Math.random() < .3){ c.pers = 'makezu'; await say(`${r.short}「${r.lose}」\n${me.name}は、くやしそうに相手をにらんでいる…。性格が「まけずぎらい」になった！`, {face:r.key + '_joy', with:'boku'}); } else await say(`${r.short}「${r.lose}」`, {face:r.key + '_joy', with:'boku'}); }
@@ -5176,7 +5199,7 @@ function showInstall(){
   openWin('アプリにする方法', installHTML());
   const b = $('doInstall'); if(b) b.onclick = async ()=>{ installEvt.prompt(); await installEvt.userChoice.catch(()=>{}); installEvt = null; b.textContent = 'ありがとう！'; b.disabled = true; };
 }
-async function showShare(){
+async function showShare(){ track('open_share');
   const enc = encodeURIComponent(GAME_URL), txt = '宗像がぶたいの虫そだてゲーム「むなかた 虫そだて日記〈1週間〉」で、いっしょに虫をそだてよう！';
   openWin('友だちに教える', `<p>このゲームのURLを、友だちやおうちの人に送ろう！</p>
     <div class="row">${navigator.share ? '<button type="button" class="btn pri" id="doShare">共有する</button>' : ''}
@@ -5213,13 +5236,25 @@ function showPrivacy(){
     <h3>こどものみんなへ</h3>
     <ul><li>このゲームは、名前・写真・いる場所を<b>どこにも送りません</b>。</li>
       <li>そだてている虫やずかんの記録は、<b>この端末の中にだけ</b>のこります。</li>
+      <li>「何人くらいが遊んでいるか」を知るために、遊んだ回数などを<b>だれのものかわからない形</b>で数えています。</li>
       <li>「いまいる場所をしらべる」は、宗像の場所の近くにいるかを調べるだけ。いる場所は保存も送信もしません。</li>
       <li>わからないことがあったら、おうちの人に見てもらってね。</li></ul>
     <h3>保護者の方へ</h3>
-    <p>このデモ版は、アクセス解析などを入れておらず、外部にデータを送信しません。位置情報は、端末の中で「登録済みのスポットの半径内にいるか」を判定するためだけに使い、判定後すぐに破棄します。セーブデータはブラウザの localStorage にのみ保存されます。</p>
-    <p>屋外での採集は、保護者の方のスマートフォンで、お子さんと一緒に行う前提で設計しています。アプリは1日1回「おうちの人といっしょ？」と確認します。</p>`);
+    <p><b>1. 集めている情報</b><br>利用状況を知るために、Google LLC の「Google アナリティクス」を使っています（本番のみ。デモ版では使っていません）。送信するのは次の情報です。</p>
+    <ul><li>ページを開いた回数、端末の種類（スマホ・タブレット・PC）、ブラウザ、おおよその地域（市区町村程度）、どこから来たか（SNSなど）</li>
+      <li>ゲーム内の進み具合（どちらのモードで始めたか、章の開始・おわり、虫が育った回数と虫の種類、虫ずもうの勝敗、ストーリーのクリアなど）</li></ul>
+    <p><b>2. 送らない情報</b></p>
+    <ul><li>名前（ノートや虫につけた名前を含む）、メールアドレスなどの個人情報</li>
+      <li>位置情報（「いまいる場所をしらべる」は、端末の中で「登録済みのスポットの近くにいるか」を判定するためだけに使い、判定後すぐに破棄します。保存も送信もしません）</li></ul>
+    <p><b>3. Cookie について</b><br>Google アナリティクスは Cookie などを使って情報を集めます。集めたデータは Google のポリシーに沿って管理されます。広告のための情報（Google シグナル）は使っていません。<br>
+      <a href="https://policies.google.com/technologies/partner-sites?hl=ja" target="_blank" rel="noopener">Google のサービスを使うサイトやアプリでの Google によるデータ使用</a></p>
+    <label class="gaoff"><input type="checkbox" id="gaOffChk" ${gaOff() ? 'checked' : ''}><span>この端末では計測しない</span></label>
+    <p class="small">${window.DEMO ? '※デモ版では、もともと計測していません。' : 'チェックを入れると、この端末からは何も送らなくなります。'}</p>
+    <p><b>4. セーブデータ</b><br>ゲームの記録は、お使いの端末のブラウザの中（localStorage）にだけ保存されます。</p>
+    <p><b>5. 屋外での採集</b><br>保護者の方のスマートフォンで、お子さんと一緒に行う前提で設計しています。アプリは1日1回「おうちの人といっしょ？」と確認します。</p>`);
+  const c = $('gaOffChk'); if(c) c.onchange = ()=> setGaOff(c.checked);
 }
-function showInstall(){
+function showInstall(){ track('open_install');
   openWin('アプリにする方法', `<h3>iPhone・iPad（Safari）</h3><ol><li>画面の下の「共有」ボタン（四角から矢印が出ている形）を押す</li><li>「ホーム画面に追加」を押す</li></ol>
     <h3>Android（Chrome）</h3><ol><li>右上の「︙」を押す</li><li>「ホーム画面に追加」または「アプリをインストール」を押す</li></ol>
     <p class="small">ホーム画面のアイコンから開くと、アプリのように全画面で遊べます。</p>`);
@@ -5748,7 +5783,7 @@ function giveItem(k, n=2){ S.items[k] = (S.items[k]||0) + n; }
 /* 育つ速さ：ストーリーでは、どの虫も3日くらいで成虫になる（章の7日の中で、育てる・成虫を見る・かえす がおさまるように） */
 function storyGrowK(c){ if(!storyOn()) return 1; const pre = BUGS[c.bug].plan.filter(p=> p.k !== 'adult').reduce((a,p)=> a + p.days, 0); return Math.max(1, pre/3); }
 /* ---- かえす：章のおわりに、その章でつかまえた虫を、つかまえた場所へ ---- */
-function storyRelease(ch){
+function storyRelease(ch){ track('chapter_end', {chapter:ch});
   const out = [];
   S.cases.forEach((c,i)=>{ if(c && c.story === ch && c.bug !== 'kinkabuto'){ out.push(c); S.cases[i] = null;
     const d = S.dex[c.bug]; if(d){ d.released = (d.released||0) + 1; d.raised = dayKey(); } if(stageOf(c).k === 'adult') S.stats.released++; } });
@@ -5812,7 +5847,7 @@ function cardShow(html, ms=2600){ return new Promise(r=>{ const L = document.cre
 function blackout(txt){ return new Promise(r=>{ const L = document.createElement('div'); L.id = 'evLayer'; L.className = 'blackout'; L.innerHTML = `<div class="boTxt">${fmtMsg(txt || '')}</div>`; document.body.appendChild(L);
   const t0 = Date.now(); let fin = false; const done = ()=>{ if(fin) return; fin = true; L.classList.add('out'); L.id = 'evFade'; r(); setTimeout(()=> L.remove(), 500); };   // つぎの絵・会話は、くらいのが明けるのと同時に
   L.onclick = ()=>{ if(Date.now() - t0 > 900) done(); }; setTimeout(done, 3200); }); }
-const chapterCard = ch=> cardShow(`<div class="sc"><div class="sch norb">${ch}章</div><div class="stt">${esc(CH[ch].ttl)}</div><div class="sdt">${esc(CH[ch].place.replace(/の(畑|森|草むら|山道|松林|海ぞいの林)$/, ''))}　${dateStr()}</div></div>`, 3200);
+const chapterCard = ch=> (track('chapter_start', {chapter:ch}), cardShow(`<div class="sc"><div class="sch norb">${ch}章</div><div class="stt">${esc(CH[ch].ttl)}</div><div class="sdt">${esc(CH[ch].place.replace(/の(畑|森|草むら|山道|松林|海ぞいの林)$/, ''))}　${dateStr()}</div></div>`, 3200));
 const dayCard = (ch, day)=> cardShow(`<div class="sc small1"><div class="sch norb">${ch}章　${day}日目</div><div class="sdt">${dateStr()}</div></div>`, 1600);
 /* 7日目（1〜5章）は、朝に「きょうは虫をかえす日」と伝えるだけ。その日はふつうに遊べて、夕方4時に虫をかえす（2026-11-10 ユーザー：朝にかえすと、そのあとが半端） */
 const STORY_D7 = 16;
@@ -6336,7 +6371,7 @@ const STORY_DAY = {
         ＊白いかみの人の手のひらから、金色の光がひとつ、ノートの上に おりてきた。目がさめると、ノートの表紙に、金色の しおりが はさまっていた。`); cgShow('off');
       S.story.flags.allKakera = 1; save();
       await say('【ふしぎのかけら コンプリート】\n金色のしおりを もらった！\n（タイトルの「ストーリー」に★がつくよ）', {face:'boku_joy'}); }
-    S.story.done = true; S.stats.storyClear = (S.stats.storyClear||0) + 1; save();
+    S.story.done = true; S.stats.storyClear = (S.stats.storyClear||0) + 1; save(); track('story_clear', {loop:S.story.loop || 1, kakera:SX().kakera.length});
     await play('＠絵 ending\n＊夏の終わりの夕方。宗像の海の上を、金色の光がひとつ、沖ノ島のほうへ、ゆっくりよこぎっていく。'); cgShow('off');
     if(0) await cardShow('<div class="sc night end"><div class="glowLine slow"></div><div class="sdt">夏の終わりの夕方。宗像の海の上を、金色の光がひとつ、沖ノ島のほうへ、ゆっくりよこぎっていく。</div></div>', 6000);
     await cardShow(`<div class="sc"><div class="tlogoBox">${titleLogo()}</div><div class="stt">おしまい</div><div class="sdt">この物語はフィクションです。<br>Game Director: Ryohei Taniguchi</div></div>`, 6000);
