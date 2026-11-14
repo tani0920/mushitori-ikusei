@@ -238,9 +238,8 @@ html.land body.noteUI .shopNav{background:#f6ead2;border-radius:0 0 10px 10px;pa
 .search .findBtn:disabled{filter:grayscale(.8) opacity(.6);animation:none}
 @keyframes findPulse{50%{transform:scale(1.05)}}
 .search .acorns{display:flex;gap:4px;justify-content:center;margin:.2em 0}
-.search .acorns i{width:18px;height:22px;border-radius:50% 50% 45% 45%/40% 40% 60% 60%;background:#d8c8b0;position:relative}
-.search .acorns i.on{background:radial-gradient(circle at 40% 35%,#c98a4a,#8a5226)}
-.search .acorns i::before{content:'';position:absolute;left:-1px;right:-1px;top:-2px;height:8px;border-radius:6px 6px 3px 3px;background:#6a4a2a}
+.search .acorns i{width:26px;height:26px;background:url(img/ui/donguri.webp) center/contain no-repeat;filter:grayscale(1) opacity(.35)}   /* どんぐりの絵（2026-11-14 GPT）。つかった分は うすく */
+.search .acorns i.on{filter:none}
 .found .pic{width:min(60%,220px);aspect-ratio:1}
 .found .pic svg{width:100%;height:100%}
 .found .ex{position:absolute;font-size:40px;color:var(--sun);text-shadow:2px 2px 0 #000;animation:pop .5s}
@@ -296,6 +295,7 @@ html.land body.noteUI .shopNav{background:#f6ead2;border-radius:0 0 10px 10px;pa
 #msgLayer.kanaL .krow{display:flex;gap:6px;align-items:stretch}
 #msgLayer.kanaL .krow input{flex:1;margin:0;font-size:20px;font-weight:800;min-width:0}
 #msgLayer.kanaL .kdel{flex:none;font-size:13px;padding:.3em .7em}
+#msgLayer.kanaL input.def{color:#b9a98d}
 #msgLayer.kanaL .kana{--kh:clamp(26px,calc((100dvh - 210px) / 5),46px);display:grid;grid-template-columns:repeat(11,1fr);grid-template-rows:repeat(5,var(--kh));grid-auto-flow:column;gap:4px}
 #msgLayer.kanaL .kk{font:inherit;font-size:clamp(14px,calc(var(--kh) * .45),20px);font-weight:800;border-radius:9px;border:1px solid #c9a978;background:#fff;color:#3a2410;padding:0;cursor:pointer;touch-action:manipulation}
 #msgLayer.kanaL .kk:active{background:#ffe9a8;transform:scale(.95)}
@@ -315,6 +315,11 @@ html.land #msgLayer.kanaL .win.kanaWin{width:min(100%,680px)}
 #msgLayer .ans .btn.ansB::before{content:'▶';position:absolute;left:.8em;top:50%;transform:translateY(-50%);font-size:.75em;color:#c9a978}
 #msgLayer .ans .btn.ansB:hover,#msgLayer .ans .btn.ansB:active{background:#ffe6a8;border-color:#e0a030}#msgLayer .ans .btn.ansB:hover::before,#msgLayer .ans .btn.ansB:active::before{color:#e07a20}
 #msgLayer .ans .btn.ansB.pic{padding-left:.6em}#msgLayer .ans .btn.ansB.pic::before{content:none}
+#msgLayer .giftRow{display:flex;flex-wrap:wrap;gap:.5em;margin:.5em 0 .1em}
+#msgLayer .gift{display:flex;align-items:center;gap:.35em;background:#fff3d6;border:1.5px solid #e2c48a;border-radius:12px;padding:.25em .7em .25em .3em;font-size:.95em;white-space:nowrap}
+#msgLayer .gift img{width:44px;height:44px;object-fit:contain}
+html.land.tall #msgLayer .gift img{width:56px;height:56px}
+#msgLayer .gift small{color:#8a5a20;font-weight:800}
 #msgLayer .ans .btn.pic{display:flex;align-items:center;gap:.7em;text-align:left;padding:.35em .6em}
 #msgLayer .ans .btn.pic img{width:104px;height:78px;flex:none;object-fit:cover;border-radius:8px;border:2px solid #fff;box-shadow:0 1px 3px #0003}
 html.land.tall #msgLayer .ans .btn.pic img{width:132px;height:99px}
@@ -748,6 +753,10 @@ html.tall #arena .fighter{max-width:280px}
 #arena .log .my{color:var(--sun)}
 #arena .log .ko{color:#ff9}
 #arena .ctl{display:flex;justify-content:flex-end;gap:.5em;margin-top:8px}
+#arena .ctl .btn{min-height:56px;min-width:120px;font-size:18px;font-weight:800;border-radius:16px;padding:.35em 1.1em}
+#arena .ctl #bCheer{background:#f6cf5b;color:#3a2410;border-color:#d9a93a}
+#arena .sfx{position:absolute;transform:translate(-50%,-50%) scaleX(var(--fl,1));pointer-events:none;z-index:4;animation:sfx .9s ease-out forwards}
+@keyframes sfx{0%{opacity:0;transform:translate(-50%,-50%) scaleX(var(--fl,1)) scale(.4)}25%{opacity:1;transform:translate(-50%,-50%) scaleX(var(--fl,1)) scale(1.05)}70%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scaleX(var(--fl,1)) scale(1.15)}}
 #matsuri{position:fixed;inset:0;z-index:150;display:flex;flex-direction:column;gap:6px;padding:max(10px,env(safe-area-inset-top,0px)) 12px max(10px,env(safe-area-inset-bottom,0px));color:#f7f1df;background:radial-gradient(circle at 50% 120%,#5a3a6a,transparent 60%),linear-gradient(#0c1026,#1d2550 70%,#2a2a52)}
 #matsuri::before{content:'';position:absolute;left:0;right:0;top:-6px;height:62px;pointer-events:none;z-index:1;background:url(img/ui/mini/chochin.webp) 0 0/auto 62px repeat-x;filter:drop-shadow(0 0 6px #ffb05a99) drop-shadow(0 3px 3px #0008)}   /* ちょうちん（GPT の絵、2026-11-14） */
 #matsuri .mhead{display:flex;align-items:center;gap:12px;font-size:1.15rem;padding-top:46px}
@@ -1110,6 +1119,7 @@ body.noteUI #hud .sch{color:#b0601a}   /* 明るい札の上でも読めるよ�
 'use strict';
 /* ---- 場面の音（BGM・環境音。2026-11-14。音のしくみは下の OTO） ---- */
 const CG_OTO = {
+  hikari:{bgm:'bgm_fushigi', amb:{night:35, waves:20}}, fuka:{bgm:'bgm_fushigi', amb:{night:25}}, kinsora:{bgm:'bgm_fushigi', amb:{waves:40, night:25}}, ending:{bgm:'bgm_wakare', amb:{waves:35, wind:25}}, yume:{bgm:'bgm_fushigi', amb:{}}, morifuka:{bgm:'bgm_soto', amb:{cicada:30, wind:20}},   // 2026-11-14 の6まい
   ame:{bgm:'bgm_ouchi', bgmV:60, amb:{rain:85}}, hotaru:{bgm:'bgm_yoru', amb:{night:50, frogs:45, stream:45}}, ferry:{bgm:'bgm_soto', amb:{waves:70, wind:50}},
   amanogawa:{bgm:'bgm_fushigi', amb:{waves:40, night:40}}, tenbodai:{bgm:'bgm_soto', amb:{wind:70}}, matsuri:{bgm:'bgm_soto', amb:{night:30}},
   taifu:{bgm:null, amb:{typhoon:80, rain:70}}, eki:{bgm:'bgm_ouchi', amb:{}}, yamaasa:{bgm:'bgm_soto', bgmV:70, amb:{wind:50, cicada:30}},
@@ -2167,7 +2177,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.17.1';
-const BUILD = '20261114-1257';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261114-1331';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.17.1', date:'2026-11-14', items:[
     'ふりがなに「ぜんぶ」をふやした。すべての漢字にふりがながつくので、小学校に入る前の子も、おうちの人といっしょに遊べるよ（タイトルの「ふりがな」か「その他」で切りかえ）',
@@ -2599,7 +2609,7 @@ const RUBY = {"宗像大社":"むなかたたいしゃ|7","宗像":"むなかた
   "車":"くるま|1","糸":"いと|1","赤":"あか|1","空気":"くうき|1","空":"そら|1","名":"な|1","耳":"みみ|1","七夕":"たなばた|1","三つ":"みっつ|1","四つ":"よっつ|1",
   "金":"きん|1","火":"ひ|1","一":"いち|1","ての時":"てのとき|2","一か所":"いっかしょ|3","発表会":"はっぴょうかい|3","観察会":"かんさつかい|4","旅行中":"りょこうちゅう|3","活動中":"かつどうちゅう|3","何章":"なんしょう|3",
   "全画面":"ぜんがめん|3","半径内":"はんけいない|4","品物":"しなもの|3","観察員":"かんさついん|4","問題":"もんだい|3","月1日":"がつついたち|1","表紙":"ひょうし|3","青緑":"あおみどり|3","緑色":"みどりいろ|3","牽牛":"けんぎゅう|7",
-  "湍津姫神":"たぎつひめのかみ|7","市杵島姫神":"いちきしまひめのかみ|7","連鎖":"れんさ|7","送る":"おくる|3","面倒":"めんどう|7","姉さん":"ねえさん|2","食物連鎖":"しょくもつれんさ|7"};
+  "湍津姫神":"たぎつひめのかみ|7","市杵島姫神":"いちきしまひめのかみ|7","連鎖":"れんさ|7","送る":"おくる|3","面倒":"めんどう|7","姉さん":"ねえさん|2","食物連鎖":"しょくもつれんさ|7","進める":"すすめる|3"};
 const FURI_KEY = KEY_PRE + 'munakata-furigana-v1';   // 虫とり日記と同じキー名にしているので、どちらかで切りかえると両方にきく
 // ふりがなの だん（2026-11-14 ユーザー：小学校に入る前の子も、親子でできるように「ぜんぶ」を足した）。保存は ''（ふつう）・'1'（たくさん）・'2'（ぜんぶ）
 const FURI_LV = [{n:'ふつう', t:'ふつう（小5から）', min:5}, {n:'たくさん', t:'たくさん（小3から）', min:3}, {n:'ぜんぶ', t:'ぜんぶ（すべての漢字）', min:1}];
@@ -2675,7 +2685,10 @@ const hhmm = (t=now())=>{ const d = new Date(t); return `${d.getHours()}:${Strin
 const SLOT_NAMES = {asa:'朝', hiru:'昼', yu:'夕方', yoru:'夜'};
 const SLOT_ICON = {asa:'🌅', hiru:'☀️', yu:'🌇', yoru:'🌙'};
 function slotOf(t=now()){ const h = new Date(t).getHours(); return h < 5 ? 'yoru' : h < 10 ? 'asa' : h < 16 ? 'hiru' : h < 19 ? 'yu' : 'yoru'; }
-const dg = n=> `${n} D`;   // どんぐり（虫とり日記と同じ、子どものための地域のお金）。単位は D。数字の0と見まちがえないよう、あいだをあける
+const dg = n=> `${n} D`;
+const DONGURI_IMG = 'img/ui/donguri.webp';   // どんぐりの絵（2026-11-14 GPT）
+const itemIcon = k=> FOOD_ART[k] ? `img/food/${k}.webp` : ITEMS[k] && ITEMS[k].cat ? null : null;
+const giftOf = (k, n)=> [itemIcon(k) || DONGURI_IMG, k === 'koorogi' ? 'エサの小さな虫' : ITEMS[k].name, n];   // どんぐり（虫とり日記と同じ、子どものための地域のお金）。単位は D。数字の0と見まちがえないよう、あいだをあける
 
 /* =========================================================
    虫のデータ
@@ -3534,7 +3547,7 @@ function talkActors(L, w, opts){
   L.insertBefore(A, w);
   // 立ち絵（頭から ふとももまで）は会話の窓のうしろに立つ。おとなの こしが窓の上のふちに来る大きさ。子どもは同じ足もとで小さく（CHARA_SC）
   const fit = ()=>{ if(!L.isConnected) return; const lr = L.getBoundingClientRect(), wr = w.getBoundingClientRect(), top = wr.top - lr.top;
-    const ach = Math.round(wr.bottom - lr.top - 4), head = Math.max(12, lr.height * .08), feet = ach;   // 絵の下のはしは、窓の下のふち（窓にかくれる）
+    const ach = Math.round(lr.height), head = Math.max(12, lr.height * .08), feet = ach;   // 絵の下のはしは、画面の下のはし（2026-11-14 ユーザー：窓のよこで足が切れて見えていた。画面の外から出てくるように）
     const full = Math.max(160, Math.min(feet - head, (top - head) / .55));   // おとなの頭が上から8%。大きくなりすぎない（こしより上が窓の上に出るくらい）
     A.style.setProperty('--ach', ach + 'px'); A.style.setProperty('--ab', Math.round(ach - feet) + 'px'); A.style.setProperty('--ah', Math.round(full) + 'px'); };
   fit(); requestAnimationFrame(fit); addEventListener('resize', fit, {once:true});
@@ -3545,7 +3558,7 @@ function say(text, opts={}){
     const nm = faceName(opts.face), talk = !!nm, side = isBoku(opts.face) ? 'l' : 'r';
     if(talk) L.classList.add('talk');
     const w = document.createElement('div'); w.className = 'win' + (talk ? ' talkWin' : '');
-    w.innerHTML = (talk ? `<b class="who ${side} norb">${esc(nm)}</b>` : '') + fmtMsg(text) + (opts.ans ? '' : '<span class="tap">▼ タップでつぎへ</span>');
+    w.innerHTML = (talk ? `<b class="who ${side} norb">${esc(nm)}</b>` : '') + fmtMsg(text) + (opts.gifts && opts.gifts.length ? `<div class="giftRow">${opts.gifts.map(([src, n, k])=> `<span class="gift"><img src="${src}" alt="" draggable="false"><b>${esc(n)}</b>${k ? `<small>×${k}</small>` : ''}</span>`).join('')}</div>` : '') + (opts.ans ? '' : '<span class="tap">▼ タップでつぎへ</span>');
     if(opts.ans){ const a = document.createElement('div'); a.className = 'ans';
       opts.ans.forEach((t,i)=>{ const b = document.createElement('button'); b.type = 'button'; b.className = 'btn ansB'; const pic = opts.pics && opts.pics[i]; if(pic){ b.classList.add('pic'); b.innerHTML = `<img src="${pic}" alt="" draggable="false"><span>${esc(t)}</span>`; } else b.textContent = t; b.onclick = e=>{ e.stopPropagation(); L.remove(); res(i); }; a.appendChild(b); });
       w.appendChild(a);
@@ -3574,10 +3587,11 @@ function askText(text, def='', max=10){
     const keys = fnKeys.map(([t, k, a])=> `<button type="button" class="kk fn" data-f="${k}" aria-label="${a}">${t}</button>`).join('')
       + KANA_COLS.map(col=> [...col].map(c=> c === ' ' ? '<i class="kk none"></i>' : `<button type="button" class="kk" data-c="${c}">${c}</button>`).join('')).join('');
     L.innerHTML = `<div class="win kanaWin"><div class="kq">${fmtMsg(text)}</div>
-      <div class="krow"><input type="text" maxlength="${max}" value="${esc(def)}" inputmode="none" autocomplete="off" aria-label="名前"><button type="button" class="btn kdel">← 1もじ けす</button></div>
+      <div class="krow"><input type="text" maxlength="${max}" value="${esc(def)}" class="${def ? 'def' : ''}" inputmode="none" autocomplete="off" aria-label="名前"><button type="button" class="btn kdel">← 1もじ けす</button><button type="button" class="btn kdel kclr">ぜんぶ けす</button></div>
       <div class="kana norb">${keys}</div>
       <div class="ans"><button type="button" class="btn pri">きめた</button></div></div>`;
     const inp = L.querySelector('input'), ok = L.querySelector('.ans .btn');
+    let fresh = !!def; const unfresh = clear=>{ if(!fresh) return; fresh = false; inp.classList.remove('def'); if(clear) inp.value = ''; };   // fresh：まだ はじめの名前のまま
     const chars = ()=> [...inp.value], last = ()=> chars().slice(-1)[0] || '';
     const sync = ()=>{ const l = last(), n = chars().length;
       L.querySelector('[data-f=daku]').disabled = !K_DAKU[l] && !K_UNDAKU[l];
@@ -3586,15 +3600,18 @@ function askText(text, def='', max=10){
       L.querySelector('[data-f=sp]').disabled = !n || l === ' ' || n >= max;
       L.querySelector('[data-f=bar]').disabled = n >= max;
       L.querySelectorAll('.kk[data-c]').forEach(b=> b.disabled = n >= max);
-      L.querySelector('.kdel').disabled = !n; };
+      L.querySelectorAll('.kdel').forEach(b=> b.disabled = !n); };
     const put = v=>{ inp.value = [...v].slice(0, max).join(''); sync(); };
     const change = (...maps)=>{ const to = maps.map(m=> m[last()]).find(Boolean); if(to) put(chars().slice(0, -1).join('') + to); };
     L.querySelector('.kana').onclick = e=>{ const b = e.target.closest('button'); if(!b || b.disabled) return;
+      if(b.dataset.c || ['bar', 'sp'].includes(b.dataset.f)) unfresh(true); else unfresh(false);
       if(b.dataset.c) put(inp.value + b.dataset.c);
       else ({daku:()=> change(K_DAKU, K_UNDAKU), han:()=> change(K_HAN, K_UNHAN), small:()=> change(K_SMALL, K_UNSMALL), bar:()=> put(inp.value + 'ー'), sp:()=> put(inp.value + ' ')})[b.dataset.f](); };
-    L.querySelector('.kdel').onclick = ()=> put(chars().slice(0, -1).join(''));
-    inp.oninput = sync;
-    ok.onclick = ()=>{ const v = inp.value.trim(); L.remove(); res(v); };
+    L.querySelector('.kdel:not(.kclr)').onclick = ()=>{ if(fresh){ unfresh(true); sync(); return; } put(chars().slice(0, -1).join('')); };
+    L.querySelector('.kclr').onclick = ()=>{ unfresh(true); put(''); };
+    inp.onbeforeinput = ()=> unfresh(true);   // パソコンのキーボードで打ったときも、はじめの名前は消える
+    inp.oninput = ()=>{ unfresh(false); sync(); };
+    ok.onclick = ()=>{ const v = inp.value.trim() || def; L.remove(); res(v); };
     inp.onkeydown = e=>{ if(e.key === 'Enter' && !e.isComposing) ok.click(); };
     document.body.appendChild(L); sync();
   });
@@ -3611,7 +3628,7 @@ function refresh(){ tickAll(); handleGone(); hud(); render(); }
 setInterval(()=>{ if(S && !QS.has('mihon') && !document.querySelector('.toolObj.drag, #findField.busy, .found') && document.body.dataset.slot && document.body.dataset.slot !== slotOf()) refresh(); }, 60000);   // 朝・昼・夕方・夜がかわったら、絵の色もかえる
 const hudSleep = ()=>{ if(!storyOn() || !S.story.ch || S.story.done || storySp().m <= 1) return ''; const sl = slotOf(), h = new Date(now()).getHours(), hold = !!S.story.hold;
   // 時計を止める・うごかす（はやい・ゆっくり のとき。止めているあいだは、虫もおなかがへらない）
-  return `<button type="button" class="hudHold norb" data-hold="1">⏸ ポーズ</button>` + ((sl === 'yu' || sl === 'yoru') && !hold ? `<button type="button" class="hudSleep norb${h >= STORY_BED - 1 || h < 5 ? ' late' : ''}" data-sleep="1">🌙 ねる</button>` : ''); };
+  return `<button type="button" class="hudHold norb" data-hold="1">⏸ ポーズ</button>` + (!hold ? `<button type="button" class="hudSleep norb${h >= STORY_BED - 1 || h < 5 ? ' late' : ''}" data-sleep="1">${{'次の章へ':'📖 次の章へ', '次の日へ':'☀ 次の日へ'}[nextLabel()] || '🌙 ねる'}</button>` : ''); };   // 朝・昼は「次の日へ」、7日目の話のあとは「次の章へ」（2026-11-14 ユーザー）
 function storyHold(){ if(!storyOn()) return; storyCommit(); S.story.hold = !S.story.hold; storyRT = Date.now(); save(true); hud(); otoScene(); if(!S.story.hold) storyCheck(); }
 const hudT = ()=>{ const t = now(); if(!storyOn() || storySp().m <= 1) return t; const st = (storySp().m >= 360 ? 30 : 15) * 60e3; return Math.floor(t / st) * st; };   // 時計の数字は、はやい=30分・ゆっくり=15分ごと（2026-11-10）
 const hudHtml = ()=>{ const slot = slotOf(); return (storyOn() && S.story.ch && !S.story.done ? `<span class="slot sch">${S.story.ch}章 ${S.story.day}日目</span>` : '') + `<span class="slot">${SLOT_ICON[slot]} ${SLOT_NAMES[slot]}</span><span>${dateStr()} ${hhmm(hudT())}</span><span class="money" title="どんぐり">🌰 ${dg(S.money)}</span>`; };
@@ -3651,7 +3668,8 @@ function renderItems(){
 $('rtItems').onclick = ()=> setSide(sidePanel === 'items' ? null : 'items');
 $('rtCase').onclick = ()=> setSide(sidePanel === 'case' ? null : 'case');
 document.querySelector('#rtabs [data-t=home]').onclick = ()=>{ setSide(null); setTab('home'); };
-function setTab(t){ tab = t; openCase = null; document.querySelectorAll('#tabs button, #rtabs [data-t]').forEach(b=> b.classList.toggle('on', b.dataset.t === t)); render(); (scrollTo(0,0), view.scrollTop = 0); }
+function setTab(t){ if(t !== tab || t !== 'out') outState = (t === 'out' && tab === 'out') ? outState : null;   // ほかのタブへ行ったら、虫さがしの場所から出る（つぎに「そと」をおすと、場所をえらぶ画面。2026-11-14 ユーザー）
+  tab = t; openCase = null; document.querySelectorAll('#tabs button, #rtabs [data-t]').forEach(b=> b.classList.toggle('on', b.dataset.t === t)); render(); (scrollTo(0,0), view.scrollTop = 0); }
 document.querySelectorAll('#tabs button').forEach(b=> b.onclick = ()=> setTab(b.dataset.t));
 // 左のあいているところに立つ人（おみせのおじさん）。同じ人ならそのまま（買い物のたびに出なおさない）
 function setStandee(k){ let e = $('standee');
@@ -3840,14 +3858,16 @@ function coachStep(st){
       const pad = 6, x = r ? Math.max(0, r.left - pad) : W/2, y = r ? Math.max(0, r.top - pad) : H/2, w = r ? Math.min(W - x, r.width + pad*2) : 0, h = r ? Math.min(H - y, r.height + pad*2) : 0;
       Object.assign(hole.style, {left:x + 'px', top:y + 'px', width:w + 'px', height:h + 'px', display:r ? '' : 'none'});
       [[0, 0, W, y], [0, y + h, W, H - y - h], [0, y, x, h], [x + w, y, W - x - w, h]].forEach(([a, b, c, d], i)=> Object.assign(blk[i].style, {left:a + 'px', top:b + 'px', width:Math.max(0, c) + 'px', height:Math.max(0, d) + 'px'}));
-      fk.classList.toggle('top', !!st.top || !!(r && r.bottom > H*.62 && r.top > H*.3)); };   // 明るいところが下のほうなら、ふきだしは上に
+      if(st.top || !r){ fk.classList.toggle('top', !!st.top); return; }
+      const ov = ()=>{ const b = fk.getBoundingClientRect(); return Math.max(0, Math.min(b.bottom, r.bottom) - Math.max(b.top, r.top)) * Math.max(0, Math.min(b.right, r.right) - Math.max(b.left, r.left)); };
+      fk.classList.remove('top'); const a = ov(); fk.classList.add('top'); const b = ov(); fk.classList.toggle('top', b < a); };   // 光っているところと重ならないほう（2026-11-14 ユーザー：スマホで光っているところが押せなかった）
     place(); const iv = setInterval(place, 250);
     let fin = false; const done = ()=>{ if(fin) return; fin = true; clearInterval(iv); clearInterval(pv); L.remove(); setTimeout(res, 120); };
     let pv = 0;
     if(st.alive) pv = setInterval(()=>{ if(!st.alive()) done(); }, 300);
     if(!st.wait){ L.onclick = done; }
     else {
-      L.style.pointerEvents = 'none'; blk.forEach(b=> b.style.pointerEvents = 'auto'); fk.style.pointerEvents = 'auto';
+      L.style.pointerEvents = 'none'; blk.forEach(b=> b.style.pointerEvents = 'auto'); fk.style.pointerEvents = 'none';   // ふきだしが重なっても、下の光っているところを さわれる
       if(typeof st.wait === 'function') pv = setInterval(()=>{ if(st.wait() || (st.alive && !st.alive())) done(); }, 200);
       else { const h = e=>{ const el = target(); if(el && el.contains && el.contains(e.target)){ document.removeEventListener(st.wait, h, true); setTimeout(done, 60); } };   // 画面がかきなおされても、いまの場所で見る
         if(target()) document.addEventListener(st.wait, h, true); else done(); }
@@ -4372,7 +4392,7 @@ async function showResult(c){
     <div class="pic">${svgBest(c.bug, {rare:c.rare})}</div>
     <div class="big">${esc(b.name)}の成虫が生まれた！</div>
     <p style="text-align:center"><span class="born">${esc(born.name)}</span>${c.bornSlot === 'yoru' ? ' <span class="born">夜型</span>' : ''}${c.rare ? ' <span class="born">めずらしい色</span>' : ''}</p>
-    <table><tr><td>大きさ</td><td>${c.size}mm　${sizeMk}</td></tr><tr><td>オス・メス</td><td>${esc(c.sex)}</td></tr>
+    <table><tr><td>大きさ</td><td>${c.size}mm　${sizeMk}</td></tr><tr><td>せいべつ</td><td>${esc(c.sex)}</td></tr>
       <tr><td>性格</td><td><b>${esc(PERS[c.pers].name)}</b>　<small>${esc(PERS[c.pers].how||'')}</small></td></tr>
       <tr><td>わざ</td><td>${c.moves.map(k=>`<b>${esc(MOVES[k].name)}</b>（${esc(MOVES[k].info)}）`).join('<br>')}</td></tr></table>
     <h3>ステータス（虫ずもう用）</h3>
@@ -4516,7 +4536,7 @@ async function arrive(sp, outside){
   if(!S.yk[giftKey] && sp.gift){ S.yk[giftKey] = 1; S.items[sp.gift] = (S.items[sp.gift]||0) + 2; gift = `\n${sp.name}で「${ITEMS[sp.gift].name}」を2つ手に入れた。`; }
   S.money += got; S.last = {key:sp.key, name:sp.name, lat:sp.lat, lon:sp.lon, day:today}; save(); hud();
   outState = {spot:sp, outside};
-  await say((outside ? '宗像のスポットの近くではないみたい。\nでも、どこにでもいる虫ならさがせるよ。' : `「${sp.name}」に着いた！`) + (moved ? `\n${moved} どんぐり ${dg(got)} をもらった。` : '') + gift);
+  await say((outside ? '宗像のスポットの近くではないみたい。\nでも、どこにでもいる虫ならさがせるよ。' : `「${sp.name}」に着いた！`) + (moved ? `\n${moved} どんぐり ${dg(got)} をもらった。` : '') + gift, {gifts:[...(got ? [[DONGURI_IMG, 'どんぐり', got]] : []), ...(gift ? [giftOf(sp.gift, 2)] : [])]});
   if(!outside) await say(`【注意】${sp.warn}`, {face:'papa_teach'});
   render();
 }
@@ -4571,7 +4591,7 @@ function renderSpot(){
       ${egg ? '<div class="small" style="color:var(--sun)">…木の根もとで、なにかが金色に光っている。</div>' : ''}</div>
     <div id="findBox" class="search"><div class="papaHint norb"><span><b class="who">おとうさん</b>${esc(SLOT_HINT[slot])}</span></div>
       <div class="findRow"><button type="button" class="findBtn" id="btnFind" ${left <= 0 || (!all.length && !egg) ? 'disabled' : ''}><img src="img/tools/megane.webp" alt="" draggable="false"><b>さがす</b></button>
-      <div class="left"><div class="small">今日ここで さがせるのは</div><div class="acorns">${Array.from({length:FINDS_PER_VISIT}, (_, i)=> `<i class="${i < left ? 'on' : ''}"></i>`).join('')}</div><div class="small">あと${Math.max(0, left)}回</div></div></div></div>
+      <div class="left"><div class="small">今日ここで さがせるのは</div><div class="acorns">${Array.from({length:Math.max(FINDS_PER_VISIT + (storyOn() ? 2 : 0), used + left)}, (_, i)=> `<i class="${i < left ? 'on' : ''}"></i>`).join('')}</div><div class="small">あと${Math.max(0, left)}回</div></div></div></div>
     <div class="spot photoBox" ${storyOn() ? 'hidden' : ''}><b>📷 本物の虫の写真をとる</b>　<span class="small">今日のこり ${photoLeft()}まい</span>
       <div class="small">外で見つけた本物の虫をとると、どんぐりがもらえる。写真の虫のなかまの幼虫も見つかりやすくなるよ。写真はこのたんまつの中だけでAIが判定して、どこにも送られません。</div>
       <div class="row" style="margin-top:6px"><label class="btn pri">カメラでとる<input id="camIn" class="vh" type="file" accept="image/*" capture="environment"></label><label class="btn">アルバムから<input id="libIn" class="vh" type="file" accept="image/*"></label></div>
@@ -4634,7 +4654,8 @@ async function doFind(sp, here, egg, slot, h){
   $('bLeave').onclick = ()=> renderSpot();
   $('bTake').onclick = async ()=>{
     const foodKey = b.food, food = ITEMS[foodKey];
-    if(food.price && !(S.items[foodKey]||0)) await say(`つれてかえるなら、ごはんの「${food.name}」がいるよ。\n「おみせ」で買っておこう。（いまのどんぐり：${dg(S.money)}）`, {face:'papa'});
+    if(foodKey === 'koorogi' && !(S.items[foodKey]||0)) await say('つれてかえるなら、ごはんの「生きた小さな虫」がいるよ。\nそとの「草むら」をさがすと、エサになる小さなバッタやコオロギが つかまえられる。いっしょに さがしてみよう。', {face:'papa_teach'});   // 2026-11-14 ユーザー：カマキリのエサは、そとでつかまえる
+    else if(food.price && !(S.items[foodKey]||0)) await say(`つれてかえるなら、ごはんの「${food.name}」がいるよ。\n「おみせ」で買っておこう。（いまのどんぐり：${dg(S.money)}）`, {face:'papa'});
     // 虫かごとおき場所をえらぶ（育て方のはじまり）
     let free = free0;
     if(frees.length > 1){ const wi = await say('どの虫かごに入れる？', {ans:frees.map(j=>`${j+1}ばん：${BOXES[S.boxes[j]].ic} ${BOXES[S.boxes[j]].name}（${BOXES[S.boxes[j]].desc}）`).concat(['やめる'])}); if(wi >= frees.length) return; free = frees[wi]; }
@@ -4771,15 +4792,19 @@ async function sumoBattle(r, c){
   const SP_ANIM = {beetle:'spToss', stag:'spPinch', butterfly:'spFly', grass:'spJump', mantis:'spSwing', cicada:'spFly', cricket:'spVibe', firefly:'spFly'};
   const quake = ()=>{ ring.classList.remove('quake'); void ring.offsetWidth; ring.classList.add('quake'); };
   const cutin = async (f, t, sub)=>{ const d = document.createElement('div'); d.className = 'cutin norb ' + (f === me ? 'me' : 'op'); d.innerHTML = `${esc(t)}<small>${esc(sub)}</small>`; ring.appendChild(d); await slow(fast ? 200 : 1000); d.remove(); };
+  const fxImg = (i, at, size=140, ms=900, flip=false)=>{ const d = document.createElement('img'); d.className = 'sfx norb'; d.src = `img/ui/sumo/fx${i}.webp`; d.alt = ''; d.draggable = false;
+    d.style.cssText = `left:${at.x}px;top:${at.y}px;width:${size}px;--fl:${flip ? -1 : 1};animation-duration:${fast ? Math.min(ms, 400) : ms}ms`; ring.appendChild(d); setTimeout(()=> d.remove(), ms + 50); };
+  const SP_FX = {beetle:[0, 'o'], stag:[1, 'o'], butterfly:[2, 'o'], cicada:[2, 'o'], firefly:[2, 'o'], grass:[3, 'f'], mantis:[4, 'o'], cricket:[5, 'f']};
   async function spMove(f, o){
     const sh = f.b.shape, el = elOf(f), oc = center(elOf(o)), fc = center(el); pose(f); aim(f, o);
     fx(f, SP_ANIM[sh] || 'lunge', 1000);
+    { const [i, w] = SP_FX[sh] || [6, 'o']; setTimeout(()=> fxImg(i, w === 'f' ? fc : oc, w === 'f' ? 170 : 190, 950, f !== me), fast ? 60 : 260); }
     if(sh === 'mantis'){ await slow(380); put('slash', oc, '', 500); }
     else if(sh === 'cicada' || sh === 'cricket'){ for(let i=0;i<3;i++){ put('wave', fc, '', 1000); await slow(180); } }
     else if(sh === 'butterfly'){ await slow(450); spawn(o, 'dust', 16); }
     else await slow(sh === 'grass' ? 420 : 380);
   }
-  const bang = (o, big)=>{ put('bang', center(elOf(o)), big ? pick(['ドーン！','ズドン！','バシッ！']) : pick(['ドン！','バシッ']), 650); if(big) quake(); };
+  const bang = (o, big)=>{ fxImg(6, center(elOf(o)), big ? 170 : 110, 600); put('bang', center(elOf(o)), big ? pick(['ドーン！','ズドン！','バシッ！']) : pick(['ドン！','バシッ']), 650); if(big) quake(); };
   // 行動をえらぶ（性格の重み＋状況）
   function choose(f, o){
     if(f.charm > 0){ f.charm--; return 'charm'; }
@@ -4806,7 +4831,7 @@ async function sumoBattle(r, c){
     f.lastGuard = false;
     const mv = a === 'sp' ? (f.moves[1] || f.moves[0]) : null;
     const song = mv && /ソング|リーン|合唱|音量/.test(mv.name), dustMv = mv && (mv.blind && !song);
-    const hitFx = async (big)=>{ bang(o, big); pose(o); if(big && (f.b.shape === 'beetle' || f.b.shape === 'stag')) fx(o, 'tossed', 900); else { fx(o, 'hit'); if(big) fx(o, 'fly', 700); } await slow(big ? 520 : 200); };
+    const hitFx = async (big)=>{ bang(o, big); pose(o); if(big && (f.b.shape === 'beetle' || f.b.shape === 'stag')) fx(o, 'tossed', 900); else { fx(o, 'hit'); if(big) fx(o, 'fly', 700); } if(big) setTimeout(()=>{ const c = center(elOf(o)); fxImg(7, {x:c.x, y:c.y + 30}, 150, 900); }, fast ? 100 : 420); await slow(big ? 520 : 200); };
     if(mv){
       f.lastMv = mv.name;
       await cutin(f, `${mv.name}！`, `${my ? 'きみ' : r.short}の ${f.b.name}`);
@@ -5266,10 +5291,10 @@ const CH = [
   {ttl:'夏休みのはじまり'},
   {spot:'akama',     place:'赤間の畑',             ttl:'はじめての いもむし',         nakama:['monshiro','ageha'],          gift:['kyabetsu','mikan'], kid:'yuta'},
   {spot:'tsurikawa', img:'tameike', env:'釣川の近く。ため池のほとりと、田んぼのあぜ', place:'ため池と田んぼ',       ttl:'夜の音と光',                 nakama:['suzumushi','kamakiri'],      gift:['nasu','koorogi'],   kid:'haruka'},
-  {spot:'oshima',    place:'大島の森',             ttl:'七夕の島と、ふしぎなたまご',   nakama:['karasu','miyama','ookuwa'],  gift:['zeri','mikan'],     kid:'kenta'},
-  {spot:'matsubara', place:'さつき松原の草むら',    ttl:'台風がくる',                 nakama:['tonosama','shoryo','kamakiri'], gift:['kusa','koorogi'], kid:'soma'},
+  {spot:'oshima',    place:'大島の海ぞいの林',       ttl:'七夕の島と、ふしぎなたまご',   nakama:['karasu','miyama','ookuwa'],  gift:['zeri','mikan'],     kid:'kenta'},
+  {spot:'matsubara', place:'さつき松原の松林',      ttl:'台風がくる',                 nakama:['tonosama','shoryo','kamakiri'], gift:['kusa','koorogi'], kid:'soma'},
   {spot:'joyama',    place:'城山の山道',           ttl:'山のすずしい朝',             nakama:['kabuto','miyama','oomurasaki'], gift:['zeri','enoki'],  kid:'daichi'},
-  {spot:'taisha',    place:'宗像大社の近くのクヌギの林', ttl:'三つのお宮と、金色の光',   nakama:['nokogiri','hirata'],         gift:['zeri'],             kid:'ren'},
+  {spot:'taisha',    place:'宗像大社の森',          ttl:'三つのお宮と、金色の光',   nakama:['nokogiri','hirata'],         gift:['zeri'],             kid:'ren'},
 ];
 const STORY_SRC = [   // 参考にしたページ（資料_宗像.md の出典）。リンクにはせず、名前とアドレスだけ
   ['宗像大社','munakata-taisha.or.jp'], ['宗像大社 中津宮の祭事','munakata-taisha.or.jp/nakatsu_saiji.html'],
@@ -5523,7 +5548,7 @@ async function tanabataStalls(){
       await play(r.got.includes(1) ? 'けんた：1等！？ まじかよ！' : r.got.length ? 'けんた：おれ、ラムネばっかりだった。…いっしょに飲もうぜ。' : 'けんた：くじは、また来年だな。'); }
     save(); }
 }
-const CG = ['ame', 'hotaru', 'ferry', 'amanogawa', 'tenbodai', 'matsuri', 'taifu', 'eki', 'yamaasa', 'takamiya', 'yohaisho', 'happyo', 'gakko', 'obaa', 'tosho', 'jousen', 'oshimako', 'note', 'ranou'];   // img/ui/ev/キー.webp（gakko・obaa・tosho は ほかの場所の絵。2026-11-14）
+const CG = ['ame', 'hotaru', 'ferry', 'amanogawa', 'tenbodai', 'matsuri', 'taifu', 'eki', 'yamaasa', 'takamiya', 'yohaisho', 'happyo', 'gakko', 'obaa', 'tosho', 'jousen', 'oshimako', 'note', 'ranou', 'hikari', 'fuka', 'kinsora', 'ending', 'yume', 'morifuka'];   // 2026-11-14：序章の光・ふ化・金色の虫が海へ・エンディング・かけらの夢・森で生まれていた   // img/ui/ev/キー.webp（gakko・obaa・tosho は ほかの場所の絵。2026-11-14）
 function cgShow(k){ let e = $('cgLayer');
   if(!k || k === 'off' || !CG.includes(k)){ if(e){ e.remove(); otoScene(); } return; }
   if(e && e.dataset.k === k) return; if(e) e.remove();
@@ -5590,7 +5615,7 @@ async function storyCheck(){
       if(!S.story.seen[ch + '-1'] && day > 1){ ran = true; await storyDay(ch, 1); }
       if(!S.story.seen[key] && h >= 5){ ran = true; if(day === 7 && ch <= 5) await storyDay7Intro(ch); else await storyDay(ch, day); }
       else if(day === 7 && ch <= 5 && S.story.seen[key] && !day7Done(ch) && h >= STORY_D7){ ran = true; S.story.seen[key + 'm'] = 1; await storyDay(ch, 7, true); }   // 夕方4時：虫をかえす
-      else if(S.story.seen[key] && !S.story.eve[key] && (slotOf() === 'yu' || slotOf() === 'yoru') && h >= 16){ const f = STORY_EVE[key]; S.story.eve[key] = 1; save(); if(f){ ran = true; outState = null; setTab('home'); await f(); cgShow('off'); } }
+      else if(S.story.seen[key] && !S.story.eve[key] && (slotOf() === 'yu' || slotOf() === 'yoru') && h >= (EVE_H[key] || 16)){ const f = STORY_EVE[key]; S.story.eve[key] = 1; save(); if(f){ ran = true; outState = null; setTab('home'); await f(); cgShow('off'); } }
       else if((S.story.seen[key] || h < 5) && storySp().m > 1 && storyLate(h) && !S.story.done){ ran = true; await storyBedtime(); }   // 夜9時：ねる時間
     }
   } finally { storyRunning = false; storyBusy = false; if(ran) save(); else if(Date.now() - storyQuietSave > 10000){ storyQuietSave = Date.now(); save(true); } }   // 何もおきなかったときは、10秒に1回だけ だまってセーブ（ゲームの時計をのこすため。とじるときは autoSaveNow でもセーブ）
@@ -5605,7 +5630,7 @@ async function storyDay(ch, day, noCard){
   save(); hud();
 }
 function cardShow(html, ms=2600){ return new Promise(r=>{ const L = document.createElement('div'); L.id = 'evLayer'; L.className = 'storyCard'; L.innerHTML = html; document.body.appendChild(L); const done = ()=>{ L.remove(); r(); }; L.onclick = done; setTimeout(done, ms); }); }
-const chapterCard = ch=> cardShow(`<div class="sc"><div class="sch norb">${ch}章</div><div class="stt">${esc(CH[ch].ttl)}</div><div class="sdt">${esc(CH[ch].place.replace(/の(畑|森|草むら|山道)$/, ''))}　${dateStr()}</div></div>`, 3200);
+const chapterCard = ch=> cardShow(`<div class="sc"><div class="sch norb">${ch}章</div><div class="stt">${esc(CH[ch].ttl)}</div><div class="sdt">${esc(CH[ch].place.replace(/の(畑|森|草むら|山道|松林|海ぞいの林)$/, ''))}　${dateStr()}</div></div>`, 3200);
 const dayCard = (ch, day)=> cardShow(`<div class="sc small1"><div class="sch norb">${ch}章　${day}日目</div><div class="sdt">${dateStr()}</div></div>`, 1600);
 /* 7日目（1〜5章）は、朝に「きょうは虫をかえす日」と伝えるだけ。その日はふつうに遊べて、夕方4時に虫をかえす（2026-11-10 ユーザー：朝にかえすと、そのあとが半端） */
 const STORY_D7 = 16;
@@ -5620,9 +5645,20 @@ async function storyDay7Intro(ch){
   storyGoal('夕方4時に、虫をかえしに行く'); save(); hud();
 }
 /* ねる：夕方から、つぎの日の朝7時へ（まいにち のときはできない） */
+/* 上の札のボタン（2026-11-14 ユーザー）：夕方・夜は「ねる」、朝・昼は「次の日へ」、7日目の話がおわったら「次の章へ」。どれも つぎの朝へ（ねると同じ）。
+   その日の夕方に だいじな話（STORY_EVE・7日目の虫をかえす話）がまだなら、見のがさないように 夕方まで進める */
+const chapterDone = ()=> { const st = S.story; return st.ch >= 1 && st.ch <= 5 && st.day === 7 && day7Done(st.ch); };
+const nextLabel = ()=> chapterDone() ? '次の章へ' : ['yu', 'yoru'].includes(slotOf()) ? 'ねる（あしたへ）' : '次の日へ';
+function evePending(){ const st = S.story, key = st.ch + '-' + st.day, h = new Date(now()).getHours();
+  if(st.day === 7 && st.ch <= 5 && !day7Done(st.ch)) return h < STORY_D7 ? STORY_D7 : 0;
+  if(STORY_EVE[key] && !st.eve[key]){ const eh = EVE_H[key] || 16; return h < eh ? eh : 0; }
+  return 0; }
 async function storySleep(){
   if(storySp().m <= 1) return;
-  if(!(await ask('今日は、もうねる？\n（つぎの日の朝になるよ。ねるまえに、エサやしめりけを見ておこう）', 'ねる', 'まだ'))) return;
+  const eh = evePending(), lab = nextLabel();
+  if(eh){ if(!(await ask(`きょうは、夕方に だいじなことがあるよ。\n${eh}時まで、時間を進める？`, `${eh}時まで進める`, 'まだ'))) return;
+    storyCommit(); S.story.gt = atHour(storyIdx(), eh); storyRT = Date.now(); save(); refresh(); storyCheck(); return; }
+  if(!(await ask(lab === '次の章へ' ? 'つぎの章へ進む？\n（あしたの朝から、新しい週がはじまるよ）' : lab === '次の日へ' ? 'つぎの日の朝にする？\n（ねるのと同じ。そのまえに、エサやしめりけを見ておこう）' : '今日は、もうねる？\n（つぎの日の朝になるよ。ねるまえに、エサやしめりけを見ておこう）', lab === '次の章へ' ? '次の章へ' : lab === '次の日へ' ? '次の日へ' : 'ねる', 'まだ'))) return;
   storyBusy = true; try{ await storyToMorning(); } finally { storyBusy = false; }
   refresh(); storyCheck();
 }
@@ -5649,7 +5685,7 @@ function storyBanner(){
   const egg = st.egg && !st.egg.hatched ? `<div class="eggCard norb" id="sbEgg"><span class="egg${st.egg.glow ? ' glow' : ''}"></span><span><b>ふしぎなたまご</b><small>${esc(st.egg.txt || '大島で見つけた、金色のたまご。')}</small></span></div>` : '';
   const hk = hakaseNow();
   return `<div class="storyBar norb"><b>${ch ? `${ch}章　${st.day}日目` : '序章'}</b>${hk ? `<span class="hakase">🏅${esc(hk)}</span>` : ''}${storyLoop() > 1 ? `<span class="hakase loop">${storyLoop()}周目</span>` : ''}<span class="sttl">${ch ? esc(CH[ch].ttl) : ''}</span>${st.goal ? `<span class="goal">めあて：${esc(st.goal)}</span>` : ''}
-    <span class="sbBtns">${engawaOpen() ? '<button type="button" class="btn pri" id="sbEngawa">えんがわで おとうさんと話す</button>' : ''}<button type="button" class="btn" id="sbNote">虫しらべノート</button>${(sl === 'yu' || sl === 'yoru') && storySp().m > 1 ? '<button type="button" class="btn pri" id="sbSleep">ねる（あしたへ）</button>' : ''}</span></div>${egg}`;
+    <span class="sbBtns">${engawaOpen() ? '<button type="button" class="btn pri" id="sbEngawa">えんがわで おとうさんと話す</button>' : ''}<button type="button" class="btn" id="sbNote">虫しらべノート</button>${storySp().m > 1 && ch ? `<button type="button" class="btn pri" id="sbSleep">${nextLabel()}</button>` : ''}</span></div>${egg}`;
 }
 function storyBannerWire(){
   if($('sbNote')) $('sbNote').onclick = showNote;
@@ -5660,7 +5696,7 @@ function storyBannerWire(){
 function showNote(){
   const st = S.story, pages = [1,2,3,4,5,6].map(ch=>{ const p = st.note[ch];
     if(!p) return `<div class="npage empty"><b>${ch}ページめ</b><span>${ch <= st.ch && st.seen[ch + '-1'] ? '（とちゅう）' : '（まだ）'}</span></div>`;
-    return `<div class="npage"><b>${ch}ページめ　${esc(CH[ch].place.replace(/の(畑|森|草むら|山道)$/, ''))}</b><div class="npic">${p.bug ? svgBest(p.bug, {rare:p.rare}) : ''}</div><span>${p.bug ? `${esc(p.name)}（${esc(BUGS[p.bug].name)}）${p.size ? `　${p.size}mm` : ''}` : ''}</span><small>${esc(p.txt || '')}</small></div>`; }).join('');
+    return `<div class="npage"><b>${ch}ページめ　${esc(CH[ch].place.replace(/の(畑|森|草むら|山道|松林|海ぞいの林)$/, ''))}</b><div class="npic">${p.bug ? svgBest(p.bug, {rare:p.rare}) : ''}</div><span>${p.bug ? `${esc(p.name)}（${esc(BUGS[p.bug].name)}）${p.size ? `　${p.size}mm` : ''}` : ''}</span><small>${esc(p.txt || '')}</small></div>`; }).join('');
   openPanel(`${st.name ? st.name + 'の' : ''}虫しらべノート`, `<p class="small">夏休みの自由研究。毎週1ぴき、虫を見つけて、そだてて、記録して、見つけた場所にかえす。</p><div class="noteBook">${pages}</div>${kakeraHTML()}`);
 }
 function showSources(){
@@ -5698,10 +5734,11 @@ async function storyBegin(){
     ＊セミやカブトムシの絵が、たくさん。でも、いちばん最後のページだけ、のりでくっついたように開かない。
     おとうさん（ふつう）：最後のページ？ …さあ、なにを書いたんだったかな。`);
   await kakera('note');
-  await play(`＊その夜。えんがわから海のほうを見ていると、大島のあたりで、一瞬だけ、金色の光が見えた。
+  await play(`＠絵 hikari
+    ＊その夜。えんがわから海のほうを見ていると、大島のあたりで、一瞬だけ、金色の光が見えた。
     ぼく（びっくり）：…いまの、なに？
     ＊おとうさんをよびに行って もどると、もう、なにも見えなかった。`);
-  await kakera('hikari');
+  await kakera('hikari'); cgShow('off');
   if(storyLoop() >= 2) await play('ぼく（ふつう）：…なんだか、この夏を、前にも すごしたような気がする。\n＊ノートを開くと、見おぼえのある「ふしぎのかけら」が、もう何まいか はさまっていた。');
   await play(`ぼく（ふつう）：（流れ星…？ それとも…）
     ＊ゲームの時計の速さは、「その他」でかえられるよ。いまは「${storySp().name}」（${storySp().txt}）。
@@ -5837,16 +5874,16 @@ const STORY_DAY = {
   /* ---- 3章 大島 ---- */
   '3-1': async ()=>{ meet('kenta'); giveItem('zeri');
     await play(`＠絵 jousen
-      ＊朝、神湊の渡船ターミナル。白と青のフェリー「おおしま」が、桟橋で待っている。
+      ＊朝、神湊の渡船ターミナル。白と青のフェリー「おおしま」が、港で待っている。
       ぼく（たのしい）：フェリーだ！ 大きい！
-      おとうさん（にっこり）：屋根のある桟橋をわたって、乗りこもう。虫かごは、ゆれないように、ひざの上でね。
+      おとうさん（にっこり）：船から下りている「タラップ」を わたって、乗りこもう。足もとに気をつけてね。//虫かごは、ゆれないように、ひざの上でね。
       ＠絵 ferry
       ＊神湊からフェリーで約25分。デッキに出ると、しおかぜが気持ちいい。海の向こうから、大島が近づいてくる。
       ＠絵 oshimako
       ＊大島の港に着いた。渡船ターミナルのまわりに、七夕のふきながしが ゆれている。
       けんた：おー！ おまえが虫しらべの子？ おれ、けんた。夏休みは、じいちゃんちにいるんだ。島のこと、ぜんぶ教えてやるよ！
       じいちゃん：よう来たね。うちにとまっていきなさい。
-      おとうさん（教える）：「そと」から、大島の森へ行ってみよう。`); storyGoal('大島の森で、虫をさがす'); },
+      おとうさん（教える）：「そと」から、大島の海ぞいの林へ行ってみよう。`); storyGoal('大島の海ぞいの林で、虫をさがす'); },
   '3-2': async ()=>{ await play(`＠絵 amanogawa
       ＊港の近くの中津宮へ。鳥居は、海の向こうの辺津宮と向かい合っている。
       けんた：鳥居の近くに、ほんとに「天の川」って川が流れてるんだぜ。ほら、看板もある。//こっちが牽牛神社、川の向こうが織女神社。
@@ -5891,7 +5928,7 @@ const STORY_DAY = {
   '4-1': async ()=>{ meet('soma'); giveItem('kusa'); giveItem('koorogi');
     await play(`＊海ぞいの松林と、広い草むら。
       そうま：きみが、ゆうたやはるかが言ってた子？ 虫にくわしいんだって？ ぼくは、そうま。5年だよ。
-      おとうさん（教える）：「そと」から、さつき松原の草むらへ。`); storyGoal('さつき松原の草むらで、虫をさがす'); },
+      おとうさん（教える）：「そと」から、さつき松原の松林へ。松の木の下の草むらに、虫がいるよ。`); storyGoal('さつき松原の松林で、虫をさがす'); },
   '4-2': async ()=>{ meet('haruka');
     await play(`＊おとうさんと、赤間の町の虫具店へエサを買いに行った。店の前で、はるかがしょんぼりしている。
       ぼく（ふつう）：はるか、どうしたの？
@@ -5947,7 +5984,7 @@ const STORY_DAY = {
       if(s >= .7){ rib = '金のリボン'; await play('＊金のリボン「大きくて、元気いっぱい！」\n来た人：この子が育てたの？\nぼく（うれしい）：うん！'); }
       else if(s >= .45){ rib = '赤のリボン'; await play(c.clean >= 70 ? '＊赤のリボン「ケースがとてもきれい」' : '＊赤のリボン「元気に育っています」'); }
       else { rib = '緑のリボン'; const hint = c.clean < 50 ? 'こまめにそうじをする' : c.hunger < 50 ? 'エサを切らさない' : 'しめりけを、ちょうどよくする'; await play(`＊緑のリボン「次は、ここをがんばろう：${hint}」`); }
-      await play(`＊展示のあと、さつき松原の草むらへかえした。${BUGS[c.bug].shape === 'mantis' ? 'カマキリは、草にまぎれて見えなくなった。' : 'バッタは、ピョーンと遠くへとんでいった。'}`);
+      await play(`＊展示のあと、さつき松原の松林の草むらへかえした。${BUGS[c.bug].shape === 'mantis' ? 'カマキリは、草にまぎれて見えなくなった。' : 'バッタは、ピョーンと遠くへとんでいった。'}`);
     } else await goneLine();
     await endChapter(4, c ? `さつき松原の${BUGS[c.bug].name}。台風から守った。昆虫展で${rib}。` : 'さつき松原。台風の日。', 'おとうさん（教える）：来週は城山だ。山の上は、町よりすずしい。そのちがいが、虫にとってはとても大事なんだ。'); },
   /* ---- 5章 城山 ---- */
@@ -6011,15 +6048,15 @@ const STORY_DAY = {
     if(S.story.egg){ S.story.egg.glow = 1; S.story.egg.txt = 'ここに来てから、ずっと光っている。'; await play('＊虫かごのたまごが、ほんのり光った。'); }
     await play(`神社の人：ここでは、千年より前から、海の安全と、いのちを いのってきたのです。海をわたる人たちが、無事に帰れますように、と。
       神社の人：いのりも、こうやって、人から人へ、つながってきたのですよ。`);
-    await play('おとうさん（教える）：境内の木や虫は、とらずに見るだけ。虫は、近くのクヌギの林でさがそう。'); storyGoal('近くのクヌギの林で、虫をさがす'); },
+    await play('おとうさん（教える）：境内の木や虫は、とらずに見るだけ。虫は、宗像大社の森の、クヌギの木のまわりでさがそう。'); storyGoal('宗像大社の森で、虫をさがす'); },
   '6-2': async ()=>{ meet('ren');
-    await play(`＊クヌギの林で、中学生の子が、ケースをのぞきこんでいた。
+    await play(`＊宗像大社の森で、中学生の子が、ケースをのぞきこんでいた。
       れん：きみが、うわさの子か。…そのケース、よく手入れしてるね。
       れん：ぼくは、れん。勝つために虫を育ててるんじゃない。元気でいてほしいから、手をかけてるだけ。強さは、そのあとについてくる。`);
     const c = stCase(); if(c) await play(c.wet >= 55 && c.wet <= 95 ? 'れん：土、ちょうどいいしめりけだね。' : (c.foods||[]).some(f=> f.old) || c.hunger < 50 ? 'れん：エサ、そろそろかえどきかな。' : 'れん：きれいにしてるね。'); },
   '6-3': async ()=>{ if(!S.story.egg) return;
-    await play('＊たまごが、いままでにないくらい強く光っている…！');
-    await cardShow('<div class="sc"><div class="hatch"></div><div class="stt">ふ化した！</div></div>', 2800);
+    await play('＠絵 fuka\n＊たまごが、いままでにないくらい強く光っている…！');
+    await cardShow('<div class="sc small1"><div class="stt">ふ化した！</div></div>', 2200);
     let i = S.cases.findIndex(c=> !c); if(i < 0){ S.boxes.push('futsu'); S.cases.push(null); i = S.cases.length - 1; }
     S.cases[i] = {bug:'kinkabuto', si:0, prog:0, hunger:80, wet:75, clean:100, tick:now(), pending:false, from:'大島', born:'oshima', bornSlot:'yoru', since:dayKey(), ind:{hp:1.05, atk:1.05, def:1.05, spd:1.05, heal:1.05}, log:newLog(), tot:newLog(), place:'heya', trouble:null, dirt:[], foods:[], soak:0, hideUntil:0, deco:[], mat:'mat_fuyo', soilAge:0, wetZ:Array(WZ).fill(75), soakZ:Array(WZ).fill(0), stress:0, known:true, story:6};
     S.story.egg.hatched = 1; S.dex.kinkabuto = S.dex.kinkabuto || {found:dayKey(), where:'大島', known:1};
@@ -6052,7 +6089,8 @@ const STORY_DAY = {
       if(a === 1) await play('ぼく（なみだ）：…もう少しだけ、そばにいてほしい。\nおとうさん（にっこり）：その気持ちが、育てたってことなんだよ。');
       await play(`＊ふたをあけると、${dispName(k)}がゆっくり飛びたち、森の上をひとまわりして、木のあいだに見えなくなった。`);
       S.cases[S.cases.indexOf(k)] = null; const d = S.dex.kinkabuto; if(d){ d.released = (d.released||0) + 1; d.adult = d.adult || dayKey(); } S.story.flags.kin = dispName(k); save(); }
-    else if(eggLeft()){ await play(`＊落ち葉の下は、からっぽだった。そばの木のみきに、金色にひかる、小さな ぬけがらが ひとつ。
+    else if(eggLeft()){ await play(`＠絵 morifuka
+      ＊落ち葉の下は、からっぽだった。そばの木のみきに、金色にひかる、小さな ぬけがらが ひとつ。
       けんた：生まれたんだ…！ 森で、ちゃんと！
       ぼく（うれしい）：ここで生まれて、ここで大きくなったんだね。
       おとうさん（にっこり）：だれにも育てられなくても、森が育ててくれた。…この島のいのちは、この島で つながっていくんだ。
@@ -6064,18 +6102,19 @@ const STORY_DAY = {
       じいちゃん：わしら漁師は、海がおだやかで、魚がたくさんとれるように、沖ノ島をおがんできた。
       じいちゃん：秋になったら、10月1日に「みあれ祭」がある。沖津宮と中津宮の女神さまを船にお乗せして、大漁旗をかかげた漁船がみんなで、大島から神湊まで海をわたるんだ。辺津宮の女神さまに会いに行くんだと。わしの船も出るぞ。
       けんた：すっごいんだぜ！ 海が船でいっぱいになるんだ。見に来いよな！`);
-    await cardShow('<div class="sc night"><div class="glowLine"></div><div class="sdt">森のほうから、金色の光がひとつ、ふわりとのぼって、海の上を、沖ノ島の方角へまっすぐ飛んでいく。</div></div>', 5200);
+    await play('＠絵 kinsora\n＊森のほうから、金色の光がひとつ、ふわりとのぼって、海の上を、沖ノ島の方角へまっすぐ飛んでいく。');
+    if(0) await cardShow('<div class="sc night"><div class="glowLine"></div><div class="sdt">森のほうから、金色の光がひとつ、ふわりとのぼって、海の上を、沖ノ島の方角へまっすぐ飛んでいく。</div></div>', 5200);
     await play(`じいちゃん：…帰っていったなあ。
       ぼく（なみだ）：…。
       ぼく（うれしい）：元気でね。`); await kakera('kinnoyoru');
     await play(`＊ふりかえると、遙拝所の鳥居のそばに、神社の人が立っていた。だまって、海に向かって、深く頭を下げた。
       ＊もう一度見ると、そこには、さかきの葉が1まい、のこっているだけだった。`); storyGoal(''); },
   '6-7': async ()=>{ const c = stCase();
-    if(c) await play(`＊朝、辺津宮の近くのクヌギの林へ、${dispName(c)}をかえした。`);
+    if(c) await play(`＊朝、宗像大社の森の、クヌギの木の下へ、${dispName(c)}をかえした。`);
     notePage(6, c, `宗像大社。${S.story.flags.champ ? 'れんとのすもう決勝に勝った。' : S.story.flags.finalDone ? 'れんと、すもう決勝をした。' : ''}${eggLeft() ? '大島に置いてきた ふしぎなたまごは、森で生まれていた。' : `ふしぎなたまごから生まれた${S.story.flags.kin || '金色の虫'}を、大島へかえした。`}`); storyRelease(6); save();
     await play('＠絵 happyo\n＊学校で、自由研究の発表。');
     for(let ch=1; ch<=6; ch++){ const p = S.story.note[ch];
-      await cardShow(`<div class="sc notepage"><div class="sch norb">${ch}ページめ　${esc(CH[ch].place.replace(/の(畑|森|草むら|山道)$/, ''))}</div>${p && p.bug ? `<div class="npic">${svgBest(p.bug, {rare:p.rare})}</div>` : ''}<div class="sdt">${esc(p ? p.txt : '')}</div></div>`, 3000); }
+      await cardShow(`<div class="sc notepage"><div class="sch norb">${ch}ページめ　${esc(CH[ch].place.replace(/の(畑|森|草むら|山道|松林|海ぞいの林)$/, ''))}</div>${p && p.bug ? `<div class="npic">${svgBest(p.bug, {rare:p.rare})}</div>` : ''}<div class="sdt">${esc(p ? p.txt : '')}</div></div>`, 3000); }
     await play(`ぼく（ふつう）：さいしょは、強い虫や、めずらしい虫を、つかまえたかった。
       ぼく（ふつう）：でも、育ててみたら、どの虫にも、くらしている場所があって、食べるものがあって、なかまがいた。
       ぼく（ふつう）：いもむしは、おばあちゃんの畑の葉っぱを食べて、チョウになって、花粉をはこぶ。ホタルは、きれいな水がないと生きられない。カマキリは、いのちが終わっても、卵のうで 次の春へ つながる。たおれた木は、カブトムシの幼虫のごはんになって、また森の土になる。
@@ -6105,7 +6144,7 @@ const STORY_DAY = {
       ぼく（うれしい）：…うん！`);
     if(storyLoop() >= 2) await play('おとうさん（にっこり）：…ふしぎだな。この夏を、前にも きみと すごした気がするよ。\nぼく（うれしい）：ぼくも！');
     if(SX().kakera.length >= Object.keys(KAKERA).length){   // ふしぎのかけらを ぜんぶ見つけた：とくべつな夢
-      await play(`＠絵 amanogawa
+      await play(`＠絵 yume
         ＊その夜、ゆめを見た。天の川のほとりに、白いかみの人が立っている。
         白いかみの人：…${Object.keys(KAKERA).length}まいの かけらを、ぜんぶ見つけてくれましたね。
         白いかみの人：海をわたった むかしの人も、森でねむる虫も、あなたのノートの中で、ひとつに つながりました。
@@ -6114,7 +6153,8 @@ const STORY_DAY = {
       S.story.flags.allKakera = 1; save();
       await say('【ふしぎのかけら コンプリート】\n金色のしおりを もらった！\n（タイトルの「ストーリー」に★がつくよ）', {face:'boku_joy'}); }
     S.story.done = true; S.stats.storyClear = (S.stats.storyClear||0) + 1; save();
-    await cardShow('<div class="sc night end"><div class="glowLine slow"></div><div class="sdt">夏の終わりの夕方。宗像の海の上を、金色の光がひとつ、沖ノ島のほうへ、ゆっくりよこぎっていく。</div></div>', 6000);
+    await play('＠絵 ending\n＊夏の終わりの夕方。宗像の海の上を、金色の光がひとつ、沖ノ島のほうへ、ゆっくりよこぎっていく。'); cgShow('off');
+    if(0) await cardShow('<div class="sc night end"><div class="glowLine slow"></div><div class="sdt">夏の終わりの夕方。宗像の海の上を、金色の光がひとつ、沖ノ島のほうへ、ゆっくりよこぎっていく。</div></div>', 6000);
     await cardShow(`<div class="sc"><div class="tlogoBox">${titleLogo()}</div><div class="stt">おしまい</div><div class="sdt">この物語はフィクションです。<br>Game Director: Ryohei Taniguchi</div></div>`, 6000);
     await say('ストーリーは、これでおしまい。\nこのまま、虫を育てつづけることもできるよ。（参考にしたページは「その他」にあります）');
     storyGoal(''); },
@@ -6133,6 +6173,7 @@ STORY_DAY['3-4'] = async ()=>{ meet('kenta');
     await play(ok >= 3 ? '島の子：すげー！ ほんとに先生だ！\nぼく（たのしい）：へへっ。' : 'けんた：まあ、おれよりはくわしいな。'); }
   S.story.flags.sensei = ok;
 };
+const EVE_H = {'2-4':19};   // 夕方の話の時間（ふつうは4時から）。ホタルは夜7時から（2026-11-14 ユーザー：4時ごろはおかしい）
 const STORY_EVE = {
   '1-5': async ()=>{ await play(`＊夕方。畑からの帰り道、ふりかえると、ミカンの木の下に、白い長いかみの人が立っていた。
       白いかみの人：…小さな いのちを、だいじにしているのですね。
@@ -6556,9 +6597,11 @@ function renderOutStory(){
   view.querySelectorAll('[data-pl]').forEach(b=> b.onclick = ()=> goPlace(b.dataset.pl));
   $('btnGoS').onclick = async ()=>{ const today = dayKey(), sp2 = Object.assign({}, sp, {name:cn.place});
     let gift = '';
-    if(!S.yk['sg|' + today]){ S.yk['sg|' + today] = 1; S.money += 10; cn.gift.forEach(k=> giveItem(k, 1)); gift = `\nどんぐり ${dg(10)} と、${cn.gift.map(k=> k === 'koorogi' ? 'エサにする小さな虫' : ITEMS[k].name).join('・')}を手に入れた。`; }
+    let gifts = [];
+    if(!S.yk['sg|' + today]){ S.yk['sg|' + today] = 1; S.money += 10; cn.gift.forEach(k=> giveItem(k, 1)); gift = `\nどんぐり ${dg(10)} と、${cn.gift.map(k=> k === 'koorogi' ? 'エサにする小さな虫' : ITEMS[k].name).join('・')}を手に入れた。`;
+      gifts = [[DONGURI_IMG, 'どんぐり', 10], ...cn.gift.map(k=> giftOf(k, 1))]; }   // 文だけでなく、アイコンでも（2026-11-14 ユーザー）
     save(); hud(); outState = {spot:sp2, outside:false};
-    await say(`「${cn.place}」に着いた！${gift}`); storyAdvance('odekake', 'おでかけ'); render(); };
+    await say(`「${cn.place}」に着いた！${gift}`, {gifts}); storyAdvance('odekake', 'おでかけ'); render(); };
 }
 
 /* 起動 */
