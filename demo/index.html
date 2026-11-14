@@ -2177,7 +2177,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.17.1';
-const BUILD = '20261114-1331';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261114-1857';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.17.1', date:'2026-11-14', items:[
     'ふりがなに「ぜんぶ」をふやした。すべての漢字にふりがながつくので、小学校に入る前の子も、おうちの人といっしょに遊べるよ（タイトルの「ふりがな」か「その他」で切りかえ）',
@@ -3853,7 +3853,7 @@ function coachStep(st){
     document.body.appendChild(L);
     const hole = L.querySelector('.cHole'), blk = [...L.querySelectorAll('.cBlk')], fk = L.querySelector('.cFuki');
     const target = ()=> typeof st.sel === 'function' ? st.sel() : st.sel ? document.querySelector(st.sel) : null;
-    const place = ()=>{ const el = target(), W = innerWidth, H = innerHeight;
+    const place = ()=>{ const el = target(), W = rotMode ? rotLen : innerWidth, H = rotMode ? innerWidth : innerHeight;   // たて持ち（まわした画面）は、まわしたあとの はば・高さ（2026-11-14 ユーザーの写真：光る場所がずれた）
       let r = el ? el.getBoundingClientRect() : null; if(r && !r.width) r = null;
       const pad = 6, x = r ? Math.max(0, r.left - pad) : W/2, y = r ? Math.max(0, r.top - pad) : H/2, w = r ? Math.min(W - x, r.width + pad*2) : 0, h = r ? Math.min(H - y, r.height + pad*2) : 0;
       Object.assign(hole.style, {left:x + 'px', top:y + 'px', width:w + 'px', height:h + 'px', display:r ? '' : 'none'});
