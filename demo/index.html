@@ -109,6 +109,8 @@ html.land #titleScr .tbtn.qm{padding:.25em .7em}
 .modeCmp{display:flex;gap:12px;flex-wrap:wrap}.modeCmp .mc{flex:1 1 240px;background:#fffaf0;color:#4a3320;border:2px solid #c9a978;border-radius:12px;padding:.7em .9em;line-height:1.65}
 .modeCmp .mc b{display:inline-block;font-size:1.1em;padding:.05em .8em;border-radius:999px;margin-bottom:.3em}.modeCmp .st b{background:#f6cf5b;color:#3a2410}.modeCmp .fr b{background:#14284a;color:#fff}
 .modeTip{margin-top:12px;line-height:1.7}
+.storyBar .hakase{display:inline-block;margin-left:.5em;padding:.05em .7em;border-radius:999px;background:#f6cf5b;color:#3a2410;font-size:.82em;font-weight:800;border:1.5px solid #d9a93a;vertical-align:.1em}
+.storyBar .hakase.loop{background:#14284a;color:#fff;border-color:#14284a}
 #titleScr .tbtns.sub .tbtn{font-size:clamp(11px,2.4vw,14px);padding:.3em .95em;background:#14284ab0}
 #titleScr .tbtns.sub .tbtn.send{background:#fff6dcee;color:#2a3a14;border-color:#6a8a2a}
 #titleScr .tpad{display:none}
@@ -2161,7 +2163,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261114-1126';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261114-1152';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-14', items:[
     'ストーリーの七夕祭（3章）で、出店を回れるようになった。ヨーヨーつり・輪なげ・くじびきで遊べるよ',
@@ -2536,7 +2538,7 @@ const RUBY = {"宗像大社":"むなかたたいしゃ|7","宗像":"むなかた
   "身近":"みぢか|3","校庭":"こうてい|3","鼻":"はな|3","問":"もん|3","両方":"りょうほう|3","作物":"さくもつ|3","係":"かかり|3","鉄":"てつ|3","波打":"なみう|3","記事":"きじ|3",
   "追い":"おい|3","高宮祭場":"たかみやさいじょう|3","中央":"ちゅうおう|3","神宿":"かみやど|3","関連":"かんれん|4","遺産":"いさん|6","群":"ぐん|4","化":"か|3","部品":"ぶひん|3","観察眼":"かんさつがん|5",
   "飼育箱":"しいくばこ|5","言葉":"ことば|4","心配":"しんぱい|3","用心深":"ようじんぶか|3","全":"ぜん|3","勝":"しょう|3","保つ":"たもつ|5","大好物":"だいこうぶつ|4","起き":"おき|3","付い":"つい|4",
-  "漢字":"かんじ|3","付く":"つく|4"};
+  "漢字":"かんじ|3","付く":"つく|4","周目":"しゅうめ|4","周":"しゅう|4"};
 const FURI_KEY = KEY_PRE + 'munakata-furigana-v1';   // 虫とり日記と同じキー名にしているので、どちらかで切りかえると両方にきく
 let furiMode = (()=>{ try{ return localStorage.getItem(FURI_KEY) === '1'; }catch(e){ return false; } })();
 let rubyMap = {}, rubyRe = null;
@@ -3630,7 +3632,8 @@ function shopTip(){
 }
 function shopBub(){ $('shopBub')?.remove();
   const t = shopTip(), e = document.createElement('div'); e.id = 'shopBub'; e.className = 'fuki norb'; e.dataset.cat = t[0];
-  e.innerHTML = `<b class="who l">虫具店のおじさん</b>いらっしゃい！ 【${esc(t[0])}】${esc(t[1])}`;   // おじさんは左に立っているので、名前の札も左
+  const hk = storyOn() ? hakaseNow() : '';
+  e.innerHTML = `<b class="who l">虫具店のおじさん</b>${hk ? `おっ、${esc(hk)}じゃないか！` : 'いらっしゃい！'} 【${esc(t[0])}】${esc(t[1])}`;   // おじさんは左に立っているので、名前の札も左
   e.onclick = ()=> e.remove(); document.body.appendChild(e);
   setTimeout(()=> e.remove(), 9200);
 }
@@ -3705,7 +3708,7 @@ function renderTitle(){
     <div class="tgap"></div>
     <div class="t3">宗像の森や川で虫をみつけて、おうちのケースでそだてよう。脱皮・さなぎ・羽化を見られるかな？</div>
     <div class="t4">※このゲームに出てくる場所と虫の組み合わせはゲーム用のもので、実際にその場所にいる虫とはかぎりません。ゲームの中でそだつ速さも、本物よりずっと速くしてあります。</div>
-    <div class="tbtns"><button type="button" class="tbtn pri" id="btnStory">ストーリー${hasS ? (hasS.story.done ? '<small>クリア</small>' : `<small>${hasS.story.ch ? hasS.story.ch + '章' : '序章'}から</small>`) : ''}</button><button type="button" class="tbtn qm" id="btnModes" aria-label="どうちがうの？">？</button><button type="button" class="tbtn" id="btnFree">じゆうに育てる${has ? '<small>つづきから</small>' : ''}</button></div>
+    <div class="tbtns"><button type="button" class="tbtn pri" id="btnStory">ストーリー${hasS ? (hasS.story.done ? `<small>クリア${(hasS.story.loop || 1) > 1 ? '（' + hasS.story.loop + '周）' : ''}${hasS.story.flags && hasS.story.flags.allKakera ? '★' : ''}</small>` : `<small>${hasS.story.ch ? hasS.story.ch + '章' : '序章'}から</small>`) : ''}</button><button type="button" class="tbtn qm" id="btnModes" aria-label="どうちがうの？">？</button><button type="button" class="tbtn" id="btnFree">じゆうに育てる${has ? '<small>つづきから</small>' : ''}</button></div>
     <div class="tbtns sub"><button type="button" class="tbtn" id="btnInstall">アプリにする方法</button><button type="button" class="tbtn" id="btnShare">友だちに教える</button><button type="button" class="tbtn send" id="btnSendHow">📱→ タブレットにおくる</button></div>
     <div class="tpad">お子さまには、大きな画面の<b>タブレット</b>がおすすめ。<span>外ではスマホでつかまえて、家のタブレットに<b>おくれる</b>よ</span></div>
     <div class="vrow"><button type="button" class="verbtn" id="btnVer"><span class="gver">ver ${GAME_VER}</span>　こうしん情報 ▸</button><button type="button" class="verbtn" id="btnFuri">${furiLabel()}</button><button type="button" class="verbtn" id="btnPriv">プライバシーについて</button>${rotMode ? '<button type="button" class="verbtn" id="btnRot">↻ 向きを反対に</button>' : ''}</div>
@@ -3713,12 +3716,16 @@ function renderTitle(){
   view.querySelector('#titleScr').classList.remove('norb');   // 文はふりがなを付けてよい（credit だけ英語）
   // ストーリー：虫を育てながら、夏休みに出会ったふしぎを追いかける。じゆうに育てる：いままでの遊び方（本物の場所に行って虫をさがす）
   $('btnStory').onclick = async ()=>{
-    if(hasS){ const i = await say('ストーリー', {ans:['つづきから', 'はじめから', 'やめる']}); if(i === 2) return;
+    let prev = null;
+    if(hasS){ const two = !!hasS.story.done, ans = two ? ['つづきから', `${(hasS.story.loop || 1) + 1}周目をはじめる（ずかん・かけら・名前を引きつぐ）`, 'はじめから', 'やめる'] : ['つづきから', 'はじめから', 'やめる'];
+      let i = await say('ストーリー', {ans}); if(!two && i >= 1) i++;
+      if(i === 3) return;
       if(i === 0){ S = hasS; storyRT = S.story.speed === 'mainichi' ? (S.story.rt || Date.now()) : Date.now(); start(); return; }
-      if(!(await ask('ストーリーのセーブを消して、はじめからにする？', 'はじめから', 'やめる'))) return; }
-    if(tutOK() && !hasS && !(await ask('【ストーリー】\n' + MODE_TXT.story + '\n\nストーリーで はじめる？', 'はじめる', 'やめる'))) return;
+      if(i === 1){ prev = hasS; await say(`${(hasS.story.loop || 1) + 1}周目！\nずかん・ふしぎのかけら・ノートの名前は、そのまま。\n…この夏を、もう一度。前とは ちがう えらびかたも できるかもしれない。`); }
+      else if(!(await ask('ストーリーのセーブを消して、はじめからにする？', 'はじめから', 'やめる'))) return; }
+    if(tutOK() && !hasS && !prev && !(await ask('【ストーリー】\n' + MODE_TXT.story + '\n\nストーリーで はじめる？', 'はじめる', 'やめる'))) return;
     const sp = await say('ゲームの時計の速さを、えらんでね。\n（あとから「その他」でかえられるよ）', {ans:Object.values(STORY_SPEED).map(v=> `${v.name}：${v.txt}`)});
-    S = newStory(Object.keys(STORY_SPEED)[sp]); storyRT = Date.now(); save(); start(); };
+    S = newStory(Object.keys(STORY_SPEED)[sp], prev); storyRT = Date.now(); save(); start(); };
   $('btnFree').onclick = async ()=>{
     if(has){ const i = await say('じゆうに育てる', {ans:['つづきから', 'はじめから', 'やめる']}); if(i === 2) return;
       if(i === 0){ S = load(); start(); return; }
@@ -4626,11 +4633,11 @@ function showDexDetail(id){
 /* ---- 虫ずもう（オート対戦：コマンドはなく、虫が自分で戦う） ---- */
 const SUMO_REWIN = 10;
 function renderSumo(){
-  const adults = S.cases.map((c,i)=>({c,i})).filter(x=>x.c && stageOf(x.c).k === 'adult');
+  const adults = S.cases.map((c,i)=>({c,i})).filter(x=>x.c && stageOf(x.c).k === 'adult').concat(storyOn() && S.story.aibou && BUGS[S.story.aibou.bug] ? [{c:S.story.aibou, i:-1}] : []);   // 相棒（じゆうに育てる の虫）も出られる
   view.innerHTML = `<h2>虫ずもう</h2><p class="small">広場の切りかぶの上で、近所の子どもたちが虫ずもうをしている。コマンドはなし。虫は、育てたとおりに自分で戦う。</p>
     ${adults.length ? `<p>出られる虫：${adults.map(x=>`<span class="tag">${esc(x.c.name||BUGS[x.c.bug].name)}　調子：${condName(condOf(x.c))}</span>`).join(' ')}</p><p class="small">おなかと元気が満タンに近いほど、すもうで力が出るよ。</p>` : '<p class="win">成虫になった虫がいないと、出られない。まずはそだてよう。</p>'}
     <p class="small">かちぬき：${S.stats.wins}勝 ${S.stats.loses}敗${S.sumoChamp ? '　<b style="color:var(--sun)">チャンピオン！</b>' : ''}</p>
-    ${storyOn() && S.story.flags.final ? `<div class="win storyFinal"><b>すもう決勝</b>　れん（中1・チャンピオン）が待っている。${adults.filter(x=> x.c.bug !== 'kinkabuto').length ? '<button type="button" class="btn pri" id="btnFinal">決勝にいどむ</button>' : '<br><small>成虫になった虫で、いどもう。</small>'}</div>` : ''}
+    ${storyOn() && S.story.flags.final ? `<div class="win storyFinal"><b>すもう決勝</b>　れん（中1・チャンピオン）が待っている。${adults.filter(x=> x.c.bug !== 'kinkabuto' && !x.c.aibou).length ? '<button type="button" class="btn pri" id="btnFinal">決勝にいどむ</button>' : '<br><small>成虫になった虫で、いどもう。</small>'}</div>` : ''}
     ${storyOn() && !S.story.met.length ? '<p class="win">まだ、すもう友だちがいない。夏休みに出会った子と、すもうができるよ。</p>' : ''}
     <div class="rivals">${RIVALS.filter(r=> !storyOn() || (S.story.met.includes(r.key) && !(r.key === 'ren' && S.story.flags.final))).map((r,i,arr)=>{ const won = S.sumo[r.key], locked = !storyOn() && i > 0 && !S.sumo[RIVALS[i-1].key], today = S.sumoDay[r.key] === dayKey();
       return `<div class="rival ${won ? 'won' : ''} ${locked ? 'locked' : ''}"><div class="pic">${svgBest(r.bug, {cls: locked ? 'sil' : ''})}</div>
@@ -4642,7 +4649,7 @@ function renderSumo(){
     let x = adults[0]; if(adults.length > 1){ const i = await say('どの虫で出る？', {ans:adults.map(a=>`${a.c.name||BUGS[a.c.bug].name}（${BUGS[a.c.bug].name}）`)}); x = adults[i]; }
     await sumoBattle(r, x.c);
   });
-  if($('btnFinal')) $('btnFinal').onclick = async ()=>{ const ad = adults.filter(x=> x.c.bug !== 'kinkabuto'); let x = ad[0]; if(ad.length > 1){ const i = await say('どの虫で出る？', {ans:ad.map(a=>`${a.c.name||BUGS[a.c.bug].name}（${BUGS[a.c.bug].name}）`)}); x = ad[i]; } storyBusy = true; try{ await storyFinal(x.c); } finally { storyBusy = false; } refresh(); };
+  if($('btnFinal')) $('btnFinal').onclick = async ()=>{ const ad = adults.filter(x=> x.c.bug !== 'kinkabuto' && !x.c.aibou); let x = ad[0]; if(ad.length > 1){ const i = await say('どの虫で出る？', {ans:ad.map(a=>`${a.c.name||BUGS[a.c.bug].name}（${BUGS[a.c.bug].name}）`)}); x = ad[i]; } storyBusy = true; try{ await storyFinal(x.c); } finally { storyBusy = false; } refresh(); };
 }
 let sumoLast = false;   // さいごのすもうに勝ったか（ストーリーの決勝で使う）
 function npcFighter(r){ return fighterOf({bug:r.bug, lv:r.lv, pers:'futsu'}, r.short + 'の' + BUGS[r.bug].name); }
@@ -4832,6 +4839,7 @@ function renderOpt(){
   view.innerHTML = `<h2>オプション</h2><div class="opt">
     <button type="button" class="btn" id="oFuri"><span>ふりがな</span><span class="v">${furiMode ? 'たくさん（小3から）' : 'ふつう（小5から）'}</span></button>
     <button type="button" class="btn" id="oAuto"><span>じどうセーブ<br><small class="small">ほかのアプリに切りかえたとき、セーブする</small></span><span class="v">${autoSave ? 'ON' : 'OFF'}</span></button>
+    ${storyOn() ? `<button type="button" class="btn" id="oAibou"><span>相棒（じゆうに育てる の虫）<br><small class="small">${S.story.aibou ? esc((S.story.aibou.name || BUGS[S.story.aibou.bug].name)) + '（' + esc(BUGS[S.story.aibou.bug].name) + '）が相棒' : 'じゆうに育てる の成虫を、虫ずもうにつれてくる'}</small></span><span class="v">▶</span></button>` : ''}
     <button type="button" class="btn" id="oTut"><span>はじめての説明を、もう一度<br><small class="small">おうち・虫かご・虫さがしの画面で、また教えてくれる</small></span><span class="v">▶</span></button>
     <button type="button" class="btn" id="oOto"><span>おと（音楽・虫の声）<br><small class="small">画面にさわると鳴りはじめる</small></span><span class="v">${OTO.on ? 'ON' : 'OFF'}</span></button>
     <button type="button" class="btn" id="oSave"><span>いますぐセーブ</span><span class="v">▸</span></button>
@@ -4851,6 +4859,7 @@ function renderOpt(){
   $('oFuri').onclick = ()=>{ setFuri(!furiMode); renderOpt(); };
   $('oAuto').onclick = ()=>{ setAutoSave(!autoSave); renderOpt(); };
   $('oOto').onclick = ()=>{ OTO.setOn(!OTO.on); renderOpt(); };
+  if($('oAibou')) $('oAibou').onclick = async ()=>{ await pickAibou(); renderOpt(); };
   $('oTut').onclick = ()=>{ ['home', 'kago', 'sagasu'].forEach(k=> delete S.yk['tut_' + k]); save(); setTab('home'); };
   $('oSave').onclick = async ()=>{ save(); await say('セーブした。'); };
   $('oVer').onclick = showChangelog; $('oPriv').onclick = showPrivacy; $('oInstall').onclick = showInstall;
@@ -5241,7 +5250,33 @@ const chOfIdx = i=> i <= 0 ? 0 : Math.min(7, Math.ceil(i/7));
 const dayOfIdx = i=> i <= 0 ? 0 : (i-1) % 7 + 1;
 const atHour = (i, h)=> new Date(STORY_Y, 6, 19 + i, h, 0).getTime();
 /* ---- セーブ ---- */
-function newStory(speed){ const s = newGame(); s.yk.hello = 1; s.story = {ch:0, day:0, speed, gt:atHour(0, 8), rt:Date.now(), seen:{}, eve:{}, note:{}, met:[], goal:'', name:'', flags:{}, egg:null, done:false}; return s; }
+/* ---- じゆうに育てる の特典と、ストーリーの2周目（2026-11-14 ユーザー：案をぜんぶ） ----
+   1. 虫はかせのしるし：じゆうに育てる で羽化させた虫のなかまの数で、ストーリーの札・おじさん・おとうさんの言葉がかわる
+   2. 相棒：じゆうに育てる の成虫を1ぴき、ストーリーの虫ずもうに出せる（S.story.aibou。決勝はストーリーで育てた虫だけ）
+   3. はじめのボーナス：羽化させた数だけ、どんぐりとゼリーが多い
+   4. 2周目：ずかん・ふしぎのかけら・名前を引きつぐ（S.story.loop）。せりふが少しかわる
+   5. 2周目だけ、3章のたまごを「ここに置いていく」がえらべる（flags.eggLeft）。6章で、森で生まれていたことがわかる
+   6. かけら18まい全部：6-7 に、とくべつな夢の場面 */
+const freeInfo = ()=>{ const f = load(); if(!f) return {raised:0, adults:[]}; return {raised:Object.values(f.dex || {}).filter(d=> d && d.adult).length, adults:(f.cases || []).filter(c=> c && BUGS[c.bug] && BUGS[c.bug].plan[c.si] && BUGS[c.bug].plan[c.si].k === 'adult')}; };
+const HAKASE = [[6, '虫はかせ'], [3, '虫そだて名人'], [1, '虫そだて見ならい']];
+const hakaseOf = n=> (HAKASE.find(([k])=> n >= k) || [0, ''])[1];
+let hakaseC = {t:0, v:''};
+const hakaseNow = ()=>{ if(Date.now() - hakaseC.t > 5000) hakaseC = {t:Date.now(), v:hakaseOf(freeInfo().raised)}; return hakaseC.v; };
+const storyLoop = ()=> (S && S.story && S.story.loop) || 1;
+const eggLeft = ()=> !!(S && S.story && S.story.flags && S.story.flags.eggLeft);
+async function pickAibou(){
+  const ad = freeInfo().adults;
+  if(!ad.length){ await say('「じゆうに育てる」に、成虫の虫がいないよ。\nじゆうに育てる で成虫まで育てると、相棒として つれてこられるよ。'); return; }
+  const i = await say('どの虫を、相棒にする？\n（ストーリーの虫ずもうに出られるよ。決勝だけは、ストーリーで育てた虫で）', {ans:ad.map(c=> `${c.name || BUGS[c.bug].name}（${BUGS[c.bug].name}${c.size ? '・' + c.size + 'mm' : ''}）`).concat(['やめる'])});
+  if(i >= ad.length) return;
+  const c = JSON.parse(JSON.stringify(ad[i])); Object.assign(c, {aibou:true, hunger:100, wet:80, clean:100, stress:0, trouble:null, tick:now(), log:newLog()});
+  S.story.aibou = c; save();
+  await say(`${c.name || BUGS[c.bug].name}が、相棒になった！
+「すもう」で、いっしょに出られるよ。`, {face:'boku_joy'});
+}
+function newStory(speed, prev){ const s = newGame(); s.yk.hello = 1; s.story = {ch:0, day:0, speed, gt:atHour(0, 8), rt:Date.now(), seen:{}, eve:{}, note:{}, met:[], goal:'', name:'', flags:{}, egg:null, done:false};
+  if(prev && prev.story){ s.story.loop = (prev.story.loop || 1) + 1; s.story.name = prev.story.name || ''; s.dex = JSON.parse(JSON.stringify(prev.dex || {})); s.story.x = {naka:{}, kakera:[...((prev.story.x || {}).kakera || [])], talk:{}, engawa:{}}; if(prev.story.aibou) s.story.aibou = prev.story.aibou; ['yk'].forEach(k=> Object.assign(s.yk, prev.yk || {})); }
+  return s; }
 function loadStory(){ try{ const j = JSON.parse(localStorage.getItem(STORY_KEY)); return j && j.story ? migrate(j) : null; }catch(e){ return null; } }
 const storyOn = ()=> !!(S && S.story);
 /* ---- 会話の書き方：「人（顔）：セリフ」を1行ずつ。人の名前がない行は、地の文 ---- */
@@ -5549,7 +5584,8 @@ function storyBanner(){
   const st = S.story, ch = st.ch, sl = slotOf();
   if(st.done) return `<div class="storyBar norb"><b>ストーリー　おしまい</b><span>この夏の記録は、虫しらべノートにのこっている。</span><button type="button" class="btn" id="sbNote">虫しらべノート</button></div>`;
   const egg = st.egg && !st.egg.hatched ? `<div class="eggCard norb" id="sbEgg"><span class="egg${st.egg.glow ? ' glow' : ''}"></span><span><b>ふしぎなたまご</b><small>${esc(st.egg.txt || '大島で見つけた、金色のたまご。')}</small></span></div>` : '';
-  return `<div class="storyBar norb"><b>${ch ? `${ch}章　${st.day}日目` : '序章'}</b><span class="sttl">${ch ? esc(CH[ch].ttl) : ''}</span>${st.goal ? `<span class="goal">めあて：${esc(st.goal)}</span>` : ''}
+  const hk = hakaseNow();
+  return `<div class="storyBar norb"><b>${ch ? `${ch}章　${st.day}日目` : '序章'}</b>${hk ? `<span class="hakase">🏅${esc(hk)}</span>` : ''}${storyLoop() > 1 ? `<span class="hakase loop">${storyLoop()}周目</span>` : ''}<span class="sttl">${ch ? esc(CH[ch].ttl) : ''}</span>${st.goal ? `<span class="goal">めあて：${esc(st.goal)}</span>` : ''}
     <span class="sbBtns">${engawaOpen() ? '<button type="button" class="btn pri" id="sbEngawa">えんがわで おとうさんと話す</button>' : ''}<button type="button" class="btn" id="sbNote">虫しらべノート</button>${(sl === 'yu' || sl === 'yoru') && storySp().m > 1 ? '<button type="button" class="btn pri" id="sbSleep">ねる（あしたへ）</button>' : ''}</span></div>${egg}`;
 }
 function storyBannerWire(){
@@ -5585,8 +5621,13 @@ async function storyBegin(){
     おとうさん（教える）：ひとつ、毎日 ようすを見ること。//ふたつ、さいごまで 面倒をみること。//みっつ、つかまえた虫は、かならず、つかまえた場所にかえすこと。
     ぼく（ふつう）：…うん。やくそくする。`);
   S.yk.release = 1;
-  const nm = await askText('おとうさんから「虫しらべノート」をもらった。\n表紙に、名前を書こう！', '');
+  const nm = storyLoop() >= 2 && S.story.name ? S.story.name : await askText('おとうさんから「虫しらべノート」をもらった。\n表紙に、名前を書こう！', '');
   S.story.name = (nm || 'ぼく').slice(0, 10);
+  { const fi = freeInfo(), hk = hakaseOf(fi.raised);
+    if(hk){ const b = Math.min(100, fi.raised*10), z = Math.min(5, fi.raised); S.money += b; giveItem('zeri', z); save(); hud();
+      await play(`おとうさん（びっくり）：きみ、もう ${fi.raised}しゅるいも 虫を羽化させたことがあるんだって？ …「${hk}」だな！`);
+      await say(`【じゆうに育てる のごほうび】\n「${hk}」のしるしをもらった。\nどんぐり ${dg(b)} と、こん虫ゼリー ${z}こ が ふえた！`, {face:'boku_joy'}); }
+    if(fi.adults.length && !S.story.aibou && await ask('「じゆうに育てる」の成虫を、相棒として つれていく？\n（ストーリーの虫ずもうに出られるよ）', 'つれていく', 'いまは いい')) await pickAibou(); }
   await play(`おとうさん（にっこり）：「${S.story.name}の虫しらべノート」か。いい名前だ。
     ＊そのとき、本だなから、古いノートが1さつ落ちてきた。表紙に、子どもの字で「虫しらべノート」。
     ぼく（びっくり）：これ、おとうさんの？
@@ -5598,6 +5639,7 @@ async function storyBegin(){
     ぼく（びっくり）：…いまの、なに？
     ＊おとうさんをよびに行って もどると、もう、なにも見えなかった。`);
   await kakera('hikari');
+  if(storyLoop() >= 2) await play('ぼく（ふつう）：…なんだか、この夏を、前にも すごしたような気がする。\n＊ノートを開くと、見おぼえのある「ふしぎのかけら」が、もう何まいか はさまっていた。');
   await play(`ぼく（ふつう）：（流れ星…？ それとも…）
     ＊ゲームの時計の速さは、「その他」でかえられるよ。いまは「${storySp().name}」（${storySp().txt}）。
     ＊夜の9時になったら、ねる時間。つぎの日の朝になるよ。//夕方からは、上の時計の「🌙 ねる」で、早めにねることもできる。`);
@@ -5639,7 +5681,7 @@ const STORY_FIND = {
   4: b=> play(({tonosama:'そうま：つかまえるとき、うしろあしを持っちゃだめだよ。取れちゃうことがあるから。', shoryo:'そうま：ショウリョウバッタだ。オスは飛ぶとき、キチキチって音がするんだよ。', kamakiri:'そうま：前もカマキリ飼ってたの？ さつき松原のカマキリは、草の色に近いんだよ。'})[b] || '').then(()=> storyGoal('台風の日に、虫を守る')),
   5: b=> play(({kabuto:'だいち：カブトの幼虫か。ふかふかの土の中にいるんだぜ。', miyama:'だいち：おれと同じミヤマじゃん！', oomurasaki:'観察員さん：日本の国チョウです。この山でも数がへっているので、とても大切な記録になりますよ。'})[b] || '').then(()=> play(`＊大きな虫かごをかついで、6年生の子が登ってきた。
       だいち：おれは、だいち。おれのミヤマは、城山でいちばん強いぜ。`)).then(()=>{ meet('daichi'); storyGoal('暑さ（夏ばて）から守る'); }),
-  6: b=> play(({nokogiri:'＊ギザギザのあごの、大きな幼虫だ。', hirata:'＊太くて、平たい体の幼虫だ。'})[b] || '').then(()=> storyGoal('たまごを、生まれた島へかえす')),
+  6: b=> play(({nokogiri:'＊ギザギザのあごの、大きな幼虫だ。', hirata:'＊太くて、平たい体の幼虫だ。'})[b] || '').then(()=> storyGoal(eggLeft() ? '大島に置いてきた たまごのことを、たしかめる' : 'たまごを、生まれた島へかえす')),
 };
 const STORY_GROW = {
   '1-molt': ()=> play('ぼく（びっくり）：皮をぬいだ！'),
@@ -5778,9 +5820,9 @@ const STORY_DAY = {
     await play(`けんた：すもう、やろうぜ！ ノコギリのはさみで、土俵の外へなげとばしてやる！（「すもう」で、けんたとできるよ）`); },
   '3-7': async ()=>{ const c = stCase();
     if(c) await play(`＊${dispName(c)}を、つかまえた島の森にかえした。`); else await goneLine();
-    await play(`けんた：また来いよな！ たまご、生まれたら見せろよ！
+    await play(`けんた：また来いよな！ ${eggLeft() ? 'たまごは、おれとじいちゃんで見ててやるからな！' : 'たまご、生まれたら見せろよ！'}
       ＊フェリーからふりかえると、島の森が一瞬だけ、金色に光った気がした。
-      おとうさん（ふつう）：あのたまごは、大島のもの。生まれたら、かならず大島へかえそう。`);
+      ${eggLeft() ? 'おとうさん（ふつう）：あのたまごは、大島の森で、生まれる日を待っている。' : 'おとうさん（ふつう）：あのたまごは、大島のもの。生まれたら、かならず大島へかえそう。'}`);
     await endChapter(3, `大島。七夕の夜、天の川の水に金色の光。短冊「${S.story.flags.wish || ''}」。${c ? BUGS[c.bug].name + 'を森にかえした。' : ''}`, 'おとうさん（教える）：来週は、さつき松原だ。草むらの虫と、海の風。'); },
   /* ---- 4章 さつき松原 ---- */
   '4-1': async ()=>{ meet('soma'); giveItem('kusa'); giveItem('koorogi');
@@ -5805,8 +5847,8 @@ const STORY_DAY = {
       おねえさん：こっちで雨やどりしていって！ 台風が近づいてるから、海に近いところはあぶないよ。
       ＊道の駅で雨やどり。
       おねえさん：今週末、ここで「夏休み昆虫展」をやるの。育てた虫、出してみない？
-      ＊雨やどりの人の中に、白い長いかみの人がいた。ぼくの虫かごの、たまごを見ている。
-      白いかみの人：…あたたかくして あげてください。その子は、海をわたる子です。
+      ＊雨やどりの人の中に、白い長いかみの人がいた。${eggLeft() ? '海のほう…大島のほうを見ている。' : 'ぼくの虫かごの、たまごを見ている。'}
+      ${eggLeft() ? '白いかみの人：…島においてきた あの子は、ちゃんと 待っています。いつか、海をわたる子です。' : '白いかみの人：…あたたかくして あげてください。その子は、海をわたる子です。'}
       ＊雷が光って、目をつぶった。あけると、もう いなかった。
       おとうさん（教える）：外の虫たちは、葉のうらや石の下でじっとして、台風をやりすごすんだ。//家にもどったら、ベランダの虫かごは、へやに入れよう。`); storyGoal('台風。ベランダの虫かごを、へやへ'); },
   '4-5': async ()=>{ meet('soma');
@@ -5929,21 +5971,30 @@ const STORY_DAY = {
     const ad = S.cases.filter(c=> c && stageOf(c).k === 'adult' && c.bug !== 'kinkabuto');
     if(ad.length){ await play('＊ゆうた・はるか・そうま・だいちも、見にきた。すもう決勝だ！'); await storyFinal(ad[0]); }
     else { await play('れん：まだ成虫になってないなら、なってからでいい。待ってるよ。（成虫になったら「すもう」で、れんと決勝）'); storyGoal('れんと、すもう決勝'); } },
-  '6-5': async ()=>{ const k = S.cases.find(c=> c && c.bug === 'kinkabuto');
+  '6-5': async ()=>{ if(eggLeft()){ await play(`＊夜、大島のけんたから電話があった。
+      けんた：じいちゃんが、ゆうべ、森のほうで 金色の光を見たって！ たまご、生まれたのかも！
+      おとうさん（にっこり）：あした、大島へ たしかめに行こう。`); storyGoal('あした、大島へ'); return; }
+    const k = S.cases.find(c=> c && c.bug === 'kinkabuto');
     if(k && stageOf(k).k !== 'adult'){ k.si = BUGS.kinkabuto.plan.length - 2; k.prog = BUGS.kinkabuto.plan[k.si].days*24; k.pending = true; k.hunger = 100; }
     await play('＊ふしぎな虫かごが、朝からずっと光っている…。（虫かごをのぞいてみよう）');
     storyGoal('ふしぎな虫かごを、のぞく'); },
   '6-6': async ()=>{ meet('kenta'); const k = S.cases.find(c=> c && c.bug === 'kinkabuto');
     await play(`＠絵 jousen
-      ＊ふたたび神湊から、フェリーで大島へ。ふしぎな虫かごは、ずっと ひざの上。
+      ＊ふたたび神湊から、フェリーで大島へ。${eggLeft() ? 'あのたまごが どうなったか、たしかめに行く。' : 'ふしぎな虫かごは、ずっと ひざの上。'}
       ＠絵 oshimako
       ＊港で、けんたと漁師のじいちゃんが待っていた。
-      けんた：生まれたんだ…！ 金色じゃん！
+      ${eggLeft() ? 'けんた：はやく、たまごのところへ行こうぜ！' : 'けんた：生まれたんだ…！ 金色じゃん！'}
       ＊夕方、たまごを見つけた、中津宮のそばの、天真名井へ向かう階段の近くへ。`);
     if(k){ let a = await choose('ぼく（ふつう）：…ここで、かえすんだね。', ['森にかえす', 'もう少しだけ、そばにいてほしい'], 'boku');
       if(a === 1) await play('ぼく（なみだ）：…もう少しだけ、そばにいてほしい。\nおとうさん（にっこり）：その気持ちが、育てたってことなんだよ。');
       await play(`＊ふたをあけると、${dispName(k)}がゆっくり飛びたち、森の上をひとまわりして、木のあいだに見えなくなった。`);
       S.cases[S.cases.indexOf(k)] = null; const d = S.dex.kinkabuto; if(d){ d.released = (d.released||0) + 1; d.adult = d.adult || dayKey(); } S.story.flags.kin = dispName(k); save(); }
+    else if(eggLeft()){ await play(`＊落ち葉の下は、からっぽだった。そばの木のみきに、金色にひかる、小さな ぬけがらが ひとつ。
+      けんた：生まれたんだ…！ 森で、ちゃんと！
+      ぼく（うれしい）：ここで生まれて、ここで大きくなったんだね。
+      おとうさん（にっこり）：だれにも育てられなくても、森が育ててくれた。…この島のいのちは、この島で つながっていくんだ。
+      じいちゃん：わしも、ときどき見に来とったが…ほんとうに、森の子だったな。`);
+      S.story.flags.kin = '森で生まれた金色の虫'; S.dex.kinkabuto = S.dex.kinkabuto || {found:dayKey(), where:'大島', known:1}; save(); }
     await play(`＠絵 yohaisho
       ＊夜、島の北の海べの、沖津宮遙拝所へ。沖ノ島へわたれない人たちが、ここから沖ノ島をおがんできた場所。
       じいちゃん：むかし、田心姫神さまが馬に乗って、この島から沖ノ島へ飛んでいかれたんだと。そのときのひづめのあとが、島の岩にのこっとる。
@@ -5958,7 +6009,7 @@ const STORY_DAY = {
       ＊もう一度見ると、そこには、さかきの葉が1まい、のこっているだけだった。`); storyGoal(''); },
   '6-7': async ()=>{ const c = stCase();
     if(c) await play(`＊朝、辺津宮の近くのクヌギの林へ、${dispName(c)}をかえした。`);
-    notePage(6, c, `宗像大社。${S.story.flags.champ ? 'れんとのすもう決勝に勝った。' : S.story.flags.finalDone ? 'れんと、すもう決勝をした。' : ''}ふしぎなたまごから生まれた${S.story.flags.kin || '金色の虫'}を、大島へかえした。`); storyRelease(6); save();
+    notePage(6, c, `宗像大社。${S.story.flags.champ ? 'れんとのすもう決勝に勝った。' : S.story.flags.finalDone ? 'れんと、すもう決勝をした。' : ''}${eggLeft() ? '大島に置いてきた ふしぎなたまごは、森で生まれていた。' : `ふしぎなたまごから生まれた${S.story.flags.kin || '金色の虫'}を、大島へかえした。`}`); storyRelease(6); save();
     await play('＠絵 happyo\n＊学校で、自由研究の発表。');
     for(let ch=1; ch<=6; ch++){ const p = S.story.note[ch];
       await cardShow(`<div class="sc notepage"><div class="sch norb">${ch}ページめ　${esc(CH[ch].place.replace(/の(畑|森|草むら|山道)$/, ''))}</div>${p && p.bug ? `<div class="npic">${svgBest(p.bug, {rare:p.rare})}</div>` : ''}<div class="sdt">${esc(p ? p.txt : '')}</div></div>`, 3000); }
@@ -5989,6 +6040,16 @@ const STORY_DAY = {
     if(SX().kakera.length >= 15) await play(`＊ページのすみに、小さな字で、もう1行。「いつか、ぼくの子どもも、この光を見ますように。」
       おとうさん（にっこり）：…ねがいごと、かなったみたいだ。
       ぼく（うれしい）：…うん！`);
+    if(storyLoop() >= 2) await play('おとうさん（にっこり）：…ふしぎだな。この夏を、前にも きみと すごした気がするよ。\nぼく（うれしい）：ぼくも！');
+    if(SX().kakera.length >= Object.keys(KAKERA).length){   // ふしぎのかけらを ぜんぶ見つけた：とくべつな夢
+      await play(`＠絵 amanogawa
+        ＊その夜、ゆめを見た。天の川のほとりに、白いかみの人が立っている。
+        白いかみの人：…${Object.keys(KAKERA).length}まいの かけらを、ぜんぶ見つけてくれましたね。
+        白いかみの人：海をわたった むかしの人も、森でねむる虫も、あなたのノートの中で、ひとつに つながりました。
+        白いかみの人：いのちを あずかってくれて、ありがとう。
+        ＊白いかみの人の手のひらから、金色の光がひとつ、ノートの上に おりてきた。目がさめると、ノートの表紙に、金色の しおりが はさまっていた。`); cgShow('off');
+      S.story.flags.allKakera = 1; save();
+      await say('【ふしぎのかけら コンプリート】\n金色のしおりを もらった！\n（タイトルの「ストーリー」に★がつくよ）', {face:'boku_joy'}); }
     S.story.done = true; S.stats.storyClear = (S.stats.storyClear||0) + 1; save();
     await cardShow('<div class="sc night end"><div class="glowLine slow"></div><div class="sdt">夏の終わりの夕方。宗像の海の上を、金色の光がひとつ、沖ノ島のほうへ、ゆっくりよこぎっていく。</div></div>', 6000);
     await cardShow(`<div class="sc"><div class="tlogoBox">${titleLogo()}</div><div class="stt">おしまい</div><div class="sdt">この物語はフィクションです。<br>Game Director: Ryohei Taniguchi</div></div>`, 6000);
@@ -6052,6 +6113,12 @@ const STORY_EVE = {
       おとうさん（しんぱい）：…見たことがない。カブトムシのなかまのたまごに、にているけど…。`);
     await play('おとうさん（教える）：ほんとうは、この島のものは、この島にあるのがいちばんだ。//でも、このたまご…落ち葉がかわいて、このままだとひからびてしまいそうだ。');
     const a = await choose('どうする？', ['育てて、生まれたら、ここにかえす', 'ここに置いていく'], 'boku');
+    if(a === 1 && storyLoop() >= 2){   // 2周目だけ：ほんとうに置いていける
+      await play(`ぼく（ふつう）：…この島のものは、この島に。…ここに、置いていく。
+        ＊たまごを、しめった落ち葉の下に、そっともどした。光が、ふわりと あたたかくなった気がした。
+        おとうさん（にっこり）：…それも、ひとつの こたえだね。この島の森が、きっと育ててくれる。
+        じいちゃん：わしが ときどき、見に来てやろう。`);
+      S.story.flags.eggLeft = 1; save(); await kakera('tamago'); return; }
     if(a === 1) await play('＊たまごの光が、すうっと弱くなった。\nぼく（なみだ）：…。\nおとうさん（ふつう）：…育てて、かならずここにかえそう。やくそくだ。');
     else await play('おとうさん（にっこり）：よし。かならず、ここにかえそう。やくそくだ。');
     await play('じいちゃん：それは、だいじにしなさい。生まれたら、きっとこの島へ帰りたがる。');
@@ -6061,8 +6128,7 @@ const STORY_EVE = {
     if(out.length){ out.forEach(c=>{ c.clean = clamp(c.clean - 30, 0, 100); c.stress = (c.stress||0) + 30; c.hunger = clamp(c.hunger - 15, 0, 100); });
       await play('＊夜、風と雨がはげしくなった。ベランダの虫かごに、雨がふきこんでいる！\nおとうさん（しんぱい）：はやく、へやに入れよう！'); out.forEach(c=> c.place = 'heya'); }
     else await play('＊夜、風と雨がはげしくなった。でも、虫かごはへやの中。\nおとうさん（にっこり）：ちゃんと守れたね。');
-    if(S.story.egg) S.story.egg.glow = 1;
-    await play('＊たまごが、ほんのりあたたかい。');
+    if(S.story.egg){ S.story.egg.glow = 1; await play('＊たまごが、ほんのりあたたかい。'); }
     await play(`＊ねる前、おとうさんの古いノートを見ると、雨のしめりけで、くっついていた最後のページが、少しだけ はがれていた。
       ＊すきまから読めたのは、子どもの字で「…大島で…七夕の夜…」だけ。
       ぼく（びっくり）：大島…七夕の夜…？ ぼくが たまごを見つけたのと、同じ…。`); await kakera('hagareta');
