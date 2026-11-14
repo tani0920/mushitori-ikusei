@@ -63,6 +63,8 @@ header h1{margin:0;font-size:18px;font-weight:400;letter-spacing:.08em;color:var
 header small{color:var(--mute);font-size:12px}
 #hud{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:14px;align-items:center;font-variant-numeric:tabular-nums;min-height:22px}
 #hud .money{color:var(--sun)}
+.hudAdv{position:fixed;z-index:210;top:calc(var(--st,0px) + 44px);right:calc(var(--sr,0px) + 70px);background:#fffaf0;color:#4a3320;border:2px solid #c9a978;border-radius:999px;padding:.2em .9em;font-size:15px;font-weight:700;box-shadow:0 3px 10px #0004;pointer-events:none;animation:hudAdv 2.6s ease both}
+@keyframes hudAdv{0%{opacity:0;transform:translateY(-8px)}12%,80%{opacity:1;transform:none}100%{opacity:0}}
 #hud .hudT,#hud .hudS{display:contents}
 #hud .hudSleep{font:inherit;font-weight:700;color:#1b2340;background:#ffe6a0;border:2px solid #fff6d6;border-radius:999px;padding:.15em .8em;cursor:pointer;line-height:1.3}
 #hud .hudHold{font:inherit;font-weight:700;color:#fff;background:#3a5a8a;border:2px solid #dfe8f6;border-radius:999px;padding:.15em .8em;cursor:pointer;line-height:1.3}
@@ -386,6 +388,8 @@ body.noteUI #msgLayer input{border-color:#c9a978}
 .bug .pupa{animation:breath 3s ease-in-out infinite}
 @keyframes breath{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
 .bug .glow{animation:glow 1.8s ease-in-out infinite}
+.rareKira{opacity:0;animation:rareKira 2.1s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes rareKira{0%,55%,100%{opacity:0;transform:scale(.4)}70%{opacity:1;transform:scale(1)}}
 @keyframes glow{0%,100%{opacity:.15}50%{opacity:1}}
 .bug .hop{animation:hop 3.2s ease-in-out infinite}
 @keyframes hop{0%,80%,100%{transform:translateY(0)}87%{transform:translateY(-6px)}94%{transform:translateY(0)}}
@@ -2144,7 +2148,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.16.0';
-const BUILD = '20261114-1006';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261114-1031';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.16.0', date:'2026-11-14', items:[
     'ストーリーの七夕祭（3章）で、出店を回れるようになった。ヨーヨーつり・輪なげ・くじびきで遊べるよ',
@@ -3131,6 +3135,7 @@ function artRun(el, key, ctl={}){
   requestAnimationFrame(step);
   return ctl;
 }
+let rareN = 0;
 function svgBug(id, stage, o={}){
   const b = BUGS[id], cls = ['bug', o.rest ? 'rest' : '', o.sleep ? 'sleep' : '', o.cls||''].join(' ');
   let inner = '';
@@ -3142,7 +3147,10 @@ function svgBug(id, stage, o={}){
   else if(stage === 'larva') inner = larvaSVG(id, b, o);
   else if(stage === 'pupa') inner = pupaSVG(id, b);
   else inner = adultSVG(id, b, o);
-  if(o.rare) inner += `<circle cx="50" cy="50" r="46" fill="none" stroke="#ffe27a" stroke-width="1.5" opacity=".7" class="glow"/>`;
+  // めずらしい色の虫：前は まわりに黄色い丸を出していた（絵の虫だと、丸がういて見える。2026-11-14 ユーザー）。いまは体のふちが金色にほんのり光って、ときどきキラッとする
+  if(o.rare){ const g = 'rg' + (++rareN);
+    inner = `<defs><filter id="${g}" x="-20%" y="-20%" width="140%" height="140%"><feMorphology in="SourceAlpha" operator="dilate" radius=".5" result="d"/><feGaussianBlur in="d" stdDeviation="1.4" result="b"/><feFlood flood-color="#ffd860" flood-opacity=".7"/><feComposite in2="b" operator="in" result="glow"/><feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#${g})">${inner}</g>`
+      + [[22,30,9,0],[78,26,7,.7],[70,74,8,1.4]].map(([x,y,z,d])=>`<image class="rareKira" href="img/case/fx_kira.webp" x="${x - z/2}" y="${y - z/2}" width="${z}" height="${z*1.07}" style="animation-delay:${d}s" pointer-events="none"/>`).join(''); }
   const sc = o.scale || 1;
   return `<svg class="${cls}" viewBox="0 0 100 100" aria-label="${esc(b.name)}の${esc(STAGE_NAME[stage]||'')}"><g transform="translate(50 50) scale(${sc}) translate(-50 -50)">${inner}</g></svg>`;
 }
@@ -3334,7 +3342,7 @@ function soilRoom(p, soilTop, A){
   return {
     defs:`<clipPath id="roomClip"><path d="${d}"/></clipPath>`,
     back:`<g pointer-events="none">${trail}<path d="${d}" fill="${A.room}"/></g>`,
-    front:`<g pointer-events="none"><g clip-path="url(#roomClip)"><path d="${d}" fill="#000" opacity=".16"/><ellipse cx="${p.x}" cy="${p.y - ry}" rx="${rx}" ry="${(ry*.55).toFixed(2)}" fill="#000" opacity=".28"/></g><path d="${d}" fill="none" stroke="${A.crumb}" stroke-opacity=".6" stroke-width=".7"/>${crumbs}</g>`
+    front:`<g pointer-events="none"><g clip-path="url(#roomClip)"><path d="${d}" fill="#000" opacity=".08"/><ellipse cx="${p.x}" cy="${p.y - ry}" rx="${rx}" ry="${(ry*.4).toFixed(2)}" fill="#000" opacity=".1"/></g><path d="${d}" fill="none" stroke="${A.crumb}" stroke-opacity=".6" stroke-width=".7"/>${crumbs}</g>`
   };
 }
 const soilTopOf = b=> (b.shape === 'beetle' || b.shape === 'stag') ? 52 : 70;
@@ -4424,7 +4432,7 @@ function renderSpot(){
 const needFeeder = ()=> S.cases.some(c=> c && (BUGS[c.bug].food === 'koorogi' || BUGS[c.bug].foodAdult === 'koorogi'));
 const feederTxt = n=> `<b class="yk">草むらで、エサになる小さなバッタを ${n}ぴき つかまえた！</b><br><small>生きた虫しか食べない虫の ごはんにしよう。（もちもの：${S.items.koorogi}ぴき）</small>`;
 async function doFind(sp, here, egg, slot, h){
-  const key = sp.key + '|' + dayKey(); S.visits[key] = (S.visits[key]||0) + 1; save();
+  const key = sp.key + '|' + dayKey(); S.visits[key] = (S.visits[key]||0) + 1; save(); storyAdvance('sagasu', 'さがす');
   const box = $('findBox'), F = $('findField');
   if(!F) box.innerHTML = `<p class="dots">${pick(['草をかきわけている', '木のねもとをのぞいている', '葉のうらを見ている', 'じっと耳をすませている'])}</p>`;
   await wait(F ? 650 : 1400);
@@ -4553,7 +4561,7 @@ async function sumoBattle(r, c){
   const me = fighterOf(c), op = npcFighter(r), night = slotOf() === 'yoru';
   if(me.cond != null) await say(me.cond >= .75 ? `${me.name}は、きょうは ぜっこうちょう！ 力がみなぎっている。` : me.cond >= .45 ? `${me.name}の調子は、ふつう。` : `${me.name}は、きょうは 調子がいまいち…。おなかや元気がへっているみたい。`);
   if(me.night && night) me.spd += 1;   // 夜型は夜に少しはやい
-  S.sumoDay[r.key] = dayKey(); save();
+  S.sumoDay[r.key] = dayKey(); save(); storyAdvance('sumo', 'すもう');
   await say(`${r.name}「${r.hi}」`, {face:r.key, with:'boku'});
   const A = document.createElement('div'); A.id = 'arena'; A.className = slotOf();
   const info = (f, side)=> `<div class="info ${side}"><b>${esc(f.name)}</b> <small>${f.t.name}</small><span class="bar"><i id="hp-${side}" style="width:100%"></i></span><small id="hpn-${side}">${f.hp}/${f.maxhp}</small></div>`;
@@ -5087,7 +5095,7 @@ function startMihon(){
    セーブはふつうのモードと別（STORY_KEY）。この物語はフィクション
    ========================================================= */
 const STORY_KEY = KEY_PRE + 'munakata-mushisodate-story-v1';
-const STORY_SPEED = {hayai:{name:'はやい', m:360, txt:'4分で1日。1章が30分くらい（おすすめ）'}, yukkuri:{name:'ゆっくり', m:24, txt:'1時間で1日。毎日少しずつ'}, mainichi:{name:'まいにち', m:1, txt:'スマホの時計と同じ。1章が1週間'}};
+const STORY_SPEED = {hayai:{name:'はやい', m:360, txt:'お世話はゆっくり。出かけたり遊んだりすると時間が進む。1日が10分くらい（おすすめ）'}, yukkuri:{name:'ゆっくり', m:24, txt:'1日が2時間くらい。毎日少しずつ'}, mainichi:{name:'まいにち', m:1, txt:'スマホの時計と同じ。1章が1週間'}};
 const STORY_Y = 2026;
 const NPC_NAME = {oba:'畑のおばあちゃん', mizu:'水を見回るおじさん', jii:'漁師のじいちゃん', eki:'道の駅のおねえさん', kansatsu:'自然観察員さん', jinja:'神社の人', yutamama:'ゆうたのおかあさん', shimakko:'島の子どもたち', kyaku:'来た人', siro:'白いかみの人', sensei:'学校の先生', shisho:'図書館の人'};
 // 章：場所（SPOTS の key）・なかま（さがすと出る虫）・その日もらえるエサ・出会う子
@@ -5115,9 +5123,27 @@ const storySp = ()=> STORY_SPEED[S.story.speed] || STORY_SPEED.hayai;
 // 時計が止まるとき：会話・お祭り・すもうのほか、虫の世話をしている（虫かごをひらいている）あいだと、そとで虫をさがしているあいだも止める
 // （2026-11-09 実機：「はやい」は1びょうで6分。午前に世話をしていたら夜になって、そとへ行こうとしたら次の日になっていた）
 function storyPaused(){ return document.hidden || storyBusy || !!(S && S.story && S.story.hold) || (tab === 'opt' && openCase === null) || !!(S && S.story && S.story.lastCare && openCase !== null) || !!document.querySelector('#msgLayer, #evLayer, #arena, #matsuri, .full'); }
-function storyNow(){ const st = S.story, m = storySp().m, t = Date.now(); if(m > 1 && storyPaused()){ storyRT = t; return st.gt; } const dt = Math.max(0, t - storyRT), g0 = st.gt; st.gt += (m > 1 ? Math.min(dt, 3000) : dt) * m; storyRT = t;
+/* 時計のはやさ（2026-11-14 ユーザーと決めた。A：お世話はゆっくり＋B：行動で進む）
+   ふだんは設定の半分（IDLE_SLOW）、虫かごを開いてお世話しているあいだは4分の1（CARE_SLOW）。止めないので、時間があまらない。
+   そのかわり、出かける・場所に行く・虫をさがす・すもう・来ている人と話す と、storyAdvance でまとめて進む（ACT_MIN） */
+const IDLE_SLOW = .5, CARE_SLOW = .25;
+const ACT_MIN = {odekake:30, place:90, sagasu:20, sumo:30, visit:15};
+const storyRate = m=> m <= 1 ? m : m * (openCase !== null ? CARE_SLOW : IDLE_SLOW);
+function storyNow(){ const st = S.story, m = storySp().m, t = Date.now(); if(m > 1 && storyPaused()){ storyRT = t; return st.gt; } const dt = Math.max(0, t - storyRT), g0 = st.gt; st.gt += (m > 1 ? Math.min(dt, 3000) : dt) * storyRate(m); storyRT = t;
   if(m > 1 && st.ch && !st.done){ const bed = atHour(storyIdx(g0), STORY_BED) + 30*60e3; if(g0 < bed && st.gt > bed) st.gt = bed; }   // 夜9時半で止めて、おとうさんが「ねよう」と言いに来るのを待つ（夜中まで進まない）
   return st.gt; }   // 進めるたびにきざむ（止まったときに時計がもどらないように）
+// 行動したら、時計をまとめて進める（夜9時半はこえない。まいにち は本物の時計なので、しない）。上の時計のよこに「⏩ 1時間30分」
+function storyAdvance(k, why){
+  if(!S || !storyOn() || S.story.done || !S.story.ch || storySp().m <= 1) return 0;
+  const st = S.story, min = ACT_MIN[k] || 0; if(!min) return 0;
+  storyCommit(); const g0 = st.gt, bed = atHour(storyIdx(g0), STORY_BED) + 30*60e3;
+  st.gt = g0 < bed ? Math.min(g0 + min*60e3, bed) : g0; storyRT = Date.now(); st.rt = storyRT;
+  const d = Math.round((st.gt - g0)/60e3); if(d <= 0) return 0;
+  save(true); hud();
+  const e = document.createElement('div'); e.className = 'hudAdv norb'; e.textContent = `⏩ ${d >= 60 ? Math.floor(d/60) + '時間' : ''}${d % 60 ? d % 60 + '分' : ''}${why ? '（' + why + '）' : ''}`;
+  document.body.appendChild(e); setTimeout(()=> e.remove(), 2600);
+  return d;
+}
 function storyCommit(){ if(!S || !S.story) return; S.story.gt = storyNow(); storyRT = Date.now(); S.story.rt = storyRT; }
 const storyIdx = (t=now())=>{ const d = new Date(t); return Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - new Date(STORY_Y, 6, 19)) / D); };   // 7月19日が 0
 const chOfIdx = i=> i <= 0 ? 0 : Math.min(7, Math.ceil(i/7));
@@ -6038,7 +6064,7 @@ async function goPlace(k){
   if(storyBusy) return; storyBusy = true;
   try{ const P = [...PLACES_X, ...PLACES_SHIMA].find(p=> p.k === k);
     if(plDone(k)) await play(`＊${P.name}。きょうは、もう行ったよ。`);
-    else { plMark(k); if(P.cg) cgShow(P.cg); await PLACE_TALK[k](S.story.ch); cgShow('off'); }
+    else { plMark(k); if(P.cg) cgShow(P.cg); await PLACE_TALK[k](S.story.ch); cgShow('off'); storyAdvance('place', P.name); }
   } finally { storyBusy = false; }
   save(); render();
 }
@@ -6279,7 +6305,7 @@ function visitInject(where){ const w = visitNow(where); if(!w) return;
   d.innerHTML = `${FACE_ART.has(w[0]) ? `<img src="img/chara/${w[0]}.webp" alt="" draggable="false">` : ''}<span><b>${esc(faceName(w[0]))}</b>が来ている。</span><button type="button" class="btn pri" id="btnVisit">話す</button>`;
   tgt.insertAdjacentElement('afterend', d);
   $('btnVisit').onclick = async ()=>{ if(storyBusy) return; storyBusy = true;
-    try{ SX().talk['v' + where + '|' + dayKey()] = 1; save(); await play(w[1]); if(w[2]){ naka(w[2]); meet(w[2]); } } finally { storyBusy = false; }
+    try{ SX().talk['v' + where + '|' + dayKey()] = 1; save(); await play(w[1]); if(w[2]){ naka(w[2]); meet(w[2]); } storyAdvance('visit'); } finally { storyBusy = false; }
     render(); };
 }
 
@@ -6312,7 +6338,7 @@ function renderOutStory(){
     let gift = '';
     if(!S.yk['sg|' + today]){ S.yk['sg|' + today] = 1; S.money += 10; cn.gift.forEach(k=> giveItem(k, 1)); gift = `\nどんぐり ${dg(10)} と、${cn.gift.map(k=> k === 'koorogi' ? 'エサにする小さな虫' : ITEMS[k].name).join('・')}を手に入れた。`; }
     save(); hud(); outState = {spot:sp2, outside:false};
-    await say(`「${cn.place}」に着いた！${gift}`); render(); };
+    await say(`「${cn.place}」に着いた！${gift}`); storyAdvance('odekake', 'おでかけ'); render(); };
 }
 
 /* 起動 */
