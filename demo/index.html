@@ -554,6 +554,7 @@ html.land.tall .toolTip{font-size:16px}
 /* 取っ手は lensFrame の絵にある */
 @keyframes toolPop{0%{transform:translate(-50%,-50%) scale(.3)}70%{transform:translate(-50%,-50%) scale(1.15)}100%{transform:translate(-50%,-50%) scale(1)}}
 .toolObj.drag{transition:none;transform:translate(-50%,-50%) scale(1.08);cursor:grabbing}
+.toolObj.deco,.toolObj.deco.drag{transform:translate(-50%,-50%)}.toolObj.deco svg{display:block}   /* かざりは 持っているときも 置いたときと同じ大きさ */
 .toolObj.wipe{animation:wipeIc .35s ease-in-out infinite alternate}
 @keyframes wipeIc{from{transform:translate(-50%,-50%) rotate(-14deg) scale(1.08)}to{transform:translate(-50%,-50%) rotate(14deg) scale(1.08)}}
 .toolObj.spray{animation:sprayIc .25s ease-in-out infinite alternate}
@@ -1049,6 +1050,15 @@ html.land body.noteUI #hud .money{color:#8a5a14}
 html.land body.obsMode .obsR{position:relative;margin-top:30px;color:var(--note-ink);height:calc(100% - 30px);max-height:none;background:url(img/ui/note_page.webp) center/100% 100% no-repeat;padding:max(13px,3.2%) 5.5% max(16px,4.5%) 12.5%;box-sizing:border-box;filter:drop-shadow(0 3px 4px #3a241255)}
 html.land body.obsMode .obsR>.obsHead h2{color:#3f2a18;font-size:calc(var(--nf) * 1.06);font-weight:600;line-height:1.25;letter-spacing:0;margin:0}
 html.land body.obsMode .obsR>.obsHead .navBtn,html.land body.obsMode .obsR>.obsHead .backBtn{background:#fbf3df;color:var(--note-ink);border:1.5px solid #a98a60;box-shadow:none;font-weight:600}
+/* もどる・◀ ▶ をかわいく（2026-11-15 ユーザー） */
+.obsHead .caseNav{gap:6px}
+#obs .obsHead .caseNav .navBtn{width:2.3em;height:2.3em;min-height:0;padding:0;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:radial-gradient(circle at 35% 30%,#fff3b8,#f6cf5b 60%,#e8b43a);color:#7a4a10;border:2px solid #fff;box-shadow:0 2px 0 #c8962a,0 3px 6px #3a241244;transition:transform .12s}
+#obs .obsHead .caseNav .navBtn svg{width:58%;height:58%;display:block}
+#obs .obsHead .caseNav .backBtn{display:inline-flex;align-items:center;gap:.3em;padding:.25em .8em .25em .45em;border-radius:999px;background:#fffaf0;color:#5a3a14;border:2px solid #e3bd84;box-shadow:0 2px 0 #d9b07a,0 3px 6px #3a241233;font-weight:800;transition:transform .12s}
+#obs .obsHead .caseNav .backBtn .bkIc{width:1.7em;height:1.4em;object-fit:contain;filter:drop-shadow(0 1px 1px #3a241244)}
+#obs .obsHead .caseNav .backBtn .cnt{font-size:.75em;font-weight:700;opacity:1;background:#f6cf5b;color:#5a3a14;border-radius:999px;padding:0 .45em;margin-left:.1em}
+#obs .obsHead .caseNav .navBtn:active,#obs .obsHead .caseNav .backBtn:active{transform:translateY(2px) scale(.96);box-shadow:0 0 0 #c8962a}
+@media (hover:hover) and (pointer:fine){#obs .obsHead .caseNav .navBtn:hover{filter:brightness(1.06)}#obs .obsHead .caseNav .backBtn:hover{border-color:#e0a030}}
 html.land body.obsMode .obsR>.obsHead .tag{background:#efe2c4;color:var(--note-ink);border:1px solid #c4a878}
 html.land body.obsMode #obs .obsR .obsTxt{background:#fffdf3cc;color:var(--note-ink);border:1.5px solid #a9b67a;border-radius:10px;box-shadow:none;font-size:var(--nf);line-height:1.45;min-height:3.2em;padding:.35em .6em}
 html.land body.obsMode .obsR .meters{width:100%;font-size:calc(var(--nf) * .86);margin-top:6px;gap:2px 6px}
@@ -2261,7 +2271,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.17.1';
-const BUILD = '20261114-2341';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261114-2358';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.17.1', date:'2026-11-14', items:[
     'ふりがなに「ぜんぶ」をふやした。すべての漢字にふりがながつくので、小学校に入る前の子も、おうちの人といっしょに遊べるよ（タイトルの「ふりがな」か「その他」で切りかえ）',
@@ -3808,7 +3818,9 @@ $('rtCase').onclick = ()=> setSide(sidePanel === 'case' ? null : 'case');
 document.querySelector('#rtabs [data-t=home]').onclick = ()=>{ setSide(null); setTab('home'); };
 function setTab(t){ if(t !== tab || t !== 'out') outState = (t === 'out' && tab === 'out') ? outState : null;   // ほかのタブへ行ったら、虫さがしの場所から出る（つぎに「そと」をおすと、場所をえらぶ画面。2026-11-14 ユーザー）
   tab = t; openCase = null; document.querySelectorAll('#tabs button, #rtabs [data-t]').forEach(b=> b.classList.toggle('on', b.dataset.t === t)); render(); (scrollTo(0,0), view.scrollTop = 0); }
-document.querySelectorAll('#tabs button').forEach(b=> b.onclick = ()=> setTab(b.dataset.t));
+document.querySelectorAll('#tabs button').forEach(b=> b.onclick = ()=>{
+  if(b.dataset.t === 'out' && tab === 'out' && outState && openCase === null){ if(document.querySelector('#findField.busy')) return; outState = null; $('findField') && $('findField').remove(); document.querySelector('.found')?.remove(); }   // 虫さがしの場所 → 場所えらび
+  setTab(b.dataset.t); });
 // 左のあいているところに立つ人（おみせのおじさん）。同じ人ならそのまま（買い物のたびに出なおさない）
 let standeeBye = false;   // おみせのおじさん：ひとこと言ったら下がる（おみせを出るまで、もう出ない。2026-11-15 ユーザー）
 function setStandee(k){ let e = $('standee');
@@ -4199,7 +4211,7 @@ async function renderObs(){
   const HOT = {yubi:{x:-8, y:-36}, fukin:{x:0, y:0}, kiri:{x:-22, y:-42}, esa:{x:0, y:0}, kazari:{x:0, y:10}, big:{x:-6, y:30}, furu:{x:0, y:0}, megane:{x:0, y:0}};
   const restPos = ()=>{ const r = sceneEl.getBoundingClientRect(), k = (parseFloat(getComputedStyle($('toolObj')).fontSize) || 84) / 84; return {x:56*k, y:r.height - 54*k}; };
   const objPos = {x:0, y:0};
-  const setObj = (x, y, cls='')=>{ objPos.x = x; objPos.y = y; toolObj.style.left = x + 'px'; toolObj.style.top = y + 'px'; toolObj.className = 'toolObj norb ' + cls; if(tool === 'megane') requestAnimationFrame(lensAt); };
+  const setObj = (x, y, cls='')=>{ objPos.x = x; objPos.y = y; toolObj.style.left = x + 'px'; toolObj.style.top = y + 'px'; toolObj.className = 'toolObj norb ' + cls + (tool === 'kazari' ? ' deco' : ''); if(tool === 'megane') requestAnimationFrame(lensAt); };
   // 虫めがね：レンズの中に、ケース（sceneMain）を 2.5 倍でうつす。虫の上にかざすと、くわしいようすが文に出る
   const LENS_Z = 2.5;
   const lensAt = ()=>{ const lens = toolObj.querySelector('.lens svg'); if(!lens) return;
@@ -4232,7 +4244,9 @@ async function renderObs(){
       ub.onclick = e=>{ e.stopPropagation(); const f = undoFood(); if(!f) return; c.foods.splice(c.foods.indexOf(f), 1); if(ITEMS[f.k] && ITEMS[f.k].price) S.items[f.k] = (S.items[f.k]||0) + 1; c.log.feed = Math.max(0, c.log.feed - 1); save(); renderObs(); setTimeout(()=> setTxt(`${ITEMS[f.k] ? ITEMS[f.k].name : 'エサ'}を、ひとつ もどした。`), 50); }; } };
   // さっき置いて、まだ食べていないエサ（まちがえて置いたときに もどせる。2026-11-15 ユーザー）
   const undoFood = ()=> [...(c.foods||[])].reverse().find(f=> f.undo && !f.old && f.left > .95);
-  const toolHere = (e, off={dx:0, dy:0})=>{ toolObj.innerHTML = toolIc(); toolObj.hidden = false; toolObj.style.transition = 'none'; grab = off; dragTo(e); void toolObj.offsetWidth; toolObj.style.transition = ''; };
+  const decoPx = ()=>{ const svg = $('sceneSvg'), m = svg && svg.getScreenCTM(); return m ? Math.hypot(m.a, m.b) * 100 * .55 * (DECO_Z[decoSel]||1) : 0; };   // かざり1つぶんの箱（100）の、画面での大きさ
+  const toolHere = (e, off={dx:0, dy:0})=>{ toolObj.innerHTML = toolIc(); toolObj.hidden = false;
+    if(tool === 'kazari' && decoSel){ const sz = decoPx(), sv = toolObj.querySelector('svg'); if(sv && sz){ sv.style.width = sv.style.height = sz + 'px'; } } toolObj.style.transition = 'none'; grab = off; dragTo(e); void toolObj.offsetWidth; toolObj.style.transition = ''; };
   const placeRest = ()=>{ const r = restPos(); toolObj.style.transition = 'none'; setObj(r.x, r.y, 'rest'); void toolObj.offsetWidth; toolObj.style.transition = ''; };
   const hk = ()=> (parseFloat(getComputedStyle(toolObj).fontSize) || 84) / 84;
   // 指でつかんだとき、道具は指の左上に出す（2026-11-09 指で道具の絵がかくれていた）。grab は「指 − 道具の中心」
@@ -4389,7 +4403,7 @@ async function renderObs(){
     if(el.classList.contains('food')){ const f = (c.foods||[]).find(f=>String(f.id) === el.dataset.f); return f && {type:'food', it:f, el}; }
     const d = (c.deco||[]).find(d=>String(d.id) === el.dataset.deco); return d && {type:'deco', it:d, el}; };
   const moveItem = e=>{ const q = toXY(e), soilTop = soilTopOf(b); dragItem.it.x = clamp(q.x, 6 - (noteUI() ? caseExtra(c) : 0), 94 + (noteUI() ? caseExtra(c) : 0)); dragItem.it.y = itemRest(c, dragItem.type, dragItem.it.k, dragItem.it.x, q.y, dragItem.type === 'food' ? .5 + .5*Math.max(.2, dragItem.it.left) : 1);
-    const sc = dragItem.type === 'food' ? `scale(${.5 + .5*Math.max(.2, dragItem.it.left)}) translate(-50 -50)` : 'scale(.55) translate(-50 -70)';
+    const sc = dragItem.type === 'food' ? `scale(${.5 + .5*Math.max(.2, dragItem.it.left)}) translate(-50 -50)` : `scale(${(.55*(DECO_Z[dragItem.it.k]||1)).toFixed(3)}) translate(-50 -70)`;
     dragItem.el.setAttribute('transform', `translate(${dragItem.it.x} ${dragItem.it.y}) ${sc}`); if(dragItem.type === 'deco') binZone.classList.toggle('over', inBin(e)); };
   const dragTo = e=>{ const r = sceneEl.getBoundingClientRect(); setObj(clamp(e.clientX - r.left - grab.dx, 8, r.width - 8), clamp(e.clientY - r.top - grab.dy, 8, r.height - 8), 'drag' + (tool === 'fukin' ? ' wipe' : '') + (sprayTimer ? ' spray' : '')); };
   // ---- 大そうじ：虫を長おしでつまむ → ひなんケース → 土をなでる → もどす ----
@@ -4761,7 +4775,9 @@ function findField(sp, all, egg, slot, left){
 const html_land = ()=> document.documentElement.classList.contains('land');
 const filledCases = ()=> S.cases.map((c,i)=> c ? i : -1).filter(i=> i >= 0);
 function caseNav(){ const L = filledCases(), i = L.indexOf(openCase), many = L.length > 1;
-  return `<div class="caseNav norb">${many ? '<button type="button" class="btn sub navBtn" data-go="-1" aria-label="まえの虫かご">◀</button>' : ''}<button type="button" class="btn sub backBtn" id="btnBack">↩ もどる${many ? `<small> ${i+1}/${L.length}</small>` : ''}</button>${many ? '<button type="button" class="btn sub navBtn" data-go="1" aria-label="つぎの虫かご">▶</button>' : ''}</div>`; }
+  // 2026-11-15 ユーザー：かわいく。◀ ▶ は まるい黄色のボタン（やじるしは まるい線）、もどる は虫かごの絵つきの札
+  const arw = d=> `<svg viewBox="0 0 20 20" aria-hidden="true"><path d="${d < 0 ? 'M12.5 4.5 L7 10 L12.5 15.5' : 'M7.5 4.5 L13 10 L7.5 15.5'}" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  return `<div class="caseNav norb">${many ? `<button type="button" class="btn sub navBtn" data-go="-1" aria-label="まえの虫かご">${arw(-1)}</button>` : ''}<button type="button" class="btn sub backBtn" id="btnBack"><img class="bkIc" src="img/ui/case_futsu.webp" alt="" draggable="false">もどる${many ? `<small class="cnt">${i+1}/${L.length}</small>` : ''}</button>${many ? `<button type="button" class="btn sub navBtn" data-go="1" aria-label="つぎの虫かご">${arw(1)}</button>` : ''}</div>`; }
 function renderSpot(){
   if(outState.popKey !== outState.spot.key + slotOf()){ outState.popKey = outState.spot.key + slotOf(); setTimeout(()=> { if(!$('msgLayer')) papaPop(SLOT_HINT[slotOf()]); }, 500); }
   const sp = outState.spot, slot = slotOf(), today = dayKey(), key = sp.key + '|' + today, used = S.visits[key]||0, left = FINDS_PER_VISIT + (storyOn() ? 2 : 0) - used;
