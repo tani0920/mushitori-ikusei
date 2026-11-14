@@ -106,13 +106,18 @@ p{margin:.3em 0}
 #titleScr .tbtns.sub{margin-top:.45em;gap:.45em}
 #titleScr .tbtn.qm{padding:.4em .75em;background:#fffaf0;color:#4a3320;border-color:#c9a978;font-weight:800}
 html.land #titleScr .tbtn.qm{padding:.25em .7em}
-#modeWin{position:fixed;inset:0;z-index:160;background:#1a120a99;display:flex;align-items:center;justify-content:center;padding:16px;animation:mwBg .25s ease both}#modeWin.out{animation:mwOut .2s ease both}
-#modeWin .mwBox{position:relative;width:min(760px,100%);max-height:calc(100% - 8px);overflow:auto;background:#fdf6e6;color:#4a3320;border:3px solid #c9a978;border-radius:18px;box-shadow:0 12px 40px #0008;padding:1em 1.2em 1.1em;animation:mwIn .3s cubic-bezier(.2,1.3,.4,1) both}
-#modeWin h3{margin:0 0 .6em;font-size:20px;color:#6a4010}#modeWin .mwX{position:absolute;top:8px;right:10px;width:38px;height:38px;border-radius:50%;border:2px solid #c9a978;background:#fff;color:#7a5020;font-size:22px;line-height:1;cursor:pointer}
-#modeWin .mc{font:inherit;text-align:left;cursor:pointer;display:flex;flex-direction:column;box-shadow:0 3px 0 #c9a97899}#modeWin .mc:active{transform:translateY(2px);box-shadow:none}
-#modeWin .mcGo{margin-top:auto;padding-top:.4em;font-weight:700;color:#c06a10;text-align:right}
-@media (hover:hover) and (pointer:fine){#modeWin .mc:hover{border-color:#e0a030}}
+.popWin{position:fixed;inset:0;z-index:160;background:#1a120a99;display:flex;align-items:center;justify-content:center;padding:16px;animation:mwBg .25s ease both}.popWin.out{animation:mwOut .2s ease both}
+.popWin .mwBox{position:relative;width:min(760px,100%);max-height:calc(100% - 8px);overflow:auto;background:#fdf6e6;color:#4a3320;border:3px solid #c9a978;border-radius:18px;box-shadow:0 12px 40px #0008;padding:1em 1.2em 1.1em;animation:mwIn .3s cubic-bezier(.2,1.3,.4,1) both}
+.popWin .mwT{margin:0 0 .6em;font-size:20px;color:#6a4010}.popWin .mwX{position:absolute;top:8px;right:10px;width:38px;height:38px;border-radius:50%;border:2px solid #c9a978;background:#fff;color:#7a5020;font-size:22px;line-height:1;cursor:pointer}
+.popWin .mc{font:inherit;text-align:left;cursor:pointer;display:flex;flex-direction:column;box-shadow:0 3px 0 #c9a97899}.popWin .mc:active{transform:translateY(2px);box-shadow:none}
+.popWin .mcGo{margin-top:auto;padding-top:.4em;font-weight:700;color:#c06a10;text-align:right}
+@media (hover:hover) and (pointer:fine){.popWin .mc:hover{border-color:#e0a030}}
 @keyframes mwBg{from{opacity:0}}@keyframes mwOut{to{opacity:0}}@keyframes mwIn{from{opacity:0;transform:translateY(24px) scale(.94)}}
+.popWin .mwBox h3:not(.mwT){font-size:16px;color:#6a4010;margin:.8em 0 .3em}.popWin .mwBox ol,.popWin .mwBox ul{margin:.2em 0 .5em 1.4em;line-height:1.7}.popWin .mwBox p{line-height:1.7;margin:.4em 0}
+.popWin .mwBox .small{color:#7a6040}.popWin .mwBox .ibox{background:#fffaf0;border:1.5px solid #e0c890;border-radius:12px;padding:.5em .9em;margin:.6em 0;color:#4a3320}.popWin .mwBox input{max-width:100%}
+.popWin .mwT{padding-right:44px}
+.popWin .qrImg{width:min(220px,60vw);margin:.6em auto;background:#fff;padding:8px;border-radius:10px;border:1.5px solid #e0c890}.popWin .qrImg svg{display:block;width:100%;height:auto}
+.popWin .sendHow{display:flex;align-items:center;justify-content:center;gap:.8em;font-size:30px;margin:.3em 0}.popWin .sendHow span{display:flex;flex-direction:column;align-items:center}.popWin .sendHow small{font-size:12px;color:#7a6040}.popWin .sendHow b{color:#c9a978}
 .modeCmp{display:flex;gap:12px;flex-wrap:wrap}.modeCmp .mc{flex:1 1 240px;background:#fffaf0;color:#4a3320;border:2px solid #c9a978;border-radius:12px;padding:.7em .9em;line-height:1.65}
 .modeCmp .mc b{display:inline-block;font-size:1.1em;padding:.05em .8em;border-radius:999px;margin-bottom:.3em}.modeCmp .st b{background:#f6cf5b;color:#3a2410}.modeCmp .fr b{background:#14284a;color:#fff}
 .modeTip{margin-top:12px;line-height:1.7}
@@ -2211,7 +2216,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.17.1';
-const BUILD = '20261114-2056';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261114-2133';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.17.1', date:'2026-11-14', items:[
     'ふりがなに「ぜんぶ」をふやした。すべての漢字にふりがながつくので、小学校に入る前の子も、おうちの人といっしょに遊べるよ（タイトルの「ふりがな」か「その他」で切りかえ）',
@@ -3881,15 +3886,11 @@ const MODE_TXT = {
 };
 /* 「？」：別のページではなく、タイトルの上に うかぶウィンドウ。カードをタップすると、そのモードの「つづきから／はじめから」へ（2026-11-15 ユーザー） */
 let modePicked = false;   // カードからえらんだときは、「〜で はじめる？」を もう一度きかない
-function showModes(){ $('modeWin')?.remove();
-  const L = document.createElement('div'); L.id = 'modeWin';
-  L.innerHTML = `<div class="mwBox" role="dialog" aria-label="どっちで遊ぶ？"><button type="button" class="mwX" aria-label="とじる">×</button><h3>どっちで遊ぶ？</h3>
+function showModes(){
+  const L = openWin('どっちで遊ぶ？', `
     <div class="modeCmp"><button type="button" class="mc st" data-m="btnStory"><b>ストーリー</b><p>${esc(MODE_TXT.story).replace(/\n/g, '<br>')}</p><span class="mcGo">▶ タップで あそぶ</span></button><button type="button" class="mc fr" data-m="btnFree"><b>じゆうに育てる</b><p>${esc(MODE_TXT.free).replace(/\n/g, '<br>')}</p><span class="mcGo">▶ タップで あそぶ</span></button></div>
-    <p class="modeTip"><b>おすすめ</b>：はじめは ストーリーで、虫の育てかたや いのちのことを知ってから、じゆうに育てる へ。親子で いっしょに 両方遊んでもOK（セーブは べつべつ）。</p></div>`;
-  const close = ()=>{ L.classList.add('out'); setTimeout(()=> L.remove(), 220); };
-  L.onclick = e=>{ if(e.target === L) close(); }; L.querySelector('.mwX').onclick = close;
+    <p class="modeTip"><b>おすすめ</b>：はじめは ストーリーで、虫の育てかたや いのちのことを知ってから、じゆうに育てる へ。親子で いっしょに 両方遊んでもOK（セーブは べつべつ）。</p>`, 'modeWin');
   L.querySelectorAll('[data-m]').forEach(b=> b.onclick = ()=>{ L.remove(); const t = $(b.dataset.m); if(t){ modePicked = true; Promise.resolve(t.onclick()).finally(()=> modePicked = false); } });
-  document.body.appendChild(L);
 }
 async function start(){
   $('tabs').hidden = false; $('rtabs').hidden = false; setTab('home'); hud();
@@ -5044,6 +5045,13 @@ function renderOpt(){
 }
 
 /* ---- 説明パネル ---- */
+/* タイトルの上に うかぶウィンドウ（「？」・アプリにする方法・友だちに教える・タブレットにおくる。2026-11-15 ユーザー） */
+function openWin(title, html, id){ document.querySelectorAll('.popWin').forEach(e=> e.remove());
+  const L = document.createElement('div'); L.className = 'popWin'; if(id) L.id = id;
+  L.innerHTML = `<div class="mwBox" role="dialog" aria-label="${esc(title)}"><button type="button" class="mwX" aria-label="とじる">×</button><h3 class="mwT">${esc(title)}</h3>${html}</div>`;
+  const close = ()=>{ L.classList.add('out'); setTimeout(()=> L.remove(), 220); };
+  L.onclick = e=>{ if(e.target === L) close(); }; L.querySelector('.mwX').onclick = close; L.close = close;
+  document.body.appendChild(L); return L; }
 function openPanel(title, html){
   const p = document.createElement('div'); p.className = 'full';
   p.innerHTML = `<div class="in"><div class="top"><h2>${esc(title)}</h2></div><div>${html}</div></div><button type="button" class="btn close">とじる</button>`;
@@ -5078,12 +5086,12 @@ function installHTML(){
     <p class="small">※iPhone・iPadでは、Safariで遊んだセーブデータと、ホーム画面のアプリのセーブデータは別々になります。はじめからアプリで遊ぶのがおすすめです。</p>`;
 }
 function showInstall(){
-  openPanel('アプリにする方法', installHTML());
+  openWin('アプリにする方法', installHTML());
   const b = $('doInstall'); if(b) b.onclick = async ()=>{ installEvt.prompt(); await installEvt.userChoice.catch(()=>{}); installEvt = null; b.textContent = 'ありがとう！'; b.disabled = true; };
 }
 async function showShare(){
   const enc = encodeURIComponent(GAME_URL), txt = '宗像がぶたいの虫そだてゲーム「むなかた 虫そだて日記〈1週間〉」で、いっしょに虫をそだてよう！';
-  openPanel('友だちに教える', `<p>このゲームのURLを、友だちやおうちの人に送ろう！</p>
+  openWin('友だちに教える', `<p>このゲームのURLを、友だちやおうちの人に送ろう！</p>
     <div class="row">${navigator.share ? '<button type="button" class="btn pri" id="doShare">共有する</button>' : ''}
       <a class="btn line" href="https://social-plugins.line.me/lineit/share?url=${enc}" target="_blank" rel="noopener">LINEで送る</a>
       <button type="button" class="btn" id="doCopy">URLをコピー</button></div>
@@ -5099,7 +5107,7 @@ async function showShare(){
 }
 // スマホでつかまえた虫を、家のタブレットやパソコンへ（やり方）
 function showSendHow(){
-  openPanel('スマホでつかまえて、タブレットにおくる', `<div class="sendHow norb"><span>📱<small>外で</small></span><b>→</b><span>🐛<small>虫をおくる</small></span><b>→</b><span>🖥<small>家のタブレット</small></span></div>
+  openWin('スマホでつかまえて、タブレットにおくる', `<div class="sendHow norb"><span>📱<small>外で</small></span><b>→</b><span>🐛<small>虫をおくる</small></span><b>→</b><span>🖥<small>家のタブレット</small></span></div>
     <p>外ではスマホを持って、虫をさがして つれてかえる。家では、大きな画面のタブレットやパソコンで、ゆっくり育てよう。</p>
     <div class="ibox now"><h3>おくりかた</h3><ol>
       <li>スマホで、虫かごの虫をひらく</li>
@@ -5125,7 +5133,7 @@ function showPrivacy(){
     <p>屋外での採集は、保護者の方のスマートフォンで、お子さんと一緒に行う前提で設計しています。アプリは1日1回「おうちの人といっしょ？」と確認します。</p>`);
 }
 function showInstall(){
-  openPanel('アプリにする方法', `<h3>iPhone・iPad（Safari）</h3><ol><li>画面の下の「共有」ボタン（四角から矢印が出ている形）を押す</li><li>「ホーム画面に追加」を押す</li></ol>
+  openWin('アプリにする方法', `<h3>iPhone・iPad（Safari）</h3><ol><li>画面の下の「共有」ボタン（四角から矢印が出ている形）を押す</li><li>「ホーム画面に追加」を押す</li></ol>
     <h3>Android（Chrome）</h3><ol><li>右上の「︙」を押す</li><li>「ホーム画面に追加」または「アプリをインストール」を押す</li></ol>
     <p class="small">ホーム画面のアイコンから開くと、アプリのように全画面で遊べます。</p>`);
 }
