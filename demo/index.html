@@ -97,7 +97,7 @@ p{margin:.3em 0}
 #titleScr .t1{font-size:clamp(13px,3.5vw,20px);color:#fff;letter-spacing:.2em;text-shadow:2px 2px 0 #0008}
 #titleScr .t2{font-size:clamp(30px,9vw,56px);color:var(--sun);letter-spacing:.06em;text-shadow:3px 3px 0 #5a2a10,-1px -1px 0 #fff3;line-height:1.15;margin:.1em 0}
 #titleScr .t3{font-size:clamp(11px,2.8vw,15px);color:#fff;text-shadow:1px 1px 0 #0009;max-width:30em}
-#titleScr .t4{max-width:34em;margin-top:.6em;padding:.35em .8em;font-size:clamp(9px,2.1vw,12px);line-height:1.5;color:#fff;background:#0006;border-radius:4px}
+#titleScr .t4{max-width:34em;margin-top:.6em;padding:.35em .9em;font-size:clamp(11px,2.3vw,13px);line-height:1.5;color:#4a3320;background:#fffaf0e6;border:1.5px solid #c9a978;border-radius:10px;text-shadow:none}   /* 2026-11-15 ユーザー：読めない → 紙の色の上に こげ茶 */
 #titleScr .sun{position:absolute;right:9%;top:7%;width:12%;max-width:70px;aspect-ratio:1;border-radius:50%;background:#ffe27a;box-shadow:0 0 0 6px #ffe27a44}
 #titleScr .hero{width:min(60%,260px);margin:.3em 0}
 #titleScr .tbtns{display:flex;gap:.6em;flex-wrap:wrap;justify-content:center;margin-top:.7em}
@@ -116,6 +116,12 @@ html.land #titleScr .tbtn.qm{padding:.3em .85em;font-size:calc(var(--H) * .034)}
 .popWin .mwBox h3:not(.mwT){font-size:16px;color:#6a4010;margin:.8em 0 .3em}.popWin .mwBox ol,.popWin .mwBox ul{margin:.2em 0 .5em 1.4em;line-height:1.7}.popWin .mwBox p{line-height:1.7;margin:.4em 0}
 .popWin .mwBox .small{color:#7a6040}.popWin .mwBox .ibox{background:#fffaf0;border:1.5px solid #e0c890;border-radius:12px;padding:.5em .9em;margin:.6em 0;color:#4a3320}.popWin .mwBox input{max-width:100%}
 .popWin .mwT{padding-right:44px}
+/* スマホ（よこ・まわした画面）では小さめに。端末のふち（--st など）をよけて、×がかならず見える（2026-11-15 ユーザー） */
+.popWin{padding:max(12px,var(--st,0px)) max(12px,var(--sr,0px)) max(12px,var(--sb,0px)) max(12px,var(--sl,0px))}
+html.land .popWin .mwBox{font-size:clamp(12px,calc(var(--H) * .036),16px);width:min(760px,88%);max-height:90%}
+.popWin .mwT{font-size:1.25em}.popWin .mwBox h3:not(.mwT){font-size:1.02em}
+.popWin .mwX{position:sticky;top:0;float:right;margin:-.3em -.4em 0 .5em;z-index:2;width:2.3em;height:2.3em;font-size:1em}
+.popWin .chlog .now{background:#f6cf5b;color:#3a2410}.popWin .chlog ul{font-size:.9em}.popWin .chlog h3 small{color:#8a7050}.popWin b{color:#5a3010}
 .popWin .qrImg{width:min(220px,60vw);margin:.6em auto;background:#fff;padding:8px;border-radius:10px;border:1.5px solid #e0c890}.popWin .qrImg svg{display:block;width:100%;height:auto}
 .popWin .sendHow{display:flex;align-items:center;justify-content:center;gap:.8em;font-size:30px;margin:.3em 0}.popWin .sendHow span{display:flex;flex-direction:column;align-items:center}.popWin .sendHow small{font-size:12px;color:#7a6040}.popWin .sendHow b{color:#c9a978}
 .modeCmp{display:flex;gap:12px;flex-wrap:wrap}.modeCmp .mc{flex:1 1 240px;background:#fffaf0;color:#4a3320;border:2px solid #c9a978;border-radius:12px;padding:.7em .9em;line-height:1.65}
@@ -890,7 +896,7 @@ html.land #titleScr .t2 br{display:none}
 html.land #titleScr .hero{width:auto;height:calc(var(--H) * .2);margin:0}
 html.land #titleScr .hero svg{height:100%;width:auto}
 html.land #titleScr .t3{font-size:calc(var(--H) * .032);line-height:1.5}
-html.land #titleScr .t4{font-size:calc(var(--H) * .025);margin-top:0;padding:.2em .8em;line-height:1.4}
+html.land #titleScr .t4{font-size:max(11px,calc(var(--H) * .026));margin-top:.2em;padding:.25em .9em;line-height:1.4}
 html.land #titleScr .tbtns{margin-top:0}
 html.land #titleScr .tbtn{font-size:calc(var(--H) * .042);padding:.25em 1.2em}
 html.land #titleScr .vrow{margin-top:0}
@@ -905,7 +911,7 @@ html.land #titleScr .verbtn{font-size:calc(var(--H) * .03)}
 #titleScr.art .tbtn{letter-spacing:.08em}
 #titleScr.art .verbtn{background:#4a2c14a8;border-color:#fff3dccc;text-shadow:none}
 #titleScr.art .t3{display:none}
-#titleScr.art .t4{order:9;background:none;color:#fff;text-shadow:0 0 4px #3a2410,1px 1px 0 #3a2410;padding:0;margin:.2em 0 0}
+#titleScr.art .t4{order:9;background:#fffaf0dd;color:#4a3320;text-shadow:none;padding:.2em .9em;margin:.3em 0 0;border:1.5px solid #c9a978;border-radius:8px}   /* 2026-11-15 ユーザー：読めない → 紙の色の帯に こげ茶 */
 html.land #titleScr.art{justify-content:flex-start}
 html.land #titleScr.art{background-position:center 30%}
 html.land #titleScr.art .tlogoBox{width:auto;height:calc(var(--H) * .36);margin-top:calc(var(--H) * .015)}
@@ -913,7 +919,7 @@ html.land.wide #titleScr.art .tlogoBox{height:calc(var(--H) * .31);transform:tra
 html.land #titleScr.art .tlogo{height:100%;width:auto}
 html.land #titleScr.art .t1{font-size:calc(var(--H) * .034);margin:0}
 html.land #titleScr.art .t3{font-size:calc(var(--H) * .028);line-height:1.5}
-html.land #titleScr.art .t4{font-size:calc(var(--H) * .02);max-width:90%;line-height:1.35}
+html.land #titleScr.art .t4{font-size:max(10.5px,calc(var(--H) * .022));max-width:90%;line-height:1.35}
 html.land #titleScr.art .tbtns{margin:calc(var(--H) * .012) 0}
 html.land #msgLayer{padding-bottom:12px;padding-left:90px}
 html.land #msgLayer .win{font-size:17px}
@@ -2216,7 +2222,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.17.1';
-const BUILD = '20261114-2150';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261114-2207';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.17.1', date:'2026-11-14', items:[
     'ふりがなに「ぜんぶ」をふやした。すべての漢字にふりがながつくので、小学校に入る前の子も、おうちの人といっしょに遊べるよ（タイトルの「ふりがな」か「その他」で切りかえ）',
@@ -3506,9 +3512,10 @@ function placeBug(c, slot){   // どこに、どんなすがたでいるか
     if(night) return {x:40, y:30, s:.45, o:{rest:true, sleep:true}, txt:'はねをとじて、くきにとまってねている。'};
     return {x:55, y:34, s:.55, o:{}, txt:fresh ? '花にとまって、さとう水をすっている。' : 'はねをひらいたりとじたりしている。さとう水を置いてあげよう。'};
   }
-  if(b.shape === 'mantis'){
-    if(night) return {x:40, y:40, s:.5, o:{sleep:true, instar:ins}, txt:'草のかげで、じっとしている。'};
-    return {x:48, y:44, s:.55, o:{instar:ins}, txt:'カマをかまえて、エサの虫をねらっている。目があうと、こっちを見るよ。'};
+  if(b.shape === 'mantis'){   // 宙にういて見えないように：枝のかざりがあれば枝、なければ土の上（2026-11-15 ユーザー）
+    const pe = perchSpot(c), gy = s=> soilTopOf(b) + 1 - 38*s*.85;
+    if(night) return pe ? {x:pe.x, y:pe.y, s:.5, perch:true, o:{sleep:true, instar:ins}, txt:'枝につかまって、じっとしている。'} : {x:40, y:gy(.5), s:.5, o:{sleep:true, instar:ins}, txt:'草のかげで、じっとしている。'};
+    return pe ? {x:pe.x, y:pe.y, s:.55, perch:true, o:{instar:ins}, txt:'枝の上で カマをかまえて、エサの虫をねらっている。'} : {x:48, y:gy(.55), s:.55, o:{instar:ins}, txt:'カマをかまえて、エサの虫をねらっている。目があうと、こっちを見るよ。'};
   }
   if(b.shape === 'cricket'){
     if(night || slot === 'yu'){ return {x:50, y:55, s:.55, o:{sing: st === 'adult', instar:ins}, txt: st === 'adult' ? 'リーンリーン…。はねをこすりあわせて鳴いている！' : '暗くなってきて、かくれ家から出てきた。'}; }
@@ -3519,6 +3526,14 @@ function placeBug(c, slot){   // どこに、どんなすがたでいるか
 }
 const FX_Z = {fun:[8, 8.3], kumori:[15, 17], kabi:[11, 10.7]};   // ガラスのよごれの絵の大きさ
 const dirtOp = k=> k === 'kumori' ? .75 : 1;
+/* 置いたものが宙にうかないように（2026-11-15 ユーザー）。かざりは土の上。エサは、葉や枝（かざり・チョウの花）の上なら そのまま、ほかは土の上へ落とす */
+function itemRest(c, type, k, x, y, sc=1){
+  const b = BUGS[c.bug], soilTop = soilTopOf(b);
+  if(type === 'deco') return soilTop + 1.5;
+  const onLeaf = (c.deco||[]).some(d=>{ if(!/^(ha_|eda_)/.test(d.k)) return false; const s = .55*(DECO_Z[d.k]||1); return Math.abs(x - d.x) < 36*s && y > d.y - 66*s && y < d.y - 4; })
+    || (b.shape === 'butterfly' && x > 22 && x < 66 && y > soilTop - 66 && y < soilTop - 6);
+  return onLeaf ? clamp(y, 14, soilTop - 4) : soilTop + 1 - (FOOD_ART[k] || 28) * .4 * sc;
+}
 const FOOD_ART = {zeri:24, kyabetsu:32, mikan:32, enoki:32, nasu:24, koorogi:24, kusa:32, mitsu:24};   // エサの絵（img/food/）と、ケースの中での大きさ
 const foodIc = k=> FOOD_ART[k] ? `<img class="tim" src="img/food/${k}.webp" alt="" draggable="false">` : k === 'wide' ? '📦' : '';
 function foodSVG(f){
@@ -4040,7 +4055,8 @@ const REACT = {
 };
 async function renderObs(){
   const c = S.cases[openCase]; if(!c){ openCase = null; render(); return; }
-  if(!obsSession || obsSession.i !== openCase) obsSession = {i:openCase, touches:0, sprayed:false};
+  if(!obsSession || obsSession.i !== openCase){ obsSession = {i:openCase, touches:0, sprayed:false};
+    (c.deco||[]).forEach(d=> d.y = itemRest(c, 'deco', d.k)); (c.foods||[]).forEach(f=> f.y = itemRest(c, 'food', f.k, f.x, f.y, .5 + .5*Math.max(.2, f.left))); }   // 前のセーブで宙にういていたものも、おろす
   const furu = {n:0, x0:0, last:0, dir:0, seg:0};   // 「ふる」：つかんでゆらした回数
   const big = obsSession.big;   // 大そうじのとちゅう：{step:1 虫をひなんケースへ, 2 土を入れかえる, 3 虫をもどす}
   const b = BUGS[c.bug], st = stageOf(c), slot = slotOf(), sc = sceneSVG(c, slot, {noBug: big && big.step >= 1 && big.step <= 3, clear: noteUI()}), g = genkiOf(c), fc = forecast(c), band = WET_BAND[b.shape];
@@ -4262,7 +4278,7 @@ async function renderObs(){
     if(!haveFood){ await say(`「${food.name}」がない！\n「おみせ」で買えるよ。`, {face:'papa'}); return; }
     const fresh = (c.foods||[]).filter(f=>!f.old).length;
     if(fresh >= 2){ c.log.over++; save(); await say('もうエサが置いてある。\n置きすぎると、古くなってアリがくるよ。食べたら、また置こう。\n（まちがえて置いたときは、下の「↩ エサを1こ もどす」で もどせるよ）', {face:'papa_worry'}); return; }
-    const soilTop = soilTopOf(b); y = clamp(y, 14, soilTop - 2); x = clamp(x, 8 - (noteUI() ? caseExtra(c) : 0), 92 + (noteUI() ? caseExtra(c) : 0));   // 土の中には置けない
+    x = clamp(x, 8 - (noteUI() ? caseExtra(c) : 0), 92 + (noteUI() ? caseExtra(c) : 0)); y = itemRest(c, 'food', foodKey, x, y);   // 土の中には置けない。宙にもうかない
     if(food.price) S.items[foodKey]--;
     c.foods.push({id:Date.now(), k:foodKey, x, y, age:0, left:1, old:false, undo:1});
     c.log.feed++; if(c.hunger >= 50) c.log.feedFull++;
@@ -4286,7 +4302,7 @@ async function renderObs(){
   const itemAt = e=>{ const el = e.target.closest && e.target.closest('.food, .deco'); if(!el) return null;
     if(el.classList.contains('food')){ const f = (c.foods||[]).find(f=>String(f.id) === el.dataset.f); return f && {type:'food', it:f, el}; }
     const d = (c.deco||[]).find(d=>String(d.id) === el.dataset.deco); return d && {type:'deco', it:d, el}; };
-  const moveItem = e=>{ const q = toXY(e), soilTop = soilTopOf(b); dragItem.it.x = clamp(q.x, 6 - (noteUI() ? caseExtra(c) : 0), 94 + (noteUI() ? caseExtra(c) : 0)); dragItem.it.y = dragItem.type === 'food' ? clamp(q.y, 14, soilTop - 2) : clamp(q.y, soilTop - 28, soilTop + 2);
+  const moveItem = e=>{ const q = toXY(e), soilTop = soilTopOf(b); dragItem.it.x = clamp(q.x, 6 - (noteUI() ? caseExtra(c) : 0), 94 + (noteUI() ? caseExtra(c) : 0)); dragItem.it.y = itemRest(c, dragItem.type, dragItem.it.k, dragItem.it.x, q.y, dragItem.type === 'food' ? .5 + .5*Math.max(.2, dragItem.it.left) : 1);
     const sc = dragItem.type === 'food' ? `scale(${.5 + .5*Math.max(.2, dragItem.it.left)}) translate(-50 -50)` : 'scale(.55) translate(-50 -70)';
     dragItem.el.setAttribute('transform', `translate(${dragItem.it.x} ${dragItem.it.y}) ${sc}`); if(dragItem.type === 'deco') binZone.classList.toggle('over', inBin(e)); };
   const dragTo = e=>{ const r = sceneEl.getBoundingClientRect(); setObj(clamp(e.clientX - r.left - grab.dx, 8, r.width - 8), clamp(e.clientY - r.top - grab.dy, 8, r.height - 8), 'drag' + (tool === 'fukin' ? ' wipe' : '') + (sprayTimer ? ' spray' : '')); };
@@ -4377,7 +4393,7 @@ async function renderObs(){
     const q = hotXY(); toolObj.hidden = true;   // つかったら、道具はしまう（もう一度さわれば、また出る）
     if(tool === 'fukin'){ await wipeDone(); return; }
     if(tool === 'esa'){ await placeFood(q.x, q.y); return; }
-    if(tool === 'kazari'){ if(!decoSel) return; const soilTop = soilTopOf(b); c.deco.push({id:Date.now(), k:decoSel, x:clamp(q.x, 8 - (noteUI() ? caseExtra(c) : 0), 92 + (noteUI() ? caseExtra(c) : 0)), y:clamp(q.y, soilTop - 28, soilTop + 2)}); S.items[decoSel]--; if(!(S.items[decoSel] > 0)) decoSel = null; save(); renderObs(); setTimeout(()=> setTxt('かざりを置いた。つまんで動かせるよ。'), 50); await yakusoku('deco', 'かくれ家やとまり木があると、虫は落ちついてくらせる。\n本物の虫かごでも、同じだよ。'); return; }
+    if(tool === 'kazari'){ if(!decoSel) return; const soilTop = soilTopOf(b); c.deco.push({id:Date.now(), k:decoSel, x:clamp(q.x, 8 - (noteUI() ? caseExtra(c) : 0), 92 + (noteUI() ? caseExtra(c) : 0)), y:itemRest(c, 'deco', decoSel)}); S.items[decoSel]--; if(!(S.items[decoSel] > 0)) decoSel = null; save(); renderObs(); setTimeout(()=> setTxt('かざりを置いた。つまんで動かせるよ。'), 50); await yakusoku('deco', 'かくれ家やとまり木があると、虫は落ちついてくらせる。\n本物の虫かごでも、同じだよ。'); return; }
     setTxt(sc.txt); };
   sceneEl.onlostpointercapture = e=>{ if(down) sceneEl.onpointerup(e); };
   window.__toolUp = e=>{ if(down && sceneEl.isConnected) sceneEl.onpointerup(e); else sprayStop(); };
@@ -5117,12 +5133,12 @@ function showSendHow(){
     <p class="small">※ストーリーは、1つの端末で遊ぶモードです。おくれるのは「じゆうに育てる」の虫です。<br>※サーバーは使いません。おくるのは虫のこと（種類・大きさ・育ちぐあいなど）だけです。</p>`);
 }
 function showChangelog(){
-  openPanel('こうしん情報', `<p>いま遊んでいるのは <b>ver ${GAME_VER}</b>${window.DEMO ? '（デモ版）' : ''} です。<br><small>公開番号 ${esc(BUILD)}</small></p>
+  openWin('こうしん情報', `<p>いま遊んでいるのは <b>ver ${GAME_VER}</b>${window.DEMO ? '（デモ版）' : ''} です。<br><small>公開番号 ${esc(BUILD)}</small></p>
     <p class="small">新しい版が出ると、画面の上に「こうしんする」が出ます。</p>
     <div class="chlog">${CHANGELOG.map((c,i)=>`<h3>ver ${esc(c.v)}${i===0 ? '<span class="now norb">いまのバージョン</span>' : ''}<small> ${esc(c.date)}</small></h3><ul>${c.items.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`).join('')}</div>`);
 }
 function showPrivacy(){
-  openPanel('プライバシーについて', `
+  openWin('プライバシーについて', `
     <h3>こどものみんなへ</h3>
     <ul><li>このゲームは、名前・写真・いる場所を<b>どこにも送りません</b>。</li>
       <li>そだてている虫やずかんの記録は、<b>この端末の中にだけ</b>のこります。</li>
@@ -5141,6 +5157,7 @@ function showInstall(){
 /* キーボード：Esc／X で とじる・もどる（虫とり日記の B ボタンと同じ） */
 addEventListener('keydown', e=>{
   if(e.key !== 'Escape' && e.key.toLowerCase() !== 'x') return;
+  const pw = [...document.querySelectorAll('.popWin')].pop(); if(pw){ pw.close ? pw.close() : pw.remove(); return; }
   const ful = [...document.querySelectorAll('.full')].pop(); if(ful){ ful.remove(); return; }
   const msg = $('msgLayer'); if(msg && !msg.querySelector('.ans')){ msg.click(); return; }
   if(openCase !== null){ openCase = null; render(); }
