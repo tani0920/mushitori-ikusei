@@ -1176,9 +1176,10 @@ html.land body.noteUI.noteTabs #rtabs .rt.on::after{content:'';position:absolute
 html.land body.noteUI.noteTabs .obsR.flip{animation:pageFlip .32s ease-out}
 #rtabs .rtIc{display:none}
 /* 虫かごの外の「もちもの」は、ノートのアイコンのボタン（2026-11-15 ユーザー） */
-html.land body.noteUI:not(.noteTabs) #rtabs #rtItems{writing-mode:horizontal-tb;width:auto;min-height:0;padding:.35em .55em .3em;margin-right:6px;border-radius:12px;background:url(img/ui/card.webp) center/100% 100% no-repeat;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;letter-spacing:0}
-html.land body.noteUI:not(.noteTabs) #rtabs #rtItems .rtIc{display:block;width:38px;height:46px;object-fit:contain;filter:drop-shadow(1px 1px 1px #3a241255)}
-html.land.tall body.noteUI:not(.noteTabs) #rtabs #rtItems{font-size:14px}html.land.tall body.noteUI:not(.noteTabs) #rtabs #rtItems .rtIc{width:48px;height:58px}
+html.land body.noteUI:not(.noteTabs) #rtabs #rtItems,html.land body.noteUI:not(.noteTabs) #rtabs #rtNote{writing-mode:horizontal-tb;width:auto;min-height:0;padding:.35em .55em .3em;margin-right:6px;border-radius:12px;background:url(img/ui/card.webp) center/100% 100% no-repeat;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;letter-spacing:0}
+html.land body.noteUI:not(.noteTabs) #rtabs #rtItems .rtIc,html.land body.noteUI:not(.noteTabs) #rtabs #rtNote .rtIc{display:block;width:38px;height:46px;object-fit:contain;filter:drop-shadow(1px 1px 1px #3a241255)}
+html.land.tall body.noteUI:not(.noteTabs) #rtabs #rtItems,html.land.tall body.noteUI:not(.noteTabs) #rtabs #rtNote{font-size:14px}html.land.tall body.noteUI:not(.noteTabs) #rtabs #rtItems .rtIc,html.land.tall body.noteUI:not(.noteTabs) #rtabs #rtNote .rtIc{width:48px;height:58px}
+body.noteTabs #rtabs #rtNote{display:none}   /* 虫しらべノート：右の「もちもの」の下（ストーリーだけ、虫かごの中では出さない。2026-11-15 ユーザー） */
 html.land body.noteUI.noteTabs #rtabs .rt{min-height:clamp(52px,calc((var(--nH) - 40px) / 3 - 6px),96px)}
 html.land:not(.tall) body.noteUI #rtabs .rt{font-size:13px;letter-spacing:.02em;min-height:0;padding-top:.4em;padding-bottom:.4em}html.land:not(.tall) body.noteUI #rtabs{gap:4px}
 html.land:not(.tall) body.noteUI #tabs button{min-height:0;flex:1 1 0;max-height:62px}html.land:not(.tall) body.noteUI #tabs{bottom:var(--sb,0px)}   /* おうちがふえて6こ：スマホは高さに合わせて ちぢめる */
@@ -1350,7 +1351,8 @@ body.noteUI #hud .sch{color:#b0601a}   /* 明るい札の上でも読めるよ�
 <div id="rtabs" hidden>
   <button type="button" class="rt" data-t="home"><span class="ic">🏠</span>おうち</button>
   <button type="button" class="rt" id="rtMushi" hidden><span class="ic">🐛</span>むしのこと</button>
-  <button type="button" class="rt" id="rtItems"><span class="ic">🎒</span><img class="rtIc" src="img/ui/note_page.webp" alt="" draggable="false">もちもの</button>
+  <button type="button" class="rt" id="rtItems"><span class="ic">🎒</span><img class="rtIc" src="img/ui/ic_mochimono.webp" alt="" draggable="false">もちもの</button>
+  <button type="button" class="rt" id="rtNote" hidden><span class="ic">📒</span><img class="rtIc" src="img/ui/ic_note.webp" alt="" draggable="false">ノート</button>
   <button type="button" class="rt" id="rtCase" hidden><span class="ic">📋</span>ケースの<br>こと</button>
 </div>
 <div class="drawer norb" id="itemsPanel" data-p="items"><div class="dHead"><b>もちもの</b></div><div id="itemsBody"></div></div>
@@ -2421,7 +2423,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.17.1';
-const BUILD = '20261115-0103';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261115-0114';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.17.1', date:'2026-11-14', items:[
     'ふりがなに「ぜんぶ」をふやした。すべての漢字にふりがながつくので、小学校に入る前の子も、おうちの人といっしょに遊べるよ（タイトルの「ふりがな」か「その他」で切りかえ）',
@@ -2783,7 +2785,7 @@ function flipRot(){ try{ localStorage.setItem(ROT_KEY, rotPref() === 1 ? '-1' : 
    ========================================================= */
 const RUBY = {"宗像大社":"むなかたたいしゃ|7","宗像":"むなかた|7","釣川":"つりかわ|7","城山":"じょうやま|4","松原":"まつばら|4","赤間":"あかま|2","大島":"おおしま|3","成虫":"せいちゅう|4","幼虫":"ようちゅう|6","脱皮":"だっぴ|7",
   "羽化":"うか|3","観察":"かんさつ|4","飼育":"しいく|5","飼う":"かう|5","飼い":"かい|5","飼わ":"かわ|5","育てる":"そだてる|3","育て":"そだて|3","育つ":"そだつ|3","育ち":"そだち|3",
-  "卵":"たまご|6","樹液":"じゅえき|6","場所":"ばしょ|3","写真":"しゃしん|3","保存":"ほぞん|6","位置":"いち|4","設定":"せってい|5","許可":"きょか|5","情報":"じょうほう|5","完成":"かんせい|4",
+  "卵":"たまご|6","卵のう":"らんのう|6","樹液":"じゅえき|6","場所":"ばしょ|3","写真":"しゃしん|3","保存":"ほぞん|6","位置":"いち|4","設定":"せってい|5","許可":"きょか|5","情報":"じょうほう|5","完成":"かんせい|4",
   "登録":"とうろく|4","準備":"じゅんび|5","必要":"ひつよう|4","選ぶ":"えらぶ|4","選ん":"えらん|4","記録":"きろく|4","安全":"あんぜん|3","注意":"ちゅうい|3","説明":"せつめい|4","季節":"きせつ|4",
   "自然":"しぜん|4","命":"いのち|3","大切":"たいせつ|3","大ダメージ":"だいダメージ|1","世話":"せわ|3","葉":"は|3","緑":"みどり|3","畑":"はたけ|3","神社":"じんじゃ|3","送り":"おくり|3","送ら":"おくら|3",
   "開く":"ひらく|3","進む":"すすむ|3","進み":"すすみ|3","実際":"じっさい|5","成長":"せいちょう|4","変身":"へんしん|4","道具":"どうぐ|3","確かめ":"たしかめ|5","保護者":"ほごしゃ|5","公開":"こうかい|3",
@@ -3962,6 +3964,7 @@ function renderItems(){
   $('itemsShop').onclick = ()=>{ setSide(null); setTab('shop'); };
 }
 $('rtItems').onclick = ()=> setSide(sidePanel === 'items' ? null : 'items');
+$('rtNote').onclick = ()=>{ setSide(null); showNote(); };   // 虫しらべノート
 $('rtMushi').onclick = ()=>{ const was = sidePanel; setSide(null);   // 虫かごの中：ノートの さいしょのページ（虫のこと）にもどる
   const o = document.querySelector('#obs .obsR'); if(was && o){ o.classList.remove('flip'); void o.offsetWidth; o.classList.add('flip'); } };   // もどるときも ページをめくる
 $('rtCase').onclick = ()=> setSide(sidePanel === 'case' ? null : 'case');
@@ -4058,6 +4061,7 @@ function render(){
   document.body.dataset.tab = openCase !== null ? 'case' : atSpot ? 'spot' : tab; document.body.dataset.slot = slotOf();
   document.querySelectorAll('body > #drawer').forEach(e=>e.remove()); $('rtCase').hidden = true; $('rtMushi').hidden = true; document.body.classList.remove('noteTabs');   // ケースのこと は、ケースの画面のときだけ
   if(sidePanel === 'case') sidePanel = null; setSide(sidePanel); $('rtabs').hidden = !S;
+  if($('rtNote')) $('rtNote').hidden = !(S && S.story && openCase === null);
   setStandee(S && openCase === null && tab === 'shop' ? 'ojisan' : null); if(!atSpot && $('papaPop')){ $('papaPop').remove(); $('papaBub')?.remove(); }
   if(!S){ renderTitle(); otoScene(); return; }
   if(openCase !== null){ renderObs(); otoScene(); setTimeout(tutCheck, 900); return; }
@@ -6578,7 +6582,7 @@ const STORY_DAY = {
       おじさん：…でもな、そういう話は、むかしからあるんだよ。
       ＠絵 note
       ＊その夜。えんがわで、おとうさんの古いノートを ひらくと…くっついていた最後のページが、ぺりっと、はがれた。
-      ＊子どもの字で かいた、金色のカブトムシの絵。その下に、「大島で見た。だれも信じてくれない。でも、ぼくは見た。」
+      ＊子どもが かいた、金色のカブトムシの絵。その下に、「大島で見た。だれも信じてくれない。でも、ぼくは見た。」
       ぼく（びっくり）：おとうさん、これ…！
       おとうさん（ふつう）：…ああ。思い出した。七夕の夜、大島で…金色の虫が、海のほうへ飛んでいったんだ。
       おとうさん（にっこり）：…そうか。おとうさんも、あの夏、見ていたんだな。`); await kakera('saigo');
