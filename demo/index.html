@@ -354,6 +354,40 @@ html.land.tall #msgLayer .ans .btn.pic img{width:132px;height:99px}
 @keyframes boIn{from{opacity:0}to{opacity:1}}@keyframes boOut{to{opacity:0}}@keyframes boTxt{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .storyCard .scTap{position:absolute;bottom:22px;right:28px;color:#ffe8b0;font-size:15px;animation:tapBlink 1.2s ease-in-out infinite}
 @keyframes tapBlink{50%{opacity:.35}}
+/* 章のはじまりのカード */
+#evLayer.storyCard:has(.chCard){background:#000;padding:0}
+.chCard{position:absolute;inset:0;overflow:hidden;color:#fff;font-family:"M PLUS Rounded 1c","Hiragino Maru Gothic ProN",sans-serif;display:flex;align-items:center;justify-content:center;animation:chIn .6s ease-out both}
+.chCard .chBg{position:absolute;inset:-4%;background:var(--chimg) center/cover no-repeat;filter:saturate(1.1);animation:chPan 7s ease-out both}
+.chCard .chBg::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 55%,#0000 0%,#0006 55%,#000c 100%),linear-gradient(transparent 40%,color-mix(in srgb,var(--chc) 55%,#000) 100%);mix-blend-mode:normal}
+.chCard .chIn{position:relative;z-index:2;text-align:center;padding:0 6%;display:flex;flex-direction:column;align-items:center;gap:.35em;text-shadow:0 3px 10px #000a}
+.chCard .chNo{font-size:clamp(22px,4.5vh,40px);font-weight:900;letter-spacing:.15em;color:#fff;padding:.05em 1em;border-radius:999px;background:color-mix(in srgb,var(--chc) 80%,#000);border:3px solid #fff;box-shadow:0 0 24px var(--chc);animation:chPop .6s .2s cubic-bezier(.2,1.6,.4,1) both}
+.chCard .chNo small{font-size:.6em;margin:0 .15em}
+.chCard .chTtl{font-size:clamp(34px,8.5vh,82px);font-weight:900;line-height:1.15;-webkit-text-stroke:2px color-mix(in srgb,var(--chc) 40%,#000);text-shadow:0 0 22px var(--chc),0 5px 0 #0008}
+.chCard .chTtl span{display:inline-block;animation:chChar .55s cubic-bezier(.2,1.5,.4,1) both;animation-delay:calc(.55s + var(--i) * .07s)}
+.chCard .chTheme{font-size:clamp(14px,2.6vh,22px);font-weight:800;color:#3a2410;background:#fff6d8;border-radius:8px;padding:.1em .8em;box-shadow:0 2px 0 color-mix(in srgb,var(--chc) 70%,#000);animation:chFade .6s 1.4s both;text-shadow:none}
+.chCard .chLine{font-size:clamp(15px,3vh,26px);font-weight:700;max-width:28em;animation:chFade .8s 1.8s both}
+.chCard .chDate{font-size:clamp(12px,2.1vh,18px);opacity:.9;animation:chFade .8s 2.2s both}
+@keyframes chIn{from{opacity:0}}@keyframes chPan{from{transform:scale(1.12)}to{transform:scale(1)}}
+@keyframes chPop{0%{transform:scale(0) rotate(-10deg)}100%{transform:none}}
+@keyframes chChar{0%{transform:translateY(.6em) scale(.4);opacity:0}100%{transform:none;opacity:1}}
+@keyframes chFade{from{opacity:0;transform:translateY(8px)}}
+/* 舞うもの */
+.chCard .chFx{position:absolute;inset:0;z-index:1;pointer-events:none}
+.chCard .chFx i{position:absolute;left:var(--x);top:var(--y);display:block;animation-delay:var(--d);animation-iteration-count:infinite}
+.fx-hikari .chFx i,.fx-kin .chFx i{width:calc(6px * var(--s));height:calc(6px * var(--s));border-radius:50%;background:#ffe9a0;box-shadow:0 0 10px 4px #ffd040aa;animation:fxRise 4s linear infinite}
+.fx-kin .chFx i{background:#fff4c0;box-shadow:0 0 14px 6px #f0c030cc}
+.fx-hotaru .chFx i{width:7px;height:7px;border-radius:50%;background:#d8ff8a;box-shadow:0 0 12px 5px #b8f060aa;animation:fxFly 5s ease-in-out infinite,fxBlink 1.6s ease-in-out infinite}
+.fx-cho .chFx i{width:calc(14px * var(--s));height:calc(10px * var(--s));border-radius:50% 50% 40% 40%;background:#fff8e0;box-shadow:inset -3px 0 0 #f0d070;animation:fxFlutter 5s ease-in-out infinite}
+.fx-hoshi .chFx i::before{content:'✦';font-style:normal;color:#fff6c0;font-size:calc(14px * var(--s));text-shadow:0 0 8px #ffe080}
+.fx-hoshi .chFx i{animation:fxBlink 2.2s ease-in-out infinite}
+.fx-kaze .chFx i{width:calc(60px * var(--s));height:2px;background:linear-gradient(90deg,#fff0,#fffb,#fff0);transform:rotate(-18deg);animation:fxWind 1.4s linear infinite}
+.fx-moya .chFx i{width:calc(220px * var(--s));height:calc(70px * var(--s));border-radius:50%;background:#fff;opacity:.16;filter:blur(18px);animation:fxMist 8s ease-in-out infinite alternate}
+@keyframes fxRise{0%{transform:translateY(30px);opacity:0}20%{opacity:1}100%{transform:translateY(-120px);opacity:0}}
+@keyframes fxFly{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-25px)}}
+@keyframes fxBlink{0%,100%{opacity:.15}50%{opacity:1}}
+@keyframes fxFlutter{0%{transform:translate(-20px,20px) scaleX(1)}25%{transform:translate(10px,0) scaleX(.3)}50%{transform:translate(40px,-20px) scaleX(1)}75%{transform:translate(60px,-10px) scaleX(.3)}100%{transform:translate(90px,-40px) scaleX(1);opacity:0}}
+@keyframes fxWind{from{transform:translateX(120px) rotate(-18deg);opacity:0}30%{opacity:1}to{transform:translateX(-220px) rotate(-18deg);opacity:0}}
+@keyframes fxMist{from{transform:translateX(-40px)}to{transform:translateX(60px)}}
 .storyCard .kakeraCard{background:linear-gradient(#fffaf0,#fff0c8);color:#4a3320;border:3px solid #e0b040;border-radius:18px;padding:1.2em 1.6em 1.3em;box-shadow:0 0 0 4px #fff6d8aa,0 0 40px 10px #ffd86088;max-width:min(88%,520px)}
 .storyCard .kakeraCard .stt{color:#8a5a10;font-size:28px}.storyCard .kakeraCard .sdt{color:#4a3320}
 .storyCard .kakeraCard .kkGlow{font-size:40px;line-height:1;color:#f0b020;text-shadow:0 0 12px #ffe070,0 0 24px #ffd040;animation:eggGlow 1.4s ease-in-out infinite}
@@ -1069,11 +1103,15 @@ html.land body.noteUI #placeBg{display:block;position:fixed;inset:0;z-index:-1;b
 #nightRoom{position:absolute;inset:0;width:100%;height:100%;display:block}
 .tabArt{display:none}
 html.land body.noteUI{--note-ink:#4a3320;font-family:"M PLUS Rounded 1c","Hiragino Maru Gothic ProN","Hiragino Sans",sans-serif;background:#d9c4a4}
-html.land body.obsMode{--toolh:clamp(50px,calc(var(--H) * .085),84px);--nf:clamp(14px,calc(var(--H) * .023),22px);--sih:min(calc((var(--H) - var(--st) - var(--sb) - var(--toolh) - 42px) * .73),calc((var(--W) - 80px - var(--rtw) - var(--sl) - var(--sr)) * .6 / 1.78))}
+html.land body.obsMode{--toolh:clamp(50px,calc(var(--H) * .085),84px);--tiph:clamp(26px,calc(var(--H) * .048),42px);--nf:clamp(14px,calc(var(--H) * .023),22px);--sih:min(calc((var(--H) - var(--st) - var(--sb) - var(--toolh) - var(--tiph) - 46px) * .73),calc((var(--W) - 80px - var(--rtw) - var(--sl) - var(--sr)) * .6 / 1.78))}
 html.land body.obsMode #view{padding-top:0;font-weight:600;overflow:hidden}
 html.land body.obsMode .obsGrid{gap:6px;box-sizing:border-box;height:100%;grid-template-rows:minmax(0,1fr);align-items:stretch}
 html.land body.obsMode .obsL{width:calc(var(--sih) * 1.78);flex:none;justify-content:flex-end;gap:4px;padding-bottom:4px;box-sizing:border-box;align-items:center;height:100%}
 html.land body.obsMode .caseBox{position:relative;flex:none}
+.tipBar{display:none}
+html.land body.obsMode .obsL .tipBar{display:flex;align-items:center;justify-content:center;gap:.4em;height:var(--tiph);flex:none;max-width:100%;box-sizing:border-box;padding:0 .9em;font-size:clamp(12px,calc(var(--H) * .019),17px);font-weight:700;color:#4a3320;white-space:nowrap;overflow:hidden;border-radius:999px;visibility:hidden}
+html.land body.obsMode .obsL .tipBar.on{visibility:visible;background:#fbf3dfee;border:1.5px solid #d9a93a;box-shadow:0 2px 4px #3a241233}
+html.land body.obsMode .obsL .tipBar .tIc{width:1.6em;height:1.6em;display:flex;align-items:center;justify-content:center}html.land body.obsMode .obsL .tipBar .tIc .tim,html.land body.obsMode .obsL .tipBar .tIc svg{width:100%;height:100%}   /* 道具の使い方：虫かごと道具のあいだ（2026-11-15） */
 .caseBox .caseArt{display:none}
 html.land body.obsMode .caseBox .caseArt{display:block;position:absolute;inset:0;width:100%;height:100%;pointer-events:none;-webkit-user-drag:none;user-select:none;filter:drop-shadow(0 3px 3px #3a241255)}
 html.land body.obsMode #obs .caseBox .scene{position:absolute;max-width:none;aspect-ratio:auto;border:0;border-radius:0 0 3px 3px;background:transparent;overflow:hidden}
@@ -2346,7 +2384,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.17.1';
-const BUILD = '20261115-0022';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261115-0046';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.17.1', date:'2026-11-14', items:[
     'ふりがなに「ぜんぶ」をふやした。すべての漢字にふりがながつくので、小学校に入る前の子も、おうちの人といっしょに遊べるよ（タイトルの「ふりがな」か「その他」で切りかえ）',
@@ -2621,7 +2659,7 @@ if(GA_ON){
   gtag('config', GA_ID, {allow_google_signals:false, allow_ad_personalization_signals:false, game:'ikusei'});
   const g = document.createElement('script'); g.async = true; g.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID; document.head.appendChild(g);
 }
-function track(name, params){ try{ if(GA_ON && !gaOff()) gtag('event', name, Object.assign({game:'ikusei', game_ver:GAME_VER}, params||{})); }catch(e){} }
+function track(name, params){ try{ if(GA_ON && !gaOff()) gtag('event', name, Object.assign({game:'ikusei', game_ver:GAME_VER, mode:S ? (S.story ? 'story' : 'free') : 'title'}, params||{})); }catch(e){} }   // mode：どちらのモードで遊んでいるか（探索で分ける）
 function setGaOff(off){ try{ off ? localStorage.setItem(GA_OFF_KEY, '1') : localStorage.removeItem(GA_OFF_KEY); }catch(e){} window['ga-disable-' + GA_ID] = off || !GA_ON; }
 
 /* =========================================================
@@ -3963,8 +4001,8 @@ const STORY_AT = {'1-1':'akama+', '1-2':'akama+', '1-7':'akama', '1-5e':'akama',
   '3-1':'oshima+', '3-6':'oshima', '3-7':'oshima',
   '4-1':'matsubara+', '4-2':'shop', '4-5':'matsubara+',
   '5-1':'joyama+', '5-7':'joyama',
-  '6-1':'taisha+', '6-2':'taisha+', '6-7':'taisha'};
-const AT_IMG = {shop:'scr_shop'};   // 「そと」の場所でないところ（おみせ＝虫具店。2026-11-15 ユーザー：4章で はるかと会うのに、背景がぼくの家だった）
+  '6-1':'taisha+', '6-2':'taisha+', '6-3e':'taisha', '6-4':'sumo', '6-7':'taisha'};
+const AT_IMG = {shop:'scr_shop', sumo:'scr_sumo'};   // sumo＝赤間の町の切りかぶの土俵（6-4 すもう大会）   // 「そと」の場所でないところ（おみせ＝虫具店。2026-11-15 ユーザー：4章で はるかと会うのに、背景がぼくの家だった）
 function atShow(k){ const sp = SPOTS.find(x=> x.key === k); if(!sp && !AT_IMG[k]) return; let e = $('cgLayer'); if(e) e.remove();
   e = document.createElement('div'); e.id = 'cgLayer'; e.className = 'atBg'; e.dataset.k = 'spot:' + k; e.style.backgroundImage = `url(img/ui/${sp ? 'spot_' + spotArt(sp) : AT_IMG[k]}.webp)`; document.body.appendChild(e); otoScene(); }
 async function storyAt(key, f){
@@ -4130,7 +4168,7 @@ function coachStep(st){
 }
 async function coach(key, steps){
   if(coachOn || !tutOK() || !S || !S.yk || S.yk['tut_' + key]) return;
-  coachOn = true; S.yk['tut_' + key] = 1; save(true);
+  coachOn = true; S.yk['tut_' + key] = 1; save(true); track('tutorial', {step:key});
   try{ for(const st of steps){ if(st.if && !st.if()) continue; await coachStep(st); } } finally { coachOn = false; }
 }
 // いつ・どの説明を出すか（render のあと。会話や演出が出ているときは待つ）
@@ -4251,6 +4289,7 @@ async function renderObs(){
   view.innerHTML = `<div class="obsGrid" id="obs">
     <div class="obsL">
       <div class="caseBox" style="${caseBoxCSS(c)}"><img class="caseArt" src="img/ui/case_${(S.boxes||[])[boxIdx(c)] || 'futsu'}.webp" alt="" draggable="false"><div class="scene tool-${tool}" id="scene" style="${caseSceneCSS(c)}">${sc.svg}<div class="toolObj norb" id="toolObj" hidden></div><div class="binZone norb" id="binZone" hidden>しまう</div>${tool === 'big' && st.k !== 'pupa' ? `<div class="refuge norb ${big && big.step >= 1 ? 'on' : ''}" id="refuge"><small>ひなんケース</small><div class="rb" id="refugeBug">${big && big.step >= 2 ? svgBug(c.bug, st.k, {instar:instarOf(c), scale:.9}) : ''}</div></div>` : ''}<div class="mini norb" id="mini" hidden></div></div></div>
+      <div class="tipBar norb" id="tipBar"></div>
       ${tool === 'kazari' ? `<div class="tools decoPick norb" id="decoPick"><button type="button" class="tbtn back" data-tool="yubi"><span class="ic">↩</span>道具へ</button>${ownDeco.map(k=>`<button type="button" class="pk ${decoSel===k?'on':''}" data-deco="${k}"><svg viewBox="4 0 92 74">${decoSVG(k)}</svg>${esc(ITEMS[k].name)}<small>×${S.items[k]}</small></button>`).join('')}</div>`
         : `<div class="tools norb" id="toolTray">${Object.keys(TOOLS).filter(k=> k !== 'yubi').map(k=>`<button type="button" class="tbtn ${tool===k?'on':''}" data-tool="${k}" ${k==='esa' && st.k==='pupa' ? 'disabled' : ''}><span class="ic">${TOOLS[k].ic}</span>${TOOLS[k].name}</button>`).join('')}</div>`}
     </div>
@@ -4311,9 +4350,10 @@ async function renderObs(){
   const TIP = {megane:'取っ手を持って、見たいところにレンズをかざす', fukin:'よごれの上をこする', kiri:'タップすると、シュッと水が出る', esa:'さわったところに、エサをおく', kazari:'さわったところに、かざりをおく', big:'虫の上をさわって、そっとつまむ'};
   const toolOff = ()=> tool === 'yubi' || tool === 'furu' || (tool === 'big' && st.k === 'pupa') || (tool === 'esa' && st.k === 'pupa') || (tool === 'kazari' && (!decoSel || ITEMS[decoSel].cat === 'mat'));
   // 道具をえらんだら、ケースの上に「いま持っている道具」と使い方を出す。道具の絵は、ケースの中をさわったところに出る
-  const showTool = ()=>{ toolObj.hidden = true; let tp = sceneEl.querySelector('.toolTip');
-    if(toolOff()){ tp && tp.remove(); return; }
+  const showTool = ()=>{ toolObj.hidden = true; const bar = $('tipBar'); let tp = bar && bar.offsetParent ? bar : sceneEl.querySelector('.toolTip');
+    if(toolOff()){ if(tp === bar){ bar.innerHTML = ''; bar.classList.remove('on'); } else tp && tp.remove(); return; }
     if(!tp){ tp = document.createElement('div'); tp.className = 'toolTip norb'; sceneEl.appendChild(tp); }
+    if(tp === bar) bar.classList.add('on');
     tp.innerHTML = `<span class="tIc">${tool === 'kazari' ? `<svg viewBox="0 0 100 100">${decoSVG(decoSel)}</svg>` : TOOLS[tool].ic}</span>${tool === 'big' && (obsSession.big||{}).step === 2 ? 'ほうきで、土をはく' : TIP[tool] || ''}${tool === 'esa' && undoFood() ? '<button type="button" class="tUndo">↩ エサを1こ もどす</button>' : ''}`;
     const ub = tp.querySelector('.tUndo'); if(ub){ ['pointerdown', 'mousedown', 'touchstart'].forEach(ev=> ub.addEventListener(ev, e=> e.stopPropagation()));
       ub.onclick = e=>{ e.stopPropagation(); const f = undoFood(); if(!f) return; c.foods.splice(c.foods.indexOf(f), 1); if(ITEMS[f.k] && ITEMS[f.k].price) S.items[f.k] = (S.items[f.k]||0) + 1; c.log.feed = Math.max(0, c.log.feed - 1); save(); renderObs(); setTimeout(()=> setTxt(`${ITEMS[f.k] ? ITEMS[f.k].name : 'エサ'}を、ひとつ もどした。`), 50); }; } };
@@ -4680,7 +4720,7 @@ async function showResult(c){
 // 元気がとても低いままだった虫は、死んでしまう（やさしく正直に伝える）
 async function handleGone(){
   for(let i=0;i<S.cases.length;i++){ const c = S.cases[i]; if(!c || !c.gone) continue;
-    S.cases[i] = null; save();
+    S.cases[i] = null; save(); track('bug_gone', {bug:c.bug, stage:stageOf(c).k, chapter:storyOn() ? S.story.ch : 0});   // お世話がたりずに弱ってしまった（つまずき）
     // 死なせてしまったとき（2026-11-09）：やさしく、正直に。土にうめずに、紙につつんでもえるごみ（または標本）。資料_宗像.md
     const nm = dispName(c), d = S.dex[c.bug];
     await say(`${nm}が、動かなくなってしまった…。`, {face:'boku_sad'});
@@ -4939,7 +4979,7 @@ async function doFind(sp, here, egg, slot, h){
     S.cases[free] = {bug:id, si:0, prog:0, hunger:70, wet:70, clean:100, tick:now(), pending:false, from:sp.name, born:sp.key, bornSlot:slotOf(), since:dayKey(),
       ind:{hp:1, atk:1, def:1, spd:1, heal:1}, log:newLog(), tot:newLog(), place:keys[pi], trouble:null, dirt:[], foods:[], soak:0, hideUntil:0, deco:[], mat:null, soilAge:0, wetZ:Array(WZ).fill(70), soakZ:Array(WZ).fill(0), stress:0};
     save(); hud();
-    const nc = S.cases[free]; nc.known = !!know;
+    const nc = S.cases[free]; nc.known = !!know; track('bug_catch', {bug:id, chapter:storyOn() ? S.story.ch : 0});
     await say(`${know ? b.name + 'の' + (id === 'kinkabuto' ? 'たまご' : '幼虫') : 'なぞの' + G.name}を、${free+1}ばんの${BOXES[S.boxes[free]].name}（${PLACES[keys[pi]].name}）に入れた。\n「${BORN[sp.key].name}」の虫だ。`);
     await yakusoku('take', '虫をつれてかえるときは、いきをしやすいように、ふたにあなをあけたケースに。\n日なたにおくと、あつくて弱ってしまうよ。');
     if(storyOn()){ nc.story = S.story.ch; save(); await storyFound(nc); }
@@ -5914,7 +5954,7 @@ async function storyCheck(){
   const i = storyIdx(), ch = chOfIdx(i), day = dayOfIdx(i), h = new Date(now()).getHours();
   const key = ch + '-' + day;
   // 新しい日の朝は、虫かごの中や虫さがしのとちゅうでも、かならず「おうち」にもどして、その日の話から始める（2026-11-14 ユーザー：前の日と同じ場所から始まるのはおかしい）。大そうじのとちゅうと、指で道具を動かしているあいだだけは待つ
-  const newDay = ch >= 1 && ch <= 6 && h >= 5 && (!S.story.seen[key] || (day > 1 && !S.story.seen[ch + '-1']));
+  const newDay = ch >= 1 && ch <= 6 && h >= (DAY_H[key] || 5) && (!S.story.seen[key] || (day > 1 && !S.story.seen[ch + '-1']));
   if(newDay){
     if((obsSession && obsSession.big) || document.querySelector('.toolObj.drag')) return;
     if(openCase !== null || tab !== 'home' || outState){ openCase = null; obsSession = null; outState = null; $('findField') && $('findField').remove(); document.querySelector('.found')?.remove(); }
@@ -5938,7 +5978,7 @@ async function storyCheck(){
       if(S.story.ch !== ch || S.story.day !== day) ran = true;
       S.story.ch = ch; S.story.day = day;
       if(!S.story.seen[ch + '-1'] && day > 1){ ran = true; await storyDay(ch, 1); }
-      if(!S.story.seen[key] && h >= 5){ ran = true; if(day === 7 && ch <= 5) await storyDay7Intro(ch); else await storyDay(ch, day); }
+      if(!S.story.seen[key] && h >= (DAY_H[key] || 5)){ ran = true; if(day === 7 && ch <= 5) await storyDay7Intro(ch); else await storyDay(ch, day); }
       else if(day === 7 && ch <= 5 && S.story.seen[key] && !day7Done(ch) && h >= STORY_D7){ ran = true; S.story.seen[key + 'm'] = 1; await storyDay(ch, 7, true); }   // 夕方4時：虫をかえす
       else if(S.story.seen[key] && !S.story.eve[key] && (slotOf() === 'yu' || slotOf() === 'yoru') && h >= (EVE_H[key] || 16)){ const f = STORY_EVE[key]; S.story.eve[key] = 1; save(); if(f){ ran = true; outState = null; setTab('home'); await storyAt(key + 'e', f); } }
       else if((S.story.seen[key] || h < 5) && storySp().m > 1 && storyLate(h) && !S.story.done){ ran = true; await storyBedtime(); }   // 夜9時：ねる時間
@@ -5946,7 +5986,7 @@ async function storyCheck(){
   } finally { storyRunning = false; storyBusy = false; if(ran) save(); else if(Date.now() - storyQuietSave > 10000){ storyQuietSave = Date.now(); save(true); } }   // 何もおきなかったときは、10秒に1回だけ だまってセーブ（ゲームの時計をのこすため。とじるときは autoSaveNow でもセーブ）
   if(ran && S && S.story) render();
 }
-async function storyDay(ch, day, noCard){
+async function storyDay(ch, day, noCard){ if(!noCard) track('story_day', {chapter:ch, day, day_idx:(ch - 1)*7 + day});   // ストーリーのどこまで進んだか（つまずきやすい日を見る）
   const key = ch + '-' + day; S.story.seen[key] = 1; S.story.ch = ch; S.story.day = day; save();
   outState = null; $('findField') && $('findField').remove(); setTab('home');
   if(day === 1) await chapterCard(ch);
@@ -5962,7 +6002,26 @@ function cardShow(html, ms=2600){ return new Promise(r=>{ const L = document.cre
 function blackout(txt){ return new Promise(r=>{ const L = document.createElement('div'); L.id = 'evLayer'; L.className = 'blackout'; L.innerHTML = `<div class="boTxt">${fmtMsg(txt || '')}</div>`; document.body.appendChild(L);
   const t0 = Date.now(); let fin = false; const done = ()=>{ if(fin) return; fin = true; L.classList.add('out'); L.id = 'evFade'; r(); setTimeout(()=> L.remove(), 500); };   // つぎの絵・会話は、くらいのが明けるのと同時に
   L.onclick = ()=>{ if(Date.now() - t0 > 900) done(); }; setTimeout(done, 3200); }); }
-const chapterCard = ch=> (track('chapter_start', {chapter:ch}), cardShow(`<div class="sc"><div class="sch norb">${ch}章</div><div class="stt">${esc(CH[ch].ttl)}</div><div class="sdt">${esc(CH[ch].place.replace(/の(畑|森|草むら|山道|松林|海ぞいの林)$/, ''))}　${dateStr()}</div></div>`, 3200));
+/* 章のはじまりのカード（2026-11-15 ユーザー：その章で起こることを感じさせる、ワクワクする見せ方）。
+   その章の場所の絵・色・テーマ・ひとこと・舞うもの（fx：hikari 光の粒／cho チョウ／hotaru ホタル／hoshi 星／kaze 風と雨／moya 朝もや／kin 金色の光） */
+const CH_LOOK = [
+  {img:'title_a', col:'#f0a24a', theme:'あずかる', fx:'hikari', line:'夏休み前の夜。海の向こうで、金色の光が またたいた。'},
+  {img:'spot_akama', col:'#6cbf5a', theme:'食べる・育つ', fx:'cho', line:'キャベツの葉のうらに、小さな いのちが かくれている。'},
+  {img:'spot_tameike', col:'#3f7fd0', theme:'すむ場所', fx:'hotaru', line:'夜のため池に、ちいさな光が ゆれる。'},
+  {img:'spot_oshima', col:'#2a9ad8', theme:'生まれる', fx:'hoshi', line:'七夕の島で、ふしぎな たまごに 出会う。'},
+  {img:'spot_matsubara', col:'#6a8090', theme:'終わる・受けつぐ', fx:'kaze', line:'台風がやってくる。いのちは、つぎへ つながっていく。'},
+  {img:'spot_joyama', col:'#4f9a62', theme:'ささえあう', fx:'moya', line:'朝もやの山。森は、みんなで ささえあっている。'},
+  {img:'spot_taisha', col:'#d8a22a', theme:'帰る', fx:'kin', line:'三つのお宮と、金色の光。ふしぎの こたえは、すぐそこに。'},
+];
+function chTitleHTML(ch, date){ const L = CH_LOOK[ch] || CH_LOOK[1], ttl = ch ? CH[ch].ttl : '夏休みのはじまり', place = ch ? CH[ch].place.replace(/の(畑|森|草むら|山道|松林|海ぞいの林)$/, '') : '宗像';
+  const fx = Array.from({length:L.fx === 'kaze' ? 16 : 22}, (_, i)=> `<i style="--x:${(i*37 % 100)}%;--y:${(i*53 % 100)}%;--d:${(i*.37 % 3).toFixed(2)}s;--s:${.6 + (i*7 % 10)/10}"></i>`).join('');
+  return `<div class="chCard fx-${L.fx}" style="--chc:${L.col};--chimg:url(img/ui/${L.img}.webp)"><div class="chBg"></div><div class="chFx">${fx}</div>
+    <div class="chIn"><div class="chNo norb">${ch ? `<small>第</small>${ch}<small>章</small>` : '序章'}</div>
+      <div class="chTtl">${[...ttl].map((t, i)=> `<span style="--i:${i}">${esc(t)}</span>`).join('')}</div>
+      <div class="chTheme norb">テーマ：${esc(L.theme)}</div>
+      <div class="chLine">${esc(L.line)}</div>
+      <div class="chDate">${esc(place)}　${esc(date)}</div></div></div>`; }
+const chapterCard = ch=> (track('chapter_start', {chapter:ch}), cardShow(chTitleHTML(ch, dateStr()), 5200));
 const dayCard = (ch, day)=> cardShow(`<div class="sc small1"><div class="sch norb">${ch}章　${day}日目</div><div class="sdt">${dateStr()}</div></div>`, 1600);
 /* 7日目（1〜5章）は、朝に「きょうは虫をかえす日」と伝えるだけ。その日はふつうに遊べて、夕方4時に虫をかえす（2026-11-10 ユーザー：朝にかえすと、そのあとが半端） */
 const STORY_D7 = 16;
@@ -6040,7 +6099,7 @@ function showSources(){
 async function storyBegin(){
   storyBusy = true;
   await cardShow(`<div class="sc"><div class="stt">この物語はフィクションです。</div><div class="sdt">実在する場所や行事が出てきますが、登場する人や、ふしぎな出来事は作り話です。</div></div>`, 4200);
-  await cardShow(`<div class="sc"><div class="sch norb">序章</div><div class="stt">夏休みのはじまり</div><div class="sdt">7月19日（日）　終業式の日</div></div>`, 3000);
+  await cardShow(chTitleHTML(0, '7月19日（日）　終業式の日'), 5200);
   await play(`ぼく（たのしい）：あしたから夏休みだー！ 虫かご、早くいっぱいにしたいなあ。強いのとか、めずらしいのとか！
     おとうさん（にっこり）：夏休みの自由研究、もう決めたかい？
     ぼく（ふつう）：まだ…。虫のことにしたいけど、何をしたらいいかわかんない。
@@ -6399,7 +6458,8 @@ const STORY_DAY = {
       おとうさん（教える）：この子は、大島で生まれた。だから、大島にかえさないとね。
       ぼく（うれしい）：うん！`); storyGoal('ふしぎな幼虫のお世話'); },
   '6-4': async ()=>{ meet('ren');
-    await play(`れん：チャンピオンの座は、ゆずらないよ。…でも、きみの虫と、いちど本気でやってみたかった。`);
+    await play(`＊朝9時。赤間の町の切りかぶの土俵に、子どもたちが集まってきた。きょうは、虫すもう大会！
+      れん：チャンピオンの座は、ゆずらないよ。…でも、きみの虫と、いちど本気でやってみたかった。`);
     S.story.flags.final = 1;
     const ad = S.cases.filter(c=> c && stageOf(c).k === 'adult' && c.bug !== 'kinkabuto');
     if(ad.length){ await play('＊ゆうた・はるか・そうま・だいちも、見にきた。すもう決勝だ！'); await storyFinal(ad[0]); }
@@ -6507,8 +6567,14 @@ STORY_DAY['3-4'] = async ()=>{ meet('kenta');
     await play(ok >= 3 ? '島の子：すげー！ ほんとに先生だ！\nぼく（たのしい）：へへっ。' : 'けんた：まあ、おれよりはくわしいな。'); }
   S.story.flags.sensei = ok;
 };
+const DAY_H = {'6-4':9};   // その日の話を、朝の何時から始めるか（ふつうは朝いちばん）。6-4 すもう大会は9時から
 const EVE_H = {'2-4':19};   // 夕方の話の時間（ふつうは4時から）。ホタルは夜7時から（2026-11-14 ユーザー：4時ごろはおかしい）
 const STORY_EVE = {
+  '6-3': async ()=>{ meet('ren');
+    await play(`＊夕方。宗像大社の森の帰り道、れんが待っていた。
+      れん：あした、朝9時から、赤間の町の切りかぶの土俵で、すもう大会をするよ。決勝は、ぼくと きみ。
+      れん：今夜のうちに、エサと しめりけを ととのえておいて。調子のいい虫で、本気で やろう。
+      ぼく（ふつう）：…うん。ぜったい行く！`); storyGoal('あしたの朝9時、赤間の土俵で すもう大会'); },
   '1-5': async ()=>{ await play(`＊夕方。畑からの帰り道、ふりかえると、ミカンの木の下に、白い長いかみの人が立っていた。
       白いかみの人：…小さな いのちを、だいじにしているのですね。
       ＊風がふいて、葉がゆれた。もう一度見ると、だれもいない。木の下に、つやつやした葉が1まい落ちていた。`); siroSeen(); await kakera('sakaki'); },
