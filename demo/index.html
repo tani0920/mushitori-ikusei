@@ -1011,15 +1011,28 @@ html.land body.noteUI #tabs .tabArt{display:block;width:32px;height:32px;margin:
 html.land body.noteUI #tabs button.on{background:#f6cf5b;color:#3a2410}
 html.land body.noteUI #rtabs{top:max(46px,calc(var(--st) + 46px));gap:6px}
 html.land body.noteUI #rtabs .rt{font-size:16px;min-height:96px;width:calc(var(--rtw) + 8px);letter-spacing:.12em}   /* 2026-11-15 ユーザー：タグが小さい */
-#rtabs #rtMushi{background:#f6cf5b}
+html:not(.land) #rtabs #rtMushi{background:#f6cf5b}
 html.land body.noteUI #rtabs #rtMushi{background-image:url(img/ui/tab_y.webp)}
 /* 虫かごの中：付せんはノートの右はし。ページ（.drawer）はノートの上に重ねて、めくるように出す */
-html.land body.noteUI.noteTabs #rtabs{left:min(calc(var(--nL) + var(--nW) - 10px),calc(100% - var(--rtw) - 10px - var(--sr,0px)));right:auto;top:calc(var(--nT) + 16px)}
+html.land body.noteUI.noteTabs div#rtabs{left:min(calc(var(--nL) + var(--nW) - 14px),calc(100% - var(--rtw) - 12px - var(--sr,0px)));right:auto;top:calc(var(--nT) + var(--nH) * .14)}
+html.land body.noteUI.noteTabs #rtabs .rt{transition:transform .2s,filter .2s;transform:translateX(6px);filter:brightness(.86) saturate(.8) drop-shadow(1px 1px 2px #3a241266)}
+html.land body.noteUI.noteTabs #rtabs .rt.on{transform:translateX(-4px);filter:drop-shadow(0 0 0 #fff) drop-shadow(2px 2px 3px #3a241288);z-index:2;font-weight:800}
+html.land body.noteUI.noteTabs #rtabs .rt.on::after{content:'';position:absolute;left:-6px;top:10%;bottom:10%;width:8px;background:inherit;background-size:100% 100%}   /* えらんだ付せんは ノートのページにくっついて見える（2026-11-15 ユーザー） */
+html.land body.noteUI.noteTabs .obsR.flip{animation:pageFlip .32s ease-out}
+#rtabs .rtIc{display:none}
+/* 虫かごの外の「もちもの」は、ノートのアイコンのボタン（2026-11-15 ユーザー） */
+html.land body.noteUI:not(.noteTabs) #rtabs #rtItems{writing-mode:horizontal-tb;width:auto;min-height:0;padding:.35em .55em .3em;margin-right:6px;border-radius:12px;background:url(img/ui/card.webp) center/100% 100% no-repeat;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;letter-spacing:0}
+html.land body.noteUI:not(.noteTabs) #rtabs #rtItems .rtIc{display:block;width:38px;height:46px;object-fit:contain;filter:drop-shadow(1px 1px 1px #3a241255)}
+html.land.tall body.noteUI:not(.noteTabs) #rtabs #rtItems{font-size:14px}html.land.tall body.noteUI:not(.noteTabs) #rtabs #rtItems .rtIc{width:48px;height:58px}
 html.land body.noteUI.noteTabs #rtabs .rt{min-height:clamp(52px,calc((var(--nH) - 40px) / 3 - 6px),96px)}
 html.land:not(.tall) body.noteUI #rtabs .rt{font-size:13px;letter-spacing:.02em;min-height:0;padding-top:.4em;padding-bottom:.4em}html.land:not(.tall) body.noteUI #rtabs{gap:4px}
 html.land:not(.tall) body.noteUI #tabs button{min-height:0;flex:1 1 0;max-height:62px}html.land:not(.tall) body.noteUI #tabs{bottom:var(--sb,0px)}   /* おうちがふえて6こ：スマホは高さに合わせて ちぢめる */
-html.land body.noteUI.noteTabs .drawer{left:var(--nL);top:var(--nT);width:var(--nW);height:var(--nH);right:auto;bottom:auto;box-sizing:border-box;padding:max(13px,3.2%) 5.5% max(16px,4.5%) 12.5%;transform-origin:left center;transform:none;filter:drop-shadow(0 3px 4px #3a241266)}
+html.land body.noteUI.noteTabs .drawer{left:var(--nL);top:var(--nT);width:var(--nW);height:var(--nH);right:auto;bottom:auto;box-sizing:border-box;padding:max(13px,calc(var(--nW) * .045)) calc(var(--nW) * .06) max(16px,calc(var(--nW) * .05)) calc(var(--nW) * .14);font-size:var(--nf);transform-origin:left center;transform:none;filter:drop-shadow(0 3px 4px #3a241266)}
 html.land body.noteUI.noteTabs .drawer.open{animation:pageFlip .32s ease-out}
+html.land body.noteUI.noteTabs .drawer .acts{grid-template-columns:repeat(auto-fit,minmax(10.5em,1fr))}
+html.land body.noteUI.noteTabs .drawer .acts .btn{font-size:.95em;padding:.6em .5em}html.land body.noteUI.noteTabs .drawer .acts .btn small{font-size:.78em}
+html.land body.noteUI.noteTabs .drawer .itemList .it{font-size:.95em}html.land body.noteUI.noteTabs .drawer .dHead b{font-size:1.15em}
+html.land.tall body.noteUI.noteTabs .drawer .itemList{display:grid;grid-template-columns:repeat(auto-fit,minmax(13em,1fr));gap:8px}
 html.land body.noteUI.noteTabs .drawer:not(.open){transition:none}
 @keyframes pageFlip{from{transform:perspective(1400px) rotateY(-70deg);opacity:.3}to{transform:none;opacity:1}}
 body .obsR .btn.detailBtn{display:inline-block;margin-top:.5em;font:inherit;font-size:1em;font-weight:700;padding:.35em .9em;background:#fffdf3;color:#4a3320;border:1.5px solid #a98a60;border-radius:10px;box-shadow:0 2px 0 #a98a6066;min-height:0;width:auto;cursor:pointer}
@@ -1173,7 +1186,7 @@ body.noteUI #hud .sch{color:#b0601a}   /* 明るい札の上でも読めるよ�
 <div id="rtabs" hidden>
   <button type="button" class="rt" data-t="home"><span class="ic">🏠</span>おうち</button>
   <button type="button" class="rt" id="rtMushi" hidden><span class="ic">🐛</span>むしのこと</button>
-  <button type="button" class="rt" id="rtItems"><span class="ic">🎒</span>もちもの</button>
+  <button type="button" class="rt" id="rtItems"><span class="ic">🎒</span><img class="rtIc" src="img/ui/note_page.webp" alt="" draggable="false">もちもの</button>
   <button type="button" class="rt" id="rtCase" hidden><span class="ic">📋</span>ケースの<br>こと</button>
 </div>
 <div class="drawer norb" id="itemsPanel" data-p="items"><div class="dHead"><b>もちもの</b></div><div id="itemsBody"></div></div>
@@ -1912,7 +1925,7 @@ function startBgm(h, id) {
 }
 function tick() {
   if (!ctx) return;
-  const now = ctx.currentTime, horizon = now + (document.hidden ? 1.6 : 0.35);
+  const now = ctx.currentTime, horizon = now + (document.hidden ? 1.6 : 1.0);   // 先に1秒ぶん用意しておく（2026-11-15 ユーザー：すもうで画面がいそがしいと、とぎれとぎれになった。前は0.35秒）
   players.forEach(P => {
     const S = P.S, ev = S.ev, n = ev.length, loopSec = S.loopBeats * P.spb;
     if (now - (P.start + P.iter * loopSec) > loopSec * 1.5) { P.iter = Math.floor((now - P.start) / loopSec); P.idx = 0; }
@@ -1920,7 +1933,7 @@ function tick() {
     while (guard++ < 800) {
       const e = ev[P.idx], tt = P.start + (P.iter * S.loopBeats + e[0]) * P.spb;
       if (tt > horizon) break;
-      if (tt > now - 0.02) {
+      if (tt > now - 0.12) {   // 少しおくれた音も、すぐ鳴らす（ぬけないように）
         const perc = PERC[e[1]];
         const t = Math.max(now + 0.005, tt + (perc ? rr(-0.002, 0.002) : rr(-0.007, 0.007)));
         const v = e[4] * (perc ? rr(0.9, 1.1) : rr(0.93, 1.07));
@@ -2244,7 +2257,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.17.1';
-const BUILD = '20261114-2242';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261114-2320';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.17.1', date:'2026-11-14', items:[
     'ふりがなに「ぜんぶ」をふやした。すべての漢字にふりがながつくので、小学校に入る前の子も、おうちの人といっしょに遊べるよ（タイトルの「ふりがな」か「その他」で切りかえ）',
@@ -3768,7 +3781,8 @@ function renderItems(){
   $('itemsShop').onclick = ()=>{ setSide(null); setTab('shop'); };
 }
 $('rtItems').onclick = ()=> setSide(sidePanel === 'items' ? null : 'items');
-$('rtMushi').onclick = ()=> setSide(null);   // 虫かごの中：ノートの さいしょのページ（虫のこと）にもどる
+$('rtMushi').onclick = ()=>{ const was = sidePanel; setSide(null);   // 虫かごの中：ノートの さいしょのページ（虫のこと）にもどる
+  const o = document.querySelector('#obs .obsR'); if(was && o){ o.classList.remove('flip'); void o.offsetWidth; o.classList.add('flip'); } };   // もどるときも ページをめくる
 $('rtCase').onclick = ()=> setSide(sidePanel === 'case' ? null : 'case');
 document.querySelector('#rtabs [data-t=home]').onclick = ()=>{ setSide(null); setTab('home'); };
 function setTab(t){ if(t !== tab || t !== 'out') outState = (t === 'out' && tab === 'out') ? outState : null;   // ほかのタブへ行ったら、虫さがしの場所から出る（つぎに「そと」をおすと、場所をえらぶ画面。2026-11-14 ユーザー）
@@ -3779,7 +3793,7 @@ let standeeBye = false;   // おみせのおじさん：ひとこと言ったら
 function setStandee(k){ let e = $('standee');
   if(!k || !html_land()){ if(e) e.remove(); $('shopBub')?.remove(); standeeBye = false; return; }
   if(standeeBye || (e && e.dataset.k === k)) return; if(e) e.remove();
-  e = document.createElement('img'); e.id = 'standee'; e.className = 'r'; e.dataset.k = k; e.alt = ''; e.draggable = false; e.src = `img/chara/cut/${k}.webp`; document.body.appendChild(e);
+  e = document.createElement('img'); e.id = 'standee'; e.dataset.k = k; e.alt = ''; e.draggable = false; e.src = `img/chara/cut/${k}.webp`; document.body.appendChild(e);
   if(k === 'ojisan') shopBub();
 }
 /* 虫具店のおじさんのひとこと（2026-11-14 ユーザー：セリフの位置をおとうさんのふきだしと合わせる。毎回、売っているもののアドバイス。エサ・土・かざり・虫かご）
@@ -3818,7 +3832,7 @@ function shopTip(){
 function shopBub(){ $('shopBub')?.remove();
   const t = shopTip(), e = document.createElement('div'); e.id = 'shopBub'; e.className = 'fuki norb'; e.dataset.cat = t[0];
   const hk = storyOn() ? hakaseNow() : '';
-  e.innerHTML = `<b class="who">虫具店のおじさん</b>${hk ? `おっ、${esc(hk)}じゃないか！` : 'いらっしゃい！'} 【${esc(t[0])}】${esc(t[1])}`;   // おじさんは右に立つので、名前の札も右
+  e.innerHTML = `<b class="who l">虫具店のおじさん</b>${hk ? `おっ、${esc(hk)}じゃないか！` : 'いらっしゃい！'} 【${esc(t[0])}】${esc(t[1])}`;   // おじさんは左に立つので、名前の札も左（2026-11-15 ユーザー：右はバランスがわるい）
   const bye = ()=>{ if(!e.isConnected) return; e.remove(); const st = $('standee'); if(st && st.dataset.k === 'ojisan'){ standeeBye = true; st.classList.add('bye'); setTimeout(()=> st.remove(), 450); } };
   e.onclick = bye; document.body.appendChild(e);
   setTimeout(bye, 9200);
