@@ -106,6 +106,13 @@ p{margin:.3em 0}
 #titleScr .tbtns.sub{margin-top:.45em;gap:.45em}
 #titleScr .tbtn.qm{padding:.4em .75em;background:#fffaf0;color:#4a3320;border-color:#c9a978;font-weight:800}
 html.land #titleScr .tbtn.qm{padding:.25em .7em}
+#modeWin{position:fixed;inset:0;z-index:160;background:#1a120a99;display:flex;align-items:center;justify-content:center;padding:16px;animation:mwBg .25s ease both}#modeWin.out{animation:mwOut .2s ease both}
+#modeWin .mwBox{position:relative;width:min(760px,100%);max-height:calc(100% - 8px);overflow:auto;background:#fdf6e6;color:#4a3320;border:3px solid #c9a978;border-radius:18px;box-shadow:0 12px 40px #0008;padding:1em 1.2em 1.1em;animation:mwIn .3s cubic-bezier(.2,1.3,.4,1) both}
+#modeWin h3{margin:0 0 .6em;font-size:20px;color:#6a4010}#modeWin .mwX{position:absolute;top:8px;right:10px;width:38px;height:38px;border-radius:50%;border:2px solid #c9a978;background:#fff;color:#7a5020;font-size:22px;line-height:1;cursor:pointer}
+#modeWin .mc{font:inherit;text-align:left;cursor:pointer;display:flex;flex-direction:column;box-shadow:0 3px 0 #c9a97899}#modeWin .mc:active{transform:translateY(2px);box-shadow:none}
+#modeWin .mcGo{margin-top:auto;padding-top:.4em;font-weight:700;color:#c06a10;text-align:right}
+@media (hover:hover) and (pointer:fine){#modeWin .mc:hover{border-color:#e0a030}}
+@keyframes mwBg{from{opacity:0}}@keyframes mwOut{to{opacity:0}}@keyframes mwIn{from{opacity:0;transform:translateY(24px) scale(.94)}}
 .modeCmp{display:flex;gap:12px;flex-wrap:wrap}.modeCmp .mc{flex:1 1 240px;background:#fffaf0;color:#4a3320;border:2px solid #c9a978;border-radius:12px;padding:.7em .9em;line-height:1.65}
 .modeCmp .mc b{display:inline-block;font-size:1.1em;padding:.05em .8em;border-radius:999px;margin-bottom:.3em}.modeCmp .st b{background:#f6cf5b;color:#3a2410}.modeCmp .fr b{background:#14284a;color:#fff}
 .modeTip{margin-top:12px;line-height:1.7}
@@ -1102,7 +1109,8 @@ html.land.tall body.noteUI #rtabs .rt{font-size:15px}
 @keyframes nmk{50%{transform:scale(1.15)}}
 .kakeraH{margin-top:14px}.kakeraList{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
 .kakeraList .kk{padding:.4em .6em;border-radius:10px;border:1px dashed #c8a060;background:#fff8e8;color:#9a8a70;min-height:2.4em}
-.kakeraList .kk.on{border:1px solid #d8a830;background:linear-gradient(#fffbe8,#fff1c4);color:var(--ink)}.kakeraList .kk b{display:block}.kakeraList .kk small{font-size:.82em;line-height:1.4}
+.kakeraList .kk.on{border:1.5px solid #d8a830;background:linear-gradient(#fffbe8,#fff1c4);color:#4a3320;opacity:1}.kakeraList .kk b{display:block}.kakeraList .kk small{font-size:.82em;line-height:1.4}
+.kakeraList .kk.on b{color:#8a5a10;font-size:1.05em}.kakeraList .kk.on small,.kakeraList .kk.on rt{color:#4a3320}.kakeraH{color:inherit}   /* 2026-11-15 ユーザー：ノートの かけらの文字が読めない（うすい色の上に うすい文字だった） */
 .storyCard .kakeraCard .sch{color:#c89820}
 .noteBook{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
 .npage{background:#fffdf4;border:1px solid #d8c8a0;border-radius:8px;padding:6px 8px;display:flex;flex-direction:column;gap:3px;color:#4a3418}
@@ -1176,6 +1184,7 @@ function otoScene(){
   else if(!S) w = {bgm:'bgm_title', amb:{wind:35}};
   else if($('arena')) w = {bgm:'bgm_sumo', amb:{}};
   else if(cg && CG_OTO[cg]) w = CG_OTO[cg];
+  else if(cg === 'spot:shop') w = {bgm:night ? 'bgm_yoru' : 'bgm_ouchi', amb:{}};
   else if(cg && cg.startsWith('spot:')) w = spotOto(SPOTS.find(x=> x.key === cg.slice(5)) || SPOTS[0], slot);   // 話の場所の背景（STORY_AT）
   else if($('matsuri')) w = {bgm:'bgm_soto', amb:{night:30, wind:15}};   // 七夕祭の出店（2026-11-15 ユーザー：音楽がおかしくなる）
   else if(openCase === null && tab === 'out' && outState && outState.spot) w = spotOto(outState.spot, slot);
@@ -2202,7 +2211,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.17.1';
-const BUILD = '20261114-2038';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261114-2056';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.17.1', date:'2026-11-14', items:[
     'ふりがなに「ぜんぶ」をふやした。すべての漢字にふりがながつくので、小学校に入る前の子も、おうちの人といっしょに遊べるよ（タイトルの「ふりがな」か「その他」で切りかえ）',
@@ -3761,11 +3770,12 @@ const spotName = sp=> (spotCh(sp) || {}).place || sp.name, spotEnv = sp=> (spotC
 const STORY_AT = {'1-1':'akama+', '1-2':'akama+', '1-7':'akama', '1-5e':'akama',
   '2-1':'tsurikawa+', '2-4':'tsurikawa+', '2-7':'tsurikawa',
   '3-1':'oshima+', '3-6':'oshima', '3-7':'oshima',
-  '4-1':'matsubara+', '4-5':'matsubara+',
+  '4-1':'matsubara+', '4-2':'shop', '4-5':'matsubara+',
   '5-1':'joyama+', '5-7':'joyama',
   '6-1':'taisha+', '6-2':'taisha+', '6-7':'taisha'};
-function atShow(k){ const sp = SPOTS.find(x=> x.key === k); if(!sp) return; let e = $('cgLayer'); if(e) e.remove();
-  e = document.createElement('div'); e.id = 'cgLayer'; e.className = 'atBg'; e.dataset.k = 'spot:' + k; e.style.backgroundImage = `url(img/ui/spot_${spotArt(sp)}.webp)`; document.body.appendChild(e); otoScene(); }
+const AT_IMG = {shop:'scr_shop'};   // 「そと」の場所でないところ（おみせ＝虫具店。2026-11-15 ユーザー：4章で はるかと会うのに、背景がぼくの家だった）
+function atShow(k){ const sp = SPOTS.find(x=> x.key === k); if(!sp && !AT_IMG[k]) return; let e = $('cgLayer'); if(e) e.remove();
+  e = document.createElement('div'); e.id = 'cgLayer'; e.className = 'atBg'; e.dataset.k = 'spot:' + k; e.style.backgroundImage = `url(img/ui/${sp ? 'spot_' + spotArt(sp) : AT_IMG[k]}.webp)`; document.body.appendChild(e); otoScene(); }
 async function storyAt(key, f){
   const a = STORY_AT[key] || '', k = a.replace('+', '');
   if(k) atShow(k);
@@ -3850,14 +3860,14 @@ function renderTitle(){
       if(i === 0){ S = hasS; storyRT = S.story.speed === 'mainichi' ? (S.story.rt || Date.now()) : Date.now(); start(); return; }
       if(i === 1){ prev = hasS; await say(`${(hasS.story.loop || 1) + 1}周目！\nずかん・ふしぎのかけら・ノートの名前は、そのまま。\n…この夏を、もう一度。前とは ちがう えらびかたも できるかもしれない。`); }
       else if(!(await ask('ストーリーのセーブを消して、はじめからにする？', 'はじめから', 'やめる'))) return; }
-    if(tutOK() && !hasS && !prev && !(await ask('【ストーリー】\n' + MODE_TXT.story + '\n\nストーリーで はじめる？', 'はじめる', 'やめる'))) return;
+    if(tutOK() && !modePicked && !hasS && !prev && !(await ask('【ストーリー】\n' + MODE_TXT.story + '\n\nストーリーで はじめる？', 'はじめる', 'やめる'))) return;
     const sp = await say('ゲームの時計の速さを、えらんでね。\n（あとから「その他」でかえられるよ）', {ans:Object.values(STORY_SPEED).map(v=> `${v.name}：${v.txt}`)});
     S = newStory(Object.keys(STORY_SPEED)[sp], prev); storyRT = Date.now(); save(); start(); };
   $('btnFree').onclick = async ()=>{
     if(has){ const i = await say('じゆうに育てる', {ans:['つづきから', 'はじめから', 'やめる']}); if(i === 2) return;
       if(i === 0){ S = load(); start(); return; }
       if(!(await ask('いまのセーブを消して、はじめからにする？\n（そだてている虫も、いなくなります）', 'はじめから', 'やめる'))) return; }
-    if(tutOK() && !has && !(await ask('【じゆうに育てる】\n' + MODE_TXT.free + '\n\nじゆうに育てる で はじめる？', 'はじめる', 'やめる'))) return;
+    if(tutOK() && !modePicked && !has && !(await ask('【じゆうに育てる】\n' + MODE_TXT.free + '\n\nじゆうに育てる で はじめる？', 'はじめる', 'やめる'))) return;
     S = newGame(); save(); start(); };
   $('btnModes').onclick = showModes;
   $('btnInstall').onclick = showInstall; $('btnShare').onclick = showShare; $('btnSendHow').onclick = showSendHow;
@@ -3869,9 +3879,17 @@ const MODE_TXT = {
   story:'夏休みの7週間（7章）のお話。おとうさんといっしょに、毎週1ぴき 虫を見つけて育てて、見つけた場所にかえす。\n虫の育てかた・さわりかたや、いのちのつながりが わかるよ。友だちとの虫ずもうや、ふしぎな なぞも。',
   free:'宗像の本物の場所で（おうちの人といっしょに）虫をさがして、すきなだけ育てる。\nいろんな虫を羽化させて、ずかんをうめよう。虫ずもうのライバルとも、何回でも。時計は本物の時間で進むよ。',
 };
-function showModes(){
-  openPanel('どっちで遊ぶ？', `<div class="modeCmp"><div class="mc st"><b>ストーリー</b><p>${esc(MODE_TXT.story).replace(/\n/g, '<br>')}</p></div><div class="mc fr"><b>じゆうに育てる</b><p>${esc(MODE_TXT.free).replace(/\n/g, '<br>')}</p></div></div>
-    <p class="modeTip"><b>おすすめ</b>：はじめは ストーリーで、虫の育てかたや いのちのことを知ってから、じゆうに育てる へ。親子で いっしょに 両方遊んでもOK（セーブは べつべつ）。</p>`);
+/* 「？」：別のページではなく、タイトルの上に うかぶウィンドウ。カードをタップすると、そのモードの「つづきから／はじめから」へ（2026-11-15 ユーザー） */
+let modePicked = false;   // カードからえらんだときは、「〜で はじめる？」を もう一度きかない
+function showModes(){ $('modeWin')?.remove();
+  const L = document.createElement('div'); L.id = 'modeWin';
+  L.innerHTML = `<div class="mwBox" role="dialog" aria-label="どっちで遊ぶ？"><button type="button" class="mwX" aria-label="とじる">×</button><h3>どっちで遊ぶ？</h3>
+    <div class="modeCmp"><button type="button" class="mc st" data-m="btnStory"><b>ストーリー</b><p>${esc(MODE_TXT.story).replace(/\n/g, '<br>')}</p><span class="mcGo">▶ タップで あそぶ</span></button><button type="button" class="mc fr" data-m="btnFree"><b>じゆうに育てる</b><p>${esc(MODE_TXT.free).replace(/\n/g, '<br>')}</p><span class="mcGo">▶ タップで あそぶ</span></button></div>
+    <p class="modeTip"><b>おすすめ</b>：はじめは ストーリーで、虫の育てかたや いのちのことを知ってから、じゆうに育てる へ。親子で いっしょに 両方遊んでもOK（セーブは べつべつ）。</p></div>`;
+  const close = ()=>{ L.classList.add('out'); setTimeout(()=> L.remove(), 220); };
+  L.onclick = e=>{ if(e.target === L) close(); }; L.querySelector('.mwX').onclick = close;
+  L.querySelectorAll('[data-m]').forEach(b=> b.onclick = ()=>{ L.remove(); const t = $(b.dataset.m); if(t){ modePicked = true; Promise.resolve(t.onclick()).finally(()=> modePicked = false); } });
+  document.body.appendChild(L);
 }
 async function start(){
   $('tabs').hidden = false; $('rtabs').hidden = false; setTab('home'); hud();
@@ -5616,6 +5634,7 @@ function cgShow(k){ let e = $('cgLayer');
 async function play(txt){
   for(const raw of String(txt).split('\n')){ const l = raw.trim(); if(!l) continue;
     if(l.startsWith('＠絵')){ cgShow(l.slice(2).trim()); continue; }   // とくべつな日の絵
+    if(l.startsWith('＠場所')){ atShow(l.slice(3).trim()); continue; }   // 話のとちゅうで場所がかわる（STORY_AT と同じキー）
     if(l.startsWith('＠暗転')){ await blackout(l.slice(3).trim()); continue; }   // 暗転（つぎの場面へ）
     const m = l.match(/^([^：（\s]+)(?:（([^）]*)）)?：([\s\S]+)$/), s = m && SPK[m[1]];
     const body = (m && s ? m[3] : l).replace(/\/\//g, '\n');
@@ -6198,6 +6217,7 @@ const STORY_DAY = {
       ['ren', 'れん：来年の夏、またやろう。']];
     for(const [, l] of K) await play(l);
     await play(`おとうさん（にっこり）：この夏の記録は、宗像の虫を守る、だいじな資料になるよ。ありがとう。
+      ＠場所 shop
       ＊あとで、虫具店へ。
       おじさん（わらう）：金色のカブトムシ？ はっはっは、そりゃあ、夢でも見たんじゃないか？
       おじさん：…でもな、そういう話は、むかしからあるんだよ。
