@@ -311,9 +311,11 @@ html.land #msgLayer.kanaL .win.kanaWin{width:min(100%,680px)}
 .shopHi .fimg{display:none;width:64px;height:64px;flex:none;border-radius:12px;border:2px solid #fff;box-shadow:0 1px 3px #0003;object-fit:cover}
 .shopHi b{display:block;font-size:12px;color:#8a5a20}
 #msgLayer .win{position:relative}
-#msgLayer .ans .btn.ansB,body.noteUI #msgLayer .ans .btn.ansB{background:#fffaf0;color:#4a3320;border:2px solid #c9a978;border-radius:12px;box-shadow:0 2px 0 #c9a97899;text-align:left;padding:.5em .9em .5em 2.1em;position:relative;font-weight:700}
+#msgLayer .ans .btn.ansB,body.noteUI #msgLayer .ans .btn.ansB{background:#fff1d8;color:#4a3320;border:2px solid #e3bd84;border-radius:12px;box-shadow:0 2px 0 #c9a97899;text-align:left;padding:.5em .9em .5em 2.1em;position:relative;font-weight:700}
 #msgLayer .ans .btn.ansB::before{content:'▶';position:absolute;left:.8em;top:50%;transform:translateY(-50%);font-size:.75em;color:#c9a978}
-#msgLayer .ans .btn.ansB:hover,#msgLayer .ans .btn.ansB:active{background:#ffe6a8;border-color:#e0a030}#msgLayer .ans .btn.ansB:hover::before,#msgLayer .ans .btn.ansB:active::before{color:#e07a20}
+#msgLayer .ans .btn.ansB:active{background:#ffc870;border-color:#e0902a}#msgLayer .ans .btn.ansB:active::before{color:#c05a10}
+@media (hover:hover) and (pointer:fine){#msgLayer .ans .btn.ansB:hover{background:#ffe6b8;border-color:#e0a850}}
+/* 答えのボタン：どれも同じうすいオレンジ。おしているときだけ こく（2026-11-15 ユーザー。タッチでは :hover がのこって、1つだけ こく見えていた） */
 #msgLayer .ans .btn.ansB.pic{padding-left:.6em}#msgLayer .ans .btn.ansB.pic::before{content:none}
 #msgLayer .giftRow{display:flex;flex-wrap:wrap;gap:.5em;margin:.5em 0 .1em}
 #msgLayer .gift{display:flex;align-items:center;gap:.35em;background:#fff3d6;border:1.5px solid #e2c48a;border-radius:12px;padding:.25em .7em .25em .3em;font-size:.95em;white-space:nowrap}
@@ -324,6 +326,27 @@ html.land.tall #msgLayer .gift img{width:56px;height:56px}
 #msgLayer .ans .btn.pic img{width:104px;height:78px;flex:none;object-fit:cover;border-radius:8px;border:2px solid #fff;box-shadow:0 1px 3px #0003}
 html.land.tall #msgLayer .ans .btn.pic img{width:132px;height:99px}
 /* とくべつな日の絵（2026-11-13）：play() の「＠絵 キー」で、会話のうしろに全画面で出す。話（STORY_DAY / STORY_EVE）がおわると消える */
+#cgLayer.atBg{filter:brightness(.92)}
+#evLayer.blackout{background:#000;cursor:pointer;animation:boIn .8s ease both}#evLayer.blackout.out{animation:boOut .5s ease both}
+#evLayer.blackout .boTxt{color:#f4ead0;font-size:24px;letter-spacing:.25em;font-weight:700;animation:boTxt 1.6s .5s ease both}
+@keyframes boIn{from{opacity:0}to{opacity:1}}@keyframes boOut{to{opacity:0}}@keyframes boTxt{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.storyCard .scTap{position:absolute;bottom:22px;right:28px;color:#ffe8b0;font-size:15px;animation:tapBlink 1.2s ease-in-out infinite}
+@keyframes tapBlink{50%{opacity:.35}}
+.storyCard .kakeraCard{background:linear-gradient(#fffaf0,#fff0c8);color:#4a3320;border:3px solid #e0b040;border-radius:18px;padding:1.2em 1.6em 1.3em;box-shadow:0 0 0 4px #fff6d8aa,0 0 40px 10px #ffd86088;max-width:min(88%,520px)}
+.storyCard .kakeraCard .stt{color:#8a5a10;font-size:28px}.storyCard .kakeraCard .sdt{color:#4a3320}
+.storyCard .kakeraCard .kkGlow{font-size:40px;line-height:1;color:#f0b020;text-shadow:0 0 12px #ffe070,0 0 24px #ffd040;animation:eggGlow 1.4s ease-in-out infinite}
+#coach .cPoint{position:absolute;pointer-events:none;line-height:1;filter:drop-shadow(0 3px 4px #0008);z-index:3;animation:.9s ease-in-out infinite}
+#coach .cPoint.dn{transform:translate(-30%,0);animation-name:cpDn}#coach .cPoint.up{transform:translate(-30%,-100%) rotate(180deg);animation-name:cpUp}
+#coach .cPoint.rt{transform:translate(0,-50%);animation-name:cpRt}#coach .cPoint.lf{transform:translate(-100%,-50%);animation-name:cpLf}
+@keyframes cpDn{0%,100%{margin-top:14px}50%{margin-top:2px}}@keyframes cpUp{0%,100%{margin-top:-14px}50%{margin-top:-2px}}@keyframes cpRt{0%,100%{margin-left:14px}50%{margin-left:2px}}@keyframes cpLf{0%,100%{margin-left:-14px}50%{margin-left:-2px}}
+#coach .cHole{animation:cHolePulse 1.4s ease-in-out infinite}
+@keyframes cHolePulse{50%{box-shadow:0 0 0 4px #ffd860,0 0 22px 8px #ffd860cc}}
+#standee.r{left:auto;right:calc(var(--sr,0px) + 70px)}#standee.bye{animation:standeeBye .45s ease-in forwards}
+@keyframes standeeBye{to{opacity:0;transform:translateY(12px)}}
+.tUndo{margin-left:.6em;font:inherit;font-weight:700;background:#fff;border:1.5px solid #c9a978;border-radius:999px;padding:.15em .8em;color:#7a4a10;cursor:pointer;pointer-events:auto}
+.spot.goCard{cursor:pointer;transition:transform .12s,box-shadow .12s}.spot.goCard:active{transform:scale(.98)}
+@media (hover:hover) and (pointer:fine){.spot.goCard:not(.off):hover{box-shadow:0 0 0 3px #f0b040,0 4px 12px #0003}}
+.spot.goCard.off{opacity:.6;cursor:default}.spot .goSt{margin-top:4px;font-weight:700;color:#8a6a40}
 #cgLayer{position:fixed;inset:0;z-index:140;background:#1a120a center/cover no-repeat;animation:cgIn .7s ease both;pointer-events:none}
 @keyframes cgIn{0%{opacity:0;transform:scale(1.04)}100%{opacity:1;transform:none}}
 /* おみせのおじさん・そとのおとうさん（2026-11-13）：会話と同じ立ち絵を、左のあいているところに立たせる */
@@ -1153,6 +1176,8 @@ function otoScene(){
   else if(!S) w = {bgm:'bgm_title', amb:{wind:35}};
   else if($('arena')) w = {bgm:'bgm_sumo', amb:{}};
   else if(cg && CG_OTO[cg]) w = CG_OTO[cg];
+  else if(cg && cg.startsWith('spot:')) w = spotOto(SPOTS.find(x=> x.key === cg.slice(5)) || SPOTS[0], slot);   // 話の場所の背景（STORY_AT）
+  else if($('matsuri')) w = {bgm:'bgm_soto', amb:{night:30, wind:15}};   // 七夕祭の出店（2026-11-15 ユーザー：音楽がおかしくなる）
   else if(openCase === null && tab === 'out' && outState && outState.spot) w = spotOto(outState.spot, slot);
   else if(openCase === null && tab === 'out') w = {bgm:night ? 'bgm_yoru' : 'bgm_soto', amb:night ? {night:45, wind:25} : {wind:40, cicada:30}};
   else if(openCase === null && tab === 'sumo') w = {bgm:'bgm_sumo', bgmV:60, amb:{}};
@@ -2177,7 +2202,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.17.1';
-const BUILD = '20261114-1857';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261114-2038';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.17.1', date:'2026-11-14', items:[
     'ふりがなに「ぜんぶ」をふやした。すべての漢字にふりがながつくので、小学校に入る前の子も、おうちの人といっしょに遊べるよ（タイトルの「ふりがな」か「その他」で切りかえ）',
@@ -3672,10 +3697,11 @@ function setTab(t){ if(t !== tab || t !== 'out') outState = (t === 'out' && tab 
   tab = t; openCase = null; document.querySelectorAll('#tabs button, #rtabs [data-t]').forEach(b=> b.classList.toggle('on', b.dataset.t === t)); render(); (scrollTo(0,0), view.scrollTop = 0); }
 document.querySelectorAll('#tabs button').forEach(b=> b.onclick = ()=> setTab(b.dataset.t));
 // 左のあいているところに立つ人（おみせのおじさん）。同じ人ならそのまま（買い物のたびに出なおさない）
+let standeeBye = false;   // おみせのおじさん：ひとこと言ったら下がる（おみせを出るまで、もう出ない。2026-11-15 ユーザー）
 function setStandee(k){ let e = $('standee');
-  if(!k || !html_land()){ if(e) e.remove(); $('shopBub')?.remove(); return; }
-  if(e && e.dataset.k === k) return; if(e) e.remove();
-  e = document.createElement('img'); e.id = 'standee'; e.dataset.k = k; e.alt = ''; e.draggable = false; e.src = `img/chara/cut/${k}.webp`; document.body.appendChild(e);
+  if(!k || !html_land()){ if(e) e.remove(); $('shopBub')?.remove(); standeeBye = false; return; }
+  if(standeeBye || (e && e.dataset.k === k)) return; if(e) e.remove();
+  e = document.createElement('img'); e.id = 'standee'; e.className = 'r'; e.dataset.k = k; e.alt = ''; e.draggable = false; e.src = `img/chara/cut/${k}.webp`; document.body.appendChild(e);
   if(k === 'ojisan') shopBub();
 }
 /* 虫具店のおじさんのひとこと（2026-11-14 ユーザー：セリフの位置をおとうさんのふきだしと合わせる。毎回、売っているもののアドバイス。エサ・土・かざり・虫かご）
@@ -3714,9 +3740,10 @@ function shopTip(){
 function shopBub(){ $('shopBub')?.remove();
   const t = shopTip(), e = document.createElement('div'); e.id = 'shopBub'; e.className = 'fuki norb'; e.dataset.cat = t[0];
   const hk = storyOn() ? hakaseNow() : '';
-  e.innerHTML = `<b class="who l">虫具店のおじさん</b>${hk ? `おっ、${esc(hk)}じゃないか！` : 'いらっしゃい！'} 【${esc(t[0])}】${esc(t[1])}`;   // おじさんは左に立っているので、名前の札も左
-  e.onclick = ()=> e.remove(); document.body.appendChild(e);
-  setTimeout(()=> e.remove(), 9200);
+  e.innerHTML = `<b class="who">虫具店のおじさん</b>${hk ? `おっ、${esc(hk)}じゃないか！` : 'いらっしゃい！'} 【${esc(t[0])}】${esc(t[1])}`;   // おじさんは右に立つので、名前の札も右
+  const bye = ()=>{ if(!e.isConnected) return; e.remove(); const st = $('standee'); if(st && st.dataset.k === 'ojisan'){ standeeBye = true; st.classList.add('bye'); setTimeout(()=> st.remove(), 450); } };
+  e.onclick = bye; document.body.appendChild(e);
+  setTimeout(bye, 9200);
 }
 // そとの場所に着いたとき、おとうさんが左下に出て、ひとこと言って下がる（さわってもじゃまにならない）
 function papaPop(text){ const old = $('papaPop'); if(old) old.remove(); if(!html_land()) return;
@@ -3728,6 +3755,25 @@ function papaPop(text){ const old = $('papaPop'); if(old) old.remove(); if(!html
 // ストーリーの章で場所の絵をかえる（2章は「ため池と田んぼ」の絵。じゆうに育てる では釣川の絵のまま）
 const spotCh = sp=> { const cn = storyOn() && CH[S.story.ch]; return cn && cn.spot === sp.key ? cn : null; };
 const spotName = sp=> (spotCh(sp) || {}).place || sp.name, spotEnv = sp=> (spotCh(sp) || {}).env || sp.env;
+/* 話の場所（2026-11-15 ユーザー：畑に行ったと言っているときは畑の絵。話がおわったら、その場でつづけるか、家にもどる）
+   キーは STORY_DAY の '章-日'、夕方の話は '章-日e'。値は SPOTS のキー（絵は spotArt）。おわりに + があると、話のあと その場所で虫さがし。
+   話の中の「＠絵」は、とちゅうで とくべつな日の絵にかわる */
+const STORY_AT = {'1-1':'akama+', '1-2':'akama+', '1-7':'akama', '1-5e':'akama',
+  '2-1':'tsurikawa+', '2-4':'tsurikawa+', '2-7':'tsurikawa',
+  '3-1':'oshima+', '3-6':'oshima', '3-7':'oshima',
+  '4-1':'matsubara+', '4-5':'matsubara+',
+  '5-1':'joyama+', '5-7':'joyama',
+  '6-1':'taisha+', '6-2':'taisha+', '6-7':'taisha'};
+function atShow(k){ const sp = SPOTS.find(x=> x.key === k); if(!sp) return; let e = $('cgLayer'); if(e) e.remove();
+  e = document.createElement('div'); e.id = 'cgLayer'; e.className = 'atBg'; e.dataset.k = 'spot:' + k; e.style.backgroundImage = `url(img/ui/spot_${spotArt(sp)}.webp)`; document.body.appendChild(e); otoScene(); }
+async function storyAt(key, f){
+  const a = STORY_AT[key] || '', k = a.replace('+', '');
+  if(k) atShow(k);
+  await f(); cgShow('off');
+  const cn = CH[S.story.ch];
+  if(a.endsWith('+') && cn && cn.spot === k && S.story.flags.noOut !== dayKey() && !storyLate(new Date(now()).getHours())){   // その場で、虫さがしをつづける
+    const sp = SPOTS.find(x=> x.key === cn.spot); setTab('out'); outState = {spot:Object.assign({}, sp, {name:cn.place}), outside:false}; }
+}
 const spotArt = sp=> { const cn = storyOn() && CH[S.story.ch]; return cn && cn.img && cn.spot === sp.key ? cn.img : sp.key; };
 function render(){
   document.body.classList.toggle('obsMode', !!S && openCase !== null); document.body.classList.toggle('title', !S); document.body.classList.toggle('noteUI', !!S);
@@ -3849,14 +3895,17 @@ const tutOK = ()=> !navigator.webdriver || QS.has('tut');
 function coachStep(st){
   return new Promise(res=>{
     const L = document.createElement('div'); L.id = 'coach'; L.className = 'norb';
-    L.innerHTML = `<div class="cHole"></div><i class="cBlk"></i><i class="cBlk"></i><i class="cBlk"></i><i class="cBlk"></i><div class="fuki cFuki${st.top ? ' top' : ''}"><b class="who">${esc(st.who || 'おとうさん')}</b>${fmtMsg(st.text)}${st.wait ? `<span class="cDo">${esc(st.doTxt || '光っているところを、さわってみよう')}</span>` : '<span class="tap">▼ タップでつぎへ</span>'}</div>`;
+    L.innerHTML = `<div class="cHole"></div><div class="cPoint" aria-hidden="true">👆</div><i class="cBlk"></i><i class="cBlk"></i><i class="cBlk"></i><i class="cBlk"></i><div class="fuki cFuki${st.top ? ' top' : ''}"><b class="who">${esc(st.who || 'おとうさん')}</b>${fmtMsg(st.text)}${st.wait ? `<span class="cDo">${esc(st.doTxt || '光っているところを、さわってみよう')}</span>` : '<span class="tap">▼ タップでつぎへ</span>'}</div>`;
     document.body.appendChild(L);
-    const hole = L.querySelector('.cHole'), blk = [...L.querySelectorAll('.cBlk')], fk = L.querySelector('.cFuki');
+    const hole = L.querySelector('.cHole'), pt = L.querySelector('.cPoint'), blk = [...L.querySelectorAll('.cBlk')], fk = L.querySelector('.cFuki');
     const target = ()=> typeof st.sel === 'function' ? st.sel() : st.sel ? document.querySelector(st.sel) : null;
     const place = ()=>{ const el = target(), W = rotMode ? rotLen : innerWidth, H = rotMode ? innerWidth : innerHeight;   // たて持ち（まわした画面）は、まわしたあとの はば・高さ（2026-11-14 ユーザーの写真：光る場所がずれた）
       let r = el ? el.getBoundingClientRect() : null; if(r && !r.width) r = null;
       const pad = 6, x = r ? Math.max(0, r.left - pad) : W/2, y = r ? Math.max(0, r.top - pad) : H/2, w = r ? Math.min(W - x, r.width + pad*2) : 0, h = r ? Math.min(H - y, r.height + pad*2) : 0;
       Object.assign(hole.style, {left:x + 'px', top:y + 'px', width:w + 'px', height:h + 'px', display:r ? '' : 'none'});
+      { const sz = 46, m = y + h + sz + 20 < H ? 'dn' : y > sz + 20 ? 'up' : x + w + sz + 20 < W ? 'rt' : 'lf';   // 指さし：光っているところの下・上・右・左の あいているほうから、ゆびでさす（2026-11-15 ユーザー）
+        pt.style.display = r ? '' : 'none'; pt.className = 'cPoint ' + m; pt.textContent = m === 'rt' ? '👈' : m === 'lf' ? '👉' : '👆';
+        Object.assign(pt.style, {left:(m === 'rt' ? x + w : m === 'lf' ? x : x + w/2) + 'px', top:(m === 'dn' ? y + h : m === 'up' ? y : y + h/2) + 'px', fontSize:sz + 'px'}); }
       [[0, 0, W, y], [0, y + h, W, H - y - h], [0, y, x, h], [x + w, y, W - x - w, h]].forEach(([a, b, c, d], i)=> Object.assign(blk[i].style, {left:a + 'px', top:b + 'px', width:Math.max(0, c) + 'px', height:Math.max(0, d) + 'px'}));
       if(st.top || !r){ fk.classList.toggle('top', !!st.top); return; }
       const ov = ()=>{ const b = fk.getBoundingClientRect(); return Math.max(0, Math.min(b.bottom, r.bottom) - Math.max(b.top, r.top)) * Math.max(0, Math.min(b.right, r.right) - Math.max(b.left, r.left)); };
@@ -3940,6 +3989,7 @@ function renderShop(){
   goBtns.forEach(b=> b.onclick = ()=>{ const h = $(b.dataset.go); const pad = parseFloat(getComputedStyle(view).paddingTop) || 0; view.scrollTo({top: view.scrollTop + h.getBoundingClientRect().top - view.getBoundingClientRect().top - pad - nav.offsetHeight - 6, behavior:'smooth'}); });
   view.onscroll = markNav; markNav();
   view.querySelectorAll('[data-box]').forEach(bt=> bt.onclick = async ()=>{ const k = bt.dataset.box, B = BOXES[k]; if(S.money < B.price) return;
+    if(!(await ask(`「${B.name}」を買う？\n（どんぐり ${dg(B.price)}）`, 'はい', 'いいえ'))) return;   // まちがえて買わないように（2026-11-15 ユーザー）
     let at = -1;
     if(S.boxes.length >= MAX_BOXES){
       const i = await say(`虫かごは${MAX_BOXES}こまで。どの虫かごと とりかえる？\n（中の虫は、そのまま新しい虫かごにうつる）`, {ans:S.boxes.map((x,j)=>`${j+1}ばん：${BOXES[x].ic} ${BOXES[x].name}${S.cases[j] ? '（' + dispName(S.cases[j]) + '）' : '（からっぽ）'}`).concat(['やめる'])});
@@ -3947,7 +3997,9 @@ function renderShop(){
     }
     S.money -= B.price; if(at < 0){ S.boxes.push(k); S.cases.push(null); } else S.boxes[at] = k;
     save(); hud(); await say(`${B.name}を買った！${at < 0 ? `\n虫かごが ${S.boxes.length}こ になった。` : `\n${at+1}ばんの虫かごを とりかえた。`}`, {face:'ojisan_laugh'}); const y = view.scrollTop; renderShop(); view.scrollTop = y; });
-  view.querySelectorAll('[data-k]').forEach(b=> b.onclick = ()=>{ const k = b.dataset.k, it = ITEMS[k]; if(S.money < it.price) return; S.money -= it.price; S.items[k] = (S.items[k]||0) + 1; save(); hud(); const y = scrollY, vy = view.scrollTop; renderShop(); scrollTo(0, y); view.scrollTop = vy; });
+  view.querySelectorAll('[data-k]').forEach(b=> b.onclick = async ()=>{ const k = b.dataset.k, it = ITEMS[k]; if(S.money < it.price) return;
+    if(!(await ask(`「${it.name}」を買う？\n（${it.price ? 'どんぐり ' + dg(it.price) : 'ただ'}）`, 'はい', 'いいえ')) || S.money < it.price) return;   // まちがえて買わないように（2026-11-15 ユーザー）
+    S.money -= it.price; S.items[k] = (S.items[k]||0) + 1; save(); hud(); const y = scrollY, vy = view.scrollTop; renderShop(); scrollTo(0, y); view.scrollTop = vy; });
 }
 
 /* ---- 観察（ケースの中）：道具をえらんで、ケースの中を指でさわる ---- */
@@ -4054,7 +4106,11 @@ async function renderObs(){
   const showTool = ()=>{ toolObj.hidden = true; let tp = sceneEl.querySelector('.toolTip');
     if(toolOff()){ tp && tp.remove(); return; }
     if(!tp){ tp = document.createElement('div'); tp.className = 'toolTip norb'; sceneEl.appendChild(tp); }
-    tp.innerHTML = `<span class="tIc">${tool === 'kazari' ? `<svg viewBox="0 0 100 100">${decoSVG(decoSel)}</svg>` : TOOLS[tool].ic}</span>${tool === 'big' && (obsSession.big||{}).step === 2 ? 'ほうきで、土をはく' : TIP[tool] || ''}`; };
+    tp.innerHTML = `<span class="tIc">${tool === 'kazari' ? `<svg viewBox="0 0 100 100">${decoSVG(decoSel)}</svg>` : TOOLS[tool].ic}</span>${tool === 'big' && (obsSession.big||{}).step === 2 ? 'ほうきで、土をはく' : TIP[tool] || ''}${tool === 'esa' && undoFood() ? '<button type="button" class="tUndo">↩ エサを1こ もどす</button>' : ''}`;
+    const ub = tp.querySelector('.tUndo'); if(ub){ ['pointerdown', 'mousedown', 'touchstart'].forEach(ev=> ub.addEventListener(ev, e=> e.stopPropagation()));
+      ub.onclick = e=>{ e.stopPropagation(); const f = undoFood(); if(!f) return; c.foods.splice(c.foods.indexOf(f), 1); if(ITEMS[f.k] && ITEMS[f.k].price) S.items[f.k] = (S.items[f.k]||0) + 1; c.log.feed = Math.max(0, c.log.feed - 1); save(); renderObs(); setTimeout(()=> setTxt(`${ITEMS[f.k] ? ITEMS[f.k].name : 'エサ'}を、ひとつ もどした。`), 50); }; } };
+  // さっき置いて、まだ食べていないエサ（まちがえて置いたときに もどせる。2026-11-15 ユーザー）
+  const undoFood = ()=> [...(c.foods||[])].reverse().find(f=> f.undo && !f.old && f.left > .95);
   const toolHere = (e, off={dx:0, dy:0})=>{ toolObj.innerHTML = toolIc(); toolObj.hidden = false; toolObj.style.transition = 'none'; grab = off; dragTo(e); void toolObj.offsetWidth; toolObj.style.transition = ''; };
   const placeRest = ()=>{ const r = restPos(); toolObj.style.transition = 'none'; setObj(r.x, r.y, 'rest'); void toolObj.offsetWidth; toolObj.style.transition = ''; };
   const hk = ()=> (parseFloat(getComputedStyle(toolObj).fontSize) || 84) / 84;
@@ -4186,10 +4242,10 @@ async function renderObs(){
     if(st.k === 'pupa') return;
     if(!haveFood){ await say(`「${food.name}」がない！\n「おみせ」で買えるよ。`, {face:'papa'}); return; }
     const fresh = (c.foods||[]).filter(f=>!f.old).length;
-    if(fresh >= 2){ c.log.over++; save(); await say('もうエサが置いてある。\n置きすぎると、古くなってアリがくるよ。食べたら、また置こう。', {face:'papa_worry'}); return; }
+    if(fresh >= 2){ c.log.over++; save(); await say('もうエサが置いてある。\n置きすぎると、古くなってアリがくるよ。食べたら、また置こう。\n（まちがえて置いたときは、下の「↩ エサを1こ もどす」で もどせるよ）', {face:'papa_worry'}); return; }
     const soilTop = soilTopOf(b); y = clamp(y, 14, soilTop - 2); x = clamp(x, 8 - (noteUI() ? caseExtra(c) : 0), 92 + (noteUI() ? caseExtra(c) : 0));   // 土の中には置けない
     if(food.price) S.items[foodKey]--;
-    c.foods.push({id:Date.now(), k:foodKey, x, y, age:0, left:1, old:false});
+    c.foods.push({id:Date.now(), k:foodKey, x, y, age:0, left:1, old:false, undo:1});
     c.log.feed++; if(c.hunger >= 50) c.log.feedFull++;
     const p = placeBug(c, slot); if(p.eating){ c.hunger = Math.min(100, c.hunger + 15); }
     save(); renderObs();
@@ -4614,6 +4670,7 @@ async function doFind(sp, here, egg, slot, h){
   if(!F) box.innerHTML = `<p class="dots">${pick(['草をかきわけている', '木のねもとをのぞいている', '葉のうらを見ている', 'じっと耳をすませている'])}</p>`;
   await wait(F ? 650 : 1400);
   if(!box || !box.isConnected) return;   // さがしているあいだに、ほかの画面へ行った
+  if(storyOn() && !egg) await storyFindGift();
   // めずらしい虫（rank が高い）ほど出にくい。何も見つからないこともある。宗像大社うまれは少し運がいい
   let id = null;
   if(egg){ id = 'kinkabuto'; S.link.kinEgg = 1; }
@@ -5532,7 +5589,8 @@ function miniKuji(){
 }
 
 // 3章5日目：けんたと出店をまわる
-async function tanabataStalls(){
+async function tanabataStalls(){ return otoWith({bgm:'bgm_soto', amb:{night:30, wind:15}}, tanabataStalls0); }   // 出店のあいだは、お祭りの音のまま（家の曲や虫の声にもどらない）
+async function tanabataStalls0(){
   const G = [['yoyo', 'ヨーヨーつり', miniYoyo], ['wanage', '輪なげ', miniWanage], ['kuji', 'くじびき', miniKuji]], done = {};
   const F = S.story ? (S.story.flags.matsuri = S.story.flags.matsuri || {}) : {};
   await play('けんた：出店、まわろうぜ！ ヨーヨーつりに、輪なげに、くじびきもあるぞ。');
@@ -5551,12 +5609,14 @@ async function tanabataStalls(){
 const CG = ['ame', 'hotaru', 'ferry', 'amanogawa', 'tenbodai', 'matsuri', 'taifu', 'eki', 'yamaasa', 'takamiya', 'yohaisho', 'happyo', 'gakko', 'obaa', 'tosho', 'jousen', 'oshimako', 'note', 'ranou', 'hikari', 'fuka', 'kinsora', 'ending', 'yume', 'morifuka'];   // 2026-11-14：序章の光・ふ化・金色の虫が海へ・エンディング・かけらの夢・森で生まれていた   // img/ui/ev/キー.webp（gakko・obaa・tosho は ほかの場所の絵。2026-11-14）
 function cgShow(k){ let e = $('cgLayer');
   if(!k || k === 'off' || !CG.includes(k)){ if(e){ e.remove(); otoScene(); } return; }
+  if(e) e.classList.remove('atBg');
   if(e && e.dataset.k === k) return; if(e) e.remove();
   e = document.createElement('div'); e.id = 'cgLayer'; e.dataset.k = k; e.style.backgroundImage = `url(img/ui/ev/${k}.webp)`; document.body.appendChild(e); otoScene();
 }
 async function play(txt){
   for(const raw of String(txt).split('\n')){ const l = raw.trim(); if(!l) continue;
     if(l.startsWith('＠絵')){ cgShow(l.slice(2).trim()); continue; }   // とくべつな日の絵
+    if(l.startsWith('＠暗転')){ await blackout(l.slice(3).trim()); continue; }   // 暗転（つぎの場面へ）
     const m = l.match(/^([^：（\s]+)(?:（([^）]*)）)?：([\s\S]+)$/), s = m && SPK[m[1]];
     const body = (m && s ? m[3] : l).replace(/\/\//g, '\n');
     if(s) await say(body, {face: typeof s === 'string' ? s : (s[m[2] || ''] || s[''])}); else await say(body);
@@ -5615,7 +5675,7 @@ async function storyCheck(){
       if(!S.story.seen[ch + '-1'] && day > 1){ ran = true; await storyDay(ch, 1); }
       if(!S.story.seen[key] && h >= 5){ ran = true; if(day === 7 && ch <= 5) await storyDay7Intro(ch); else await storyDay(ch, day); }
       else if(day === 7 && ch <= 5 && S.story.seen[key] && !day7Done(ch) && h >= STORY_D7){ ran = true; S.story.seen[key + 'm'] = 1; await storyDay(ch, 7, true); }   // 夕方4時：虫をかえす
-      else if(S.story.seen[key] && !S.story.eve[key] && (slotOf() === 'yu' || slotOf() === 'yoru') && h >= (EVE_H[key] || 16)){ const f = STORY_EVE[key]; S.story.eve[key] = 1; save(); if(f){ ran = true; outState = null; setTab('home'); await f(); cgShow('off'); } }
+      else if(S.story.seen[key] && !S.story.eve[key] && (slotOf() === 'yu' || slotOf() === 'yoru') && h >= (EVE_H[key] || 16)){ const f = STORY_EVE[key]; S.story.eve[key] = 1; save(); if(f){ ran = true; outState = null; setTab('home'); await storyAt(key + 'e', f); } }
       else if((S.story.seen[key] || h < 5) && storySp().m > 1 && storyLate(h) && !S.story.done){ ran = true; await storyBedtime(); }   // 夜9時：ねる時間
     }
   } finally { storyRunning = false; storyBusy = false; if(ran) save(); else if(Date.now() - storyQuietSave > 10000){ storyQuietSave = Date.now(); save(true); } }   // 何もおきなかったときは、10秒に1回だけ だまってセーブ（ゲームの時計をのこすため。とじるときは autoSaveNow でもセーブ）
@@ -5626,10 +5686,17 @@ async function storyDay(ch, day, noCard){
   outState = null; $('findField') && $('findField').remove(); setTab('home');
   if(day === 1) await chapterCard(ch);
   else if(!noCard) await dayCard(ch, day);
-  const f = STORY_DAY[key]; if(f){ await f(); cgShow('off'); }
+  const f = STORY_DAY[key]; if(f) await storyAt(key, f);
   save(); hud();
 }
-function cardShow(html, ms=2600){ return new Promise(r=>{ const L = document.createElement('div'); L.id = 'evLayer'; L.className = 'storyCard'; L.innerHTML = html; document.body.appendChild(L); const done = ()=>{ L.remove(); r(); }; L.onclick = done; setTimeout(done, ms); }); }
+function cardShow(html, ms=2600){ return new Promise(r=>{ const L = document.createElement('div'); L.id = 'evLayer'; L.className = 'storyCard'; L.innerHTML = html + (ms ? '' : '<div class="scTap norb">▼ タップでつぎへ</div>'); document.body.appendChild(L);
+  const t0 = Date.now(); let fin = false; const done = ()=>{ if(fin) return; fin = true; L.remove(); r(); };
+  L.onclick = ()=>{ if(ms || Date.now() - t0 > 700) done(); };   // ms=0：タップするまで消えない（前のタップで すぐ消えないように、0.7秒は待つ）。2026-11-15 ユーザー：かけらが、タップする前に終わってしまう
+  if(ms) setTimeout(done, ms); }); }
+/* 暗転：画面がくらくなって「その日の夜…」などを出す（play の行に「＠暗転 文」。2026-11-15 ユーザー） */
+function blackout(txt){ return new Promise(r=>{ const L = document.createElement('div'); L.id = 'evLayer'; L.className = 'blackout'; L.innerHTML = `<div class="boTxt">${fmtMsg(txt || '')}</div>`; document.body.appendChild(L);
+  const t0 = Date.now(); let fin = false; const done = ()=>{ if(fin) return; fin = true; L.classList.add('out'); L.id = 'evFade'; r(); setTimeout(()=> L.remove(), 500); };   // つぎの絵・会話は、くらいのが明けるのと同時に
+  L.onclick = ()=>{ if(Date.now() - t0 > 900) done(); }; setTimeout(done, 3200); }); }
 const chapterCard = ch=> cardShow(`<div class="sc"><div class="sch norb">${ch}章</div><div class="stt">${esc(CH[ch].ttl)}</div><div class="sdt">${esc(CH[ch].place.replace(/の(畑|森|草むら|山道|松林|海ぞいの林)$/, ''))}　${dateStr()}</div></div>`, 3200);
 const dayCard = (ch, day)=> cardShow(`<div class="sc small1"><div class="sch norb">${ch}章　${day}日目</div><div class="sdt">${dateStr()}</div></div>`, 1600);
 /* 7日目（1〜5章）は、朝に「きょうは虫をかえす日」と伝えるだけ。その日はふつうに遊べて、夕方4時に虫をかえす（2026-11-10 ユーザー：朝にかえすと、そのあとが半端） */
@@ -5720,7 +5787,7 @@ async function storyBegin(){
     おとうさん（教える）：ひとつ、毎日 ようすを見ること。//ふたつ、さいごまで 面倒をみること。//みっつ、つかまえた虫は、かならず、つかまえた場所にかえすこと。
     ぼく（ふつう）：…うん。やくそくする。`);
   S.yk.release = 1;
-  const nm = storyLoop() >= 2 && S.story.name ? S.story.name : await askText('おとうさんから「虫しらべノート」をもらった。\n表紙に、名前を書こう！', '');
+  const nm = storyLoop() >= 2 && S.story.name ? S.story.name : await askText('おとうさんから「虫しらべノート」をもらった。\n表紙に、名前を書こう！', 'ぼく');
   S.story.name = (nm || 'ぼく').slice(0, 10);
   { const fi = freeInfo(), hk = hakaseOf(fi.raised);
     if(hk){ const b = Math.min(100, fi.raised*10), z = Math.min(5, fi.raised); S.money += b; giveItem('zeri', z); save(); hud();
@@ -5734,7 +5801,8 @@ async function storyBegin(){
     ＊セミやカブトムシの絵が、たくさん。でも、いちばん最後のページだけ、のりでくっついたように開かない。
     おとうさん（ふつう）：最後のページ？ …さあ、なにを書いたんだったかな。`);
   await kakera('note');
-  await play(`＠絵 hikari
+  await play(`＠暗転 その日の夜…
+    ＠絵 hikari
     ＊その夜。えんがわから海のほうを見ていると、大島のあたりで、一瞬だけ、金色の光が見えた。
     ぼく（びっくり）：…いまの、なに？
     ＊おとうさんをよびに行って もどると、もう、なにも見えなかった。`);
@@ -5795,7 +5863,7 @@ const STORY_DAY = {
     await play(`＊赤間の畑。キャベツとミカンの木がならんでいる。
       おばあちゃん：あらまあ、虫さがしかい。うちのキャベツは、いもむしだらけだよ。
       おばあちゃん：葉っぱも、持っていきなさい。（キャベツの葉とミカンの葉をもらった）
-      おとうさん（教える）：「そと」から赤間の畑へ行って、葉のうらをさがしてみよう。`); storyGoal('赤間の畑で、いもむしをさがす'); },
+      おとうさん（教える）：さっそく、この畑で 葉のうらをさがしてみよう。`); storyGoal('赤間の畑で、いもむしをさがす'); },
   '1-2': async ()=>{
     await play(`＊朝、おとうさんと畑へ。おばあちゃんが、穴だらけのキャベツを見ている。
       おばあちゃん：まあ、きのうより穴がふえとる。
@@ -5847,7 +5915,7 @@ const STORY_DAY = {
     await play(`＊稲が青々とのびた田んぼ。ため池から水路に水が流れている。
       水のおじさん：やあ、虫しらべかい。いまは稲がいちばん水をほしがる時期でね。毎朝ここの水門をあけに来るんだ。
       おとうさん（教える）：田んぼの水は、虫やカエルのすみかにもなっているんだよ。
-      おとうさん（ふつう）：「そと」から、ため池と田んぼへ。草むらや石の下をさがしてみよう。`); storyGoal('田んぼの草むらで、虫をさがす'); },
+      おとうさん（ふつう）：さっそく、ため池と田んぼで、草むらや石の下をさがしてみよう。`); storyGoal('田んぼの草むらで、虫をさがす'); },
   '2-2': async ()=>{ await play('おとうさん（教える）：草むらの虫は、しめった空気がすき。でも、びしょびしょだとカビが出る。//きりふきは、ケースぜんたいに少しずつ。');
     if(stBug() === 'kamakiri'){ giveItem('koorogi'); await play(`はるか：カマキリは、生きて動いている虫しか食べないの。草むらで、小さいバッタやコオロギをつかまえて、入れてあげて。
       おとうさん（教える）：つかまえられない日は、ピンセットでエサをつまんで、生きているみたいに少しずつ動かしてみせる方法もあるよ。
@@ -5883,7 +5951,7 @@ const STORY_DAY = {
       ＊大島の港に着いた。渡船ターミナルのまわりに、七夕のふきながしが ゆれている。
       けんた：おー！ おまえが虫しらべの子？ おれ、けんた。夏休みは、じいちゃんちにいるんだ。島のこと、ぜんぶ教えてやるよ！
       じいちゃん：よう来たね。うちにとまっていきなさい。
-      おとうさん（教える）：「そと」から、大島の海ぞいの林へ行ってみよう。`); storyGoal('大島の海ぞいの林で、虫をさがす'); },
+      おとうさん（教える）：さっそく、海ぞいの林で 虫をさがしてみよう。`); storyGoal('大島の海ぞいの林で、虫をさがす'); },
   '3-2': async ()=>{ await play(`＠絵 amanogawa
       ＊港の近くの中津宮へ。鳥居は、海の向こうの辺津宮と向かい合っている。
       けんた：鳥居の近くに、ほんとに「天の川」って川が流れてるんだぜ。ほら、看板もある。//こっちが牽牛神社、川の向こうが織女神社。
@@ -5928,7 +5996,7 @@ const STORY_DAY = {
   '4-1': async ()=>{ meet('soma'); giveItem('kusa'); giveItem('koorogi');
     await play(`＊海ぞいの松林と、広い草むら。
       そうま：きみが、ゆうたやはるかが言ってた子？ 虫にくわしいんだって？ ぼくは、そうま。5年だよ。
-      おとうさん（教える）：「そと」から、さつき松原の松林へ。松の木の下の草むらに、虫がいるよ。`); storyGoal('さつき松原の松林で、虫をさがす'); },
+      おとうさん（教える）：さっそく、さがしてみよう。松の木の下の草むらに、虫がいるよ。`); storyGoal('さつき松原の松林で、虫をさがす'); },
   '4-2': async ()=>{ meet('haruka');
     await play(`＊おとうさんと、赤間の町の虫具店へエサを買いに行った。店の前で、はるかがしょんぼりしている。
       ぼく（ふつう）：はるか、どうしたの？
@@ -5993,7 +6061,7 @@ const STORY_DAY = {
       観察員さん：あら、先生。ようこそ。
       おとうさん（にっこり）：おとうさんの研究の仲間なんだ。宗像の虫しらべも、いっしょにやっているんだよ。
       観察員さん：山道では、スズメバチとマムシに気をつけて。黒い服はハチがよってきやすいから、帽子をかぶっていてね。
-      おとうさん（教える）：「そと」から、城山の山道へ。`); storyGoal('城山の山道で、虫をさがす'); },
+      おとうさん（教える）：さっそく、山道で 虫をさがしてみよう。`); storyGoal('城山の山道で、虫をさがす'); },
   '5-2': async ()=>{ const b = stBug(); if(b) await play(b === 'oomurasaki' ? 'おとうさん（教える）：エノキの葉しか食べないんだ。葉を切らさないように。' : 'おとうさん（教える）：幼虫は、土（マット）を食べて育つ。ふかふかの腐葉土がいい。'); },
   '5-3': async ()=>{ await play('＊きょうは、町がとても暑い。');
     const hot = S.cases.filter(c=> c && c.place === 'beranda');
@@ -6271,7 +6339,8 @@ const KAKERA = {
 };
 async function kakera(id){
   const x = SX(); if(!KAKERA[id] || x.kakera.includes(id)) return; x.kakera.push(id); save();
-  await cardShow(`<div class="sc small1 kakeraCard"><div class="sch norb">ふしぎのかけら　${x.kakera.length} / ${Object.keys(KAKERA).length}</div><div class="stt">${esc(KAKERA[id].name)}</div><div class="sdt">${esc(KAKERA[id].txt)}</div></div>`, 2600);
+  OTO.sfx('kira');
+  await cardShow(`<div class="sc small1 kakeraCard"><div class="kkGlow norb">✦</div><div class="sch norb">ふしぎのかけらを手に入れた！　${x.kakera.length} / ${Object.keys(KAKERA).length}</div><div class="stt">${esc(KAKERA[id].name)}</div><div class="sdt">${esc(KAKERA[id].txt)}</div></div>`, 0);
 }
 const kakeraHTML = ()=>{ const x = SX(), all = Object.keys(KAKERA);
   return `<h3 class="kakeraH">ふしぎのかけら　${x.kakera.length} / ${all.length}</h3><div class="kakeraList">${all.map(k=> x.kakera.includes(k) ? `<div class="kk on"><b>${esc(KAKERA[k].name)}</b><small>${esc(KAKERA[k].txt)}</small></div>` : '<div class="kk"><b>？</b></div>').join('')}</div>`; };
@@ -6589,19 +6658,22 @@ function renderOutStory(){
   if(!cn || !cn.spot){ view.innerHTML = '<h2>そと</h2><p class="win">いまは、出かける日ではないみたい。</p>'; return; }
   const sp = SPOTS.find(x=> x.key === cn.spot), rain = S.story.flags.noOut === dayKey();
   view.innerHTML = `<h2>そとへ虫をさがしに行く</h2><p class="small">いまは<b style="color:var(--ink)">${SLOT_NAMES[slot]}</b>。今週の虫しらべは「${esc(cn.place)}」。おとうさんといっしょに行こう。</p>
-    <div class="spots" style="margin-top:10px"><div class="spot"><img class="spotPic" src="img/ui/spot_${spotArt(sp)}.webp" alt="" loading="lazy" draggable="false"><b>${esc(cn.place)}</b>　<span class="small">${esc(spotEnv(sp))}</span>
+    <div class="spots" style="margin-top:10px"><div class="spot goCard${rain ? ' off' : ''}" id="btnGoS" role="button" tabindex="0"><img class="spotPic" src="img/ui/spot_${spotArt(sp)}.webp" alt="" loading="lazy" draggable="false"><b>${esc(cn.place)}</b>　<span class="small">${esc(spotEnv(sp))}</span>
       <div class="bugs">今週のなかま：${cn.nakama.map(id=> S.dex[id] && S.dex[id].known ? BUGS[id].name : '？？？').join('・')}</div>
-      <div class="row" style="margin-top:6px"><button type="button" class="btn pri" id="btnGoS" ${rain ? 'disabled' : ''}>${rain ? 'きょうは雨…' : '行く'}</button></div></div></div>
+      ${rain ? '<div class="goSt norb">きょうは雨…</div>' : ''}</div></div>
     <h3 style="margin-top:12px">${ch === 3 ? '島の中を回る' : 'ほかの場所'}</h3><div class="spots plx">${placesNow().map(P=> `<div class="spot"><img class="spotPic" src="${P.pic}" alt="" loading="lazy" draggable="false"><b>${esc(P.name)}</b>${plNew(P.k) ? '<span class="newMark norb">！</span>' : ''}　<span class="small">${esc(P.desc)}</span>
-      <div class="row" style="margin-top:6px"><button type="button" class="btn" data-pl="${P.k}" ${rain || plDone(P.k) ? 'disabled' : ''}>${plDone(P.k) ? 'きょうは行った' : rain ? 'きょうは雨…' : '行く'}</button></div></div>`).join('')}</div>`;
-  view.querySelectorAll('[data-pl]').forEach(b=> b.onclick = ()=> goPlace(b.dataset.pl));
-  $('btnGoS').onclick = async ()=>{ const today = dayKey(), sp2 = Object.assign({}, sp, {name:cn.place});
-    let gift = '';
-    let gifts = [];
-    if(!S.yk['sg|' + today]){ S.yk['sg|' + today] = 1; S.money += 10; cn.gift.forEach(k=> giveItem(k, 1)); gift = `\nどんぐり ${dg(10)} と、${cn.gift.map(k=> k === 'koorogi' ? 'エサにする小さな虫' : ITEMS[k].name).join('・')}を手に入れた。`;
-      gifts = [[DONGURI_IMG, 'どんぐり', 10], ...cn.gift.map(k=> giftOf(k, 1))]; }   // 文だけでなく、アイコンでも（2026-11-14 ユーザー）
-    save(); hud(); outState = {spot:sp2, outside:false};
-    await say(`「${cn.place}」に着いた！${gift}`, {gifts}); storyAdvance('odekake', 'おでかけ'); render(); };
+      ${rain || plDone(P.k) ? `<div class="goSt norb">${plDone(P.k) ? 'きょうは行った' : 'きょうは雨…'}</div>` : ''}</div>`.replace('<div class="spot">', `<div class="spot goCard${rain || plDone(P.k) ? ' off' : ''}" data-pl="${P.k}" role="button" tabindex="0">`)).join('')}</div>`;
+  // カードをタップすると行ける（「行く」ボタンはなくした。2026-11-15 ユーザー）
+  view.querySelectorAll('[data-pl]').forEach(b=> b.onclick = ()=>{ if(!b.classList.contains('off')) goPlace(b.dataset.pl); });
+  $('btnGoS').onclick = async ()=>{ if($('btnGoS').classList.contains('off') || storyBusy) return; const sp2 = Object.assign({}, sp, {name:cn.place});
+    outState = {spot:sp2, outside:false};
+    await say(`「${cn.place}」に着いた！`); storyAdvance('odekake', 'おでかけ'); render(); };
+}
+/* その日はじめて さがしたとき、どんぐりや その章のおみやげを見つける（2026-11-15 ユーザー：着いたときにもらうより、さがして見つけるほうが自然） */
+async function storyFindGift(){
+  const cn = CH[S.story.ch], today = dayKey(); if(!cn || !cn.gift || S.yk['sg|' + today]) return;
+  S.yk['sg|' + today] = 1; S.money += 10; cn.gift.forEach(k=> giveItem(k, 1)); save(); hud();
+  await say(`さがしていたら…\nどんぐり ${dg(10)} と、${cn.gift.map(k=> k === 'koorogi' ? 'エサにする小さな虫' : ITEMS[k].name).join('・')}を見つけた！`, {gifts:[[DONGURI_IMG, 'どんぐり', 10], ...cn.gift.map(k=> giftOf(k, 1))]});
 }
 
 /* 起動 */
