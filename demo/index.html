@@ -481,6 +481,15 @@ html.land.tall #msgLayer .ans .btn.pic img{width:132px;height:99px}
 .nsBook .nsStamp{position:absolute;right:9%;bottom:10%;width:clamp(58px,calc(var(--H,100vh) * 0.110),100px);height:clamp(58px,calc(var(--H,100vh) * 0.110),100px);border:3px solid #d8402a;border-radius:50%;color:#d8402a;font-family:"M PLUS Rounded 1c",sans-serif;font-weight:900;font-size:clamp(9px,calc(var(--H,100vh) * .016),15px);letter-spacing:-.05em;line-height:1.2;display:flex;align-items:center;justify-content:center;text-align:center;transform:rotate(-14deg);opacity:.85;animation:nsStamp .5s .6s cubic-bezier(.2,1.8,.4,1) both}
 @keyframes nsIn{from{opacity:0;transform:scale(.94) rotate(-1deg)}}
 @keyframes nsStamp{0%{transform:scale(2.4) rotate(-30deg);opacity:0}100%{transform:rotate(-14deg);opacity:.85}}
+.nbBook .nbShiori{position:absolute;left:48.6%;top:-3%;width:2.8%;height:46%;z-index:2;background:linear-gradient(90deg,#b8862a,#ffe48a 45%,#f0c040 60%,#b8862a);clip-path:polygon(0 0,100% 0,100% 100%,50% 92%,0 100%);box-shadow:0 2px 4px #0004;filter:drop-shadow(0 0 6px #ffd86088)}
+.nbBook .nbGold{margin-top:.4em;color:#a87010;font-weight:800;font-size:clamp(13px,calc(var(--H,100vh) * .026),20px)}.nbBook .nbEnds{margin-top:.2em;color:#5a3a14;font-size:clamp(12px,calc(var(--H,100vh) * .024),18px)}
+#rtabs #rtNote.gold::after{content:'';position:absolute;right:12px;top:-4px;width:8px;height:26px;background:linear-gradient(90deg,#b8862a,#ffe48a 45%,#b8862a);clip-path:polygon(0 0,100% 0,100% 100%,50% 85%,0 100%);filter:drop-shadow(0 0 3px #ffd860)}
+.storyCard .sc.endCard{display:flex;flex-direction:row;align-items:stretch;gap:0;width:min(92%,860px);max-width:min(92%,860px);max-height:88%;background:linear-gradient(#fffaf0,#fff0c8);color:#4a3320;border:3px solid #e0b040;border-radius:18px;overflow:hidden;box-shadow:0 0 0 4px #fff6d8aa,0 0 40px 10px #ffd86066;text-align:left;padding:0}
+.storyCard .endCard .ecPic{flex:0 0 44%;background:center/cover no-repeat;min-height:220px}
+.storyCard .endCard .ecBody{flex:1;padding:1em 1.3em;display:flex;flex-direction:column;gap:.35em;min-width:0}
+.storyCard .endCard .ecNo{color:#b07a18;font-weight:800;letter-spacing:.2em;font-size:14px}.storyCard .endCard .stt{color:#7a4a10;font-size:clamp(20px,4.2vh,30px)}.storyCard .endCard .sdt{color:#4a3320;font-size:clamp(13px,2.6vh,17px)}
+.storyCard .endCard .ecCk{list-style:none;margin:.2em 0;padding:0;display:flex;flex-direction:column;gap:.2em;font-size:clamp(13px,2.5vh,16px)}.storyCard .endCard .ecCk li{display:flex;align-items:center;gap:.4em;color:#8a7a60}.storyCard .endCard .ecCk li b{margin-left:auto}.storyCard .endCard .ecCk li i{font-style:normal;color:#c9b890}.storyCard .endCard .ecCk li.ok{color:#4a3320;font-weight:700}.storyCard .endCard .ecCk li.ok i{color:#f0b020}
+.storyCard .endCard .ecGot{font-size:12px;color:#6a5030;display:flex;align-items:center;gap:4px;flex-wrap:wrap}.storyCard .endCard .ecGot i{width:14px;height:18px;border-radius:3px;background:#e8dcc0;border:1px solid #c9b890}.storyCard .endCard .ecGot i.on{background:linear-gradient(#ffe48a,#e0a020);border-color:#b8862a}.storyCard .endCard .ecGot i.now{box-shadow:0 0 0 2px #fff,0 0 6px 2px #ffd040}
 .storyCard .kakeraCard{background:linear-gradient(#fffaf0,#fff0c8);color:#4a3320;border:3px solid #e0b040;border-radius:18px;padding:1.2em 1.6em 1.3em;box-shadow:0 0 0 4px #fff6d8aa,0 0 40px 10px #ffd86088;max-width:min(88%,520px)}
 .storyCard .kakeraCard .stt{color:#8a5a10;font-size:28px}.storyCard .kakeraCard .sdt{color:#4a3320}
 .storyCard .kakeraCard .kkGlow{font-size:40px;line-height:1;color:#f0b020;text-shadow:0 0 12px #ffe070,0 0 24px #ffd040;animation:eggGlow 1.4s ease-in-out infinite}
@@ -2571,7 +2580,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.18.0';
-const BUILD = '20261115-2144';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261115-2224';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.18.0', date:'2026-11-15', items:[
     '虫ずもうが もっと もりあがるようになった：対戦カードとVS、軍配、ぼくと あいての顔（かっているときは にこにこ）、必殺わざの大きなカットイン、おうえんと「かち！」の演出。とちゅうで曲が とぎれにくくした',
@@ -4251,7 +4260,7 @@ function render(){
   document.body.dataset.tab = openCase !== null ? 'case' : atSpot ? 'spot' : tab; document.body.dataset.slot = slotOf();
   document.querySelectorAll('body > #drawer').forEach(e=>e.remove()); $('rtCase').hidden = true; $('rtMushi').hidden = true; document.body.classList.remove('noteTabs');   // ケースのこと は、ケースの画面のときだけ
   if(sidePanel === 'case') sidePanel = null; setSide(sidePanel); $('rtabs').hidden = !S;
-  if($('rtNote')) $('rtNote').hidden = !(S && S.story && openCase === null);
+  if($('rtNote')){ $('rtNote').hidden = !(S && S.story && openCase === null); $('rtNote').classList.toggle('gold', !$('rtNote').hidden && hasShiori()); }
   $('rtRecv').hidden = !(S && !S.story && !S.tori && openCase === null && !isPhone());   // じゆうに育てる（タブレット・パソコン）：スマホでつかまえた虫を受けとる（2026-11-15 ユーザー）
   if($('rtNext')){ const on = !!(S && S.story && openCase === null && !S.story.done && S.story.ch && storySp().m > 1); $('rtNext').hidden = !on;   // 右のアイコンの下に「次の日へ」（ねる・次の章へ）。おすと、もう一度きく（storySleep）
     if(on){ const lb = nextLabel(); $('rtNext').querySelector('.nxL').textContent = lb.replace('（あしたへ）', ''); } }
@@ -6675,11 +6684,11 @@ function showNote(){
   const page = ch=>{ const p = st.note[ch], now = !p && ch <= st.ch && st.seen[ch + '-1'];
     return `<button type="button" class="nbPage ${p ? 'on' : now ? 'now' : 'yet'}" data-ch="${ch}" style="--r:${[-3, 2, -1.5, 2.5, -2, 1.5][ch - 1]}deg"><i class="nbTape"></i><span class="nbNo">${ch}</span><span class="nbPic">${p && p.bug ? svgBest(p.bug, {rare:p.rare}) : p ? '📝' : '？'}</span><b>${esc(place(ch))}</b><small>${p ? esc(p.name || '') : now ? 'しらべちゅう' : 'まだ'}</small></button>`; };
   const L = document.createElement('div'); L.className = 'popWin nbLayer';
-  L.innerHTML = `<div class="nbBook"><button type="button" class="nbX" aria-label="とじる">×</button>
+  L.innerHTML = `<div class="nbBook">${hasShiori() ? '<i class="nbShiori" title="金色のしおり"></i>' : ''}<button type="button" class="nbX" aria-label="とじる">×</button>
     <div class="nbL"><div class="nbTitle">${st.name ? `<small>${esc(st.name)}の</small>` : ''}虫しらべノート</div><div class="nbGrid">${[1,2,3,4,5,6].map(page).join('')}</div><div class="nbHint norb">ページを さわると、くわしく 読めるよ</div></div>
     <div class="nbR"><div class="nbKh">ふしぎのかけら　<b>${x.kakera.length}</b> / ${all.length}</div>
       <div class="nbKg">${all.map(k=> x.kakera.includes(k) ? `<button type="button" class="nbK on" data-k="${k}"><img src="img/ui/ic_kakera.webp" alt="" draggable="false"><span>${esc(KAKERA[k].name)}</span></button>` : `<span class="nbK"><img src="img/ui/ic_kakera.webp" alt="" draggable="false"><span>？</span></span>`).join('')}</div>
-      <div class="nbKt" id="nbKt">${x.kakera.length ? 'かけらを さわると、なにが書いてあるか 見られるよ' : 'まだ かけらは ないみたい'}</div></div></div>`;
+      <div class="nbKt" id="nbKt">${x.kakera.length ? 'かけらを さわると、なにが書いてあるか 見られるよ' : 'まだ かけらは ないみたい'}</div>${hasShiori() ? '<div class="nbGold norb">★ 金色のしおり</div>' : ''}${endsGot().length ? `<div class="nbEnds">エンドカード　<b>${endsGot().length}</b> / ${ENDS.length}</div>` : ''}</div></div>`;
   const close = ()=>{ L.classList.add('out'); setTimeout(()=> L.remove(), 220); }; L.close = close;
   L.onclick = e=>{ if(e.target === L) close(); }; L.querySelector('.nbX').onclick = close;
   L.querySelectorAll('.nbPage.on').forEach(b=> b.onclick = ()=> noteSpread(+b.dataset.ch));
@@ -7156,6 +7165,7 @@ const STORY_DAY = {
       await say('【ふしぎのかけら コンプリート】\n金色のしおりを もらった！\n（タイトルの「ストーリー」に★がつくよ）', {face:'boku_joy'}); }
     S.story.done = true; S.stats.storyClear = (S.stats.storyClear||0) + 1; save(); track('story_clear', {loop:S.story.loop || 1, kakera:SX().kakera.length});
     await play('＠絵 ending\n＊夏の終わりの夕方。宗像の海の上を、金色の光がひとつ、沖ノ島のほうへ、ゆっくりよこぎっていく。'); cgShow('off');
+    await endCard();
     if(0) await cardShow('<div class="sc night end"><div class="glowLine slow"></div><div class="sdt">夏の終わりの夕方。宗像の海の上を、金色の光がひとつ、沖ノ島のほうへ、ゆっくりよこぎっていく。</div></div>', 6000);
     await cardShow(`<div class="sc"><div class="tlogoBox">${titleLogo()}</div><div class="stt">おしまい</div><div class="sdt">この物語はフィクションです。<br>Game Director: Ryohei Taniguchi</div></div>`, 6000);
     await say('ストーリーは、これでおしまい。\nこのまま、虫を育てつづけることもできるよ。（参考にしたページは「その他」にあります）');
@@ -7257,6 +7267,33 @@ const STORY_EVE = {
 const SX = ()=> (S.story.x = S.story.x || {naka:{}, kakera:[], talk:{}, engawa:{}});
 const naka = (k, n=1)=>{ const x = SX(); x.naka[k] = (x.naka[k]||0) + n; save(); };
 const nakaOf = k=> SX().naka[k] || 0;
+// 金色のしおり：かけらを ぜんぶ見つけて、夢の場面を見たら（2周目は かけらを引きつぐので、ぜんぶあれば はじめから）。ノートの表紙と、右の「ノート」に出す（2026-11-15 ユーザー）
+const hasShiori = ()=> !!(S && S.story && (S.story.flags.allKakera || ((S.story.loop || 1) >= 2 && SX().kakera.length >= Object.keys(KAKERA).length)));
+/* エンドカード（2026-11-15 ユーザー：2周目も遊びたくなるように）。エンディングの さいごに、この夏で できたことで カードがかわる。
+   あつめたカードは 周をこえて のこる（ENDS_KEY）。じょうけん：すもうの決勝・友だち5人となかよし・ふしぎのかけら */
+const ENDS_KEY = KEY_PRE + 'munakata-sodate-ends-v1';
+const ENDS = [
+  {k:'hakase', t:'宗像の虫はかせの夏', d:'すもうも、友だちも、ふしぎも。宗像の夏を、ぜんぶ見つけた。', img:'ev/yume'},
+  {k:'champ',  t:'すもう王の夏',       d:'れんとの決勝に勝った夏。虫といっしょに、強くなった。', img:'sumo_dohyo'},
+  {k:'naka',   t:'なかよしの夏',       d:'友だちみんなと、虫の話を いっぱいした夏。', img:'ev/happyo'},
+  {k:'fushigi',t:'ふしぎを追いかけた夏', d:'ふしぎのかけらを、たくさん見つけた夏。', img:'ev/amanogawa'},
+  {k:'hajime', t:'はじめての虫の夏',     d:'はじめて虫を育てて、生まれた場所に かえした夏。', img:'ev/hikari'}];
+const endsGot = ()=>{ try{ return JSON.parse(localStorage.getItem(ENDS_KEY)) || []; }catch(e){ return []; } };
+// 友だち5人：エンディングで とくべつな ひとことが出る なかよし度
+const friendsOK = ()=> [nakaOf('yuta') >= 2, !!S.story.flags.harukaMantis && nakaOf('haruka') >= 2, nakaOf('kenta') >= 1, nakaOf('soma') >= 2, !!S.story.flags.daichiMiyama].filter(Boolean).length;
+function endOf(){ const f = S.story.flags, kk = SX().kakera.length, all = Object.keys(KAKERA).length, fr = friendsOK();
+  const k = f.champ && fr >= 5 && kk >= all ? 'hakase' : f.champ ? 'champ' : fr >= 5 ? 'naka' : kk >= 12 ? 'fushigi' : 'hajime';
+  return {e:ENDS.find(x=> x.k === k), fr, kk, all, sumo:f.champ ? '勝った！' : f.finalDone ? 'まけた' : 'まだ'}; }
+async function endCard(){
+  const r = endOf(), got = endsGot(); if(!got.includes(r.e.k)){ got.push(r.e.k); try{ localStorage.setItem(ENDS_KEY, JSON.stringify(got)); }catch(e){} }
+  const ck = (ok, t, v)=> `<li class="${ok ? 'ok' : ''}"><i>${ok ? '★' : '☆'}</i>${t}<b>${v}</b></li>`;
+  const n = ENDS.findIndex(x=> x.k === r.e.k) + 1;
+  await cardShow(`<div class="sc endCard"><div class="ecPic" style="background-image:url(img/ui/${r.e.img}.webp)"></div>
+    <div class="ecBody"><div class="ecNo norb">END ${n}</div><div class="stt">${r.e.t}</div><div class="sdt">${r.e.d}</div>
+    <ul class="ecCk">${ck(S.story.flags.champ, 'すもうの決勝', r.sumo)}${ck(r.fr >= 5, '友だちと なかよし', r.fr + ' / 5人')}${ck(r.kk >= r.all, 'ふしぎのかけら', r.kk + ' / ' + r.all)}</ul>
+    <div class="ecGot">あつめたエンドカード　${ENDS.map(x=> `<i class="${got.includes(x.k) ? 'on' : ''}${x.k === r.e.k ? ' now' : ''}"></i>`).join('')}　${got.length} / ${ENDS.length}</div></div></div>`, 0);
+  track('story_end', {end:r.e.k, loop:S.story.loop || 1});
+}
 const KAKERA = {
   hikari:      {ch:0, name:'海の上の金色の光',         txt:'夏休みの前の夜、大島のほうで、一瞬だけ光った。'},
   note:        {ch:0, name:'開かない最後のページ',     txt:'おとうさんの古い虫しらべノート。最後のページだけ、くっついて開かない。'},
