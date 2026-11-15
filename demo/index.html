@@ -108,10 +108,23 @@ p{margin:.3em 0}
 body.phone #titleScr .t3,body.phone #titleScr .t4,body.phone #titleScr .tbtns.sub,body.phone #titleScr .vrow:not(.tmRow),body.phone #titleScr #btnModes{display:none}   /* スマホ：メニューにまとめる */
 body.phone #titleScr .tmRow{margin-top:.35em}body.phone #titleScr #btnTMenu{font-weight:800}
 body.phone #titleScr .tpad{order:0}
+#restScr{position:fixed;inset:0;z-index:400;display:flex;align-items:center;justify-content:center;background:#1a120acc url(img/ui/title_a.webp) center/cover;background-blend-mode:multiply;padding:16px}
+#restScr.end{background-image:url(img/ui/ev/ending.webp)}
+#restScr .rsCard{background:#fffaf0f2;color:#3a2a18;border:3px solid #d9b07a;border-radius:18px;padding:1.2em 1.6em;text-align:center;max-width:min(92vw,520px);box-shadow:0 10px 30px #0008;display:flex;flex-direction:column;align-items:center;gap:.5em;font-family:"M PLUS Rounded 1c",sans-serif}
+#restScr h2{margin:0;font-size:clamp(20px,5vh,30px);color:#5a3010}#restScr p{margin:0;white-space:pre-line;line-height:1.7;font-weight:700}
+#rsTime{font-size:clamp(26px,7vh,44px);font-weight:900;color:#d8843a}#rsTime:empty{display:none}
+#restScr .rsParent{margin-top:.4em;font:inherit;font-size:13px;color:#7a5a30;background:none;border:1px solid #c9a978;border-radius:999px;padding:.3em 1.1em;cursor:pointer}
+#ptToast{position:fixed;left:50%;top:max(10px,var(--st,0px));transform:translateX(-50%);z-index:390;background:#fffaf0f2;color:#3a2a18;border:2px solid #d9b07a;border-radius:12px;padding:.5em 1em;font-weight:800;white-space:pre-line;box-shadow:0 4px 12px #0006;animation:ptIn .4s ease-out both}
+@keyframes ptIn{from{opacity:0;transform:translate(-50%,-12px)}}
+.suBox{display:flex;flex-direction:column;gap:.55em}.suRow{display:flex;flex-direction:column;gap:.25em}.suRow>b{font-size:.95em;color:#5a3010}.suRow.off{opacity:.4;pointer-events:none}
+.suSeg{display:flex;flex-wrap:wrap;gap:.35em}.suSeg button{font:inherit;font-weight:700;font-size:.92em;color:#5a3a14;background:#fffaf0;border:2px solid #d9c49a;border-radius:999px;padding:.3em .9em;cursor:pointer}
+.suSeg button.on{background:#f6cf5b;border-color:#c8962a;color:#3a2410;box-shadow:0 2px 0 #c8962a}.suGo{align-self:center;margin-top:.3em;font-size:1.05em}
 .tMenu{display:flex;flex-direction:column;gap:6px}.tMenu .btn,.popWin .tMenu .btn{display:flex;justify-content:space-between;align-items:center;text-align:left;background:#fffaf0;color:#3a2a18;border:1.5px solid #d9c49a;box-shadow:0 2px 0 #d9c49a;font-weight:700}.tMenu .btn .v{color:#c06a10}.tMenu .btn .v{margin-left:.6em}.tmNote{margin-top:.8em}
 .spList{display:flex;flex-direction:column;gap:6px}.spItem{display:flex;align-items:center;gap:.6em;background:#fffaf0;border:1.5px solid #d9c49a;border-radius:10px;padding:5px 8px;color:#3a2a18}
 .spItem img{width:64px;height:44px;object-fit:cover;border-radius:6px;flex:none}.spItem>div{flex:1;min-width:0;line-height:1.35}.spItem b{display:block}.spItem small{display:block;font-size:.8em;color:#7a5a30}.spItem .spBugs{color:#5a4a30}
 .spItem .spMap,body.noteUI .spItem .spMap{flex:none;padding:.25em .8em;font-size:.85em;text-decoration:none;color:#5a3a14;background:#f6cf5b;border:2px solid #fff;border-radius:999px;font-weight:800}
+.tbChk{display:flex;align-items:center;gap:.3em;font-weight:800;color:#5a3a14;background:#fff6dc;border:2px solid #d9b07a;border-radius:999px;padding:.2em .8em}.tbChk input{width:1.2em;height:1.2em}
+.sendAnim .tkImg{width:120px;height:120px;object-fit:contain}.sendAnim{position:relative}.sendAnim .tkBugs{position:absolute;left:50%;top:58%;transform:translate(-50%,-50%);display:flex;gap:2px;width:84px;flex-wrap:wrap;justify-content:center}.sendAnim .tkBugs span{width:26px;height:26px}.sendAnim .tkBugs svg{width:100%;height:100%}
 .toriList{display:flex;flex-direction:column;gap:6px}.toriBug{display:flex;align-items:center;gap:.6em}.toriBug .tbPic{width:56px;height:56px;flex:none}.toriBug .tbPic svg{width:100%;height:100%}.toriBug .tbTx{flex:1;min-width:0}.toriBug .tbTx small{display:block}
 #titleScr .tbtn.pri{background:var(--sun);color:#1b130c;border-color:#fff}
 #titleScr .tbtns.sub{margin-top:.45em;gap:.45em}
@@ -457,12 +470,13 @@ html.land.tall #msgLayer .ans .btn.pic img{width:132px;height:99px}
 .storyCard .kakeraCard{background:linear-gradient(#fffaf0,#fff0c8);color:#4a3320;border:3px solid #e0b040;border-radius:18px;padding:1.2em 1.6em 1.3em;box-shadow:0 0 0 4px #fff6d8aa,0 0 40px 10px #ffd86088;max-width:min(88%,520px)}
 .storyCard .kakeraCard .stt{color:#8a5a10;font-size:28px}.storyCard .kakeraCard .sdt{color:#4a3320}
 .storyCard .kakeraCard .kkGlow{font-size:40px;line-height:1;color:#f0b020;text-shadow:0 0 12px #ffe070,0 0 24px #ffd040;animation:eggGlow 1.4s ease-in-out infinite}
-#coach .cPoint{position:absolute;pointer-events:none;line-height:1;filter:drop-shadow(0 3px 4px #0008);z-index:3;animation:.9s ease-in-out infinite}
-#coach .cPoint.dn{transform:translate(-30%,0);animation-name:cpDn}#coach .cPoint.up{transform:translate(-30%,-100%) rotate(180deg);animation-name:cpUp}
-#coach .cPoint.rt{transform:translate(0,-50%);animation-name:cpRt}#coach .cPoint.lf{transform:translate(-100%,-50%);animation-name:cpLf}
+#coach .cPoint{position:absolute;pointer-events:none;line-height:1;filter:drop-shadow(0 3px 4px #0007);z-index:3;animation:.9s ease-in-out infinite}
+#coach .cPoint img{display:block;width:100%;height:100%;object-fit:contain}
+#coach .cPoint.dn{transform:translate(-50%,0);animation-name:cpDn}#coach .cPoint.dn img{transform:rotate(-90deg)}
+#coach .cPoint.up{transform:translate(-50%,-100%);animation-name:cpUp}#coach .cPoint.up img{transform:rotate(90deg)}
+#coach .cPoint.rt{transform:translate(0,-50%);animation-name:cpRt}#coach .cPoint.rt img{transform:scaleX(-1)}
+#coach .cPoint.lf{transform:translate(-100%,-50%);animation-name:cpLf}
 @keyframes cpDn{0%,100%{margin-top:14px}50%{margin-top:2px}}@keyframes cpUp{0%,100%{margin-top:-14px}50%{margin-top:-2px}}@keyframes cpRt{0%,100%{margin-left:14px}50%{margin-left:2px}}@keyframes cpLf{0%,100%{margin-left:-14px}50%{margin-left:-2px}}
-#coach .cHole{animation:cHolePulse 1.4s ease-in-out infinite}
-@keyframes cHolePulse{50%{box-shadow:0 0 0 4px #ffd860,0 0 22px 8px #ffd860cc}}
 #standee.r{left:auto;right:calc(var(--sr,0px) + 70px)}#standee.bye{animation:standeeBye .45s ease-in forwards}
 @keyframes standeeBye{to{opacity:0;transform:translateY(12px)}}
 .tUndo{margin-left:.6em;font:inherit;font-weight:700;background:#fff;border:1.5px solid #c9a978;border-radius:999px;padding:.15em .8em;color:#7a4a10;cursor:pointer;pointer-events:auto}
@@ -476,11 +490,18 @@ html.land.tall #msgLayer .ans .btn.pic img{width:132px;height:99px}
 #papaPop{position:fixed;right:calc(var(--sr,0px) + 64px);bottom:0;height:min(62%,560px);z-index:5;pointer-events:none;animation:papaPop 5.2s ease both}
 #papaPop img{height:100%;width:auto;filter:drop-shadow(0 4px 10px #0005)}
 #coach{position:fixed;inset:0;z-index:230}
-#coach .cHole{position:fixed;border-radius:14px;box-shadow:0 0 0 3px #ffd23f,0 0 18px 4px #ffd23fcc;pointer-events:none;animation:cHole 1.3s ease-in-out infinite;transition:all .2s}
-@keyframes cHole{50%{box-shadow:0 0 0 5px #ffe680,0 0 26px 8px #ffd23fee}}
-#coach .cBlk{position:fixed;display:block;background:#0b1428a6}
+#coach .cHole{position:fixed;border-radius:26px;pointer-events:none;transition:left .25s,top .25s,width .25s,height .25s;box-shadow:0 0 34px 9999px #0b1428a0}   /* まわりを暗く（ふちは ぼかす） */
+#coach .cHole::before,#coach .cHole::after{content:"";position:absolute;inset:-6px;border-radius:30px;pointer-events:none}
+#coach .cHole::before{box-shadow:0 0 18px 6px #ffe680cc,inset 0 0 22px 6px #fff3b088;animation:cGlow 1.8s ease-in-out infinite}   /* ふわふわ光る */
+#coach .cHole::after{border:2.5px solid #fff6c8;opacity:.0;animation:cRing 1.8s ease-out infinite}   /* 光の輪が ふわっと広がる */
+@keyframes cGlow{0%,100%{opacity:.65;transform:scale(1)}50%{opacity:1;transform:scale(1.035)}}
+@keyframes cRing{0%{opacity:.9;transform:scale(.98)}100%{opacity:0;transform:scale(1.18)}}
+#coach .cBlk{position:fixed;display:block;background:transparent}
+#coach .cHole.none::before,#coach .cHole.none::after{display:none}
+#coach .cSkip{position:fixed;top:calc(var(--st,0px) + 8px);right:calc(var(--sr,0px) + 10px);z-index:4;pointer-events:auto;font:inherit;font-size:13px;font-weight:800;color:#5a3a14;background:#fffaf0e6;border:2px solid #d9b07a;border-radius:999px;padding:.3em 1em;cursor:pointer;box-shadow:0 2px 6px #0005}
 #coach .cFuki{z-index:2;animation:none;cursor:pointer}
 #coach .cFuki.top{bottom:auto;top:calc(var(--st,0px) + 12px)}
+#coach .cFuki.sideL,#coach .cFuki.sideR{top:calc(var(--st,0px) + 48px);bottom:auto;width:min(44%,420px);min-height:0;font-size:.92em}#coach .cFuki.sideL{left:calc(var(--sl,0px) + 8px);right:auto;margin:0}#coach .cFuki.sideR{right:calc(var(--sr,0px) + 8px);left:auto;margin:0}
 #coach .cFuki .tap{display:block;text-align:right;font-size:12px;color:#8a7a5a;animation:blink 1s infinite}
 #coach .cDo{display:block;text-align:right;font-size:14px;color:#c4521e;font-weight:800;animation:blink 1.2s infinite}
 /* おとうさん（そと）・おみせのおじさんのひとこと：会話の窓と同じ場所（画面の下のまん中）に、同じ見た目で出す（2026-11-14 ユーザー：定位置で） */
@@ -490,6 +511,7 @@ html.land.tall .fuki{width:min(calc(100% - 154px - var(--sl,0px) - var(--sr,0px)
 .fuki b.who.l{right:auto;left:1.3em}
 html.land.tall .fuki b.who{font-size:17px}
 #papaBub{pointer-events:none}
+html.land:not(.tall) body[data-tab=spot] #papaBub{bottom:auto;top:calc(var(--st,0px) + 44px);min-height:0;width:min(46%,420px);left:auto;right:calc(var(--sr,0px) + 8px);margin:0;font-size:.9em}
 #shopBub{cursor:pointer;animation-duration:9s}
 @keyframes fuki{0%{transform:translateY(16px);opacity:0}6%,88%{transform:none;opacity:1}100%{opacity:0;visibility:hidden}}
 html.land body.noteUI .shopHi:not(.port){display:none}
@@ -1433,6 +1455,9 @@ body.noteUI #hud .sch{color:#b0601a}   /* 明るい札の上でも読めるよ�
 </div>
 <div class="drawer norb" id="itemsPanel" data-p="items"><div class="dHead"><b>もちもの</b></div><div id="itemsBody"></div></div>
 <div class="saveMark" id="saveMark">セーブしました</div>
+<div id="restScr" class="norb" hidden><div class="rsCard"><h2 id="rsTitle"></h2><p id="rsMsg"></p><div id="rsTime"></div>
+  <button type="button" class="btn pri" id="rsBack" hidden>あそびに もどる</button><button type="button" class="rsParent" id="rsParent">おうちの人へ：休けいを おわらせる</button></div></div>
+<div id="ptToast" class="norb" hidden></div>
 
 <script>
 'use strict';
@@ -2500,7 +2525,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.18.0';
-const BUILD = '20261115-1120';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261115-1149';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.18.0', date:'2026-11-15', items:[
     '虫ずもうが もっと もりあがるようになった：対戦カードとVS、軍配、ぼくと あいての顔（かっているときは にこにこ）、必殺わざの大きなカットイン、おうえんと「かち！」の演出。とちゅうで曲が とぎれにくくした',
@@ -4159,7 +4184,7 @@ function render(){
   setStandee(S && openCase === null && tab === 'shop' ? 'ojisan' : null); if(!atSpot && $('papaPop')){ $('papaPop').remove(); $('papaBub')?.remove(); }
   if(!S){ renderTitle(); otoScene(); return; }
   if(openCase !== null){ renderObs(); otoScene(); setTimeout(tutCheck, 900); return; }
-  if(S.tori){ $('tabs').hidden = true; $('rtabs').hidden = true; paintPlace(atSpot ? 'spot_' + spotArt(outState.spot) : 'scr_out', slotOf()); view.onscroll = null; (atSpot ? renderSpot : renderTori)(); otoScene(); return; }
+  if(S.tori){ $('tabs').hidden = true; $('rtabs').hidden = true; paintPlace(atSpot ? 'spot_' + spotArt(outState.spot) : 'tori_bg', slotOf()); view.onscroll = null; (atSpot ? renderSpot : renderTori)(); otoScene(); setTimeout(tutCheck, 900); return; }
   paintPlace(atSpot ? 'spot_' + spotArt(outState.spot) : tab === 'home' ? 'place_heya' : 'scr_' + tab, slotOf());
   view.onscroll = null;
   ({home:renderHome, out:renderOut, sumo:renderSumo, shop:renderShop, dex:renderDex, opt:renderOpt})[tab]();
@@ -4228,14 +4253,16 @@ function renderTitle(){
       if(i === 1){ prev = hasS; await say(`${(hasS.story.loop || 1) + 1}周目！\nずかん・ふしぎのかけら・ノートの名前は、そのまま。\n…この夏を、もう一度。前とは ちがう えらびかたも できるかもしれない。`); }
       else if(!(await ask('ストーリーのセーブを消して、はじめからにする？', 'はじめから', 'やめる'))) return; }
     if(tutOK() && !modePicked && !hasS && !prev && !(await ask('【ストーリー】\n' + MODE_TXT.story + '\n\nストーリーで はじめる？', 'はじめる', 'やめる'))) return;
+    const su = await setupWin(); if(!su) return;
     const sp = await say('ゲームの時計の速さを、えらんでね。\n（あとから「その他」でかえられるよ）', {ans:Object.values(STORY_SPEED).map(v=> `${v.name}：${v.txt}`)});
-    S = newStory(Object.keys(STORY_SPEED)[sp], prev); storyRT = Date.now(); save(); track('game_start', {mode:'story', speed:Object.keys(STORY_SPEED)[sp], loop:S.story.loop || 1}); start(); };
+    S = newStory(Object.keys(STORY_SPEED)[sp], prev); storyRT = Date.now(); if(!su.tut) TUT_KEYS.forEach(k=> S.yk['tut_' + k] = 1); save(); track('game_start', {mode:'story', speed:Object.keys(STORY_SPEED)[sp], loop:S.story.loop || 1}); start(); };
   $('btnFree').onclick = async ()=>{ if(!(await phoneOK())) return;
     if(has){ const i = await say('じゆうに育てる', {ans:['つづきから', 'はじめから', 'やめる']}); if(i === 2) return;
       if(i === 0){ S = load(); track('game_continue', {mode:'free'}); start(); return; }
       if(!(await ask('いまのセーブを消して、はじめからにする？\n（そだてている虫も、いなくなります）', 'はじめから', 'やめる'))) return; }
     if(tutOK() && !modePicked && !has && !(await ask('【じゆうに育てる】\n' + MODE_TXT.free + '\n\nじゆうに育てる で はじめる？', 'はじめる', 'やめる'))) return;
-    S = newGame(); save(); track('game_start', {mode:'free'}); start(); };
+    const su = await setupWin(); if(!su) return;
+    S = newGame(); if(!su.tut) TUT_KEYS.forEach(k=> S.yk['tut_' + k] = 1); save(); track('game_start', {mode:'free'}); start(); };
   $('btnModes').onclick = showModes;
   if($('btnTMenu')) $('btnTMenu').onclick = showTitleMenu;
   $('btnInstall').onclick = showInstall; $('btnShare').onclick = showShare; $('btnTori').onclick = startTori;
@@ -4249,6 +4276,26 @@ const MODE_TXT = {
 };
 /* 「？」：別のページではなく、タイトルの上に うかぶウィンドウ。カードをタップすると、そのモードの「つづきから／はじめから」へ（2026-11-15 ユーザー） */
 let modePicked = false;   // カードからえらんだときは、「〜で はじめる？」を もう一度きかない
+function setupWin(){
+  if(!tutOK()) return Promise.resolve({tut:true});   // テスト（playwright）は今までどおり
+  return new Promise(res=>{
+    const seg = (k, label, list, cur)=> `<div class="suRow"><b>${label}</b><div class="suSeg" data-k="${k}">${list.map(([v, t])=> `<button type="button" class="${String(v) === String(cur) ? 'on' : ''}" data-v="${v}">${t}</button>`).join('')}</div></div>`;
+    const L = openWin('はじめる前に（おうちの人と いっしょに）', `<div class="suBox">
+      ${seg('limit', 'あそぶ時間', [[30, '30分'], [15, '15分'], [45, '45分'], [60, '60分'], [0, 'きめない']], ptSet.limit)}
+      ${seg('rest', '時間になったら', [[10, '10分 休けい'], [5, '5分'], [15, '15分'], [30, '30分'], ['end', 'その日は おしまい']], ptSet.rest)}
+      ${seg('furi', 'ふりがな', [[0, 'ふつう（小5〜）'], [1, 'たくさん（小3〜）'], [2, 'ぜんぶ（小さい子）']], furiLv)}
+      ${seg('tut', 'はじめての説明', [[1, '見る'], [0, 'とばす（2回目の人）']], 1)}
+      <p class="small">どれも、あとから「その他」で かえられるよ。</p><button type="button" class="btn pri suGo">これで はじめる ▶</button></div>`, 'setupWin');
+    L.querySelectorAll('.suSeg button').forEach(b=> b.onclick = ()=>{ b.parentNode.querySelectorAll('button').forEach(x=> x.classList.toggle('on', x === b));
+      if(b.parentNode.dataset.k === 'limit') L.querySelector('.suSeg[data-k=rest]').closest('.suRow').classList.toggle('off', b.dataset.v === '0'); });
+    let fin = false; const end = v=>{ if(fin) return; fin = true; res(v); };
+    const cl = L.close; L.close = ()=>{ cl(); end(null); }; L.querySelector('.mwX').onclick = L.close; L.onclick = e=>{ if(e.target === L) L.close(); };
+    L.querySelector('.suGo').onclick = ()=>{ const v = k=> L.querySelector(`.suSeg[data-k=${k}] .on`).dataset.v;
+      ptSet = {limit:+v('limit'), rest:v('rest') === 'end' ? 'end' : +v('rest')}; ptSaveSet(); ptSt = {used:0, last:Date.now()}; ptSaveSt();
+      setFuri(+v('furi')); const tut = v('tut') === '1'; track('setup', {limit:ptSet.limit, furi:+v('furi'), tut:tut ? 1 : 0});
+      fin = true; L.remove(); res({tut}); };
+  });
+}
 function showTitleMenu(){
   const items = [['btnModes', 'どっちで 遊ぶ？（ストーリー と じゆうに育てる）'], ['btnInstall', 'アプリにする方法'], ['btnShare', '友だちに教える'], ['btnVer', `こうしん情報（ver ${GAME_VER}）`], ['btnFuri', furiLabel()], ['btnPriv', 'プライバシーについて'], ...($('btnRot') ? [['btnRot', '↻ 画面の向きを反対に']] : [])];
   const L = openWin('メニュー', `<div class="tMenu">${items.map(([id, t])=> `<button type="button" class="btn" data-go="${id}"><span>${esc(t)}</span><span class="v">▸</span></button>`).join('')}</div>
@@ -4277,30 +4324,34 @@ async function start(){
 /* ---- はじめての説明（2026-11-14 ユーザー）：ふきだしで、画面のどこを見る・さわるかを1つずつ教える。じっさいにさわらせて進める
    coach(キー, ステップ)：sel の場所だけ明るくして（まわりは暗く・さわれない）、下にふきだし。wait があれば、その場所を本当にさわる（または wait() が true になる）まで待つ
    S.yk['tut_' + キー] で1回だけ。「その他」の「はじめての説明を もう一度」で消せる。テスト（playwright）は ?tut のときだけ出す */
-let coachOn = false;
+let coachOn = false, coachSkip = false;
+const TUT_KEYS = ['home', 'kago', 'sagasu'];
+const tutSkipAll = ()=>{ if(S && S.yk){ TUT_KEYS.forEach(k=> S.yk['tut_' + k] = 1); save(true); } };   // 説明を ぜんぶ とばす（はじめからの設定・説明の「とばす」）
 const coachUnion = els=> els.length ? {getBoundingClientRect(){ const rs = els.map(e=> e.getBoundingClientRect()).filter(r=> r.width); if(!rs.length) return {width:0}; const l = Math.min(...rs.map(r=> r.left)), t = Math.min(...rs.map(r=> r.top)), r = Math.max(...rs.map(r=> r.right)), b = Math.max(...rs.map(r=> r.bottom)); return {left:l, top:t, right:r, bottom:b, width:r - l, height:b - t}; }} : null;
 const tutOK = ()=> !navigator.webdriver || QS.has('tut');
 function coachStep(st){
   return new Promise(res=>{
     const L = document.createElement('div'); L.id = 'coach'; L.className = 'norb';
-    L.innerHTML = `<div class="cHole"></div><div class="cPoint" aria-hidden="true">👆</div><i class="cBlk"></i><i class="cBlk"></i><i class="cBlk"></i><i class="cBlk"></i><div class="fuki cFuki${st.top ? ' top' : ''}"><b class="who">${esc(st.who || 'おとうさん')}</b>${fmtMsg(st.text)}${st.wait ? `<span class="cDo">${esc(st.doTxt || '光っているところを、さわってみよう')}</span>` : '<span class="tap">▼ タップでつぎへ</span>'}</div>`;
+    L.innerHTML = `<div class="cHole"></div><div class="cPoint" aria-hidden="true"><img src="img/ui/yubi.webp" alt="" draggable="false"></div><button type="button" class="cSkip">説明を とばす ⏭</button><i class="cBlk"></i><i class="cBlk"></i><i class="cBlk"></i><i class="cBlk"></i><div class="fuki cFuki${st.top ? ' top' : ''}"><b class="who">${esc(st.who || 'おとうさん')}</b>${fmtMsg(st.text)}${st.wait ? `<span class="cDo">${esc(st.doTxt || '光っているところを、さわってみよう')}</span>` : '<span class="tap">▼ タップでつぎへ</span>'}</div>`;
     document.body.appendChild(L);
     const hole = L.querySelector('.cHole'), pt = L.querySelector('.cPoint'), blk = [...L.querySelectorAll('.cBlk')], fk = L.querySelector('.cFuki');
     const target = ()=> typeof st.sel === 'function' ? st.sel() : st.sel ? document.querySelector(st.sel) : null;
     const place = ()=>{ const el = target(), W = rotMode ? rotLen : innerWidth, H = rotMode ? innerWidth : innerHeight;   // たて持ち（まわした画面）は、まわしたあとの はば・高さ（2026-11-14 ユーザーの写真：光る場所がずれた）
       let r = el ? el.getBoundingClientRect() : null; if(r && !r.width) r = null;
-      const pad = 6, x = r ? Math.max(0, r.left - pad) : W/2, y = r ? Math.max(0, r.top - pad) : H/2, w = r ? Math.min(W - x, r.width + pad*2) : 0, h = r ? Math.min(H - y, r.height + pad*2) : 0;
-      Object.assign(hole.style, {left:x + 'px', top:y + 'px', width:w + 'px', height:h + 'px', display:r ? '' : 'none'});
-      { const sz = 46, m = y + h + sz + 20 < H ? 'dn' : y > sz + 20 ? 'up' : x + w + sz + 20 < W ? 'rt' : 'lf';   // 指さし：光っているところの下・上・右・左の あいているほうから、ゆびでさす（2026-11-15 ユーザー）
-        pt.style.display = r ? '' : 'none'; pt.className = 'cPoint ' + m; pt.textContent = m === 'rt' ? '👈' : m === 'lf' ? '👉' : '👆';
-        Object.assign(pt.style, {left:(m === 'rt' ? x + w : m === 'lf' ? x : x + w/2) + 'px', top:(m === 'dn' ? y + h : m === 'up' ? y : y + h/2) + 'px', fontSize:sz + 'px'}); }
+      const pad = 10, x = r ? Math.max(0, r.left - pad) : W/2, y = r ? Math.max(0, r.top - pad) : H/2, w = r ? Math.min(W - x, r.width + pad*2) : 0, h = r ? Math.min(H - y, r.height + pad*2) : 0;
+      Object.assign(hole.style, {left:x + 'px', top:y + 'px', width:w + 'px', height:h + 'px'}); hole.classList.toggle('none', !r);
+      { const sz = 46, m = y + h + sz + 20 < H ? 'dn' : x + w + sz + 20 < W ? 'rt' : x > sz + 20 ? 'lf' : 'up';   // 上は ふきだしが来やすいので さいご   // 指さし：光っているところの下・上・右・左の あいているほうから、ゆびでさす（2026-11-15 ユーザー）
+        pt.style.display = r ? '' : 'none'; pt.className = 'cPoint ' + m;
+        Object.assign(pt.style, {left:(m === 'rt' ? x + w : m === 'lf' ? x : x + w/2) + 'px', top:(m === 'dn' ? y + h : m === 'up' ? y : y + h/2) + 'px', width:sz * 1.25 + 'px', height:sz * 1.25 + 'px'}); }
       [[0, 0, W, y], [0, y + h, W, H - y - h], [0, y, x, h], [x + w, y, W - x - w, h]].forEach(([a, b, c, d], i)=> Object.assign(blk[i].style, {left:a + 'px', top:b + 'px', width:Math.max(0, c) + 'px', height:Math.max(0, d) + 'px'}));
       if(st.top || !r){ fk.classList.toggle('top', !!st.top); return; }
       const ov = ()=>{ const b = fk.getBoundingClientRect(); return Math.max(0, Math.min(b.bottom, r.bottom) - Math.max(b.top, r.top)) * Math.max(0, Math.min(b.right, r.right) - Math.max(b.left, r.left)); };
-      fk.classList.remove('top'); const a = ov(); fk.classList.add('top'); const b = ov(); fk.classList.toggle('top', b < a); };   // 光っているところと重ならないほう（2026-11-14 ユーザー：スマホで光っているところが押せなかった）
+      fk.classList.remove('top', 'sideL', 'sideR'); const a = ov(); fk.classList.add('top'); const b = ov(); fk.classList.toggle('top', b < a);
+      if(Math.min(a, b) > 0){ fk.classList.remove('top'); fk.classList.add((r.left + r.right) / 2 > W / 2 ? 'sideL' : 'sideR'); } };   // 光っているところと重ならないほう（2026-11-14 ユーザー：スマホで光っているところが押せなかった）
     place(); const iv = setInterval(place, 250);
     let fin = false; const done = ()=>{ if(fin) return; fin = true; clearInterval(iv); clearInterval(pv); L.remove(); setTimeout(res, 120); };
     let pv = 0;
+    L.querySelector('.cSkip').onclick = e=>{ e.stopPropagation(); coachSkip = true; done(); };
     if(st.alive) pv = setInterval(()=>{ if(!st.alive()) done(); }, 300);
     if(!st.wait){ L.onclick = done; }
     else {
@@ -4314,7 +4365,8 @@ function coachStep(st){
 async function coach(key, steps){
   if(coachOn || !tutOK() || !S || !S.yk || S.yk['tut_' + key]) return;
   coachOn = true; S.yk['tut_' + key] = 1; save(true); track('tutorial', {step:key});
-  try{ for(const st of steps){ if(st.if && !st.if()) continue; await coachStep(st); } } finally { coachOn = false; }
+  coachSkip = false;
+  try{ for(const st of steps){ if(st.if && !st.if()) continue; await coachStep(st); if(coachSkip){ tutSkipAll(); track('tutorial', {step:'skip_' + key}); break; } } } finally { coachOn = false; }
 }
 // いつ・どの説明を出すか（render のあと。会話や演出が出ているときは待つ）
 function tutCheck(){
@@ -4324,7 +4376,7 @@ function tutCheck(){
   if(openCase === null && tab === 'home' && !S.yk.tut_home) return coach('home', [
     {sel:'#tabs', text:'左のボタンで、「そと」「すもう」「おみせ」「ずかん」「その他」へ行けるよ。'},
     {sel:'#hud', text:'上は、いまの時間と、どんぐり（おかね）。朝・昼・夕方・夜で、虫のようすが かわるよ。'},
-    {sel:'#rtabs', text:'右の「おうち」で、いつでも虫かごのならびに もどれるよ。'},
+    {sel:'#rtabs', text:'右の「もちもの」で、もっているエサや かざりが 見られるよ。'},
     {if:()=> !!anyCase(), alive:()=> openCase === null && tab === 'home', sel:()=> anyCase(), text:'これが虫かご。「元気」のバーが へってきたら、お世話のあいず。\nタップして、中を見てみよう！', wait:'click'},
     {if:()=> !anyCase(), alive:()=> openCase === null && tab === 'home', sel:'#tabs [data-t=out]', text:'まずは「そと」で、虫をさがそう。おしてみて！', wait:'click'},
   ]);
@@ -4973,6 +5025,80 @@ function renderOut(){
   $('btnGeo').onclick = geoGo;
   $('btnDemoGo').onclick = async ()=>{ if(!(await askTogether())) return; const k = $('demoSpot').value; arrive(k === 'any' ? ANY_SPOT : SPOTS.find(s=>s.key===k), k === 'any'); };
 }
+/* ---- あそぶ時間（2026-11-15 ユーザー：虫とり日記と同じ）：決めた時間がくると 休けい。5分前と1分前に お知らせ ----
+   おうちの人が決める：時間（15〜60分・なし）と、休けい（5〜30分、または「その日はおしまい」）。変えるときは かけ算の確認（はじめからの設定のときはしない）。
+   休けいのあいだは ストーリーの時計も止まる（storyPaused）。お世話のとちゅう（会話・説明・すもう）では待って、おわってから出す */
+const PT_KEY = KEY_PRE + 'munakata-ikusei-playtime-v1', PT_ST_KEY = KEY_PRE + 'munakata-ikusei-playtime-state-v1';
+const PT_MIN = QS.has('ptfast') ? 1000 : 60000;   // 画面確認用：?ptfast で「1分」を1秒に
+let ptSet = (()=>{ try{ return Object.assign({limit:30, rest:10}, JSON.parse(localStorage.getItem(PT_KEY)) || {}); }catch(e){ return {limit:30, rest:10}; } })();
+let ptSt = (()=>{ try{ return Object.assign({used:0, last:0}, JSON.parse(localStorage.getItem(PT_ST_KEY)) || {}); }catch(e){ return {used:0, last:0}; } })();
+const ptSaveSet = ()=>{ try{ localStorage.setItem(PT_KEY, JSON.stringify(ptSet)); }catch(e){} };
+const ptSaveSt = ()=>{ try{ localStorage.setItem(PT_ST_KEY, JSON.stringify(ptSt)); }catch(e){} };
+const ptToday = ()=>{ const d = new Date(); return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`; };   // 休けいは本物の日づけ（ゲームの時計ではない）
+const ptLocked = ()=> ptSt.pending || (ptSt.restUntil && Date.now() < ptSt.restUntil) || (ptSt.endDay && ptSt.endDay === ptToday());
+const ptResting = ()=> { const r = document.getElementById('restScr'); return !!(r && !r.hidden); };
+const ptRuleText = ()=> ptSet.limit ? `${ptSet.limit}分あそんだら、${ptSet.rest === 'end' ? 'その日はおしまい' : `${ptSet.rest}分 休けい`}` : 'なし（時間をきめない）';
+function parentCheck(){   // おうちの人の確認：小学生には少しむずかしい かけ算
+  const a = 7 + Math.floor(Math.random()*3), b = 6 + Math.floor(Math.random()*4);
+  const r = prompt(`おうちの人へ\n${a} × ${b} は？（数字で入れてください）`);
+  if(r === null) return false;
+  const n = parseInt(String(r).replace(/[０-９]/g, ch=> String.fromCharCode(ch.charCodeAt(0) - 0xFEE0)), 10);
+  if(n === a*b) return true;
+  alert('ちがうみたいです。'); return false;
+}
+async function playTimeMenu(skipCheck){
+  if(!skipCheck){ await say(`【あそぶ時間】いま：${ptRuleText()}\nおうちの人が決める設定です。時間の5分前と1分前に お知らせが出て、時間になると 休けいになります。`); if(ptSet.limit && !parentCheck()) return false; }
+  const L = [30, 15, 45, 60, 0];
+  const c = await say('あそぶ時間は？', {ans:L.map(m=> m ? `${m}分${m === 30 ? '（おすすめ）' : ''}` : 'なし（時間をきめない）')});
+  let rest = ptSet.rest;
+  if(L[c]){ const R = [10, 5, 15, 30, 'end'];
+    const r = await say('時間になったら？', {ans:R.map(m=> m === 'end' ? 'その日はおしまい（もう遊ばない）' : `${m}分 休けい${m === 10 ? '（おすすめ）' : ''}`)}); rest = R[r]; }
+  ptSet = {limit:L[c], rest}; ptSaveSet(); ptSt = {used:0, last:Date.now()}; ptSaveSt();
+  return true;
+}
+let ptToastT = null;
+function ptToast(msg){ const el = $('ptToast'); el.textContent = msg; el.hidden = false; el.style.animation = 'none'; void el.offsetWidth; el.style.animation = ''; clearTimeout(ptToastT); ptToastT = setTimeout(()=>{ el.hidden = true; }, 7000); }
+function restShow(){
+  if(ptResting()) return;
+  if(S) save(true);
+  if(ptSt.pending){ ptSt.pending = false; if(ptSet.rest !== 'end') ptSt.restUntil = Date.now() + ptSet.rest * PT_MIN; ptSaveSt(); }   // 休けいの時間は、休けいの画面が出てから数える
+  $('restScr').hidden = false; $('ptToast').hidden = true; restUpdate(); track('rest', {kind:ptSet.rest === 'end' ? 'end' : 'rest'});
+}
+function restHide(){
+  if(!ptResting()) return;
+  $('restScr').hidden = true;
+  ptSt.restUntil = 0; ptSt.endDay = null; ptSt.pending = false; ptSt.used = 0; ptSt.warned5 = ptSt.warned1 = false; ptSt.last = Date.now(); ptSaveSt();
+  if(S && S.story) storyRT = S.story.speed === 'mainichi' ? storyRT : Date.now();
+}
+function restUpdate(){
+  const end = ptSt.endDay && ptSt.endDay === ptToday();
+  $('restScr').classList.toggle('end', !!end);
+  $('rsTitle').textContent = end ? '今日は ここまで！' : 'ひと休みの時間だよ';
+  $('rsMsg').textContent = end ? 'たくさん お世話したね。\n虫たちも ひと休み。また明日 あそぼう。' : '目を休めて、お水を のもう。\n虫たちも、ひと休みしているよ。';
+  const left = end ? 0 : Math.max(0, Math.ceil(((ptSt.restUntil || 0) - Date.now()) / 1000));
+  $('rsTime').textContent = end ? '' : left > 0 ? `あと ${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}` : '休けい おしまい！';
+  $('rsBack').hidden = !!end || left > 0;
+  $('rsParent').hidden = !end && left <= 0;
+}
+$('rsBack').onclick = restHide;
+$('rsParent').onclick = ()=>{ if(parentCheck()) restHide(); };
+function ptBusy(){ return !!document.querySelector('#msgLayer, #evLayer, #arena, #matsuri, #coach, .sendL, #findField.busy, .toolObj'); }
+function ptTick(){
+  if(document.hidden) return;
+  const t = Date.now(), gap = ptSt.last ? t - ptSt.last : 0; ptSt.last = t;
+  if(ptResting()){ restUpdate(); ptSaveSt(); return; }
+  if(ptLocked()){ if(!ptBusy()) restShow(); ptSaveSt(); return; }
+  if(ptSt.restUntil || ptSt.endDay){ ptSt.restUntil = 0; ptSt.endDay = null; }
+  if(!ptSet.limit || !S){ ptSaveSt(); return; }   // タイトル画面では数えない
+  if(gap > 60000 && gap >= (ptSet.rest === 'end' ? 6*3600000 : ptSet.rest * PT_MIN)){ ptSt.used = 0; ptSt.warned5 = ptSt.warned1 = false; }   // しばらく閉じていたら、休けいしたことにする
+  ptSt.used += Math.min(gap || 1000, 5000) / 1000;
+  const rem = ptSet.limit * PT_MIN / 1000 - ptSt.used;
+  if(rem <= 300 * PT_MIN / 60000 && !ptSt.warned5){ ptSt.warned5 = true; OTO.sfx('kiri'); ptToast('🔔 あと5分で 休けいの時間だよ。'); }
+  if(rem <= 60 * PT_MIN / 60000 && !ptSt.warned1){ ptSt.warned1 = true; OTO.sfx('kiri'); ptToast('おとうさん「そろそろ 休けいだよ。あと1分。お世話を おわらせよう」'); }
+  if(rem <= 0){ if(ptSet.rest === 'end') ptSt.endDay = ptToday(); else ptSt.pending = true; ptSt.used = 0; ptSt.warned5 = ptSt.warned1 = false; }
+  ptSaveSt();
+}
+setInterval(ptTick, 1000);
 /* スマホ（2026-11-15 ユーザー）：虫を育てるのは タブレットか パソコンがおすすめ（スマホは画面が小さくて お世話しにくい）。
    スマホでは「そとで虫をつかまえる」（S.tori）がいちばん使えるように：宗像のスポットや近くの草むらで虫をつかまえて、タブレットやパソコンへ おくる */
 async function phoneOK(){
@@ -5004,14 +5130,17 @@ function renderTori(){
     <p class="win toriLead">宗像の とくべつなスポットや、近くの草むらで 虫をさがそう。つかまえた虫は、家の <b>タブレットや パソコン</b>（「じゆうに育てる」）に おくって 育てるよ。<br><small>そとでは、かならず おうちの人と いっしょにね。</small></p>
     <div class="row"><button type="button" class="btn pri" id="btnGeo">📍 いまいる場所をしらべる</button><button type="button" class="btn" id="tHow">おくりかた</button></div>
     ${got.length ? `<h3>つかまえた虫（${got.length}/${S.cases.length}ひき・まだ おくっていない）</h3><div class="toriList">${got.map(i=>{ const c = S.cases[i];
-      return `<div class="spot toriBug"><span class="tbPic">${svgBug(c.bug, stageOf(c).k, {instar:instarOf(c)})}</span><div class="tbTx"><b>${esc(dispName(c))}</b><small>${esc(c.from)}で つかまえた</small></div><div class="row"><button type="button" class="btn pri" data-send="${i}">📱→ おくる</button><button type="button" class="btn sub" data-rel="${i}">にがす</button></div></div>`; }).join('')}</div>` : ''}
+      return `<div class="spot toriBug"><span class="tbPic">${svgBug(c.bug, stageOf(c).k, {instar:instarOf(c)})}</span><div class="tbTx"><b>${esc(dispName(c))}</b><small>${esc(c.from)}で つかまえた</small></div><div class="row"><label class="tbChk"><input type="checkbox" data-pick="${i}" checked>おくる</label><button type="button" class="btn sub" data-rel="${i}">にがす</button></div></div>`; }).join('')}</div>
+      <div class="row"><button type="button" class="btn pri" id="tSendAll">📱→ えらんだ虫を まとめて おくる</button></div>` : ''}
     <h3>宗像の とくべつなスポット（6か所）</h3>${spotListHTML()}
     <div class="demoBox" style="margin-top:12px"><h3>デモ用（本番にはありません）</h3><div class="row"><select id="demoSpot" class="btn">${SPOTS.map(sp=>`<option value="${sp.key}">${esc(sp.name)}</option>`).join('')}<option value="any">とくべつなスポットではない場所</option></select><button type="button" class="btn" id="btnDemoGo">着いたことにする</button></div></div>`;
   $('tTitle').onclick = ()=>{ save(true); S = null; outState = null; render(); };
   $('tHow').onclick = showSendHow;
   $('btnGeo').onclick = geoGo;
   $('btnDemoGo').onclick = async ()=>{ if(!(await askTogether())) return; const k = $('demoSpot').value; arrive(k === 'any' ? ANY_SPOT : SPOTS.find(s=>s.key===k), k === 'any'); };
-  view.querySelectorAll('[data-send]').forEach(b=> b.onclick = ()=> sendBug(+b.dataset.send, true));
+  if($('tSendAll')){ const upd = ()=>{ const n = view.querySelectorAll('[data-pick]:checked').length; $('tSendAll').textContent = `📱→ えらんだ虫を まとめて おくる（${n}ひき）`; $('tSendAll').disabled = !n; };
+    view.querySelectorAll('[data-pick]').forEach(c=> c.onchange = upd); upd();
+    $('tSendAll').onclick = ()=> sendMany([...view.querySelectorAll('[data-pick]:checked')].map(c=> +c.dataset.pick)); }
   view.querySelectorAll('[data-rel]').forEach(b=> b.onclick = async ()=>{ const i = +b.dataset.rel; if(!(await ask(`${dispName(S.cases[i])}を、つかまえた場所に そっと にがす？`, 'にがす', 'やめる'))) return; S.cases[i] = null; save(true); render(); await say('バイバイ。元気でね。'); });
 }
 async function askTogether(){   // 安全の確認（1日1回）
@@ -5157,8 +5286,11 @@ async function doFind(sp, here, egg, slot, h){
         ind:{hp:1, atk:1, def:1, spd:1, heal:1}, log:newLog(), tot:newLog(), place:'genkan', trouble:null, dirt:[], foods:[], soak:0, hideUntil:0, deco:[], mat:null, soilAge:0, wetZ:Array(WZ).fill(70), soakZ:Array(WZ).fill(0), stress:0, known:!!know};
       save(true); track('bug_catch', {bug:id, chapter:0});
       await say(`${know ? b.name + 'の' + (id === 'kinkabuto' ? 'たまご' : '幼虫') : 'なぞの' + G.name}を、小さい虫かごに入れた！\n「${BORN[sp.key].name}」の虫だ。`);
-      if(await ask('家の タブレットや パソコンに、いま おくる？\n（あとで「つかまえた虫」から おくることもできるよ）', 'いま おくる', 'あとで')){ await sendBug(free0, true); return; }
-      renderSpot(); return;
+      const n = S.cases.filter(Boolean).length, room = S.cases.length - n;
+      const a = await say(`いま つかまえた虫は ${n}ひき。${room ? `あと ${room}ひき つかまえられるよ。` : '小さい虫かごは いっぱい！'}`, {ans:[...(room ? ['つづけて さがす'] : []), `まとめて おくる（${n}ひき）`, 'あとで おくる']});
+      if(room ? a === 1 : a === 0){ await sendMany(S.cases.map((c,i)=> c ? i : -1).filter(i=> i >= 0)); return; }
+      if(room && a === 0){ renderSpot(); return; }
+      outState = null; tab = 'home'; render(); return;
     }
     const foodKey = b.food, food = ITEMS[foodKey];
     if(foodKey === 'koorogi' && !(S.items[foodKey]||0)) await say('つれてかえるなら、ごはんの「生きた小さな虫」がいるよ。\nそとの「草むら」をさがすと、エサになる小さなバッタやコオロギが つかまえられる。いっしょに さがしてみよう。', {face:'papa_teach'});   // 2026-11-14 ユーザー：カマキリのエサは、そとでつかまえる
@@ -5471,6 +5603,7 @@ function renderOpt(){
     <button type="button" class="btn" id="oFuri"><span>ふりがな</span><span class="v">${FURI_LV[furiLv].t}</span></button>
     <button type="button" class="btn" id="oAuto"><span>じどうセーブ<br><small class="small">ほかのアプリに切りかえたとき、セーブする</small></span><span class="v">${autoSave ? 'ON' : 'OFF'}</span></button>
     ${storyOn() ? `<button type="button" class="btn" id="oAibou"><span>相棒（じゆうに育てる の虫）<br><small class="small">${S.story.aibou ? esc((S.story.aibou.name || BUGS[S.story.aibou.bug].name)) + '（' + esc(BUGS[S.story.aibou.bug].name) + '）が相棒' : 'じゆうに育てる の成虫を、虫ずもうにつれてくる'}</small></span><span class="v">▶</span></button>` : ''}
+    <button type="button" class="btn" id="oPt"><span>あそぶ時間（おうちの人が決める）<br><small class="small">${esc(ptRuleText())}</small></span><span class="v">▸</span></button>
     <button type="button" class="btn" id="oTut"><span>はじめての説明を、もう一度<br><small class="small">おうち・虫かご・虫さがしの画面で、また教えてくれる</small></span><span class="v">▶</span></button>
     <button type="button" class="btn" id="oOto"><span>おと（音楽・虫の声）<br><small class="small">画面にさわると鳴りはじめる</small></span><span class="v">${OTO.on ? 'ON' : 'OFF'}</span></button>
     <button type="button" class="btn" id="oSave"><span>いますぐセーブ</span><span class="v">▸</span></button>
@@ -5491,6 +5624,7 @@ function renderOpt(){
   $('oAuto').onclick = ()=>{ setAutoSave(!autoSave); renderOpt(); };
   $('oOto').onclick = ()=>{ OTO.setOn(!OTO.on); renderOpt(); };
   if($('oAibou')) $('oAibou').onclick = async ()=>{ await pickAibou(); renderOpt(); };
+  $('oPt').onclick = async ()=>{ if(await playTimeMenu()) await say(`あそぶ時間を「${ptRuleText()}」にしました。`); renderOpt(); };
   $('oTut').onclick = ()=>{ ['home', 'kago', 'sagasu'].forEach(k=> delete S.yk['tut_' + k]); save(); setTab('home'); };
   $('oSave').onclick = async ()=>{ save(); await say('セーブした。'); };
   $('oVer').onclick = showChangelog; $('oPriv').onclick = showPrivacy; $('oInstall').onclick = showInstall;
@@ -5612,7 +5746,8 @@ function showPrivacy(){
     <p class="small">${window.DEMO ? '※デモ版では、もともと計測していません。' : 'チェックを入れると、この端末からは何も送らなくなります。'}</p>
     <p><b>4. セーブデータ</b><br>ゲームの記録は、お使いの端末のブラウザの中（localStorage）にだけ保存されます。</p>
     <p><b>5. 屋外での採集</b><br>保護者の方のスマートフォンで、お子さんと一緒に行う前提で設計しています。アプリは1日1回「おうちの人といっしょ？」と確認します。</p>
-    <p><b>6. お問い合わせ</b><br>Game Director: Ryohei Taniguchi<br><a href="${contactURL()}" target="_blank" rel="noopener">お問い合わせフォーム</a>（ご意見・ご感想・不具合の報告はこちらから）</p>`);
+    <p><b>6. あそぶ時間</b><br>はじめは「30分あそぶと10分の休けい」です（はじめからのときに えらべます）。時間や休けい（「その日はおしまい」もえらべます）は、「その他」の「あそぶ時間」で変えられます。変えるときは、かんたんなかけ算で、おうちの方かどうかを確かめます。</p>
+    <p><b>7. お問い合わせ</b><br>Game Director: Ryohei Taniguchi<br><a href="${contactURL()}" target="_blank" rel="noopener">お問い合わせフォーム</a>（ご意見・ご感想・不具合の報告はこちらから）</p>`);
   const c = $('gaOffChk'); if(c) c.onchange = ()=> setGaOff(c.checked);
 }
 function showInstall(){ track('open_install');
@@ -5746,10 +5881,17 @@ async function packBug(c){
   if(window.CompressionStream){ const z = new Uint8Array(await new Response(new Blob([raw]).stream().pipeThrough(new CompressionStream('deflate-raw'))).arrayBuffer()); return 'z' + b64u(z); }
   return 'j' + b64u(raw);
 }
+async function packBugs(cs){
+  const list = cs.map(c=>{ const cc = JSON.parse(JSON.stringify(c)); SEND_DROP.forEach(k=> delete cc[k]); const d = S.dex[c.bug] || {}; return {u:c.uid, c:cc, d:{known:d.known ? 1 : 0, adult:d.adult || null}}; });
+  const raw = new TextEncoder().encode(JSON.stringify({v:2, list}));
+  if(window.CompressionStream){ const z = new Uint8Array(await new Response(new Blob([raw]).stream().pipeThrough(new CompressionStream('deflate-raw'))).arrayBuffer()); return 'z' + b64u(z); }
+  return 'j' + b64u(raw);
+}
 async function unpackBug(t){
   let raw = unb64u(t.slice(1));
   if(t[0] === 'z') raw = new Uint8Array(await new Response(new Blob([raw]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer());
   const o = JSON.parse(new TextDecoder().decode(raw));
+  if(o && o.v === 2 && Array.isArray(o.list)){ o.list = o.list.filter(x=> x && x.c && BUGS[x.c.bug]); o.list.forEach(x=>{ if(x.c.sex === 'メス' && MALE_ONLY.has(x.c.bug)){ x.c.sex = 'オス'; if(x.c.size) x.c.size = Math.round(x.c.size / .8); } x.d = x.d || {}; }); if(!o.list.length) throw new Error('bad'); return o; }
   if(!o || o.v !== 1 || !o.c || !BUGS[o.c.bug]) throw new Error('bad');
   if(o.c.sex === 'メス' && MALE_ONLY.has(o.c.bug)){ o.c.sex = 'オス'; if(o.c.size) o.c.size = Math.round(o.c.size / .8); }   // 前の版から送られたメスも、オスに
   return o;
@@ -5793,6 +5935,7 @@ async function recvBug(t){
   await start();
   let o; try{ o = await unpackBug(t); }catch(e){ await say('虫のデータを、うまく受けとれなかった…。\nおくった端末で、もう一度QRコードを出してみてね。'); history.replaceState(null, '', location.pathname); return; }
   S.got = S.got || [];
+  if(o.v === 2) return recvMany(o);
   if(o.u && S.got.includes(o.u)){ await say('この虫は、もう受けとっているよ。\nおくった端末で「とどいた！」をおしてね。'); history.replaceState(null, '', location.pathname); return; }
   const c = o.c, b = BUGS[c.bug], nm = c.name || (c.known ? b.name : 'なぞの虫');
   // 小さい虫かごがとどいて、ふたがあく
@@ -5813,6 +5956,53 @@ async function recvBug(t){
   await say(`${nm}を、${free+1}ばんの${BOXES[S.boxes[free]].name}にうつした！\nおくった端末で「とどいた！」をおしてね。`);
 }
 
+async function recvMany(o){
+  const list = o.list.filter(x=> !(x.u && S.got.includes(x.u)));
+  if(!list.length){ await say('この虫たちは、もう受けとっているよ。\nおくった端末で「とどいた！」をおしてね。'); history.replaceState(null, '', location.pathname); return; }
+  const nm = x=> x.c.name || (x.c.known ? BUGS[x.c.bug].name : 'なぞの虫');
+  const L = document.createElement('div'); L.className = 'full sendL recv';
+  L.innerHTML = `<div class="in"><div class="sendAnim come"><img class="tkImg" src="img/ui/tori_kago.webp" alt=""></div><p class="sendMsg">小さい虫かごが とどいた！<br>中に、<b>${list.length}ひき</b> いる。（${list.map(x=> esc(nm(x))).join('・')}）</p></div>`;
+  document.body.appendChild(L); await wait(1800);
+  const frees = S.cases.map((x,j)=> x ? -1 : j).filter(j=> j >= 0);
+  if(frees.length < list.length){ L.remove(); await say(`あいている虫かごが たりない…。\n${list.length}ひき おくられてきたけど、あいている虫かごは ${frees.length}こ。\n虫をかえすか、おみせで虫かごを買ってから、もう一度このリンクを開いてね。（${S.boxes.length}/${MAX_BOXES}こ）\n※おくった端末では、まだ「とどいた！」をおさないでね。`); return; }
+  const keys = Object.keys(PLACES), pi = await say('おうちの、どこにおく？（みんな同じところ）', {ans:keys.map(k=>`${PLACES[k].name}：${PLACES[k].desc}`), pics:placePics(keys)});
+  list.forEach((x, k)=>{ const c = x.c, free = frees[k];
+    S.cases[free] = Object.assign({trouble:null, dirt:[], foods:[], soak:0, hideUntil:0, deco:[], mat:null, soilAge:0, stress:0}, c, {place:keys[pi], tick:now(), uid:x.u}); ensureZ(S.cases[free]);
+    const d = S.dex[c.bug] = S.dex[c.bug] || {found:dayKey(), where:c.from}; if(x.d.known) d.known = 1; if(x.d.adult && !d.adult) d.adult = x.d.adult;
+    if(x.u) S.got.push(x.u); });
+  save(); hud(); L.remove(); history.replaceState(null, '', location.pathname);
+  tab = 'home'; openCase = null; render();
+  await say(`${list.map(x=> nm(x)).join('・')}を、虫かごに うつした！\nおくった端末で「とどいた！」をおしてね。`);
+}
+// そとで虫をつかまえる：えらんだ虫を まとめて おくる
+async function sendMany(idx){
+  idx = idx.filter(i=> S.cases[i]); if(!idx.length) return;
+  idx.forEach(i=>{ const c = S.cases[i]; c.uid = c.uid || (Date.now().toString(36) + Math.random().toString(36).slice(2, 8)); }); save(true);
+  const url = location.origin + location.pathname + '?okuru=' + await packBugs(idx.map(i=> S.cases[i]));
+  const names = idx.map(i=> dispName(S.cases[i]));
+  document.querySelectorAll('.sendL').forEach(e=>e.remove());
+  const L = document.createElement('div'); L.className = 'full sendL';
+  L.innerHTML = `<div class="in"><div class="top"><h2>${idx.length}ひきを まとめて おくる</h2></div>
+    <div class="sendAnim"><img class="tkImg" src="img/ui/tori_kago.webp" alt=""><div class="tkBugs">${idx.slice(0, 6).map(i=>{ const c = S.cases[i]; return `<span>${svgBug(c.bug, stageOf(c).k, {instar:instarOf(c)})}</span>`; }).join('')}</div></div>
+    <p class="sendMsg">${names.map(esc).join('・')}<br>おくり先の<b>タブレットや パソコンのカメラで、このQRコードを読みとってね</b>。<br><small>（おくり先の「じゆうに育てる」で、虫かごが ${idx.length}こ あいていると 受けとれるよ）</small></p>
+    <div class="qr" id="sendQR"><span class="small">QRコードを作っています…</span></div>
+    <div class="row sendBtns">${navigator.share ? '<button type="button" class="btn" id="sShare">AirDrop などでおくる</button>' : ''}<button type="button" class="btn" id="sCopy">リンクをコピー</button></div>
+    <div class="row sendBtns"><button type="button" class="btn pri" id="sDone">とどいた！</button><button type="button" class="btn sub" id="sCancel">やめる</button></div>
+    <p class="small">おくるのは、虫のこと（種類・大きさ・育ちぐあい・つけた名前・どこでつかまえたか）だけ。きみのことや、いまいる場所はおくらないよ。</p></div>`;
+  document.body.appendChild(L);
+  try{ if(!window.qrcode) await loadScript('lib/qrcode.js');
+    const qr = qrcode(0, 'L'); qr.addData(url); qr.make(); $('sendQR').innerHTML = qr.createSvgTag({cellSize:4, margin:4, scalable:true}); }
+  catch(e){ $('sendQR').innerHTML = '<span class="small">QRコードが作れなかった（虫が多すぎるかも）。「AirDrop などでおくる」か「リンクをコピー」でおくってね。</span>'; }
+  if($('sShare')) $('sShare').onclick = ()=> navigator.share({title:'むなかた 虫そだて日記〈1週間〉', text:`${names.join('・')}をおくるよ`, url}).catch(()=>{});
+  $('sCopy').onclick = async ()=>{ try{ await navigator.clipboard.writeText(url); $('sCopy').textContent = 'コピーした！'; }catch(e){ prompt('このリンクをコピーしてね', url); } };
+  $('sCancel').onclick = ()=> L.remove();
+  $('sDone').onclick = async ()=>{
+    if(!(await ask(`おくり先で、${idx.length}ひきが 虫かごに入ったのを見た？\n（この端末からは、いなくなるよ）`, 'とどいた', 'まだ'))) return;
+    L.querySelector('.sendAnim').classList.add('away'); await wait(900); L.remove();
+    idx.forEach(i=> S.cases[i] = null); S.stats.sent = (S.stats.sent||0) + idx.length; save(true); outState = null; tab = 'home'; render(); hud();
+    await say(`${idx.length}ひきは、新しいおうちに とどいた。\nあっちでも、大切に そだててね。`, {face:'boku_joy'});
+  };
+}
 /* 見本ページ：?mihon=kabuto のように開くと、その虫が入ったケースをすぐ見られる（絵をたしかめる用。セーブには何ものこらない）
    &st=larva / pupa / adult ですがた、&place=heya などで置き場所、&mat=mat_suna / futsu などで土、上のボタンで時間・すがた・枝・エサをかえられる */
 function startMihon(){
@@ -5877,7 +6067,7 @@ let storyRT = Date.now(), storyBusy = false;
 const storySp = ()=> STORY_SPEED[S.story.speed] || STORY_SPEED.hayai;
 // 時計が止まるとき：会話・お祭り・すもうのほか、虫の世話をしている（虫かごをひらいている）あいだと、そとで虫をさがしているあいだも止める
 // （2026-11-09 実機：「はやい」は1びょうで6分。午前に世話をしていたら夜になって、そとへ行こうとしたら次の日になっていた）
-function storyPaused(){ return document.hidden || storyBusy || !!(S && S.story && S.story.hold) || (tab === 'opt' && openCase === null) || !!(S && S.story && S.story.lastCare && openCase !== null) || !!document.querySelector('#msgLayer, #evLayer, #arena, #matsuri, .full, #coach'); }
+function storyPaused(){ return document.hidden || storyBusy || ptResting() || !!(S && S.story && S.story.hold) || (tab === 'opt' && openCase === null) || !!(S && S.story && S.story.lastCare && openCase !== null) || !!document.querySelector('#msgLayer, #evLayer, #arena, #matsuri, .full, #coach'); }
 /* 時計のはやさ（2026-11-14 ユーザーと決めた。A：お世話はゆっくり＋B：行動で進む）
    ふだんは設定の半分（IDLE_SLOW）、虫かごを開いてお世話しているあいだは4分の1（CARE_SLOW）。止めないので、時間があまらない。
    そのかわり、出かける・場所に行く・虫をさがす・すもう・来ている人と話す と、storyAdvance でまとめて進む（ACT_MIN） */
