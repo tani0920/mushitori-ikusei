@@ -109,6 +109,7 @@ p{margin:.3em 0}
 #titleScr .toriRow{margin-top:.5em}#titleScr .tbtn.tori small{display:block;font-size:.62em;font-weight:700;opacity:.85}   /* スマホ：そとで虫をつかまえる が いちばん上 */
 #titleScr .tbtn.tori:not(.pri){background:#2f6a3acc}
 body.phone #titleScr .t3,body.phone #titleScr .t4,body.phone #titleScr .tbtns.sub,body.phone #titleScr .vrow:not(.tmRow),body.phone #titleScr #btnModes{display:none}   /* スマホ：メニューにまとめる */
+#titleScr .bugRow{margin-top:.35em;text-align:center}#titleScr .bugBtn{display:inline-block;font-size:.72em;font-weight:700;color:#fff;background:#14284acc;border-radius:999px;padding:.2em .9em;text-decoration:none;line-height:1.5}body.phone #titleScr .bugRow{margin-top:.25em}
 body.phone #titleScr .tmRow{margin-top:.35em}body.phone #titleScr #btnTMenu{font-weight:800}
 body.phone #titleScr .tpad{order:0}
 #restScr{position:fixed;inset:0;z-index:400;display:flex;align-items:center;justify-content:center;background:#1a120acc url(img/ui/title_a.webp) center/cover;background-blend-mode:multiply;padding:16px}
@@ -2535,7 +2536,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.18.0';
-const BUILD = '20261115-1346';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261115-1413';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.18.0', date:'2026-11-15', items:[
     '虫ずもうが もっと もりあがるようになった：対戦カードとVS、軍配、ぼくと あいての顔（かっているときは にこにこ）、必殺わざの大きなカットイン、おうえんと「かち！」の演出。とちゅうで曲が とぎれにくくした',
@@ -4274,6 +4275,7 @@ function renderTitle(){
     <div class="tpad">虫を育てるのは、大きな画面の<b>タブレット</b>や<b>パソコン</b>がおすすめ</div>
     ${isPhone() ? '<div class="vrow tmRow"><button type="button" class="verbtn" id="btnTHow">❓ 遊び方</button><button type="button" class="verbtn" id="btnTShare">友だちに教える</button><button type="button" class="verbtn" id="btnTMenu">☰ メニュー</button></div>' : ''}
     <div class="vrow"><button type="button" class="verbtn" id="btnVer"><span class="gver">ver ${GAME_VER}</span>　こうしん情報 ▸</button><button type="button" class="verbtn" id="btnFuri">${furiLabel()}</button><button type="button" class="verbtn" id="btnPriv">プライバシーについて</button>${rotMode ? '<button type="button" class="verbtn" id="btnRot">↻ 向きを反対に</button>' : ''}</div>
+    <div class="bugRow"><a class="bugBtn" id="btnBug" href="${esc(bugURL())}" target="_blank" rel="noopener">🐞 バグ（おかしいところ）を見つけたら、こちらへ おしらせください</a></div>
   </div>`;
   view.querySelector('#titleScr').classList.remove('norb');   // 文はふりがなを付けてよい（credit だけ英語）
   // ストーリー：虫を育てながら、夏休みに出会ったふしぎを追いかける。じゆうに育てる：いままでの遊び方（本物の場所に行って虫をさがす）
@@ -5774,6 +5776,13 @@ function showChangelog(){
 /* お問い合わせ用の Google フォーム（虫とり日記と共通。2026-11-15 ユーザー）。「どのゲームのこと？」と「ゲームのバージョン」は、はじめから入れておく */
 const CONTACT_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSe_zcg7xhwYmuiL0ZI5Jf-wYDQlA8dgGuMUL83l-c8jO5b14g/viewform';
 const contactURL = ()=> CONTACT_URL + '?usp=pp_url&entry.1905087587=' + encodeURIComponent('むなかた虫そだて日記〈1週間〉') + '&entry.72780852=' + encodeURIComponent('ver ' + GAME_VER);
+
+/* バグの報告（2026-11-15 ユーザー）：タイトルの小さいボタンから、お問い合わせフォームを「バグ・不具合の報告」と端末の種類を入れた状態でひらく。
+   端末の種類は ブラウザの情報から この端末の中で決めるだけ（送るのは、フォームで「送信」をおしたときだけ）。
+   BUG_KIND はフォームの「お問い合わせの種類」（entry.475186555）の選択肢と同じ文字にする。フォームの文字をかえたら、ここも */
+const BUG_KIND = 'バグ・不具合の報告（うまく動かない・おかしい）';
+const devName = ()=>{ const u = navigator.userAgent; if(/iPhone|iPod/.test(u)) return 'iPhone'; if(/iPad/.test(u) || (/Macintosh/.test(u) && navigator.maxTouchPoints > 1)) return 'iPad'; if(/Android/.test(u)) return /Mobile/.test(u) ? 'Androidのスマホ' : 'Androidのタブレット'; return 'パソコン'; };
+const bugURL = ()=> contactURL() + '&entry.475186555=' + encodeURIComponent(BUG_KIND) + '&entry.963120720=' + encodeURIComponent(devName());
 function showPrivacy(){
   openWin('プライバシーについて', `
     <h3>こどものみんなへ</h3>
