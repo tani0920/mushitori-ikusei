@@ -1159,6 +1159,13 @@ html.land #titleScr.art{background-position:center 30%}
 html.land #titleScr.art .tlogoBox{width:auto;height:calc(var(--H) * .33);margin-top:calc(var(--H) * .01)}
 html.land.wide #titleScr.art .tlogoBox{height:calc(var(--H) * .25);transform:translateX(-12%)} html.land.wide #titleScr.art .t1{transform:translateX(-12%)}
 html.land #titleScr.art .tlogo{height:100%;width:auto}
+html.land #titleScr.art.fit1 .tlogoBox{height:calc(var(--H) * .25)}html.land #titleScr.art.fit2 .tlogoBox{height:calc(var(--H) * .19)}
+#titleScr.fit1 .t4{line-height:1.25;padding-top:.1em;padding-bottom:.1em}html.land #titleScr.art.fit2 .t4{font-size:max(10px,calc(var(--H) * .018))}#titleScr.fit2 .tbtns.sub,#titleScr.fit2 .vrow{margin-top:0}html.land #titleScr.art.fit2 .tbtns{margin:calc(var(--H) * .006) 0}
+/* スマホのタイトル（2026-11-15 ユーザー）：ロゴは まん中で大きく。遊び方・友だちに教える・メニューは 左上に たてにならべる */
+html.land body.phone #titleScr.art .tlogoBox,html.land body.phone #titleScr.art .t1{transform:none}
+html.land:not(.tall) body.phone #titleScr.art .tlogoBox{height:calc(var(--H) * .36)}html.land:not(.tall) body.phone #titleScr.art.fit1 .tlogoBox{height:calc(var(--H) * .3)}html.land:not(.tall) body.phone #titleScr.art.fit2 .tlogoBox{height:calc(var(--H) * .25)}
+html.land body.phone #titleScr .tmRow{position:absolute;left:calc(var(--sl,0px) + 10px);top:max(8px,var(--st,0px));margin:0;flex-direction:column;align-items:flex-start;gap:6px;z-index:2}
+html.land body.phone #titleScr .tmRow .verbtn{font-size:max(11px,calc(var(--H) * .032));padding:.25em .9em}
 html.land #titleScr.art .t1{font-size:calc(var(--H) * .034);margin:0}
 html.land #titleScr.art .t3{font-size:calc(var(--H) * .028);line-height:1.5}
 html.land #titleScr.art .t4{font-size:max(10.5px,calc(var(--H) * .022));max-width:90%;line-height:1.35}
@@ -1352,6 +1359,10 @@ html.land body.noteUI:not(.obsMode) .album .ph,html.land body.noteUI:not(.obsMod
 /* 絵が見えるよう、画面ごとにカードの置き場所をかえる。はばは --H ではなく #view のわりあい */
 html.land body.noteUI[data-tab=out] #view{padding-top:calc(var(--H) * .14);margin-left:auto;width:56%}
 html.land body.noteUI[data-tab=spot] #view{padding-top:calc(var(--H) * .22);margin-left:auto;width:56%}   /* 場所の絵が見えるように、そとと同じはば */
+html.land body.toriMode.noteUI[data-tab=spot] #view{padding-right:calc(var(--sr,0px) + 10px);box-sizing:border-box}   /* そとで虫をつかまえる：右のメニューがないぶん 画面のはしまで行くので、端末のふちをよける（2026-11-15 ユーザー：右と下が切れる） */
+html.land:not(.tall) body.toriMode.noteUI[data-tab=spot] #view{padding-top:calc(var(--st,0px) + var(--H) * .1);padding-bottom:calc(var(--sb,0px) + 8px);width:58%}
+html.land:not(.tall) body.toriMode[data-tab=spot] #findBox .papaHint{display:none}   /* おとうさんの ひとことは、上のふきだしで出る */
+html.land:not(.tall) body.toriMode[data-tab=spot] .search .findBtn{width:68px;height:68px}html.land:not(.tall) body.toriMode[data-tab=spot] .search .findBtn img{width:32px;height:32px}html.land:not(.tall) body.toriMode[data-tab=spot] .search .findBtn b{font-size:13px}
 /* 夜：絵を暗く。カードは少し濃くして、字を読みやすく */
 html.land body.noteUI[data-slot=yoru] .spotPic,html.land body.noteUI[data-night=sky] .caseBox .caseArt{filter:brightness(.62) saturate(.85)}
 html.land body.noteUI[data-night=room] .caseBox .caseArt{filter:brightness(.9) sepia(.15) drop-shadow(0 3px 3px #3a241255)}
@@ -2536,7 +2547,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.18.0';
-const BUILD = '20261115-1413';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261115-1645';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.18.0', date:'2026-11-15', items:[
     '虫ずもうが もっと もりあがるようになった：対戦カードとVS、軍配、ぼくと あいての顔（かっているときは にこにこ）、必殺わざの大きなカットイン、おうえんと「かち！」の演出。とちゅうで曲が とぎれにくくした',
@@ -4304,8 +4315,18 @@ function renderTitle(){
   if($('btnTShare')) $('btnTShare').onclick = ()=> $('btnShare').click();
   $('btnInstall').onclick = showInstall; $('btnShare').onclick = showShare; $('btnTori').onclick = startTori;
   $('btnVer').onclick = showChangelog; $('btnPriv').onclick = showPrivacy; if($('btnRot')) $('btnRot').onclick = flipRot;
-  $('btnFuri').onclick = ()=>{ setFuri((furiLv + 1) % 3); $('btnFuri').textContent = furiLabel(); };
+  $('btnFuri').onclick = ()=>{ setFuri((furiLv + 1) % 3); $('btnFuri').textContent = furiLabel(); fitTitle(); };
+  fitTitle();
 }
+/* タイトルが画面に入りきらないとき（ふりがな ぜんぶ・ホームバーのある タブレット など）は、ロゴと文字を少しずつ小さくする（2026-11-15 ユーザー：タブレットで いちばん下が見えない） */
+function fitTitle(){
+  const go = ()=>{ const T = $('titleScr'); if(!T) return;
+    T.classList.remove('fit1', 'fit2');
+    const over = ()=>{ const b = T.getBoundingClientRect().bottom - parseFloat(getComputedStyle(T).paddingBottom || 0); return [...T.children].some(e=> e.offsetParent !== null && getComputedStyle(e).position !== 'absolute' && e.getBoundingClientRect().bottom > b + 1); };
+    for(const c of ['fit1', 'fit2']){ if(!over()) break; T.classList.add(c); } };
+  go(); setTimeout(go, 120); setTimeout(go, 600);   // ふりがなが付くのを待ってから もう一度
+}
+addEventListener('resize', ()=> setTimeout(()=>{ if(!S) fitTitle(); }, 80));
 /* ---- タイトル：ストーリーと じゆうに育てる のちがい（2026-11-14 ユーザー） ---- */
 const MODE_TXT = {
   story:'夏休みの7週間（7章）のお話。おとうさんといっしょに、毎週1ぴき 虫を見つけて育てて、見つけた場所にかえす。\n虫の育てかた・さわりかたや、いのちのつながりが わかるよ。友だちとの虫ずもうや、ふしぎな なぞも。',
@@ -4412,6 +4433,7 @@ function tutCheck(){
   if(coachOn || !S || !S.yk || !tutOK() || storyBusy || document.querySelector('#msgLayer, #evLayer, .full, #arena, #matsuri, #cgLayer')) return;
   if(storyOn() && !S.story.seen['0-0']) return;
   const anyCase = ()=> document.querySelector('.case:not(.empty):not(.buy)');
+  if(S.tori && !(openCase === null && tab === 'out' && outState && outState.spot)) return;   // そとで虫をつかまえる：メニュー・虫かごの説明は出さない（その画面にないので 進めなくなる。2026-11-15 ユーザー）。「さがす」の説明だけ
   if(openCase === null && tab === 'home' && !S.yk.tut_home) return coach('home', [
     {sel:'#tabs', text:'左のボタンで、「そと」「すもう」「おみせ」「ずかん」「その他」へ行けるよ。'},
     {sel:'#hud', text:'上は、いまの時間と、どんぐり（おかね）。朝・昼・夕方・夜で、虫のようすが かわるよ。'},
