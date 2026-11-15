@@ -1294,7 +1294,7 @@ html.land body.noteUI.noteTabs #rtabs .rt.on{transform:translateX(-4px);filter:d
 html.land body.noteUI.noteTabs #rtabs .rt.on::after{content:'';position:absolute;left:-6px;top:10%;bottom:10%;width:8px;background:inherit;background-size:100% 100%}   /* えらんだ付せんは ノートのページにくっついて見える（2026-11-15 ユーザー） */
 html.land body.noteUI.noteTabs .obsR.flip{animation:pageFlip .32s ease-out}
 #rtabs .rtIc{display:none}
-html.land body.noteUI:not(.noteTabs) #rtabs #rtRecv br{display:inline}html.land body.noteUI:not(.noteTabs) #rtabs #rtRecv{line-height:1.15;text-align:center}   /* スマホから受けとる も アイコンのボタン（2026-11-15 ユーザー） */
+/* うけとる（スマホから）も アイコンのボタン（2026-11-15 ユーザー） */
 .emI{height:1.35em;width:auto;vertical-align:-.32em;margin:0 .12em 0 0}
 .popWin .mwBox{--mute:#5a4028}html body .popWin .mwBox .small{color:#5a4028}   /* 窓の中の 注意書き（※…）は こい茶色（2026-11-15 ユーザー：うすくて読みにくい） */   /* 📍📱📲🐞 の代わりの絵（GPT、img/ui/ok_*.webp） */
 .okRow{display:flex;align-items:center;justify-content:center;gap:.5em;margin:.2em 0 .4em}.okRow span{display:flex;flex-direction:column;align-items:center;font-size:12px;color:#7a6040;line-height:1.2}.okRow img{height:64px;width:auto;filter:drop-shadow(1px 2px 2px #3a241244)}.okRow b{color:#c9a978;font-size:22px}
@@ -1490,7 +1490,7 @@ body.noteUI #hud .sch{color:#b0601a}   /* 明るい札の上でも読めるよ�
   <button type="button" class="rt" id="rtItems"><span class="ic">🎒</span><img class="rtIc" src="img/ui/ic_mochimono.webp" alt="" draggable="false">もちもの</button>
   <button type="button" class="rt" id="rtNote" hidden><span class="ic">📒</span><img class="rtIc" src="img/ui/ic_note.webp" alt="" draggable="false">ノート</button>
   <button type="button" class="rt" id="rtNext" hidden><img class="rtIc" src="img/ui/ic_next.webp" alt="" draggable="false"><b class="nxL">次の日へ</b></button>
-  <button type="button" class="rt" id="rtRecv" hidden><span class="ic">📲</span><img class="rtIc" src="img/ui/ic_recv.webp" alt="" draggable="false">スマホから<br>受けとる</button>
+  <button type="button" class="rt" id="rtRecv" hidden><span class="ic">📲</span><img class="rtIc" src="img/ui/ic_recv.webp" alt="" draggable="false">うけとる</button>
   <button type="button" class="rt" id="rtCase" hidden><span class="ic">📋</span>ケースの<br>こと</button>
 </div>
 <div class="drawer norb" id="itemsPanel" data-p="items"><div class="dHead"><b>もちもの</b></div><div id="itemsBody"></div></div>
@@ -2565,7 +2565,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.18.0';
-const BUILD = '20261115-1827';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261115-1858';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.18.0', date:'2026-11-15', items:[
     '虫ずもうが もっと もりあがるようになった：対戦カードとVS、軍配、ぼくと あいての顔（かっているときは にこにこ）、必殺わざの大きなカットイン、おうえんと「かち！」の演出。とちゅうで曲が とぎれにくくした',
@@ -5808,7 +5808,7 @@ function showSendHow(){
     <div class="ibox now"><h3>おくりかた</h3><ol>
       <li>スマホのタイトルの「<b><img class="emI" src="img/ui/ok_pin.webp" alt="">そとで虫をつかまえる</b>」で、虫をつかまえる</li>
       <li>「<b><img class="emI" src="img/ui/ok_phone.webp" alt="">→ おくる</b>」をおす<br><small>（「じゆうに育てる」で育てている虫は、虫かごの「ケースのこと」→「タブレットやパソコンにおくる」）</small></li>
-      <li>タブレットや パソコンで このゲームの「じゆうに育てる」をひらいて、右の「<b><img class="emI" src="img/ui/ic_recv.webp" alt="">スマホから受けとる</b>」をおす</li>
+      <li>タブレットや パソコンで このゲームの「じゆうに育てる」をひらいて、右の「<b><img class="emI" src="img/ui/ic_recv.webp" alt="">うけとる</b>」をおす</li>
       <li>スマホに出た<b>QRコード</b>を、タブレットの画面のカメラに うつす<br><small>（カメラアプリで読むと、べつのゲームが ひらいてしまうことがあるよ。iPhone・iPad どうしなら「AirDrop などでおくる」→「受けとる」の「リンクを はりつける」でもOK）</small></li>
       <li>タブレットで虫が<b>とどいた</b>ら、スマホで「とどいた！」をおす</li></ol></div>
     <p class="small">※ストーリーは、1つの端末で遊ぶモードです。おくれるのは「じゆうに育てる」の虫です。<br>※サーバーは使いません。おくるのは虫のこと（種類・大きさ・育ちぐあいなど）だけです。</p>`);
@@ -6004,7 +6004,7 @@ const tripCageSVG = inner=> `<svg class="tripCage" viewBox="0 0 120 110"><rect x
   <g class="tcBug" transform="translate(30 40) scale(.6)">${inner}</g>
   <g class="lid"><rect x="4" y="20" width="112" height="14" rx="5" fill="#3a9a5a" stroke="#1e5a32" stroke-width="2"/>${[20,40,60,80,100].map(x=>`<circle cx="${x}" cy="27" r="2.2" fill="#1e5a32"/>`).join('')}<path d="M44 20 Q60 4 76 20" fill="none" stroke="#1e5a32" stroke-width="4"/></g></svg>`;
 setTimeout(()=> ['ic_recv','ok_phone','ok_bug','ok_tab','ok_pin','ok_bugrep'].forEach(n=>{ new Image().src = 'img/ui/' + n + '.webp'; }), 1500);   // 窓をひらいたときに 絵が まだ来ていない、がないように 先よみ
-const RECV_HOW = 'おくり先の タブレットや パソコンで、このゲームの 右の<b>「<img class="emI" src="img/ui/ic_recv.webp" alt="">スマホから受けとる」</b>をおして、このQRコードを うつしてね。';
+const RECV_HOW = 'おくり先の タブレットや パソコンで、このゲームの 右の<b>「<img class="emI" src="img/ui/ic_recv.webp" alt="">うけとる」</b>をおして、このQRコードを うつしてね。';
 // 小さい虫かごに入れる虫（まとめて おくるとき）：100x100 の中に 6ぴきまで ならべる
 const groupBugSVG = cs=>{ const n = Math.min(cs.length, 6), cols = n <= 1 ? 1 : n <= 4 ? 2 : 3, rows = Math.ceil(n / cols), sz = Math.min(100 / cols, 100 / rows) * 1.05;
   return '<svg viewBox="0 0 100 100" width="100" height="100">' + cs.slice(0, 6).map((c, k)=>{ const cx = (k % cols + .5) * 100 / cols, cy = (Math.floor(k / cols) + .5) * 100 / rows;
