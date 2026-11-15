@@ -125,7 +125,8 @@ body.phone #titleScr .tpad{order:0}
 .spItem .spMap,body.noteUI .spItem .spMap{flex:none;padding:.25em .8em;font-size:.85em;text-decoration:none;color:#5a3a14;background:#f6cf5b;border:2px solid #fff;border-radius:999px;font-weight:800}
 .tbChk{display:flex;align-items:center;gap:.3em;font-weight:800;color:#5a3a14;background:#fff6dc;border:2px solid #d9b07a;border-radius:999px;padding:.2em .8em}.tbChk input{width:1.2em;height:1.2em}
 .sendAnim .tkImg{width:120px;height:120px;object-fit:contain}.sendAnim{position:relative}.sendAnim .tkBugs{position:absolute;left:50%;top:58%;transform:translate(-50%,-50%);display:flex;gap:2px;width:84px;flex-wrap:wrap;justify-content:center}.sendAnim .tkBugs span{width:26px;height:26px}.sendAnim .tkBugs svg{width:100%;height:100%}
-.toriList{display:flex;flex-direction:column;gap:6px}.toriBug{display:flex;align-items:center;gap:.6em}.toriBug .tbPic{width:56px;height:56px;flex:none}.toriBug .tbPic svg{width:100%;height:100%}.toriBug .tbTx{flex:1;min-width:0}.toriBug .tbTx small{display:block}
+.toriList{display:flex;flex-direction:column;gap:6px}html.land body.noteUI[data-tab=tori] #view{margin:0 auto;width:min(100%,760px);padding-left:calc(var(--sl,0px) + 12px);padding-right:calc(var(--sr,0px) + 12px)}
+#view .spot.toriBug{display:flex;flex-direction:row;align-items:center;gap:.6em;width:auto}#view .toriBug .tbPic{display:block;width:56px;height:56px;flex:none}#view .toriBug .tbPic svg{width:56px;height:56px}.toriBug .tbPic svg{width:100%;height:100%}.toriBug .tbTx{flex:1;min-width:0}.toriBug .tbTx small{display:block}
 #titleScr .tbtn.pri{background:var(--sun);color:#1b130c;border-color:#fff}
 #titleScr .tbtns.sub{margin-top:.45em;gap:.45em}
 #titleScr .tbtn.qm{padding:.4em .9em;background:#fffaf0;color:#4a3320;border-color:#c9a978;font-weight:800;font-size:.82em;align-self:center}   /* 2026-11-15 ユーザー：「？」→「どっちで あそぶ？」。2つのボタンより少し小さく */
@@ -2525,7 +2526,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.18.0';
-const BUILD = '20261115-1149';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261115-1151';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.18.0', date:'2026-11-15', items:[
     '虫ずもうが もっと もりあがるようになった：対戦カードとVS、軍配、ぼくと あいての顔（かっているときは にこにこ）、必殺わざの大きなカットイン、おうえんと「かち！」の演出。とちゅうで曲が とぎれにくくした',
@@ -4184,7 +4185,7 @@ function render(){
   setStandee(S && openCase === null && tab === 'shop' ? 'ojisan' : null); if(!atSpot && $('papaPop')){ $('papaPop').remove(); $('papaBub')?.remove(); }
   if(!S){ renderTitle(); otoScene(); return; }
   if(openCase !== null){ renderObs(); otoScene(); setTimeout(tutCheck, 900); return; }
-  if(S.tori){ $('tabs').hidden = true; $('rtabs').hidden = true; paintPlace(atSpot ? 'spot_' + spotArt(outState.spot) : 'tori_bg', slotOf()); view.onscroll = null; (atSpot ? renderSpot : renderTori)(); otoScene(); setTimeout(tutCheck, 900); return; }
+  if(S.tori){ $('tabs').hidden = true; $('rtabs').hidden = true; if(!atSpot) document.body.dataset.tab = 'tori'; paintPlace(atSpot ? 'spot_' + spotArt(outState.spot) : 'tori_bg', slotOf()); view.onscroll = null; (atSpot ? renderSpot : renderTori)(); otoScene(); setTimeout(tutCheck, 900); return; }
   paintPlace(atSpot ? 'spot_' + spotArt(outState.spot) : tab === 'home' ? 'place_heya' : 'scr_' + tab, slotOf());
   view.onscroll = null;
   ({home:renderHome, out:renderOut, sumo:renderSumo, shop:renderShop, dex:renderDex, opt:renderOpt})[tab]();
