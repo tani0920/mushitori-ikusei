@@ -1295,7 +1295,8 @@ html.land body.noteUI.noteTabs #rtabs .rt.on::after{content:'';position:absolute
 html.land body.noteUI.noteTabs .obsR.flip{animation:pageFlip .32s ease-out}
 #rtabs .rtIc{display:none}
 html.land body.noteUI:not(.noteTabs) #rtabs #rtRecv br{display:inline}html.land body.noteUI:not(.noteTabs) #rtabs #rtRecv{line-height:1.15;text-align:center}   /* スマホから受けとる も アイコンのボタン（2026-11-15 ユーザー） */
-.emI{height:1.35em;width:auto;vertical-align:-.32em;margin:0 .12em 0 0;filter:drop-shadow(0 1px 1px #0003)}   /* 📍📱📲🐞 の代わりの絵（GPT、img/ui/ok_*.webp） */
+.emI{height:1.35em;width:auto;vertical-align:-.32em;margin:0 .12em 0 0}
+.popWin .mwBox{--mute:#5a4028}html body .popWin .mwBox .small{color:#5a4028}   /* 窓の中の 注意書き（※…）は こい茶色（2026-11-15 ユーザー：うすくて読みにくい） */   /* 📍📱📲🐞 の代わりの絵（GPT、img/ui/ok_*.webp） */
 .okRow{display:flex;align-items:center;justify-content:center;gap:.5em;margin:.2em 0 .4em}.okRow span{display:flex;flex-direction:column;align-items:center;font-size:12px;color:#7a6040;line-height:1.2}.okRow img{height:64px;width:auto;filter:drop-shadow(1px 2px 2px #3a241244)}.okRow b{color:#c9a978;font-size:22px}
 /* 虫かごの外の「もちもの」は、ノートのアイコンのボタン（2026-11-15 ユーザー） */
 html.land body.noteUI:not(.noteTabs) #rtabs #rtItems,html.land body.noteUI:not(.noteTabs) #rtabs #rtNote,html.land body.noteUI:not(.noteTabs) #rtabs #rtRecv{writing-mode:horizontal-tb;width:auto;min-height:0;padding:.35em .55em .3em;margin-right:6px;border-radius:12px;background:url(img/ui/card.webp) center/100% 100% no-repeat;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;letter-spacing:0}
@@ -2564,7 +2565,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.18.0';
-const BUILD = '20261115-1822';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261115-1827';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.18.0', date:'2026-11-15', items:[
     '虫ずもうが もっと もりあがるようになった：対戦カードとVS、軍配、ぼくと あいての顔（かっているときは にこにこ）、必殺わざの大きなカットイン、おうえんと「かち！」の演出。とちゅうで曲が とぎれにくくした',
@@ -4303,7 +4304,7 @@ function renderTitle(){
     <div class="tbtns"><button type="button" class="tbtn ${isPhone() ? '' : 'pri'}" id="btnStory">ストーリー${hasS ? (hasS.story.done ? `<small>クリア${(hasS.story.loop || 1) > 1 ? '（' + hasS.story.loop + '周）' : ''}${hasS.story.flags && hasS.story.flags.allKakera ? '★' : ''}</small>` : `<small>${hasS.story.ch ? hasS.story.ch + '章' : '序章'}から</small>`) : ''}</button><button type="button" class="tbtn qm" id="btnModes">どっちで あそぶ？</button><button type="button" class="tbtn" id="btnFree">じゆうに育てる${has ? '<small>つづきから</small>' : ''}</button></div>
     <div class="tbtns sub"><button type="button" class="tbtn" id="btnInstall">アプリにする方法</button><button type="button" class="tbtn" id="btnShare">友だちに教える</button>${isPhone() ? '' : '<button type="button" class="tbtn tori" id="btnTori"><img class="emI" src="img/ui/ok_pin.webp" alt="">そとで虫をつかまえる（スマホ）</button>'}</div>
     <div class="tpad">虫を育てるのは、大きな画面の<b>タブレット</b>や<b>パソコン</b>がおすすめ</div>
-    ${isPhone() ? '<div class="vrow tmRow"><button type="button" class="verbtn" id="btnTHow">❓ 遊び方</button><button type="button" class="verbtn" id="btnTShare">友だちに教える</button><button type="button" class="verbtn" id="btnTMenu">☰ メニュー</button></div>' : ''}
+    ${isPhone() ? '<div class="vrow tmRow"><button type="button" class="verbtn" id="btnTHow">遊び方</button><button type="button" class="verbtn" id="btnTShare">友だちに教える</button><button type="button" class="verbtn" id="btnTMenu">☰ メニュー</button></div>' : ''}
     <div class="vrow"><button type="button" class="verbtn" id="btnVer"><span class="gver">ver ${GAME_VER}</span>　こうしん情報 ▸</button><button type="button" class="verbtn" id="btnFuri">${furiLabel()}</button><button type="button" class="verbtn" id="btnPriv">プライバシーについて</button>${rotMode ? '<button type="button" class="verbtn" id="btnRot">↻ 向きを反対に</button>' : ''}</div>
     <div class="bugRow"><a class="bugBtn" id="btnBug" href="${esc(bugURL())}" target="_blank" rel="noopener"><img class="emI" src="img/ui/ok_bugrep.webp" alt="">バグ（おかしいところ）を見つけたら、こちらへ おしらせください</a></div>
   </div>`;
@@ -6002,6 +6003,7 @@ async function unpackBug(t){
 const tripCageSVG = inner=> `<svg class="tripCage" viewBox="0 0 120 110"><rect x="10" y="30" width="100" height="72" rx="8" fill="#cfe8f0" fill-opacity=".35" stroke="#6a8a9a" stroke-width="3"/>
   <g class="tcBug" transform="translate(30 40) scale(.6)">${inner}</g>
   <g class="lid"><rect x="4" y="20" width="112" height="14" rx="5" fill="#3a9a5a" stroke="#1e5a32" stroke-width="2"/>${[20,40,60,80,100].map(x=>`<circle cx="${x}" cy="27" r="2.2" fill="#1e5a32"/>`).join('')}<path d="M44 20 Q60 4 76 20" fill="none" stroke="#1e5a32" stroke-width="4"/></g></svg>`;
+setTimeout(()=> ['ic_recv','ok_phone','ok_bug','ok_tab','ok_pin','ok_bugrep'].forEach(n=>{ new Image().src = 'img/ui/' + n + '.webp'; }), 1500);   // 窓をひらいたときに 絵が まだ来ていない、がないように 先よみ
 const RECV_HOW = 'おくり先の タブレットや パソコンで、このゲームの 右の<b>「<img class="emI" src="img/ui/ic_recv.webp" alt="">スマホから受けとる」</b>をおして、このQRコードを うつしてね。';
 // 小さい虫かごに入れる虫（まとめて おくるとき）：100x100 の中に 6ぴきまで ならべる
 const groupBugSVG = cs=>{ const n = Math.min(cs.length, 6), cols = n <= 1 ? 1 : n <= 4 ? 2 : 3, rows = Math.ceil(n / cols), sz = Math.min(100 / cols, 100 / rows) * 1.05;
