@@ -501,7 +501,8 @@ html.land.tall #msgLayer .ans .btn.pic img{width:132px;height:99px}
 #papaPop{position:fixed;right:calc(var(--sr,0px) + 64px);bottom:0;height:min(62%,560px);z-index:5;pointer-events:none;animation:papaPop 5.2s ease both}
 #papaPop img{height:100%;width:auto;filter:drop-shadow(0 4px 10px #0005)}
 #coach{position:fixed;inset:0;z-index:230}
-#coach .cHole{position:fixed;border-radius:26px;pointer-events:none;transition:left .25s,top .25s,width .25s,height .25s;box-shadow:0 0 34px 9999px #0b1428a0}   /* まわりを暗く（ふちは ぼかす） */
+#coach .cHole{position:fixed;border-radius:26px;pointer-events:none;transition:left .25s,top .25s,width .25s,height .25s;}
+#coach .cDim{position:fixed;left:0;top:0;pointer-events:none;overflow:visible}#coach .cDim path{fill:#0b1428a0}   /* まわりを暗く（ふちは ぼかす）。大きな box-shadow は iPad で出ないことがあったので、穴のあいた SVG でぬる（2026-11-15 ユーザー：まわりが暗くならない） */
 #coach .cHole::before,#coach .cHole::after{content:"";position:absolute;inset:-6px;border-radius:30px;pointer-events:none}
 #coach .cHole::before{box-shadow:0 0 18px 6px #ffe680cc,inset 0 0 22px 6px #fff3b088;animation:cGlow 1.8s ease-in-out infinite}   /* ふわふわ光る */
 #coach .cHole::after{border:2.5px solid #fff6c8;opacity:.0;animation:cRing 1.8s ease-out infinite}   /* 光の輪が ふわっと広がる */
@@ -623,6 +624,18 @@ html.land .sendL .in{display:grid;grid-template-columns:auto auto;grid-template-
 html.land .sendL .top{grid-area:top}html.land .sendL .sendAnim{grid-area:anim;justify-self:center}html.land .sendL .sendMsg{grid-area:msg;margin:0}
 html.land .sendL .qr{grid-area:qr;width:calc(var(--H) - 110px)}html.land .sendL .sendBtns:nth-of-type(1){grid-area:b1}html.land .sendL .sendBtns:nth-of-type(2){grid-area:b2}html.land .sendL .in > p.small{grid-area:note}
 html.land .sendL.recv .in{display:flex}
+/* おくる画面（2026-11-15 ユーザー）：ほかの窓と同じ ベージュ。横画面は 左にQRコード・右に ほかを ならべて 1画面に */
+.sendL{background:#f3e6c8;color:#3a2a18}.sendL .top{border-bottom-color:#c9a978}.sendL .top h2{color:#5a3010;margin:0}.sendL .sendMsg b{color:#a8442e}.sendL .qr{border:2px solid #d9c49a}.sendL .in > p.small{color:#6a5030}
+html.land .sendL .in{grid-template-columns:auto minmax(0,1fr);grid-template-areas:'qr top' 'qr anim' 'qr msg' 'qr b1' 'qr b2' 'qr note';max-width:960px;padding-bottom:0;align-content:center;align-items:center;row-gap:6px;min-height:100%}
+html.land .sendL .qr{width:min(440px,calc(var(--H) - max(12px,var(--st,0px)) - max(16px,var(--sb,0px)) - 12px));box-sizing:border-box}
+html.land .sendL .top{justify-content:center}html.land .sendL .in > p.small{margin:0;font-size:.78em;line-height:1.4}
+html.land:not(.tall) .sendL .sendAnim,html.land:not(.tall) .sendL .sendAnim .tripCage{width:96px;height:88px}html.land:not(.tall) .sendL .sendMsg{font-size:.88em;line-height:1.5}html.land:not(.tall) .sendL .top h2{font-size:1.1em}html.land:not(.tall) .sendL .sendBtns .btn{padding:.3em .9em}
+/* スマホから受けとる */
+.rcvBox .rcvHow{line-height:1.8;margin:0 0 6px}.rcvCam{position:relative;width:min(100%,440px);aspect-ratio:4/3;background:#2a2a2a;border-radius:12px;overflow:hidden;margin:6px auto}
+.rcvCam video{width:100%;height:100%;object-fit:cover;display:block}.rcvCam .rcvFrame{position:absolute;inset:14% 22%;border:3px dashed #fffb;border-radius:14px;pointer-events:none}
+.rcvCam #rcvMsg{position:absolute;left:0;right:0;bottom:8px;color:#fff;text-shadow:0 1px 3px #000;text-align:center;font-weight:700}
+.sendL .small,.rcvBox .small{color:#6a5030!important}.sendL .btn.sub{color:#5a3a14;background:#fffaf0;border-color:#c9a978;opacity:1}.rcvLink input{background:#fff;color:#3a2a18;border:2px solid #c9a978;box-shadow:none}
+.rcvLink{margin:6px 0}.rcvLink summary{cursor:pointer;font-weight:700;color:#5a3a14}.rcvLink .row{flex-wrap:nowrap}.rcvLink input{flex:1;min-width:0;text-align:left;font:inherit}
 /* 観察（大きく見る）：部品の絵を組み立てて動かす */
 .full.zoomL{z-index:9500;background:#10180f;overflow:hidden;display:flex;flex-direction:column;padding:max(6px,var(--st,0px)) max(10px,var(--sr,0px)) max(6px,var(--sb,0px)) max(10px,var(--sl,0px))}
 .zoomL .zt{display:flex;align-items:center;gap:6px;flex-wrap:wrap;color:#f7f1df;font-size:13px}
@@ -1473,6 +1486,7 @@ body.noteUI #hud .sch{color:#b0601a}   /* 明るい札の上でも読めるよ�
   <button type="button" class="rt" id="rtItems"><span class="ic">🎒</span><img class="rtIc" src="img/ui/ic_mochimono.webp" alt="" draggable="false">もちもの</button>
   <button type="button" class="rt" id="rtNote" hidden><span class="ic">📒</span><img class="rtIc" src="img/ui/ic_note.webp" alt="" draggable="false">ノート</button>
   <button type="button" class="rt" id="rtNext" hidden><img class="rtIc" src="img/ui/ic_next.webp" alt="" draggable="false"><b class="nxL">次の日へ</b></button>
+  <button type="button" class="rt" id="rtRecv" hidden><span class="ic">📲</span>スマホから<br>受けとる</button>
   <button type="button" class="rt" id="rtCase" hidden><span class="ic">📋</span>ケースの<br>こと</button>
 </div>
 <div class="drawer norb" id="itemsPanel" data-p="items"><div class="dHead"><b>もちもの</b></div><div id="itemsBody"></div></div>
@@ -2547,7 +2561,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.18.0';
-const BUILD = '20261115-1645';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261115-1708';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.18.0', date:'2026-11-15', items:[
     '虫ずもうが もっと もりあがるようになった：対戦カードとVS、軍配、ぼくと あいての顔（かっているときは にこにこ）、必殺わざの大きなカットイン、おうえんと「かち！」の演出。とちゅうで曲が とぎれにくくした',
@@ -4125,6 +4139,7 @@ function renderItems(){
   $('itemsShop').onclick = ()=>{ setSide(null); setTab('shop'); };
 }
 $('rtItems').onclick = ()=> setSide(sidePanel === 'items' ? null : 'items');
+$('rtRecv').onclick = ()=> recvWin();
 $('rtNote').onclick = ()=>{ setSide(null); showNote(); };
 $('rtNext').onclick = ()=>{ setSide(null); storySleep(); };   // 虫しらべノート
 $('rtMushi').onclick = ()=>{ const was = sidePanel; setSide(null);   // 虫かごの中：ノートの さいしょのページ（虫のこと）にもどる
@@ -4224,6 +4239,7 @@ function render(){
   document.querySelectorAll('body > #drawer').forEach(e=>e.remove()); $('rtCase').hidden = true; $('rtMushi').hidden = true; document.body.classList.remove('noteTabs');   // ケースのこと は、ケースの画面のときだけ
   if(sidePanel === 'case') sidePanel = null; setSide(sidePanel); $('rtabs').hidden = !S;
   if($('rtNote')) $('rtNote').hidden = !(S && S.story && openCase === null);
+  $('rtRecv').hidden = !(S && !S.story && !S.tori && openCase === null && !isPhone());   // じゆうに育てる（タブレット・パソコン）：スマホでつかまえた虫を受けとる（2026-11-15 ユーザー）
   if($('rtNext')){ const on = !!(S && S.story && openCase === null && !S.story.done && S.story.ch && storySp().m > 1); $('rtNext').hidden = !on;   // 右のアイコンの下に「次の日へ」（ねる・次の章へ）。おすと、もう一度きく（storySleep）
     if(on){ const lb = nextLabel(); $('rtNext').querySelector('.nxL').textContent = lb.replace('（あしたへ）', ''); } }
   setStandee(S && openCase === null && tab === 'shop' ? 'ojisan' : null); if(!atSpot && $('papaPop')){ $('papaPop').remove(); $('papaBub')?.remove(); }
@@ -4309,7 +4325,7 @@ function renderTitle(){
     if(tutOK() && !modePicked && !has && !(await ask('【じゆうに育てる】\n' + MODE_TXT.free + '\n\nじゆうに育てる で はじめる？', 'はじめる', 'やめる'))) return;
     const su = await setupWin(); if(!su) return;
     S = newGame(); if(!su.tut) TUT_KEYS.forEach(k=> S.yk['tut_' + k] = 1); save(); track('game_start', {mode:'free'}); start(); };
-  $('btnModes').onclick = showModes;
+  $('btnModes').onclick = ()=> showModes(false);
   if($('btnTMenu')) $('btnTMenu').onclick = showTitleMenu;
   if($('btnTHow')) $('btnTHow').onclick = ()=> showModes(true);   // スマホ：遊び方（そとで虫をつかまえる＋どっちで遊ぶ？。2026-11-15 ユーザー）
   if($('btnTShare')) $('btnTShare').onclick = ()=> $('btnShare').click();
@@ -4392,14 +4408,16 @@ const tutOK = ()=> !navigator.webdriver || QS.has('tut');
 function coachStep(st){
   return new Promise(res=>{
     const L = document.createElement('div'); L.id = 'coach'; L.className = 'norb';
-    L.innerHTML = `<div class="cHole"></div><div class="cPoint" aria-hidden="true"><img src="img/ui/yubi.webp" alt="" draggable="false"></div><button type="button" class="cSkip">説明を とばす ⏭</button><i class="cBlk"></i><i class="cBlk"></i><i class="cBlk"></i><i class="cBlk"></i><div class="fuki cFuki${st.top ? ' top' : ''}"><b class="who">${esc(st.who || 'おとうさん')}</b>${fmtMsg(st.text)}${st.wait ? `<span class="cDo">${esc(st.doTxt || '光っているところを、さわってみよう')}</span>` : '<span class="tap">▼ タップでつぎへ</span>'}</div>`;
+    L.innerHTML = `<svg class="cDim" aria-hidden="true"><defs><filter id="cDimBlur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="14"/></filter></defs><path fill-rule="evenodd" filter="url(#cDimBlur)"/></svg><div class="cHole"></div><div class="cPoint" aria-hidden="true"><img src="img/ui/yubi.webp" alt="" draggable="false"></div><button type="button" class="cSkip">説明を とばす ⏭</button><i class="cBlk"></i><i class="cBlk"></i><i class="cBlk"></i><i class="cBlk"></i><div class="fuki cFuki${st.top ? ' top' : ''}"><b class="who">${esc(st.who || 'おとうさん')}</b>${fmtMsg(st.text)}${st.wait ? `<span class="cDo">${esc(st.doTxt || '光っているところを、さわってみよう')}</span>` : '<span class="tap">▼ タップでつぎへ</span>'}</div>`;
     document.body.appendChild(L);
-    const hole = L.querySelector('.cHole'), pt = L.querySelector('.cPoint'), blk = [...L.querySelectorAll('.cBlk')], fk = L.querySelector('.cFuki');
+    const dim = L.querySelector('.cDim'), hole = L.querySelector('.cHole'), pt = L.querySelector('.cPoint'), blk = [...L.querySelectorAll('.cBlk')], fk = L.querySelector('.cFuki');
     const target = ()=> typeof st.sel === 'function' ? st.sel() : st.sel ? document.querySelector(st.sel) : null;
     const place = ()=>{ const el = target(), W = rotMode ? rotLen : innerWidth, H = rotMode ? innerWidth : innerHeight;   // たて持ち（まわした画面）は、まわしたあとの はば・高さ（2026-11-14 ユーザーの写真：光る場所がずれた）
       let r = el ? el.getBoundingClientRect() : null; if(r && !r.width) r = null;
       const pad = 10, x = r ? Math.max(0, r.left - pad) : W/2, y = r ? Math.max(0, r.top - pad) : H/2, w = r ? Math.min(W - x, r.width + pad*2) : 0, h = r ? Math.min(H - y, r.height + pad*2) : 0;
       Object.assign(hole.style, {left:x + 'px', top:y + 'px', width:w + 'px', height:h + 'px'}); hole.classList.toggle('none', !r);
+      { const o = 80, rr = Math.min(26, w / 2, h / 2); dim.setAttribute('width', W); dim.setAttribute('height', H);
+        dim.lastElementChild.setAttribute('d', `M${-o} ${-o}H${W + o}V${H + o}H${-o}Z` + (r ? `M${x + rr} ${y}H${x + w - rr}A${rr} ${rr} 0 0 1 ${x + w} ${y + rr}V${y + h - rr}A${rr} ${rr} 0 0 1 ${x + w - rr} ${y + h}H${x + rr}A${rr} ${rr} 0 0 1 ${x} ${y + h - rr}V${y + rr}A${rr} ${rr} 0 0 1 ${x + rr} ${y}Z` : '')); }
       { const sz = 46, m = y + h + sz + 20 < H ? 'dn' : x + w + sz + 20 < W ? 'rt' : x > sz + 20 ? 'lf' : 'up';   // 上は ふきだしが来やすいので さいご   // 指さし：光っているところの下・上・右・左の あいているほうから、ゆびでさす（2026-11-15 ユーザー）
         pt.style.display = r ? '' : 'none'; pt.className = 'cPoint ' + m;
         Object.assign(pt.style, {left:(m === 'rt' ? x + w : m === 'lf' ? x : x + w/2) + 'px', top:(m === 'dn' ? y + h : m === 'up' ? y : y + h/2) + 'px', width:sz * 1.25 + 'px', height:sz * 1.25 + 'px'}); }
@@ -5229,7 +5247,7 @@ async function arrive(sp, outside){
   const giftKey = sp.key + '|gift|' + today; let gift = '';
   if(!S.yk[giftKey] && sp.gift){ S.yk[giftKey] = 1; S.items[sp.gift] = (S.items[sp.gift]||0) + 2; gift = `\n${sp.name}で「${ITEMS[sp.gift].name}」を2つ手に入れた。`; }
   S.money += got; S.last = {key:sp.key, name:sp.name, lat:sp.lat, lon:sp.lon, day:today}; save(); hud();   // 近くの公園など（sp.local）は lat・lon を持たない
-  outState = {spot:sp, outside};
+  outState = {spot:sp, outside}; if(S.tori) tab = 'out';
   const ar = await say((outside && sp.local ? `ここは「${sp.name}」の近く（${sp.env}）。\n宗像の とくべつなスポット（6か所）では ないけど、${sp.env.replace(/の.*$/, '')}に いそうな虫が さがせるよ。` : outside ? 'ここは、宗像の とくべつなスポット（6か所）の近くでは ないみたい。\n（位置情報は ちゃんと つかえているよ）\nでも、どこにでもいる虫なら、ここでも さがせるよ。' : `「${sp.name}」に着いた！`) + (moved ? `\n${moved} どんぐり ${dg(got)} をもらった。` : '') + gift, {gifts:[...(got ? [[DONGURI_IMG, 'どんぐり', got]] : []), ...(gift ? [giftOf(sp.gift, 2)] : [])], ...(outside ? {ans:['このまま さがす', 'とくべつなスポットを見る']} : {})});
   if(outside && ar === 1) showSpots();
   if(!outside && !storyOn()){ const n = stampGet(sp);
@@ -5296,7 +5314,7 @@ function renderSpot(){
       <div class="row" style="margin-top:6px"><label class="btn pri">カメラでとる<input id="camIn" class="vh" type="file" accept="image/*" capture="environment"></label><label class="btn">アルバムから<input id="libIn" class="vh" type="file" accept="image/*"></label></div>
       <div id="photoRes" class="small"></div></div>`;
   ['camIn','libIn'].forEach(k=>{ $(k).onchange = async e=>{ const f = e.target.files[0]; e.target.value = ''; const box = $('photoRes'); box.className = 'photoRes'; await handlePhoto(f, sp, box); }; });
-  $('btnLeave').onclick = ()=>{ outState = null; $('findField') && $('findField').remove(); setTab('home'); };
+  $('btnLeave').onclick = ()=>{ outState = null; $('findField') && $('findField').remove(); setTab(S.tori ? 'out' : 'home'); };   // そとで虫をつかまえる は「そと」のまま（home になると、つぎに着いても場面が かわらなかった。2026-11-15 ユーザー）
   if(S.tori) $('btnLeave').textContent = 'もどる';
   findField(sp, all, egg, slot, left);
   // ボタン：横画面では「光っているところをえらんでね」と知らせる（たて画面は、そのままさがす）
@@ -5786,7 +5804,8 @@ function showSendHow(){
     <div class="ibox now"><h3>おくりかた</h3><ol>
       <li>スマホのタイトルの「<b>📍 そとで虫をつかまえる</b>」で、虫をつかまえる</li>
       <li>「<b>📱→ おくる</b>」をおす<br><small>（「じゆうに育てる」で育てている虫は、虫かごの「ケースのこと」→「タブレットやパソコンにおくる」）</small></li>
-      <li>出てきた<b>QRコード</b>を、タブレットのカメラで読みとる<br><small>（iPhone・iPad どうしなら「AirDrop などでおくる」でもOK）</small></li>
+      <li>タブレットや パソコンで このゲームの「じゆうに育てる」をひらいて、右の「<b>📲 スマホから受けとる</b>」をおす</li>
+      <li>スマホに出た<b>QRコード</b>を、タブレットの画面のカメラに うつす<br><small>（カメラアプリで読むと、べつのゲームが ひらいてしまうことがあるよ。iPhone・iPad どうしなら「AirDrop などでおくる」→「受けとる」の「リンクを はりつける」でもOK）</small></li>
       <li>タブレットで虫が<b>とどいた</b>ら、スマホで「とどいた！」をおす</li></ol></div>
     <p class="small">※ストーリーは、1つの端末で遊ぶモードです。おくれるのは「じゆうに育てる」の虫です。<br>※サーバーは使いません。おくるのは虫のこと（種類・大きさ・育ちぐあいなど）だけです。</p>`);
 }
@@ -5980,6 +5999,11 @@ async function unpackBug(t){
 const tripCageSVG = inner=> `<svg class="tripCage" viewBox="0 0 120 110"><rect x="10" y="30" width="100" height="72" rx="8" fill="#cfe8f0" fill-opacity=".35" stroke="#6a8a9a" stroke-width="3"/>
   <g class="tcBug" transform="translate(30 40) scale(.6)">${inner}</g>
   <g class="lid"><rect x="4" y="20" width="112" height="14" rx="5" fill="#3a9a5a" stroke="#1e5a32" stroke-width="2"/>${[20,40,60,80,100].map(x=>`<circle cx="${x}" cy="27" r="2.2" fill="#1e5a32"/>`).join('')}<path d="M44 20 Q60 4 76 20" fill="none" stroke="#1e5a32" stroke-width="4"/></g></svg>`;
+const RECV_HOW = 'おくり先の タブレットや パソコンで、このゲームの 右の<b>「📲 スマホから受けとる」</b>をおして、このQRコードを うつしてね。';
+// 小さい虫かごに入れる虫（まとめて おくるとき）：100x100 の中に 6ぴきまで ならべる
+const groupBugSVG = cs=>{ const n = Math.min(cs.length, 6), cols = n <= 1 ? 1 : n <= 4 ? 2 : 3, rows = Math.ceil(n / cols), sz = Math.min(100 / cols, 100 / rows) * 1.05;
+  return '<svg viewBox="0 0 100 100" width="100" height="100">' + cs.slice(0, 6).map((c, k)=>{ const cx = (k % cols + .5) * 100 / cols, cy = (Math.floor(k / cols) + .5) * 100 / rows;
+    return svgBug(c.bug, stageOf(c).k, {instar:instarOf(c)}).replace(/^<svg[^>]*>/, `<svg x="${(cx - sz / 2).toFixed(1)}" y="${(cy - sz / 2).toFixed(1)}" width="${sz.toFixed(1)}" height="${sz.toFixed(1)}" viewBox="0 0 100 100">`); }).join('') + '</svg>'; };
 async function sendBug(i, noAsk){
   const c = S.cases[i]; if(!c) return;
   const st = stageOf(c), nm = dispName(c);
@@ -5990,7 +6014,7 @@ async function sendBug(i, noAsk){
   const L = document.createElement('div'); L.className = 'full sendL';
   L.innerHTML = `<div class="in"><div class="top"><h2>${esc(nm)}をおくる</h2></div>
     <div class="sendAnim">${tripCageSVG(svgBug(c.bug, st.k, {instar:instarOf(c)}).replace(/^<svg[^>]*>/, '<svg viewBox="0 0 100 100" width="100" height="100">'))}</div>
-    <p class="sendMsg">小さい虫かごに入れた。<br>おくり先の<b>タブレットのカメラで、このQRコードを読みとってね</b>。</p>
+    <p class="sendMsg">小さい虫かごに入れた。<br>${RECV_HOW}</p>
     <div class="qr" id="sendQR" data-url="${esc(url)}"><span class="small">QRコードを作っています…</span></div>
     <div class="row sendBtns">${navigator.share ? '<button type="button" class="btn" id="sShare">AirDrop などでおくる</button>' : ''}<button type="button" class="btn" id="sCopy">リンクをコピー</button></div>
     <div class="row sendBtns"><button type="button" class="btn pri" id="sDone">とどいた！</button><button type="button" class="btn sub" id="sCancel">やめる</button></div>
@@ -6009,10 +6033,41 @@ async function sendBug(i, noAsk){
     await say(`${nm}は、新しいおうちにとどいた。\nあっちでも、大切にそだててね。`, {face:'boku_joy'});
   };
 }
+/* スマホから受けとる（2026-11-15 ユーザー：タブレットで何をしたらいいか わからない。カメラアプリで読むと ブラウザで べつのゲームがはじまる）
+   右の「📲 スマホから受けとる」→ このゲームの中でカメラをひらいて、スマホのQRコードを読む（lib/jsQR.js、Apache-2.0。画像は端末の中だけで読んで、どこにも送らない）。
+   AirDrop・コピーでもらったリンクを はりつけても受けとれる */
+const okuruOf = t=>{ const m = String(t || '').match(/[?&]okuru=([A-Za-z0-9_\-]+)/); return m ? m[1] : null; };
+async function recvWin(){
+  const W = openWin('スマホから 虫を受けとる', `<div class="rcvBox"><p class="rcvHow"><b>①</b> スマホの「そとで虫をつかまえる」で、<b>「えらんだ虫を まとめて おくる」</b>をおす<br><b>②</b> スマホに出た <b>QRコードを、下のカメラに うつす</b></p>
+    <div class="rcvCam"><video id="rcvV" playsinline muted></video><i class="rcvFrame"></i><span class="small" id="rcvMsg">カメラを じゅんびしています…</span></div>
+    <details class="rcvLink"><summary>カメラが つかえないとき（リンクを はりつける）</summary><p class="small">スマホで「AirDrop などでおくる」か「リンクをコピー」をして、とどいたリンクを ここに はりつけてね。</p><div class="row"><input id="rcvIn" class="btn" type="url" placeholder="https://…?okuru=…" autocomplete="off"><button type="button" class="btn pri" id="rcvGo">受けとる</button></div></details>
+    <p class="small">カメラの画像は、この端末の中でQRコードを読むだけ。保存も送信もしないよ。</p></div>`, 'recvWin');
+  let stream = null, raf = 0, done = false;
+  const stop = ()=>{ cancelAnimationFrame(raf); if(stream) stream.getTracks().forEach(t=> t.stop()); stream = null; };
+  const take = async t=>{ if(done) return; done = true; stop(); W.remove(); await recvBug(t); };
+  const oldClose = W.close; W.close = ()=>{ stop(); oldClose(); }; W.querySelector('.mwX').onclick = W.close; W.onclick = e=>{ if(e.target === W) W.close(); };
+  $('rcvGo').onclick = ()=>{ const t = okuruOf($('rcvIn').value); if(t) take(t); else $('rcvIn').placeholder = 'このリンクでは 受けとれないみたい'; };
+  const msg = t=>{ const m = $('rcvMsg'); if(m) m.textContent = t; };
+  try{
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error('nocam');
+    stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}, audio:false});
+    if(!document.body.contains(W)){ stop(); return; }
+    const v = $('rcvV'); v.srcObject = stream; await v.play();
+    if(!window.jsQR) await loadScript('lib/jsQR.js');
+    msg('QRコードを、わくの中に うつしてね');
+    const cv = document.createElement('canvas'), cx = cv.getContext('2d', {willReadFrequently:true});
+    let last = 0;
+    const tick = ts=>{ if(done || !document.body.contains(W)){ stop(); return; } raf = requestAnimationFrame(tick);
+      if(ts - last < 200 || !v.videoWidth) return; last = ts;
+      const k = Math.min(1, 720 / Math.max(v.videoWidth, v.videoHeight)); cv.width = Math.round(v.videoWidth * k); cv.height = Math.round(v.videoHeight * k);
+      cx.drawImage(v, 0, 0, cv.width, cv.height); const im = cx.getImageData(0, 0, cv.width, cv.height), q = jsQR(im.data, cv.width, cv.height, {inversionAttempts:'dontInvert'});
+      if(q && q.data){ const t = okuruOf(q.data); if(t){ OTO.sfx && OTO.sfx('kira'); take(t); } else msg('このQRコードは、虫のQRコードじゃないみたい'); } };
+    raf = requestAnimationFrame(tick);
+  }catch(e){ stop(); msg('カメラが つかえなかった。下の「リンクを はりつける」から受けとってね。'); const d = W.querySelector('.rcvLink'); if(d) d.open = true; }
+}
 /* 受けとる：?okuru=… で開いたとき */
 async function recvBug(t){
-  S = load() || newGame(); save();
-  await start();
+  if(!(S && !S.story && !S.tori)){ S = load() || newGame(); save(); await start(); }
   let o; try{ o = await unpackBug(t); }catch(e){ await say('虫のデータを、うまく受けとれなかった…。\nおくった端末で、もう一度QRコードを出してみてね。'); history.replaceState(null, '', location.pathname); return; }
   S.got = S.got || [];
   if(o.v === 2) return recvMany(o);
@@ -6041,8 +6096,8 @@ async function recvMany(o){
   if(!list.length){ await say('この虫たちは、もう受けとっているよ。\nおくった端末で「とどいた！」をおしてね。'); history.replaceState(null, '', location.pathname); return; }
   const nm = x=> x.c.name || (x.c.known ? BUGS[x.c.bug].name : 'なぞの虫');
   const L = document.createElement('div'); L.className = 'full sendL recv';
-  L.innerHTML = `<div class="in"><div class="sendAnim come"><img class="tkImg" src="img/ui/tori_kago.webp" alt=""></div><p class="sendMsg">小さい虫かごが とどいた！<br>中に、<b>${list.length}ひき</b> いる。（${list.map(x=> esc(nm(x))).join('・')}）</p></div>`;
-  document.body.appendChild(L); await wait(1800);
+  L.innerHTML = `<div class="in"><div class="sendAnim come">${tripCageSVG(groupBugSVG(list.map(x=> x.c)))}</div><p class="sendMsg">小さい虫かごが とどいた！<br>中に、<b>${list.length}ひき</b> いる。（${list.map(x=> esc(nm(x))).join('・')}）</p></div>`;
+  document.body.appendChild(L); await wait(1600); L.querySelector('.sendAnim').classList.add('open'); await wait(900);   // ふたが あいて、虫が出てくる
   const frees = S.cases.map((x,j)=> x ? -1 : j).filter(j=> j >= 0);
   if(frees.length < list.length){ L.remove(); await say(`あいている虫かごが たりない…。\n${list.length}ひき おくられてきたけど、あいている虫かごは ${frees.length}こ。\n虫をかえすか、おみせで虫かごを買ってから、もう一度このリンクを開いてね。（${S.boxes.length}/${MAX_BOXES}こ）\n※おくった端末では、まだ「とどいた！」をおさないでね。`); return; }
   const keys = Object.keys(PLACES), pi = await say('おうちの、どこにおく？（みんな同じところ）', {ans:keys.map(k=>`${PLACES[k].name}：${PLACES[k].desc}`), pics:placePics(keys)});
@@ -6063,8 +6118,8 @@ async function sendMany(idx){
   document.querySelectorAll('.sendL').forEach(e=>e.remove());
   const L = document.createElement('div'); L.className = 'full sendL';
   L.innerHTML = `<div class="in"><div class="top"><h2>${idx.length}ひきを まとめて おくる</h2></div>
-    <div class="sendAnim"><img class="tkImg" src="img/ui/tori_kago.webp" alt=""><div class="tkBugs">${idx.slice(0, 6).map(i=>{ const c = S.cases[i]; return `<span>${svgBug(c.bug, stageOf(c).k, {instar:instarOf(c)})}</span>`; }).join('')}</div></div>
-    <p class="sendMsg">${names.map(esc).join('・')}<br>おくり先の<b>タブレットや パソコンのカメラで、このQRコードを読みとってね</b>。<br><small>（おくり先の「じゆうに育てる」で、虫かごが ${idx.length}こ あいていると 受けとれるよ）</small></p>
+    <div class="sendAnim">${tripCageSVG(groupBugSVG(idx.map(i=> S.cases[i])))}</div>
+    <p class="sendMsg">${names.map(esc).join('・')}<br>${RECV_HOW}<br><small>（「じゆうに育てる」で、虫かごが ${idx.length}こ あいていると 受けとれるよ）</small></p>
     <div class="qr" id="sendQR"><span class="small">QRコードを作っています…</span></div>
     <div class="row sendBtns">${navigator.share ? '<button type="button" class="btn" id="sShare">AirDrop などでおくる</button>' : ''}<button type="button" class="btn" id="sCopy">リンクをコピー</button></div>
     <div class="row sendBtns"><button type="button" class="btn pri" id="sDone">とどいた！</button><button type="button" class="btn sub" id="sCancel">やめる</button></div>
