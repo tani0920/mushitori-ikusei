@@ -1294,10 +1294,13 @@ html.land body.noteUI.noteTabs #rtabs .rt.on{transform:translateX(-4px);filter:d
 html.land body.noteUI.noteTabs #rtabs .rt.on::after{content:'';position:absolute;left:-6px;top:10%;bottom:10%;width:8px;background:inherit;background-size:100% 100%}   /* えらんだ付せんは ノートのページにくっついて見える（2026-11-15 ユーザー） */
 html.land body.noteUI.noteTabs .obsR.flip{animation:pageFlip .32s ease-out}
 #rtabs .rtIc{display:none}
+html.land body.noteUI:not(.noteTabs) #rtabs #rtRecv br{display:inline}html.land body.noteUI:not(.noteTabs) #rtabs #rtRecv{line-height:1.15;text-align:center}   /* スマホから受けとる も アイコンのボタン（2026-11-15 ユーザー） */
+.emI{height:1.35em;width:auto;vertical-align:-.32em;margin:0 .12em 0 0;filter:drop-shadow(0 1px 1px #0003)}   /* 📍📱📲🐞 の代わりの絵（GPT、img/ui/ok_*.webp） */
+.okRow{display:flex;align-items:center;justify-content:center;gap:.5em;margin:.2em 0 .4em}.okRow span{display:flex;flex-direction:column;align-items:center;font-size:12px;color:#7a6040;line-height:1.2}.okRow img{height:64px;width:auto;filter:drop-shadow(1px 2px 2px #3a241244)}.okRow b{color:#c9a978;font-size:22px}
 /* 虫かごの外の「もちもの」は、ノートのアイコンのボタン（2026-11-15 ユーザー） */
-html.land body.noteUI:not(.noteTabs) #rtabs #rtItems,html.land body.noteUI:not(.noteTabs) #rtabs #rtNote{writing-mode:horizontal-tb;width:auto;min-height:0;padding:.35em .55em .3em;margin-right:6px;border-radius:12px;background:url(img/ui/card.webp) center/100% 100% no-repeat;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;letter-spacing:0}
-html.land body.noteUI:not(.noteTabs) #rtabs #rtItems .rtIc,html.land body.noteUI:not(.noteTabs) #rtabs #rtNote .rtIc{display:block;width:38px;height:46px;object-fit:contain;filter:drop-shadow(1px 1px 1px #3a241255)}
-html.land.tall body.noteUI:not(.noteTabs) #rtabs #rtItems,html.land.tall body.noteUI:not(.noteTabs) #rtabs #rtNote{font-size:14px}html.land.tall body.noteUI:not(.noteTabs) #rtabs #rtItems .rtIc,html.land.tall body.noteUI:not(.noteTabs) #rtabs #rtNote .rtIc{width:48px;height:58px}
+html.land body.noteUI:not(.noteTabs) #rtabs #rtItems,html.land body.noteUI:not(.noteTabs) #rtabs #rtNote,html.land body.noteUI:not(.noteTabs) #rtabs #rtRecv{writing-mode:horizontal-tb;width:auto;min-height:0;padding:.35em .55em .3em;margin-right:6px;border-radius:12px;background:url(img/ui/card.webp) center/100% 100% no-repeat;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;letter-spacing:0}
+html.land body.noteUI:not(.noteTabs) #rtabs #rtItems .rtIc,html.land body.noteUI:not(.noteTabs) #rtabs #rtNote .rtIc,html.land body.noteUI:not(.noteTabs) #rtabs #rtRecv .rtIc{display:block;width:38px;height:46px;object-fit:contain;filter:drop-shadow(1px 1px 1px #3a241255)}
+html.land.tall body.noteUI:not(.noteTabs) #rtabs #rtItems,html.land.tall body.noteUI:not(.noteTabs) #rtabs #rtNote,html.land.tall body.noteUI:not(.noteTabs) #rtabs #rtRecv{font-size:14px}html.land.tall body.noteUI:not(.noteTabs) #rtabs #rtItems .rtIc,html.land.tall body.noteUI:not(.noteTabs) #rtabs #rtNote .rtIc,html.land.tall body.noteUI:not(.noteTabs) #rtabs #rtRecv .rtIc{width:48px;height:58px}
 body.noteTabs #rtabs #rtNote,body.noteTabs #rtabs #rtNext{display:none}
 html.land body.noteUI:not(.noteTabs) #rtabs #rtNext{writing-mode:horizontal-tb;width:auto;min-height:0;padding:.35em .45em .3em;margin-right:6px;border-radius:12px;background:#f6cf5b;border:2px solid #fff;box-shadow:0 2px 0 #d9a93a,0 3px 6px #3a241244;display:flex;flex-direction:column;align-items:center;gap:1px;font-size:12px;letter-spacing:0;color:#3a2410;filter:none}
 html.land body.noteUI:not(.noteTabs) #rtabs #rtNext .rtIc{display:block;width:40px;height:44px;object-fit:contain;filter:drop-shadow(1px 1px 1px #3a241255)}html.land body.noteUI:not(.noteTabs) #rtabs #rtNext .nxL{font-weight:900;white-space:nowrap}
@@ -1486,7 +1489,7 @@ body.noteUI #hud .sch{color:#b0601a}   /* 明るい札の上でも読めるよ�
   <button type="button" class="rt" id="rtItems"><span class="ic">🎒</span><img class="rtIc" src="img/ui/ic_mochimono.webp" alt="" draggable="false">もちもの</button>
   <button type="button" class="rt" id="rtNote" hidden><span class="ic">📒</span><img class="rtIc" src="img/ui/ic_note.webp" alt="" draggable="false">ノート</button>
   <button type="button" class="rt" id="rtNext" hidden><img class="rtIc" src="img/ui/ic_next.webp" alt="" draggable="false"><b class="nxL">次の日へ</b></button>
-  <button type="button" class="rt" id="rtRecv" hidden><span class="ic">📲</span>スマホから<br>受けとる</button>
+  <button type="button" class="rt" id="rtRecv" hidden><span class="ic">📲</span><img class="rtIc" src="img/ui/ic_recv.webp" alt="" draggable="false">スマホから<br>受けとる</button>
   <button type="button" class="rt" id="rtCase" hidden><span class="ic">📋</span>ケースの<br>こと</button>
 </div>
 <div class="drawer norb" id="itemsPanel" data-p="items"><div class="dHead"><b>もちもの</b></div><div id="itemsBody"></div></div>
@@ -2561,7 +2564,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.18.0';
-const BUILD = '20261115-1708';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261115-1822';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.18.0', date:'2026-11-15', items:[
     '虫ずもうが もっと もりあがるようになった：対戦カードとVS、軍配、ぼくと あいての顔（かっているときは にこにこ）、必殺わざの大きなカットイン、おうえんと「かち！」の演出。とちゅうで曲が とぎれにくくした',
@@ -4296,13 +4299,13 @@ function renderTitle(){
     <div class="tgap"></div>
     <div class="t3">宗像の森や川で虫をみつけて、おうちのケースでそだてよう。脱皮・さなぎ・羽化を見られるかな？</div>
     <div class="t4">※このゲームに出てくる場所と虫の組み合わせはゲーム用のもので、実際にその場所にいる虫とはかぎりません。ゲームの中でそだつ速さも、本物よりずっと速くしてあります。</div>
-    ${isPhone() ? `<div class="tbtns toriRow"><button type="button" class="tbtn pri tori" id="btnTori">📍 そとで虫をつかまえる<small>つかまえて、家のタブレットに おくる</small></button></div>` : ''}
+    ${isPhone() ? `<div class="tbtns toriRow"><button type="button" class="tbtn pri tori" id="btnTori"><img class="emI" src="img/ui/ok_pin.webp" alt="">そとで虫をつかまえる<small>つかまえて、家のタブレットに おくる</small></button></div>` : ''}
     <div class="tbtns"><button type="button" class="tbtn ${isPhone() ? '' : 'pri'}" id="btnStory">ストーリー${hasS ? (hasS.story.done ? `<small>クリア${(hasS.story.loop || 1) > 1 ? '（' + hasS.story.loop + '周）' : ''}${hasS.story.flags && hasS.story.flags.allKakera ? '★' : ''}</small>` : `<small>${hasS.story.ch ? hasS.story.ch + '章' : '序章'}から</small>`) : ''}</button><button type="button" class="tbtn qm" id="btnModes">どっちで あそぶ？</button><button type="button" class="tbtn" id="btnFree">じゆうに育てる${has ? '<small>つづきから</small>' : ''}</button></div>
-    <div class="tbtns sub"><button type="button" class="tbtn" id="btnInstall">アプリにする方法</button><button type="button" class="tbtn" id="btnShare">友だちに教える</button>${isPhone() ? '' : '<button type="button" class="tbtn tori" id="btnTori">📍 そとで虫をつかまえる（スマホ）</button>'}</div>
+    <div class="tbtns sub"><button type="button" class="tbtn" id="btnInstall">アプリにする方法</button><button type="button" class="tbtn" id="btnShare">友だちに教える</button>${isPhone() ? '' : '<button type="button" class="tbtn tori" id="btnTori"><img class="emI" src="img/ui/ok_pin.webp" alt="">そとで虫をつかまえる（スマホ）</button>'}</div>
     <div class="tpad">虫を育てるのは、大きな画面の<b>タブレット</b>や<b>パソコン</b>がおすすめ</div>
     ${isPhone() ? '<div class="vrow tmRow"><button type="button" class="verbtn" id="btnTHow">❓ 遊び方</button><button type="button" class="verbtn" id="btnTShare">友だちに教える</button><button type="button" class="verbtn" id="btnTMenu">☰ メニュー</button></div>' : ''}
     <div class="vrow"><button type="button" class="verbtn" id="btnVer"><span class="gver">ver ${GAME_VER}</span>　こうしん情報 ▸</button><button type="button" class="verbtn" id="btnFuri">${furiLabel()}</button><button type="button" class="verbtn" id="btnPriv">プライバシーについて</button>${rotMode ? '<button type="button" class="verbtn" id="btnRot">↻ 向きを反対に</button>' : ''}</div>
-    <div class="bugRow"><a class="bugBtn" id="btnBug" href="${esc(bugURL())}" target="_blank" rel="noopener">🐞 バグ（おかしいところ）を見つけたら、こちらへ おしらせください</a></div>
+    <div class="bugRow"><a class="bugBtn" id="btnBug" href="${esc(bugURL())}" target="_blank" rel="noopener"><img class="emI" src="img/ui/ok_bugrep.webp" alt="">バグ（おかしいところ）を見つけたら、こちらへ おしらせください</a></div>
   </div>`;
   view.querySelector('#titleScr').classList.remove('norb');   // 文はふりがなを付けてよい（credit だけ英語）
   // ストーリー：虫を育てながら、夏休みに出会ったふしぎを追いかける。じゆうに育てる：いままでの遊び方（本物の場所に行って虫をさがす）
@@ -4378,7 +4381,7 @@ function showTitleMenu(){
 }
 function showModes(phone){
   const L = openWin(phone ? '遊び方' : 'どっちで遊ぶ？', `${phone ? `
-    <div class="modeCmp"><button type="button" class="mc tr" data-m="btnTori"><b>📍 そとで虫をつかまえる</b><strong class="mcH">スマホで そとへ</strong><span class="mcTags"><i>🌳 宗像のスポットや 近くの公園</i><i>📱→ タブレットに おくる</i></span><p>おうちの人と いっしょに そとへ行って、いまいる場所で 虫をさがそう。つかまえた虫は、家の タブレットや パソコンの「じゆうに育てる」に おくって 育てるよ。</p><span class="mcGo">▶ タップで あそぶ</span></button></div>
+    <div class="modeCmp"><button type="button" class="mc tr" data-m="btnTori"><b><img class="emI" src="img/ui/ok_pin.webp" alt="">そとで虫をつかまえる</b><strong class="mcH">スマホで そとへ</strong><span class="mcTags"><i>🌳 宗像のスポットや 近くの公園</i><i><img class="emI" src="img/ui/ok_phone.webp" alt="">→ タブレットに おくる</i></span><p>おうちの人と いっしょに そとへ行って、いまいる場所で 虫をさがそう。つかまえた虫は、家の タブレットや パソコンの「じゆうに育てる」に おくって 育てるよ。</p><span class="mcGo">▶ タップで あそぶ</span></button></div>
     <h3 class="modeH">おうちで 育てる（タブレット・パソコンが おすすめ）</h3>` : ''}
     <div class="modeCmp"><button type="button" class="mc st" data-m="btnStory"><b>ストーリー</b><strong class="mcH">虫の 育てかたを 知る</strong><span class="mcTags"><i>⏩ 時間が はやく進む</i><i>🐛 3日ほどで 成虫に</i></span><p>${esc(MODE_TXT.story).replace(/\n/g, '<br>')}</p><span class="mcGo">▶ タップで あそぶ</span></button><button type="button" class="mc fr" data-m="btnFree"><b>じゆうに育てる</b><strong class="mcH">本物に近い形で 育てる</strong><span class="mcTags"><i>🕰 時計は 本物の時間と同じ</i><i>🐢 ゆっくり育つ（3〜8日）</i></span><p>${esc(MODE_TXT.free).replace(/\n/g, '<br>')}</p><span class="mcGo">▶ タップで あそぶ</span></button></div>
     <p class="modeTip"><b>おすすめ</b>：はじめは ストーリーで、虫の育てかたや いのちのことを知ってから、じゆうに育てる へ。親子で いっしょに 両方遊んでもOK（セーブは べつべつ）。</p>`, 'modeWin');
@@ -5095,7 +5098,7 @@ function renderOut(){
   if(storyOn()) return renderOutStory();
   view.innerHTML = `<h2>そとへ虫をさがしに行く</h2>
     <p class="small">いまは<b style="color:var(--ink)">${SLOT_NAMES[slot]}</b>。活動中の虫は見つけやすい。ねむっている虫も、さがせば見つかることがある（夜の山は危ないので、昼に行っても大丈夫）。つかまえた場所と時間は、虫の「生まれ」として残る。</p>
-    <div class="row"><button type="button" class="btn pri" id="btnGeo">📍 いまいる場所をしらべる</button></div>
+    <div class="row"><button type="button" class="btn pri" id="btnGeo"><img class="emI" src="img/ui/ok_pin.webp" alt="">いまいる場所をしらべる</button></div>
     ${stampBarHTML()}
     <div class="spots" style="margin-top:10px">${SPOTS.map(sp=>{ const v = (S.visits[sp.key+'|'+today]||0), bn = BORN[sp.key];
       return `<div class="spot"><img class="spotPic" src="img/ui/spot_${sp.key}.webp" alt="" loading="lazy" draggable="false">${stampHTML(sp.key, stamps()[sp.key])}<b>${esc(sp.name)}</b>　<span class="small">${esc(sp.env)}</span><div class="bugs">いま活動中：${spotBugs(sp.key, slot).map(nmQ).join('・') || 'いない'}　／　ねむっている：${spotBugs(sp.key).filter(id=>!BUGS[id].time.includes(slot) && !BUGS[id].spots.includes('any')).map(id=>`${nmQ(id)}（${BUGS[id].time.map(t=>SLOT_NAMES[t]).join('・')}）`).join('・') || 'なし'}</div><div class="small">${esc(bn.name)}：${esc(bn.txt)}</div>${v ? `<div class="small">今日は${v}回さがした</div>` : ''}</div>`; }).join('')}
@@ -5215,19 +5218,19 @@ async function geoGo(){
 }
 function renderTori(){
   const got = S.cases.map((c,i)=> c ? i : -1).filter(i=> i >= 0);
-  view.innerHTML = `<div class="row" style="justify-content:space-between"><h2>📍 そとで虫をつかまえる</h2><button type="button" class="btn sub" id="tTitle">タイトルへ</button></div>
+  view.innerHTML = `<div class="row" style="justify-content:space-between"><h2><img class="emI" src="img/ui/ok_pin.webp" alt="">そとで虫をつかまえる</h2><button type="button" class="btn sub" id="tTitle">タイトルへ</button></div>
     <p class="win toriLead">宗像の とくべつなスポットや、近くの草むらで 虫をさがそう。つかまえた虫は、家の <b>タブレットや パソコン</b>（「じゆうに育てる」）に おくって 育てるよ。<br><small>そとでは、かならず おうちの人と いっしょにね。</small></p>
-    <div class="row"><button type="button" class="btn pri" id="btnGeo">📍 いまいる場所をしらべる</button><button type="button" class="btn" id="tHow">おくりかた</button></div>
+    <div class="row"><button type="button" class="btn pri" id="btnGeo"><img class="emI" src="img/ui/ok_pin.webp" alt="">いまいる場所をしらべる</button><button type="button" class="btn" id="tHow">おくりかた</button></div>
     ${got.length ? `<h3>つかまえた虫（${got.length}/${S.cases.length}ひき・まだ おくっていない）</h3><div class="toriList">${got.map(i=>{ const c = S.cases[i];
       return `<div class="spot toriBug"><span class="tbPic">${svgBug(c.bug, stageOf(c).k, {instar:instarOf(c)})}</span><div class="tbTx"><b>${esc(dispName(c))}</b><small>${esc(c.from)}で つかまえた</small></div><div class="row"><label class="tbChk"><input type="checkbox" data-pick="${i}" checked>おくる</label><button type="button" class="btn sub" data-rel="${i}">にがす</button></div></div>`; }).join('')}</div>
-      <div class="row"><button type="button" class="btn pri" id="tSendAll">📱→ えらんだ虫を まとめて おくる</button></div>` : ''}
+      <div class="row"><button type="button" class="btn pri" id="tSendAll"><img class="emI" src="img/ui/ok_phone.webp" alt="">→ えらんだ虫を まとめて おくる</button></div>` : ''}
     <h3>宗像の とくべつなスポット（6か所）</h3>${stampBarHTML()}${spotListHTML()}
     <div class="demoBox" style="margin-top:12px"><h3>デモ用（本番にはありません）</h3><div class="row"><select id="demoSpot" class="btn">${SPOTS.map(sp=>`<option value="${sp.key}">${esc(sp.name)}</option>`).join('')}<option value="any">とくべつなスポットではない場所</option></select><button type="button" class="btn" id="btnDemoGo">着いたことにする</button></div></div>`;
   $('tTitle').onclick = ()=>{ save(true); S = null; outState = null; render(); };
   $('tHow').onclick = showSendHow;
   $('btnGeo').onclick = geoGo;
   $('btnDemoGo').onclick = async ()=>{ if(!(await askTogether())) return; const k = $('demoSpot').value; arrive(k === 'any' ? ANY_SPOT : SPOTS.find(s=>s.key===k), k === 'any'); };
-  if($('tSendAll')){ const upd = ()=>{ const n = view.querySelectorAll('[data-pick]:checked').length; $('tSendAll').textContent = `📱→ えらんだ虫を まとめて おくる（${n}ひき）`; $('tSendAll').disabled = !n; };
+  if($('tSendAll')){ const upd = ()=>{ const n = view.querySelectorAll('[data-pick]:checked').length; $('tSendAll').innerHTML = `<img class="emI" src="img/ui/ok_phone.webp" alt="">→ えらんだ虫を まとめて おくる（${n}ひき）`; $('tSendAll').disabled = !n; };
     view.querySelectorAll('[data-pick]').forEach(c=> c.onchange = upd); upd();
     $('tSendAll').onclick = ()=> sendMany([...view.querySelectorAll('[data-pick]:checked')].map(c=> +c.dataset.pick)); }
   view.querySelectorAll('[data-rel]').forEach(b=> b.onclick = async ()=>{ const i = +b.dataset.rel; if(!(await ask(`${dispName(S.cases[i])}を、つかまえた場所に そっと にがす？`, 'にがす', 'やめる'))) return; S.cases[i] = null; save(true); render(); await say('バイバイ。元気でね。'); });
@@ -5799,12 +5802,12 @@ async function showShare(){ track('open_share');
 }
 // スマホでつかまえた虫を、家のタブレットやパソコンへ（やり方）
 function showSendHow(){
-  openWin('スマホでつかまえて、タブレットにおくる', `<div class="sendHow norb"><span>📱<small>外で</small></span><b>→</b><span>🐛<small>虫をおくる</small></span><b>→</b><span>🖥<small>家のタブレット</small></span></div>
+  openWin('スマホでつかまえて、タブレットにおくる', `<div class="okRow norb"><span><img src="img/ui/ok_phone.webp" alt="">そとで</span><b>→</b><span><img src="img/ui/ok_bug.webp" alt="">虫をおくる</span><b>→</b><span><img src="img/ui/ok_tab.webp" alt="">家のタブレット</span></div>
     <p>外ではスマホを持って、虫をさがして つれてかえる。家では、大きな画面のタブレットやパソコンで、ゆっくり育てよう。</p>
     <div class="ibox now"><h3>おくりかた</h3><ol>
-      <li>スマホのタイトルの「<b>📍 そとで虫をつかまえる</b>」で、虫をつかまえる</li>
-      <li>「<b>📱→ おくる</b>」をおす<br><small>（「じゆうに育てる」で育てている虫は、虫かごの「ケースのこと」→「タブレットやパソコンにおくる」）</small></li>
-      <li>タブレットや パソコンで このゲームの「じゆうに育てる」をひらいて、右の「<b>📲 スマホから受けとる</b>」をおす</li>
+      <li>スマホのタイトルの「<b><img class="emI" src="img/ui/ok_pin.webp" alt="">そとで虫をつかまえる</b>」で、虫をつかまえる</li>
+      <li>「<b><img class="emI" src="img/ui/ok_phone.webp" alt="">→ おくる</b>」をおす<br><small>（「じゆうに育てる」で育てている虫は、虫かごの「ケースのこと」→「タブレットやパソコンにおくる」）</small></li>
+      <li>タブレットや パソコンで このゲームの「じゆうに育てる」をひらいて、右の「<b><img class="emI" src="img/ui/ic_recv.webp" alt="">スマホから受けとる</b>」をおす</li>
       <li>スマホに出た<b>QRコード</b>を、タブレットの画面のカメラに うつす<br><small>（カメラアプリで読むと、べつのゲームが ひらいてしまうことがあるよ。iPhone・iPad どうしなら「AirDrop などでおくる」→「受けとる」の「リンクを はりつける」でもOK）</small></li>
       <li>タブレットで虫が<b>とどいた</b>ら、スマホで「とどいた！」をおす</li></ol></div>
     <p class="small">※ストーリーは、1つの端末で遊ぶモードです。おくれるのは「じゆうに育てる」の虫です。<br>※サーバーは使いません。おくるのは虫のこと（種類・大きさ・育ちぐあいなど）だけです。</p>`);
@@ -5999,7 +6002,7 @@ async function unpackBug(t){
 const tripCageSVG = inner=> `<svg class="tripCage" viewBox="0 0 120 110"><rect x="10" y="30" width="100" height="72" rx="8" fill="#cfe8f0" fill-opacity=".35" stroke="#6a8a9a" stroke-width="3"/>
   <g class="tcBug" transform="translate(30 40) scale(.6)">${inner}</g>
   <g class="lid"><rect x="4" y="20" width="112" height="14" rx="5" fill="#3a9a5a" stroke="#1e5a32" stroke-width="2"/>${[20,40,60,80,100].map(x=>`<circle cx="${x}" cy="27" r="2.2" fill="#1e5a32"/>`).join('')}<path d="M44 20 Q60 4 76 20" fill="none" stroke="#1e5a32" stroke-width="4"/></g></svg>`;
-const RECV_HOW = 'おくり先の タブレットや パソコンで、このゲームの 右の<b>「📲 スマホから受けとる」</b>をおして、このQRコードを うつしてね。';
+const RECV_HOW = 'おくり先の タブレットや パソコンで、このゲームの 右の<b>「<img class="emI" src="img/ui/ic_recv.webp" alt="">スマホから受けとる」</b>をおして、このQRコードを うつしてね。';
 // 小さい虫かごに入れる虫（まとめて おくるとき）：100x100 の中に 6ぴきまで ならべる
 const groupBugSVG = cs=>{ const n = Math.min(cs.length, 6), cols = n <= 1 ? 1 : n <= 4 ? 2 : 3, rows = Math.ceil(n / cols), sz = Math.min(100 / cols, 100 / rows) * 1.05;
   return '<svg viewBox="0 0 100 100" width="100" height="100">' + cs.slice(0, 6).map((c, k)=>{ const cx = (k % cols + .5) * 100 / cols, cy = (Math.floor(k / cols) + .5) * 100 / rows;
@@ -6038,7 +6041,7 @@ async function sendBug(i, noAsk){
    AirDrop・コピーでもらったリンクを はりつけても受けとれる */
 const okuruOf = t=>{ const m = String(t || '').match(/[?&]okuru=([A-Za-z0-9_\-]+)/); return m ? m[1] : null; };
 async function recvWin(){
-  const W = openWin('スマホから 虫を受けとる', `<div class="rcvBox"><p class="rcvHow"><b>①</b> スマホの「そとで虫をつかまえる」で、<b>「えらんだ虫を まとめて おくる」</b>をおす<br><b>②</b> スマホに出た <b>QRコードを、下のカメラに うつす</b></p>
+  const W = openWin('スマホから 虫を受けとる', `<div class="rcvBox"><div class="okRow norb"><span><img src="img/ui/ok_phone.webp" alt="">そとで</span><b>→</b><span><img src="img/ui/ok_bug.webp" alt="">虫をおくる</span><b>→</b><span><img src="img/ui/ok_tab.webp" alt="">家のタブレット</span></div><p class="rcvHow"><b>①</b> スマホの「そとで虫をつかまえる」で、<b>「えらんだ虫を まとめて おくる」</b>をおす<br><b>②</b> スマホに出た <b>QRコードを、下のカメラに うつす</b></p>
     <div class="rcvCam"><video id="rcvV" playsinline muted></video><i class="rcvFrame"></i><span class="small" id="rcvMsg">カメラを じゅんびしています…</span></div>
     <details class="rcvLink"><summary>カメラが つかえないとき（リンクを はりつける）</summary><p class="small">スマホで「AirDrop などでおくる」か「リンクをコピー」をして、とどいたリンクを ここに はりつけてね。</p><div class="row"><input id="rcvIn" class="btn" type="url" placeholder="https://…?okuru=…" autocomplete="off"><button type="button" class="btn pri" id="rcvGo">受けとる</button></div></details>
     <p class="small">カメラの画像は、この端末の中でQRコードを読むだけ。保存も送信もしないよ。</p></div>`, 'recvWin');
