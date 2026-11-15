@@ -10,6 +10,9 @@
 <script>
 // /demo/ から開いたときはデモ版：セーブを本番と分け、検索サイトに出さない（虫とり日記と同じルール）
 window.DEMO = /\/demo\//.test(location.pathname);
+// デモ用のボタン（時間をすすめる・着いたことにする など）は、デモ版と手元（テスト）だけ。本番ではかくす（2026-11-15 ユーザー）
+window.DEV_UI = DEMO || /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname) || location.protocol === 'file:';
+if(!DEV_UI) document.documentElement.classList.add('prod');
 if(DEMO){
   document.title = '【デモ】' + document.title;
   document.querySelector('meta[name="apple-mobile-web-app-title"]').content = '虫そだて日記 デモ';
@@ -125,7 +128,7 @@ body.phone #titleScr .tpad{order:0}
 .spItem .spMap,body.noteUI .spItem .spMap{flex:none;padding:.25em .8em;font-size:.85em;text-decoration:none;color:#5a3a14;background:#f6cf5b;border:2px solid #fff;border-radius:999px;font-weight:800}
 .tbChk{display:flex;align-items:center;gap:.3em;font-weight:800;color:#5a3a14;background:#fff6dc;border:2px solid #d9b07a;border-radius:999px;padding:.2em .8em}.tbChk input{width:1.2em;height:1.2em}
 .sendAnim .tkImg{width:120px;height:120px;object-fit:contain}.sendAnim{position:relative}.sendAnim .tkBugs{position:absolute;left:50%;top:58%;transform:translate(-50%,-50%);display:flex;gap:2px;width:84px;flex-wrap:wrap;justify-content:center}.sendAnim .tkBugs span{width:26px;height:26px}.sendAnim .tkBugs svg{width:100%;height:100%}
-.toriList{display:flex;flex-direction:column;gap:6px}html.land body.noteUI[data-tab=tori] #view{margin:0 auto;width:min(100%,760px);padding-left:calc(var(--sl,0px) + 12px);padding-right:calc(var(--sr,0px) + 12px)}
+.toriList{display:flex;flex-direction:column;gap:6px}html.land body.noteUI[data-tab=tori]:not(.obsMode):not([data-tab=out]):not([data-tab=spot]) #view{margin:0 auto;width:min(100%,1000px);padding-left:calc(var(--sl,0px) + 14px);padding-right:calc(var(--sr,0px) + 14px)}   /* そとで虫をつかまえる：右のアイコンがないので、右もあけない。スマホでは はばいっぱい（2026-11-15 ユーザー） */
 #view .spot.toriBug{display:flex;flex-direction:row;align-items:center;gap:.6em;width:auto}#view .toriBug .tbPic{display:block;width:56px;height:56px;flex:none}#view .toriBug .tbPic svg{width:56px;height:56px}.toriBug .tbPic svg{width:100%;height:100%}.toriBug .tbTx{flex:1;min-width:0}.toriBug .tbTx small{display:block}
 #titleScr .tbtn.pri{background:var(--sun);color:#1b130c;border-color:#fff}
 #titleScr .tbtns.sub{margin-top:.45em;gap:.45em}
@@ -160,7 +163,7 @@ html.land .popWin .mwBox{font-size:clamp(12px,calc(var(--H) * .036),16px);width:
 .modeCmp .mc .mcGo{margin-top:auto;align-self:flex-end}
 html:not(.tall) .modeCmp .mc{padding:.5em .75em;line-height:1.5}html:not(.tall) .modeCmp .mc p{font-size:.86em;margin:.2em 0}html:not(.tall) .modeCmp .mc .mcH{font-size:1.12em;margin:0 0 .25em}html:not(.tall) .modeCmp .mc .mcTags{margin-bottom:.2em}html:not(.tall) .modeCmp .mc .mcTags i{font-size:.82em}   /* スマホ：なるべく1画面に */
 .modeCmp .mc b{display:inline-block;font-size:1.1em;padding:.05em .8em;border-radius:999px;margin-bottom:.3em}.modeCmp .st b{background:#f6cf5b;color:#3a2410}.modeCmp .fr b{background:#14284a;color:#fff}
-.modeTip{margin-top:12px;line-height:1.7}
+.modeTip{margin-top:12px;line-height:1.7}.modeCmp .tr b{background:#3f8a3a;color:#fff}.modeCmp .tr .mcTags i{background:#dcefd2;color:#1f4a1a}.modeH{margin:14px 0 8px;font-size:1em}
 .storyBar .hakase{display:inline-block;margin-left:.5em;padding:.05em .7em;border-radius:999px;background:#f6cf5b;color:#3a2410;font-size:.82em;font-weight:800;border:1.5px solid #d9a93a;vertical-align:.1em}
 .storyBar .hakase.loop{background:#14284a;color:#fff;border-color:#14284a}
 #titleScr .tbtns.sub .tbtn{font-size:clamp(11px,2.4vw,14px);padding:.3em .95em;background:#14284ab0}
@@ -330,7 +333,7 @@ html.land body.noteUI .shopNav{background:#f6ead2;border-radius:10px;padding:6px
 .opt{display:flex;flex-direction:column;gap:8px}
 .opt .btn{text-align:left;display:flex;justify-content:space-between;align-items:center}
 .opt .btn span.v{color:var(--sun)}
-.demoBox{border:2px dashed var(--low);border-radius:8px;padding:.6em .8em}
+.demoBox{border:2px dashed var(--low);border-radius:8px;padding:.6em .8em}html.prod .demoBox{display:none!important}
 .demoBox h3{color:var(--low);border:0}
 
 /* メッセージ（RPGの窓） */
@@ -1099,7 +1102,7 @@ html[data-rot="1"],html[data-rot="-1"]{padding:0}
 html.land{height:100%;overflow:hidden;overscroll-behavior:none}
 html.land body{height:var(--H);min-height:0;overflow:hidden;overscroll-behavior:none;padding:0 0 0 calc(80px + var(--sl))}
 html.land body.title{padding-right:0;background:#4e7a36}
-html.land body.title{padding-left:0}
+html.land body.title{padding-left:0}html.land body.toriMode{padding-left:0!important;padding-right:0!important}   /* そとで虫をつかまえる：左右のメニューがないので、はしまで使う（2026-11-15 ユーザー） */
 html.land body.title #app{padding:0}
 html.land body.title #titleScr{height:var(--H);border:0;border-radius:0;justify-content:space-evenly;gap:0;padding:max(8px,var(--st)) calc(4% + var(--sr)) max(22px,calc(var(--sb) + 14px)) calc(4% + var(--sl));overflow:hidden}   /* 下は ホームバー・角の丸みのぶん あける（2026-11-15 ユーザー：いちばん下が切れる） */
 html.land:not(.tall) #titleScr.art .tlogoBox{height:calc(var(--H) * .25)}
@@ -2526,7 +2529,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.18.0';
-const BUILD = '20261115-1217';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261115-1241';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.18.0', date:'2026-11-15', items:[
     '虫ずもうが もっと もりあがるようになった：対戦カードとVS、軍配、ぼくと あいての顔（かっているときは にこにこ）、必殺わざの大きなカットイン、おうえんと「かち！」の演出。とちゅうで曲が とぎれにくくした',
@@ -4188,7 +4191,7 @@ async function storyAt(key, f){
 }
 const spotArt = sp=> { const cn = storyOn() && CH[S.story.ch]; return cn && cn.img && cn.spot === sp.key ? cn.img : sp.key; };
 function render(){
-  document.body.classList.toggle('obsMode', !!S && openCase !== null); document.body.classList.toggle('title', !S); document.body.classList.toggle('noteUI', !!S);
+  document.body.classList.toggle('obsMode', !!S && openCase !== null); document.body.classList.toggle('title', !S); document.body.classList.toggle('noteUI', !!S); document.body.classList.toggle('toriMode', !!S && !!S.tori);
   const atSpot = !!S && openCase === null && tab === 'out' && outState && outState.spot;
   if(!atSpot && $('findField')) $('findField').remove();   // さがすところは、場所の画面だけ
   document.body.dataset.tab = openCase !== null ? 'case' : atSpot ? 'spot' : tab; document.body.dataset.slot = slotOf();
@@ -4255,7 +4258,7 @@ function renderTitle(){
     <div class="tbtns"><button type="button" class="tbtn ${isPhone() ? '' : 'pri'}" id="btnStory">ストーリー${hasS ? (hasS.story.done ? `<small>クリア${(hasS.story.loop || 1) > 1 ? '（' + hasS.story.loop + '周）' : ''}${hasS.story.flags && hasS.story.flags.allKakera ? '★' : ''}</small>` : `<small>${hasS.story.ch ? hasS.story.ch + '章' : '序章'}から</small>`) : ''}</button><button type="button" class="tbtn qm" id="btnModes">どっちで あそぶ？</button><button type="button" class="tbtn" id="btnFree">じゆうに育てる${has ? '<small>つづきから</small>' : ''}</button></div>
     <div class="tbtns sub"><button type="button" class="tbtn" id="btnInstall">アプリにする方法</button><button type="button" class="tbtn" id="btnShare">友だちに教える</button>${isPhone() ? '' : '<button type="button" class="tbtn tori" id="btnTori">📍 そとで虫をつかまえる（スマホ）</button>'}</div>
     <div class="tpad">虫を育てるのは、大きな画面の<b>タブレット</b>や<b>パソコン</b>がおすすめ</div>
-    ${isPhone() ? '<div class="vrow tmRow"><button type="button" class="verbtn" id="btnTMenu">☰ メニュー</button></div>' : ''}
+    ${isPhone() ? '<div class="vrow tmRow"><button type="button" class="verbtn" id="btnTHow">❓ 遊び方</button><button type="button" class="verbtn" id="btnTShare">友だちに教える</button><button type="button" class="verbtn" id="btnTMenu">☰ メニュー</button></div>' : ''}
     <div class="vrow"><button type="button" class="verbtn" id="btnVer"><span class="gver">ver ${GAME_VER}</span>　こうしん情報 ▸</button><button type="button" class="verbtn" id="btnFuri">${furiLabel()}</button><button type="button" class="verbtn" id="btnPriv">プライバシーについて</button>${rotMode ? '<button type="button" class="verbtn" id="btnRot">↻ 向きを反対に</button>' : ''}</div>
   </div>`;
   view.querySelector('#titleScr').classList.remove('norb');   // 文はふりがなを付けてよい（credit だけ英語）
@@ -4281,6 +4284,8 @@ function renderTitle(){
     S = newGame(); if(!su.tut) TUT_KEYS.forEach(k=> S.yk['tut_' + k] = 1); save(); track('game_start', {mode:'free'}); start(); };
   $('btnModes').onclick = showModes;
   if($('btnTMenu')) $('btnTMenu').onclick = showTitleMenu;
+  if($('btnTHow')) $('btnTHow').onclick = ()=> showModes(true);   // スマホ：遊び方（そとで虫をつかまえる＋どっちで遊ぶ？。2026-11-15 ユーザー）
+  if($('btnTShare')) $('btnTShare').onclick = ()=> $('btnShare').click();
   $('btnInstall').onclick = showInstall; $('btnShare').onclick = showShare; $('btnTori').onclick = startTori;
   $('btnVer').onclick = showChangelog; $('btnPriv').onclick = showPrivacy; if($('btnRot')) $('btnRot').onclick = flipRot;
   $('btnFuri').onclick = ()=>{ setFuri((furiLv + 1) % 3); $('btnFuri').textContent = furiLabel(); };
@@ -4313,13 +4318,15 @@ function setupWin(){
   });
 }
 function showTitleMenu(){
-  const items = [['btnModes', 'どっちで 遊ぶ？（ストーリー と じゆうに育てる）'], ['btnInstall', 'アプリにする方法'], ['btnShare', '友だちに教える'], ['btnVer', `こうしん情報（ver ${GAME_VER}）`], ['btnFuri', furiLabel()], ['btnPriv', 'プライバシーについて'], ...($('btnRot') ? [['btnRot', '↻ 画面の向きを反対に']] : [])];
+  const items = [['btnInstall', 'アプリにする方法'], ['btnVer', `こうしん情報（ver ${GAME_VER}）`], ['btnFuri', furiLabel()], ['btnPriv', 'プライバシーについて'], ...($('btnRot') ? [['btnRot', '↻ 画面の向きを反対に']] : [])];
   const L = openWin('メニュー', `<div class="tMenu">${items.map(([id, t])=> `<button type="button" class="btn" data-go="${id}"><span>${esc(t)}</span><span class="v">▸</span></button>`).join('')}</div>
     <p class="small tmNote">※このゲームに出てくる場所と虫の組み合わせはゲーム用のもので、実際にその場所にいる虫とはかぎりません。ゲームの中でそだつ速さも、本物よりずっと速くしてあります。</p>`, 'tMenuWin');
   L.querySelectorAll('[data-go]').forEach(b=> b.onclick = ()=>{ const id = b.dataset.go; if(id === 'btnFuri'){ $('btnFuri').click(); b.querySelector('span').textContent = furiLabel(); return; } L.remove(); $(id).click(); });
 }
-function showModes(){
-  const L = openWin('どっちで遊ぶ？', `
+function showModes(phone){
+  const L = openWin(phone ? '遊び方' : 'どっちで遊ぶ？', `${phone ? `
+    <div class="modeCmp"><button type="button" class="mc tr" data-m="btnTori"><b>📍 そとで虫をつかまえる</b><strong class="mcH">スマホで そとへ</strong><span class="mcTags"><i>🌳 宗像のスポットや 近くの公園</i><i>📱→ タブレットに おくる</i></span><p>おうちの人と いっしょに そとへ行って、いまいる場所で 虫をさがそう。つかまえた虫は、家の タブレットや パソコンの「じゆうに育てる」に おくって 育てるよ。</p><span class="mcGo">▶ タップで あそぶ</span></button></div>
+    <h3 class="modeH">おうちで 育てる（タブレット・パソコンが おすすめ）</h3>` : ''}
     <div class="modeCmp"><button type="button" class="mc st" data-m="btnStory"><b>ストーリー</b><strong class="mcH">虫の 育てかたを 知る</strong><span class="mcTags"><i>⏩ 時間が はやく進む</i><i>🐛 3日ほどで 成虫に</i></span><p>${esc(MODE_TXT.story).replace(/\n/g, '<br>')}</p><span class="mcGo">▶ タップで あそぶ</span></button><button type="button" class="mc fr" data-m="btnFree"><b>じゆうに育てる</b><strong class="mcH">本物に近い形で 育てる</strong><span class="mcTags"><i>🕰 時計は 本物の時間と同じ</i><i>🐢 ゆっくり育つ（3〜8日）</i></span><p>${esc(MODE_TXT.free).replace(/\n/g, '<br>')}</p><span class="mcGo">▶ タップで あそぶ</span></button></div>
     <p class="modeTip"><b>おすすめ</b>：はじめは ストーリーで、虫の育てかたや いのちのことを知ってから、じゆうに育てる へ。親子で いっしょに 両方遊んでもOK（セーブは べつべつ）。</p>`, 'modeWin');
   L.querySelectorAll('[data-m]').forEach(b=> b.onclick = ()=>{ L.remove(); const t = $(b.dataset.m); if(t){ modePicked = true; Promise.resolve(t.onclick()).finally(()=> modePicked = false); } });
