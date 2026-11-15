@@ -2526,7 +2526,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.18.0';
-const BUILD = '20261115-1151';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261115-1217';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.18.0', date:'2026-11-15', items:[
     '虫ずもうが もっと もりあがるようになった：対戦カードとVS、軍配、ぼくと あいての顔（かっているときは にこにこ）、必殺わざの大きなカットイン、おうえんと「かち！」の演出。とちゅうで曲が とぎれにくくした',
@@ -3303,6 +3303,21 @@ function nearSpot(lat, lon){
   let best = null;
   for(const sp of SPOTS) for(const [a, b, rad] of sp.pts){ const k = distM(lat, lon, a, b) / rad; if(k <= 1 && (!best || k < best.k)) best = {sp, k}; }
   return best && best.sp;
+}
+/* 宗像の とくべつなスポットでないとき：近くの 公園・神社・お寺・山・川・池・海べ を、端末の中で さがす（位置は外に送らない）。
+   場所の一覧は lib/munakata_places.json（OpenStreetMap のデータから tools/places_make.py で作った [種類, 名前, 緯度, 経度, 半径m]。宗像市とそのまわりだけ）。
+   見つかったら、その場所らしい虫が出る「とくべつなスポット」の虫を使う（神社・お寺→宗像大社、山→城山、川・池→釣川、海べ→さつき松原、公園→赤間）。
+   その場所の緯度・経度は セーブに入れない（家の近くの公園＝住んでいる場所に近いので） */
+const LOCAL_CAT = {jinja:{key:'taisha', t:'神社の森', nm:'近くの神社'}, tera:{key:'taisha', t:'お寺の木立', nm:'近くのお寺'}, yama:{key:'joyama', t:'山の森', nm:'近くの山'},
+  kawa:{key:'tsurikawa', t:'川・池のほとり', nm:'近くの川'}, umi:{key:'matsubara', t:'海べの草むら', nm:'近くの海べ'}, koen:{key:'akama', t:'公園の草むら', nm:'近くの公園'}};
+let LOCAL_PL = null;
+async function nearLocal(lat, lon){
+  try{ if(!LOCAL_PL) LOCAL_PL = await (await fetch('lib/munakata_places.json')).json(); }catch(e){ return null; }
+  let best = null;
+  for(const [cat, nm, a, b, rad] of LOCAL_PL){ const k = distM(lat, lon, a, b) / rad; if(k <= 1 && (!best || k < best.k)) best = {cat, nm, k}; }
+  if(!best) return null;
+  const C = LOCAL_CAT[best.cat], base = SPOTS.find(x=> x.key === C.key);
+  return Object.assign({}, base, {name:best.nm || C.nm, env:C.t, local:best.cat, lat:undefined, lon:undefined, pts:[]});
 }
 function getPos(){
   const t = QS.get('geo');   // 画面確認用：?geo=緯度,経度
@@ -5122,8 +5137,8 @@ async function geoGo(){
   if(!(await askTogether())) return;
   const box = document.createElement('div'); box.className = 'win'; box.textContent = 'いる場所をしらべています…'; view.prepend(box);
   let pos; try{ pos = await getPos(); }catch(e){ box.innerHTML = '位置情報がつかえませんでした。<br><small>スマホの設定で、このページ（Safari／Chrome）の位置情報が「許可」になっているか確かめてね。</small>'; return; }
-  const sp = nearSpot(pos.lat, pos.lon); pos = null;   // 位置そのものはすぐに捨てる
-  box.remove(); arrive(sp || ANY_SPOT, !sp);
+  const sp = nearSpot(pos.lat, pos.lon), lp = sp ? null : await nearLocal(pos.lat, pos.lon); pos = null;   // 位置そのものはすぐに捨てる
+  box.remove(); arrive(sp || lp || ANY_SPOT, !sp);
 }
 function renderTori(){
   const got = S.cases.map((c,i)=> c ? i : -1).filter(i=> i >= 0);
@@ -5158,11 +5173,11 @@ async function arrive(sp, outside){
   else if(!S.last || S.last.day !== today){ got = 10; moved = '今日はじめてのおでかけ！'; }
   const giftKey = sp.key + '|gift|' + today; let gift = '';
   if(!S.yk[giftKey] && sp.gift){ S.yk[giftKey] = 1; S.items[sp.gift] = (S.items[sp.gift]||0) + 2; gift = `\n${sp.name}で「${ITEMS[sp.gift].name}」を2つ手に入れた。`; }
-  S.money += got; S.last = {key:sp.key, name:sp.name, lat:sp.lat, lon:sp.lon, day:today}; save(); hud();
+  S.money += got; S.last = {key:sp.key, name:sp.name, lat:sp.lat, lon:sp.lon, day:today}; save(); hud();   // 近くの公園など（sp.local）は lat・lon を持たない
   outState = {spot:sp, outside};
-  const ar = await say((outside ? 'ここは、宗像の とくべつなスポット（6か所）の近くでは ないみたい。\n（位置情報は ちゃんと つかえているよ）\nでも、どこにでもいる虫なら、ここでも さがせるよ。' : `「${sp.name}」に着いた！`) + (moved ? `\n${moved} どんぐり ${dg(got)} をもらった。` : '') + gift, {gifts:[...(got ? [[DONGURI_IMG, 'どんぐり', got]] : []), ...(gift ? [giftOf(sp.gift, 2)] : [])], ...(outside ? {ans:['このまま さがす', 'とくべつなスポットを見る']} : {})});
+  const ar = await say((outside && sp.local ? `ここは「${sp.name}」の近く（${sp.env}）。\n宗像の とくべつなスポット（6か所）では ないけど、${sp.env.replace(/の.*$/, '')}に いそうな虫が さがせるよ。` : outside ? 'ここは、宗像の とくべつなスポット（6か所）の近くでは ないみたい。\n（位置情報は ちゃんと つかえているよ）\nでも、どこにでもいる虫なら、ここでも さがせるよ。' : `「${sp.name}」に着いた！`) + (moved ? `\n${moved} どんぐり ${dg(got)} をもらった。` : '') + gift, {gifts:[...(got ? [[DONGURI_IMG, 'どんぐり', got]] : []), ...(gift ? [giftOf(sp.gift, 2)] : [])], ...(outside ? {ans:['このまま さがす', 'とくべつなスポットを見る']} : {})});
   if(outside && ar === 1) showSpots();
-  if(!outside) await say(`【注意】${sp.warn}`, {face:'papa_teach'});
+  if(!outside || sp.local) await say(`【注意】${sp.warn}`, {face:'papa_teach'});
   render();
 }
 /* さがす（2026-11-08）：場所の絵の上の「さがすところ」をえらぶ → 指をおいたまま、じっと待つ → ガサッと出てくる。
@@ -5286,7 +5301,7 @@ async function doFind(sp, here, egg, slot, h){
       S.cases[free0] = {bug:id, si:0, prog:0, hunger:70, wet:70, clean:100, tick:now(), pending:false, from:sp.name, born:sp.key, bornSlot:slotOf(), since:dayKey(),
         ind:{hp:1, atk:1, def:1, spd:1, heal:1}, log:newLog(), tot:newLog(), place:'genkan', trouble:null, dirt:[], foods:[], soak:0, hideUntil:0, deco:[], mat:null, soilAge:0, wetZ:Array(WZ).fill(70), soakZ:Array(WZ).fill(0), stress:0, known:!!know};
       save(true); track('bug_catch', {bug:id, chapter:0});
-      await say(`${know ? b.name + 'の' + (id === 'kinkabuto' ? 'たまご' : '幼虫') : 'なぞの' + G.name}を、小さい虫かごに入れた！\n「${BORN[sp.key].name}」の虫だ。`);
+      await say(`${know ? b.name + 'の' + (id === 'kinkabuto' ? 'たまご' : '幼虫') : 'なぞの' + G.name}を、小さい虫かごに入れた！\n「${sp.local ? sp.name : BORN[sp.key].name}」の虫だ。`);
       const n = S.cases.filter(Boolean).length, room = S.cases.length - n;
       const a = await say(`いま つかまえた虫は ${n}ひき。${room ? `あと ${room}ひき つかまえられるよ。` : '小さい虫かごは いっぱい！'}`, {ans:[...(room ? ['つづけて さがす'] : []), `まとめて おくる（${n}ひき）`, 'あとで おくる']});
       if(room ? a === 1 : a === 0){ await sendMany(S.cases.map((c,i)=> c ? i : -1).filter(i=> i >= 0)); return; }
@@ -5304,7 +5319,7 @@ async function doFind(sp, here, egg, slot, h){
       ind:{hp:1, atk:1, def:1, spd:1, heal:1}, log:newLog(), tot:newLog(), place:keys[pi], trouble:null, dirt:[], foods:[], soak:0, hideUntil:0, deco:[], mat:null, soilAge:0, wetZ:Array(WZ).fill(70), soakZ:Array(WZ).fill(0), stress:0};
     save(); hud();
     const nc = S.cases[free]; nc.known = !!know; track('bug_catch', {bug:id, chapter:storyOn() ? S.story.ch : 0});
-    await say(`${know ? b.name + 'の' + (id === 'kinkabuto' ? 'たまご' : '幼虫') : 'なぞの' + G.name}を、${free+1}ばんの${BOXES[S.boxes[free]].name}（${PLACES[keys[pi]].name}）に入れた。\n「${BORN[sp.key].name}」の虫だ。`);
+    await say(`${know ? b.name + 'の' + (id === 'kinkabuto' ? 'たまご' : '幼虫') : 'なぞの' + G.name}を、${free+1}ばんの${BOXES[S.boxes[free]].name}（${PLACES[keys[pi]].name}）に入れた。\n「${sp.local ? sp.name : BORN[sp.key].name}」の虫だ。`);
     await yakusoku('take', '虫をつれてかえるときは、いきをしやすいように、ふたにあなをあけたケースに。\n日なたにおくと、あつくて弱ってしまうよ。');
     if(storyOn()){ nc.story = S.story.ch; save(); await storyFound(nc); }
     else if(isPhone()) await yakusoku('okuru', 'つかまえた虫は、家のタブレットやパソコンにも おくれるよ。\n虫かごの「ケースのこと」→「タブレットやパソコンにおくる」。\n大きな画面で育てると、虫がよく見えるよ。');   // スマホで外にいるときに気づけるように
@@ -5740,7 +5755,7 @@ function showPrivacy(){
       <li>ゲーム内の進み具合（どちらのモードで始めたか、章の開始・おわり、虫が育った回数と虫の種類、虫ずもうの勝敗、ストーリーのクリアなど）</li></ul>
     <p><b>2. 送らない情報</b></p>
     <ul><li>名前（ノートや虫につけた名前を含む）、メールアドレスなどの個人情報</li>
-      <li>位置情報（「いまいる場所をしらべる」は、端末の中で「登録済みのスポットの近くにいるか」を判定するためだけに使い、判定後すぐに破棄します。保存も送信もしません）</li></ul>
+      <li>位置情報（「いまいる場所をしらべる」は、端末の中で「登録済みのスポットの近くにいるか」を判定するためだけに使い、判定後すぐに破棄します。保存も送信もしません。宗像市とそのまわりの公園・神社・山・川・海べの一覧もアプリの中に入っていて、近くにあるかも端末の中で調べます。地図のサービスなどには送りません）</li></ul>
     <p><b>3. Cookie について</b><br>Google アナリティクスは Cookie などを使って情報を集めます。集めたデータは Google のポリシーに沿って管理されます。広告のための情報（Google シグナル）は使っていません。<br>
       <a href="https://policies.google.com/technologies/partner-sites?hl=ja" target="_blank" rel="noopener">Google のサービスを使うサイトやアプリでの Google によるデータ使用</a></p>
     <label class="gaoff"><input type="checkbox" id="gaOffChk" ${gaOff() ? 'checked' : ''}><span>この端末では計測しない</span></label>
@@ -6503,7 +6518,8 @@ function showNote(){
 function showSources(){
   openPanel('参考にしたもの', `<p><b>この物語はフィクションです。</b><br><small>実在する場所や行事が出てきますが、登場する人や、ふしぎな出来事は作り話です。ミアレカブトは、このゲームのための架空の虫です。</small></p>
     <p class="small">場所・行事・言い伝え・虫のかえし方は、次のページを参考にしました（宗像大社・宗像市・福岡県などのページ）。行事の日にちは年によってかわるので、出かけるときは公式のページで確かめてね。</p>
-    <ul class="srcList">${STORY_SRC.map(([t,u])=>`<li>${esc(t)}<br><small>${esc(u)}</small></li>`).join('')}</ul>`);
+    <ul class="srcList">${STORY_SRC.map(([t,u])=>`<li>${esc(t)}<br><small>${esc(u)}</small></li>`).join('')}</ul>
+    <p class="small">「そとで虫をつかまえる」などの近くの公園・神社・山・川・海べの場所：© OpenStreetMap contributors（ODbL）<br><small>https://www.openstreetmap.org/copyright</small></p>`);
 }
 /* ---- はじまり（序章） ---- */
 async function storyBegin(){
