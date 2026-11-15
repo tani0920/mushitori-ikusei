@@ -259,6 +259,7 @@ html.land body.noteUI .shopNav{background:#f6ead2;border-radius:10px;padding:6px
 .linkBtn{font:inherit;background:none;border:0;padding:0;color:#a0581a;text-decoration:underline;cursor:pointer}
 .spotPic{float:left;width:112px;aspect-ratio:3/2;object-fit:cover;border-radius:6px;margin:.1em .7em .1em 0;box-shadow:0 1px 3px #3a241255;pointer-events:none}
 .spot.here{border-color:var(--sun);box-shadow:0 0 0 2px var(--sun)}
+html.land:not(.tall) body.toriMode[data-tab=spot] .spot.here > div:not(.small){display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}   /* スマホ：虫が多い場所（神社など）でも1画面に。活動中・ねむっている は1行ずつ */
 .found{display:flex;flex-direction:column;align-items:center;gap:.4em;padding:.6em;position:relative;border-radius:14px}
 .found.tier-mezura{box-shadow:0 0 0 3px #7ec8f0,0 0 18px #7ec8f088}
 .found.tier-maboroshi{box-shadow:0 0 0 3px #f0c44a,0 0 22px #f0c44aaa;background:linear-gradient(#fff8dc66,#fff0)}
@@ -2570,7 +2571,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.18.0';
-const BUILD = '20261115-2055';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261115-2115';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.18.0', date:'2026-11-15', items:[
     '虫ずもうが もっと もりあがるようになった：対戦カードとVS、軍配、ぼくと あいての顔（かっているときは にこにこ）、必殺わざの大きなカットイン、おうえんと「かち！」の演出。とちゅうで曲が とぎれにくくした',
@@ -5074,7 +5075,13 @@ const hamming = (a,b)=> [...a].reduce((n,ch,i)=>n + (ch!==b[i]), 0);
 // 今日、写真のおかげで見つかりやすい形
 const BOOST_NM = {beetle:'カブトムシ', stag:'クワガタ', mantis:'カマキリ', grass:'バッタ', cricket:'コオロギ', butterfly:'チョウ'};
 // さがすの下の ひとこと：本物の虫の写真をとると、さがすで そのなかまが見つかりやすい（2026-11-15 ユーザー：本物の虫をさがそうと思える）
-const photoHint = noIc=>{ const ic = noIc ? '' : '📷 '; const b = S.photoBoost && S.photoBoost.day === dayKey() ? S.photoBoost.shapes : [];
+const boostHere = all=> { const b = S.photoBoost && S.photoBoost.day === dayKey() ? S.photoBoost.shapes : []; return b.filter(k=> all.some(id=> BUGS[id].shape === k)); };
+const TORI_PLACE = {taisha:'神社やお寺', joyama:'山', akama:'公園', tsurikawa:'川や池', matsubara:'海べ'};
+// 見つかりやすいなかまが ここにいないとき、どこへ行けば いるか
+const boostWhere = shapes=> [...new Set(Object.keys(BUGS).filter(id=> !BUGS[id].npc && !BUGS[id].link && shapes.includes(BUGS[id].shape)).flatMap(id=> BUGS[id].spots))]
+  .filter(k=> S.tori ? TORI_PLACE[k] : k !== 'any').map(k=> S.tori ? TORI_PLACE[k] : (SPOTS.find(x=> x.key === k) || {}).name).filter(Boolean);
+const photoHint = (noIc, all)=>{ const ic = noIc ? '' : '📷 '; const b0 = S.photoBoost && S.photoBoost.day === dayKey() ? S.photoBoost.shapes : [], b = boostHere(all || []);
+  if(b0.length && !b.length){ const w = boostWhere(b0); return `<div class="pmHint on">${noIc ? '写真の' : '📷 写真の'} <b>${[...new Set(b0.map(k=> BOOST_NM[k]).filter(Boolean))].join('・')}</b>は、ここには いないみたい。${w.length ? w.join('・') + 'で さがしてみよう' : ''}</div>`; }
   return b.length ? `<div class="pmHint on">${noIc ? '写真で' : '📷 写真のおかげで、いま'} <b>${[...new Set(b.map(k=> BOOST_NM[k]).filter(Boolean))].join('・')}</b>が 見つかりやすい！ ${noIc ? '' : '<br>'}📷の ついたところを さがそう</div>`
     : '<div class="pmHint">' + ic + '本物の虫の写真をとると、「さがす」で そのなかまが 見つかりやすくなるよ</div>'; };
 const photoBoost = shape=> S.photoBoost && S.photoBoost.day === dayKey() && S.photoBoost.shapes.includes(shape) ? 3 : 1;
@@ -5316,7 +5323,7 @@ function findField(sp, all, egg, slot, left){
   let F = $('findField'); F && F.remove();
   if(!html_land() || left <= 0 || (!all.length && !egg)) return;
   F = document.createElement('div'); F.id = 'findField'; F.className = 'norb';
-  const pb = !storyOn() && S.photoBoost && S.photoBoost.day === dayKey() ? S.photoBoost.shapes : [];   // 写真のおかげで見つかりやすい虫の、さがすところに 📷
+  const pb = storyOn() ? [] : boostHere(all);   // 写真のおかげで見つかりやすい虫の、さがすところに 📷
   F.innerHTML = HIDES.map(h=> `<button type="button" class="hide${h.like.some(k=> pb.includes(k)) ? ' pboost' : ''}" data-k="${h.k}" style="left:${h.x}%;top:${h.y}%" aria-label="${h.name}"><i class="ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44"/></svg></i><b>${h.name}</b></button>`).join('')
     + '<div class="fieldMsg" id="fieldMsg">光っているところに、指をおいて、じっと待とう</div>';
   document.body.appendChild(F);
@@ -5356,7 +5363,7 @@ function renderSpot(){
       ${egg ? '<div class="small" style="color:var(--sun)">…木の根もとで、なにかが金色に光っている。</div>' : ''}</div>
     <div id="findBox" class="search"><div class="papaHint norb"><span><b class="who">おとうさん</b>${esc(SLOT_HINT[slot])}</span></div>
       <div class="findRow"><button type="button" class="findBtn" id="btnFind" ${left <= 0 || (!all.length && !egg) ? 'disabled' : ''}><img src="img/tools/megane.webp" alt="" draggable="false"><b>さがす</b></button>
-      <div class="left"><div class="small">今日ここで さがせるのは</div><div class="acorns">${Array.from({length:Math.max(FINDS_PER_VISIT + (storyOn() ? 2 : 0), used + left)}, (_, i)=> `<i class="${i < left ? 'on' : ''}"></i>`).join('')}</div><div class="small">あと${Math.max(0, left)}回</div></div></div>${storyOn() ? '' : S.tori ? '<div class="row photoMini"><button type="button" class="btn" id="btnPhotoW">📷 本物の虫の写真をとる</button>' + photoHint(1) + '</div>' : photoHint()}</div>
+      <div class="left"><div class="small">今日ここで さがせるのは</div><div class="acorns">${Array.from({length:Math.max(FINDS_PER_VISIT + (storyOn() ? 2 : 0), used + left)}, (_, i)=> `<i class="${i < left ? 'on' : ''}"></i>`).join('')}</div><div class="small">あと${Math.max(0, left)}回</div></div></div>${storyOn() ? '' : S.tori ? '<div class="row photoMini"><button type="button" class="btn" id="btnPhotoW">📷 本物の虫の写真をとる</button>' + photoHint(1, all) + '</div>' : photoHint(0, all)}</div>
     ${storyOn() || S.tori ? '' : `<div class="spot photoBox">${photoInner()}</div>`}`;   // スマホ（S.tori）は窓で。同じ id がふたつにならないように、ここには出さない
   if(!storyOn() && !S.tori) photoWire(sp);
   if(S.tori && $('btnPhotoW')) $('btnPhotoW').onclick = ()=>{ openWin('本物の虫の写真をとる', `<div class="photoBox">${photoInner(true)}</div>`, 'photoWin'); photoWire(sp); };   // そとで虫をつかまえる（スマホ）：場所の画面は1画面なので、ボタンから窓で（2026-11-15 ユーザー）
