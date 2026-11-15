@@ -2568,7 +2568,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.18.0';
-const BUILD = '20261115-1927';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261115-2007';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.18.0', date:'2026-11-15', items:[
     '虫ずもうが もっと もりあがるようになった：対戦カードとVS、軍配、ぼくと あいての顔（かっているときは にこにこ）、必殺わざの大きなカットイン、おうえんと「かち！」の演出。とちゅうで曲が とぎれにくくした',
@@ -5077,7 +5077,7 @@ async function handlePhoto(file, sp, box){
   const thumb = scaled(im, 320).toDataURL('image/jpeg', .7), head = `<img class="pthumb" alt="" src="${thumb}">`;
   if(photoLeft() <= 0){ box.innerHTML = head + '<b>今日のぶんはおしまい！</b><br>ごほうびは1日5まいまで。また明日。'; return; }
   const h = aHash(im);
-  if(photos.hashes.some(x=>hamming(x,h) <= 4)){ box.innerHTML = head + '<b>この写真はもう見せてもらったよ！</b><br>ちがう虫か、べつの角度でとってみよう。'; return; }
+  if(photos.hashes.some(x=>hamming(x,h) <= 4)){ box.innerHTML = head + '<b>この写真はもう見せてもらったよ！</b><br>ちがう虫か、べつの角度でとってみよう。' + (S.tori ? '<br><small>（ゲームで つかまえられるのは、はじめて見せた写真だけ）</small>' : ''); return; }
   box.innerHTML = head + 'AIが写真を調べているよ…<br><small>（はじめての時は準備に少し時間がかかります）</small>';
   let preds;
   try{ const model = await getModel(); preds = await model.classify(scaled(im, 448), 20); }
@@ -5099,6 +5099,7 @@ async function handlePhoto(file, sp, box){
   box.innerHTML = head + `<b class="yk">${esc(C.name)}だ！</b> <small>AIのはんてい ${Math.round(score[cat]*100)}%</small>${first ? '<br>写真アルバムに登録された！' : ''}<ul>${gifts.map(g=>`<li>${esc(g)}</li>`).join('')}</ul>`;
   await yakusoku('photo', '本物の虫は、写真をとったら そっとしておこう。\nつかまえなくても、写真で記録できるよ。');
   if(S.tori && PHOTO_CATCH[cat]) photoCatch(cat, sp, box);
+  else if(S.tori) box.insertAdjacentHTML('beforeend', `<p class="pcFull">${esc(C.name)}は、このゲームでは つかまえられないよ（アルバムには のったよ）。<br><small>つかまえられるのは カブトムシ・クワガタ・カマキリ・バッタ・スズムシ・チョウ</small></p>`);   // なぜ「どの虫だった？」が出ないか わかるように（2026-11-15 ユーザー）
 }
 function photoCatch(cat, sp, box){
   const frees = S.cases.map((c,j)=> c ? -1 : j).filter(j=> j >= 0);
