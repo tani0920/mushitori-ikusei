@@ -295,7 +295,7 @@ html.land body.noteUI .shopNav{background:#f6ead2;border-radius:10px;padding:6px
 .search .papaHint{display:flex;align-items:center;gap:.6em;text-align:left;margin-bottom:.4em;font-size:14px}
 .search .papaHint .who{display:block;font-size:12px;color:#8a5a20}
 .search .papaHint .fimg{width:44px;height:44px;border-radius:10px;border:2px solid #fff;box-shadow:0 1px 3px #0003;object-fit:cover;flex:none}
-.search .findRow{display:flex;align-items:center;justify-content:center;gap:1em}
+.search .findRow{display:flex;align-items:center;justify-content:center;gap:1em}.search .photoMini{justify-content:center;margin:.4em 0 0}.search .photoMini .btn{font-size:13px;padding:.35em .9em}#photoWin .pthumb{max-width:120px}
 .search .findBtn{width:92px;height:92px;border-radius:50%;border:3px solid #fff;background:radial-gradient(circle at 35% 30%,#ffe58a,#f6c446 60%,#e4a92a);box-shadow:0 4px 0 #b9862066,0 6px 14px #0003;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;cursor:pointer;font:inherit;color:#3a2410;animation:findPulse 2s ease-in-out infinite}
 .search .findBtn img{width:46px;height:46px;object-fit:contain}
 .search .findBtn b{font-size:15px;margin-top:-2px}
@@ -2565,7 +2565,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.18.0';
-const BUILD = '20261115-1858';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261115-1903';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.18.0', date:'2026-11-15', items:[
     '虫ずもうが もっと もりあがるようになった：対戦カードとVS、軍配、ぼくと あいての顔（かっているときは にこにこ）、必殺わざの大きなカットイン、おうえんと「かち！」の演出。とちゅうで曲が とぎれにくくした',
@@ -5079,7 +5079,7 @@ async function handlePhoto(file, sp, box){
   if(!cat || total < PHOTO_MIN){ box.innerHTML = head + `<b>うーん、虫が見つからないみたい…</b><br>虫に近づいて、大きく写るようにとってみよう。${cat ? `<br><small>（${esc(PHOTO_CATS[cat].name)}かも？ ${Math.round(total*100)}%）</small>` : ''}`; return; }
   if(cat === 'hachi'){ box.innerHTML = head + '<b>ハチかも！ 気をつけて！</b><br>ハチ（とくにスズメバチ）は、さされるととても危険。写真のために近づかないでね。<br><small>ハチの写真では、ごほうびはもらえません。</small>'; return; }
   const C = PHOTO_CATS[cat], first = !photos.cats[cat], gifts = [];
-  const money = C.money * (first ? 2 : 1); S.money += money; gifts.push(`どんぐり ${dg(money)}${first ? '（はじめてボーナス2ばい！）' : ''}`);
+  const money = S.tori ? 0 : C.money * (first ? 2 : 1); S.money += money; if(money) gifts.push(`どんぐり ${dg(money)}${first ? '（はじめてボーナス2ばい！）' : ''}`);
   const vk = sp.key + '|' + dayKey(); if((S.visits[vk]||0) > 0){ S.visits[vk]--; gifts.push(`${sp.name}で、今日もう1回さがせる`); }
   if(C.shapes.length){ S.photoBoost = {day:dayKey(), shapes:[...new Set([...(S.photoBoost && S.photoBoost.day === dayKey() ? S.photoBoost.shapes : []), ...C.shapes])]}; gifts.push(`今日は、${C.name}の幼虫が見つかりやすい`); }
   photos.cats[cat] = {img:thumb, n:(photos.cats[cat]?.n||0) + 1, date:realDay(), where:sp.name};
@@ -5090,6 +5090,13 @@ async function handlePhoto(file, sp, box){
   box.innerHTML = head + `<b class="yk">${esc(C.name)}だ！</b> <small>AIのはんてい ${Math.round(score[cat]*100)}%</small>${first ? '<br>写真アルバムに登録された！' : ''}<ul>${gifts.map(g=>`<li>${esc(g)}</li>`).join('')}</ul>`;
   await yakusoku('photo', '本物の虫は、写真をとったら そっとしておこう。\nつかまえなくても、写真で記録できるよ。');
 }
+
+// 写真の欄（じゆうに育てるは 場所の画面の中、そとで虫をつかまえるは 窓）
+const photoInner = win=> `${win ? '' : '<b>📷 本物の虫の写真をとる</b>　'}<span class="small">今日のこり ${photoLeft()}まい</span>
+      <div class="small">外で見つけた本物の虫をとると、${S.tori ? '' : 'どんぐりがもらえる。'}写真の虫のなかまの幼虫も見つかりやすくなるよ。写真はこのたんまつの中だけでAIが判定して、どこにも送られません。</div>
+      <div class="row" style="margin-top:6px"><label class="btn pri">カメラでとる<input id="camIn" class="vh" type="file" accept="image/*" capture="environment"></label><label class="btn">アルバムから<input id="libIn" class="vh" type="file" accept="image/*"></label></div>
+      <div id="photoRes" class="small"></div>`;
+const photoWire = sp=> ['camIn','libIn'].forEach(k=>{ $(k).onchange = async e=>{ const f = e.target.files[0]; e.target.value = ''; const box = $('photoRes'); box.className = 'photoRes'; await handlePhoto(f, sp, box); }; });
 
 /* ---- そと ---- */
 let outState = null;   // {spot, outside}
@@ -5312,12 +5319,10 @@ function renderSpot(){
       ${egg ? '<div class="small" style="color:var(--sun)">…木の根もとで、なにかが金色に光っている。</div>' : ''}</div>
     <div id="findBox" class="search"><div class="papaHint norb"><span><b class="who">おとうさん</b>${esc(SLOT_HINT[slot])}</span></div>
       <div class="findRow"><button type="button" class="findBtn" id="btnFind" ${left <= 0 || (!all.length && !egg) ? 'disabled' : ''}><img src="img/tools/megane.webp" alt="" draggable="false"><b>さがす</b></button>
-      <div class="left"><div class="small">今日ここで さがせるのは</div><div class="acorns">${Array.from({length:Math.max(FINDS_PER_VISIT + (storyOn() ? 2 : 0), used + left)}, (_, i)=> `<i class="${i < left ? 'on' : ''}"></i>`).join('')}</div><div class="small">あと${Math.max(0, left)}回</div></div></div></div>
-    <div class="spot photoBox" ${storyOn() || S.tori ? 'hidden' : ''}><b>📷 本物の虫の写真をとる</b>　<span class="small">今日のこり ${photoLeft()}まい</span>
-      <div class="small">外で見つけた本物の虫をとると、どんぐりがもらえる。写真の虫のなかまの幼虫も見つかりやすくなるよ。写真はこのたんまつの中だけでAIが判定して、どこにも送られません。</div>
-      <div class="row" style="margin-top:6px"><label class="btn pri">カメラでとる<input id="camIn" class="vh" type="file" accept="image/*" capture="environment"></label><label class="btn">アルバムから<input id="libIn" class="vh" type="file" accept="image/*"></label></div>
-      <div id="photoRes" class="small"></div></div>`;
-  ['camIn','libIn'].forEach(k=>{ $(k).onchange = async e=>{ const f = e.target.files[0]; e.target.value = ''; const box = $('photoRes'); box.className = 'photoRes'; await handlePhoto(f, sp, box); }; });
+      <div class="left"><div class="small">今日ここで さがせるのは</div><div class="acorns">${Array.from({length:Math.max(FINDS_PER_VISIT + (storyOn() ? 2 : 0), used + left)}, (_, i)=> `<i class="${i < left ? 'on' : ''}"></i>`).join('')}</div><div class="small">あと${Math.max(0, left)}回</div></div></div>${S.tori ? '<div class="row photoMini"><button type="button" class="btn" id="btnPhotoW">📷 本物の虫の写真をとる</button></div>' : ''}</div>
+    <div class="spot photoBox" ${storyOn() || S.tori ? 'hidden' : ''}>${photoInner()}</div>`;
+  if(!storyOn() && !S.tori) photoWire(sp);
+  if(S.tori && $('btnPhotoW')) $('btnPhotoW').onclick = ()=>{ openWin('本物の虫の写真をとる', `<div class="photoBox">${photoInner(true)}</div>`, 'photoWin'); photoWire(sp); };   // そとで虫をつかまえる（スマホ）：場所の画面は1画面なので、ボタンから窓で（2026-11-15 ユーザー）
   $('btnLeave').onclick = ()=>{ outState = null; $('findField') && $('findField').remove(); setTab(S.tori ? 'out' : 'home'); };   // そとで虫をつかまえる は「そと」のまま（home になると、つぎに着いても場面が かわらなかった。2026-11-15 ユーザー）
   if(S.tori) $('btnLeave').textContent = 'もどる';
   findField(sp, all, egg, slot, left);
