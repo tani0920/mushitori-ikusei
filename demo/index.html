@@ -343,6 +343,7 @@ html.land:not(.tall) body.toriMode[data-tab=spot] .spot.here > div:not(.small){d
 .opt{display:flex;flex-direction:column;gap:8px}
 .opt .btn{text-align:left;display:flex;justify-content:space-between;align-items:center}
 .opt .btn span.v{color:var(--sun)}
+.dexHk{display:inline-block;margin:.1em 0 .5em;padding:.2em .8em;border-radius:999px;background:#fff6dc;border:1.5px solid #e0b860;color:#5a3a10;font-size:14px}.dexHk b{color:#a06a08}.dexHk small{color:#6a5030}
 .btn[data-box] .v,.btn[data-k] .v{white-space:nowrap;text-align:right;flex:none;margin-left:.6em}.btn[data-box] .v small{font-size:.8em}
 .demoBox{border:2px dashed var(--low);border-radius:8px;padding:.6em .8em}html.prod .demoBox{display:none!important}
 .demoBox h3{color:var(--low);border:0}
@@ -2581,7 +2582,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.19.0';
-const BUILD = '20261115-2354';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261116-0048';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.19.0', date:'2026-11-15', items:[
     'スマホに「そとで虫をつかまえる」ができた：いまいる場所で虫をさがして、つかまえた虫を まとめて おうちのタブレットやパソコンに おくれる',
@@ -2947,7 +2948,7 @@ function layout(){
   const de = document.documentElement;
   // ホーム画面のアプリをたて向きで開くと、innerHeight より短い高さでしか絵がかけないことがある（iPhone）。短いほうに合わせる
   rotLen = Math.min(innerHeight, de.clientHeight || innerHeight, layoutProbeH() || innerHeight);
-  const W = rotMode ? rotLen : innerWidth, H = rotMode ? innerWidth : innerHeight, short = rotMode && rotLen < innerHeight - 1;
+  const W = rotMode ? rotLen : innerWidth, H = rotMode ? innerWidth : Math.min(innerHeight, de.clientHeight || innerHeight, layoutProbeH() || innerHeight), short = rotMode && rotLen < innerHeight - 1;
   de.dataset.rot = rotMode; de.style.setProperty('--W', W + 'px'); de.style.setProperty('--H', H + 'px'); de.style.setProperty('--vw', innerWidth + 'px'); de.style.setProperty('--vh', (rotMode ? rotLen : innerHeight) + 'px');
   // 短いときは、端末の下のふちが絵の外になるので、そのぶんあけなくてよい
   de.style.removeProperty('--sr'); de.style.removeProperty('--sl');
@@ -4378,14 +4379,17 @@ function renderTitle(){
 function fitTitle(){
   const go = ()=>{ const T = $('titleScr'); if(!T) return;
     T.classList.remove('fit1', 'fit2');
-    const over = ()=>{ const b = T.getBoundingClientRect().bottom - parseFloat(getComputedStyle(T).paddingBottom || 0); return [...T.children].some(e=> e.offsetParent !== null && getComputedStyle(e).position !== 'absolute' && e.getBoundingClientRect().bottom > b + 1); };
+    const vv = window.visualViewport, vis = vv && !rotMode ? vv.offsetTop + vv.height : Infinity;
+    const over = ()=>{ const b = Math.min(T.getBoundingClientRect().bottom, vis) - parseFloat(getComputedStyle(T).paddingBottom || 0); return [...T.children].some(e=> e.offsetParent !== null && getComputedStyle(e).position !== 'absolute' && e.getBoundingClientRect().bottom > b + 1); };
     for(const c of ['fit1', 'fit2']){ if(!over()) break; T.classList.add(c); }
     const M = T.querySelector('.tlMenu'), Lg = T.querySelector('.tlogoBox > *');
     if(M && Lg){ Lg.style.transform = ''; const m = M.getBoundingClientRect(), l = Lg.getBoundingClientRect();   // 左上の小さいボタンと ロゴが重なるとき（2026-11-15 iPad 9.7）
       if(m.right + 8 > l.left && m.bottom > l.top && m.top < l.bottom){ const sc = Math.max(.68, 1 - (m.right + 8 - l.left) / l.width); Lg.style.transformOrigin = '100% 0'; Lg.style.transform = `scale(${sc.toFixed(3)})`; } } };
   go(); setTimeout(go, 120); setTimeout(go, 600);   // ふりがなが付くのを待ってから もう一度
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=> setTimeout(go, 50));   // 字のフォントが あとから来ると 高さがかわる
 }
 addEventListener('resize', ()=> setTimeout(()=>{ if(!S) fitTitle(); }, 80));
+if(window.visualViewport) visualViewport.addEventListener('resize', ()=> setTimeout(()=>{ if(!S && $('titleScr')) fitTitle(); }, 120));   // iPad のウインドウの帯が出たり きえたり
 /* ---- タイトル：ストーリーと じゆうに育てる のちがい（2026-11-14 ユーザー） ---- */
 const MODE_TXT = {
   story:'夏休みの7週間（7章）のお話。おとうさんといっしょに、毎週1ぴき 虫を見つけて育てて、見つけた場所にかえす。\n虫の育てかた・さわりかたや、いのちのつながりが わかるよ。友だちとの虫ずもうや、ふしぎな なぞも。',
@@ -4999,6 +5003,7 @@ async function playEvent(c){
   c.si++; c.prog = 0; c.pending = false; c.tick = now(); if(nx.k === 'pupa') c.hunger = 100;
   const bonus = DG.grow[kind]; S.money += bonus; S.stats[kind] = (S.stats[kind]||0) + 1;
   track('bug_grow', {kind, bug:c.bug, mode:storyOn() ? 'story' : 'free'});
+  const hk0 = kind === 'emerge' && !storyOn() && !S.tori ? hakaseOf(Object.values(S.dex).filter(x=> x && x.adult).length) : null;
   if(kind === 'emerge'){ c.known = true; const d = S.dex[c.bug]; d.known = 1; d.raisedN = (d.adult ? (d.raisedN||1) + 1 : 1); d.adult = dayKey(); d.born = Object.assign(d.born||{}, {[c.born]:1}); if(!d.best || c.size > d.best) d.best = c.size; S.stats.raised++; }
   save();
   const learned = kind === 'molt' && ins === 0 ? `\n【わざ】「${MOVES[b.shape].name}」をおぼえた！` : kind === 'pupate' || (kind === 'molt' && ins >= 1) ? '\n体の中で、得意わざが育っているみたい…' : '';
@@ -5007,6 +5012,8 @@ async function playEvent(c){
   if(kind === 'molt') await yakusoku('molt', '脱皮したばかりの虫は、体がやわらかい。\nしばらくは、さわらないでそっと見ていよう。');
   if(kind === 'pupate') await yakusoku('pupate', 'さなぎの中では、体がまるごと作りかえられている。\nゆらしたり、さわったりしないでね。');
   if(kind === 'emerge'){ await yakusoku('emerge', '羽化したばかりのはねは、まだやわらかい。\nはねがかわいてかたくなるまで、そっとしておこう。'); await showResult(c); }
+  if(hk0 !== null){ const r1 = Object.values(S.dex).filter(x=> x && x.adult).length, hk1 = hakaseOf(r1), nx = hakaseNext(r1);
+    if(hk1 && hk1 !== hk0) await say(`【しるし】🦋「${hk1}」になった！\n羽化させた虫は ${r1}しゅるい。${nx ? `あと${nx[0] - r1}しゅるいで「${nx[1]}」。` : 'いちばん上の しるしだ！'}\n（ストーリーでも、おとうさんや おじさんが 気づいてくれるよ）`, {face:'boku_joy'}); }
   if(storyOn()) await storyGrew(c, kind);
   renderObs();
 }
@@ -5490,7 +5497,7 @@ async function doFind(sp, here, egg, slot, h){
 /* ---- ずかん ---- */
 function renderDex(){
   const ids = Object.keys(BUGS).filter(id=>!BUGS[id].npc), n = ids.filter(id=>S.dex[id]).length, r = ids.filter(id=>S.dex[id] && S.dex[id].adult).length;
-  view.innerHTML = `<h2>こん虫ずかん</h2><p class="small">みつけた ${n} / ${ids.length}　羽化させた ${r}</p>
+  view.innerHTML = `<h2>こん虫ずかん</h2><p class="small">みつけた ${n} / ${ids.length}　羽化させた ${r}</p>${storyOn() || S.tori ? '' : hakaseLine(r)}
     <div class="dexGrid">${ids.map(id=>{ const d = S.dex[id], b = BUGS[id];
       return `<div class="d ${d ? '' : 'no'}" data-id="${id}">${dexPic(id)}<div>${d && d.known ? esc(b.name) : '？？？'}</div>${d ? `<span class="mk">${d.raised ? '★そだててかえした' : d.adult ? '羽化した' : d.known ? '幼虫を見つけた' : 'なぞの幼虫'}</span>` : ''}</div>`; }).join('')}</div>
     <h3>本物の虫の写真アルバム（${Object.keys(PHOTO_CATS).filter(k=>k!=='hachi' && photos.cats[k]).length} / ${Object.keys(PHOTO_CATS).length - 1}）</h3>
@@ -6321,6 +6328,9 @@ const atHour = (i, h)=> new Date(STORY_Y, 6, 19 + i, h, 0).getTime();
 const freeInfo = ()=>{ const f = load(); if(!f) return {raised:0, adults:[]}; return {raised:Object.values(f.dex || {}).filter(d=> d && d.adult).length, adults:(f.cases || []).filter(c=> c && BUGS[c.bug] && BUGS[c.bug].plan[c.si] && BUGS[c.bug].plan[c.si].k === 'adult')}; };
 const HAKASE = [[6, '虫はかせ'], [3, '虫そだて名人'], [1, '虫そだて見ならい']];
 const hakaseOf = n=> (HAKASE.find(([k])=> n >= k) || [0, ''])[1];
+const hakaseNext = n=> [...HAKASE].reverse().find(([k])=> n < k);   // [あと何しゅるいで, なまえ]（いちばん上なら undefined）
+// じゆうに育てる：ずかんの上に しるしと、つぎの目標（2026-11-15 ユーザー：じゆうに育てる では出ていない）
+const hakaseLine = r=>{ const hk = hakaseOf(r), nx = hakaseNext(r); return `<span class="dexHk">${hk ? '🦋 <b>' + esc(hk) + '</b>' : '🦋 しるしは まだ'}${nx ? `　<small>あと${nx[0] - r}しゅるい 羽化させると「${esc(nx[1])}」</small>` : '　<small>いちばん上の しるし！</small>'}</span>`; };
 let hakaseC = {t:0, v:''};
 const hakaseNow = ()=>{ if(Date.now() - hakaseC.t > 5000) hakaseC = {t:Date.now(), v:hakaseOf(freeInfo().raised)}; return hakaseC.v; };
 const storyLoop = ()=> (S && S.story && S.story.loop) || 1;
@@ -6687,7 +6697,7 @@ function storyBanner(){
   if(st.done) return `<div class="storyBar norb"><b>ストーリー　おしまい</b><span>この夏の記録は、虫しらべノートにのこっている。</span><button type="button" class="btn" id="sbNote">虫しらべノート</button></div>`;
   const egg = st.egg && !st.egg.hatched ? `<div class="eggCard norb" id="sbEgg"><span class="egg${st.egg.glow ? ' glow' : ''}"></span><span><b>ふしぎなたまご</b><small>${esc(st.egg.txt || '大島で見つけた、金色のたまご。')}</small></span></div>` : '';
   const hk = hakaseNow();
-  return `<div class="storyBar norb"><b>${ch ? `${ch}章　${st.day}日目` : '序章'}</b>${hk ? `<span class="hakase">🏅${esc(hk)}</span>` : ''}${storyLoop() > 1 ? `<span class="hakase loop">${storyLoop()}周目</span>` : ''}<span class="sttl">${ch ? esc(CH[ch].ttl) : ''}</span>${st.goal ? `<span class="goal">めあて：${esc(st.goal)}</span>` : ''}
+  return `<div class="storyBar norb"><b>${ch ? `${ch}章　${st.day}日目` : '序章'}</b>${hk ? `<span class="hakase">🦋${esc(hk)}</span>` : ''}${storyLoop() > 1 ? `<span class="hakase loop">${storyLoop()}周目</span>` : ''}<span class="sttl">${ch ? esc(CH[ch].ttl) : ''}</span>${st.goal ? `<span class="goal">めあて：${esc(st.goal)}</span>` : ''}
     <span class="sbBtns">${engawaOpen() ? '<button type="button" class="btn pri" id="sbEngawa">えんがわで おとうさんと話す</button>' : ''}<button type="button" class="btn" id="sbNote">虫しらべノート</button>${storySp().m > 1 && ch ? `<button type="button" class="btn pri" id="sbSleep">${nextLabel()}</button>` : ''}</span></div>${egg}`;
 }
 function storyBannerWire(){
