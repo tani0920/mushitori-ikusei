@@ -2571,7 +2571,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.18.0';
-const BUILD = '20261115-2115';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261115-2144';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.18.0', date:'2026-11-15', items:[
     '虫ずもうが もっと もりあがるようになった：対戦カードとVS、軍配、ぼくと あいての顔（かっているときは にこにこ）、必殺わざの大きなカットイン、おうえんと「かち！」の演出。とちゅうで曲が とぎれにくくした',
@@ -5152,7 +5152,7 @@ function renderOut(){
     <div class="row"><button type="button" class="btn pri" id="btnGeo"><img class="emI" src="img/ui/ok_pin.webp" alt="">いまいる場所をしらべる</button></div>
     ${stampBarHTML()}
     <div class="spots" style="margin-top:10px">${SPOTS.map(sp=>{ const v = (S.visits[sp.key+'|'+today]||0), bn = BORN[sp.key];
-      return `<div class="spot"><img class="spotPic" src="img/ui/spot_${sp.key}.webp" alt="" loading="lazy" draggable="false">${stampHTML(sp.key, stamps()[sp.key])}<b>${esc(sp.name)}</b>　<span class="small">${esc(sp.env)}</span><div class="bugs">いま活動中：${spotBugs(sp.key, slot).map(nmQ).join('・') || 'いない'}　／　ねむっている：${spotBugs(sp.key).filter(id=>!BUGS[id].time.includes(slot) && !BUGS[id].spots.includes('any')).map(id=>`${nmQ(id)}（${BUGS[id].time.map(t=>SLOT_NAMES[t]).join('・')}）`).join('・') || 'なし'}</div><div class="small">${esc(bn.name)}：${esc(bn.txt)}</div>${v ? `<div class="small">今日は${v}回さがした</div>` : ''}</div>`; }).join('')}
+      return `<div class="spot"><img class="spotPic" src="img/ui/spot_${sp.key}.webp" alt="" loading="lazy" draggable="false">${stampHTML(sp.key, stamps()[sp.key])}<b>${esc(sp.name)}</b>　<span class="small">${esc(sp.env)}</span><div class="bugs">おきている虫：${spotBugs(sp.key, slot).map(nmQ).join('・') || 'いまは いない'}　／　ねている虫も さがせる：${spotBugs(sp.key).filter(id=>!BUGS[id].time.includes(slot) && !BUGS[id].spots.includes('any')).map(id=>`${nmQ(id)}（${BUGS[id].time.map(t=>SLOT_NAMES[t]).join('・')}）`).join('・') || 'なし'}</div><div class="small">${esc(bn.name)}：${esc(bn.txt)}</div>${v ? `<div class="small">今日は${v}回さがした</div>` : ''}</div>`; }).join('')}
     <div class="spot"><img class="spotPic" src="img/ui/spot_any.webp" alt="" loading="lazy" draggable="false"><b>${esc(ANY_SPOT.name)}</b>　<span class="small">宗像のそと・どこでも</span><div class="bugs">${spotBugs('any').map(nmQ).join('・')}</div></div></div>
     <div class="demoBox" style="margin-top:12px"><h3>デモ用（本番にはありません）</h3><p class="small">じっさいに宗像に行かなくても、場所をえらんで「着いたことにする」ができます。</p>
       <div class="row"><select id="demoSpot" class="btn">${SPOTS.map(sp=>`<option value="${sp.key}">${esc(sp.name)}</option>`).join('')}<option value="any">宗像のそと（どこでも）</option></select><button type="button" class="btn" id="btnDemoGo">着いたことにする</button></div></div>`;
@@ -5358,8 +5358,8 @@ function renderSpot(){
   if(storyOn()){ const cn = CH[S.story.ch] || {}; all.splice(0, all.length, ...(cn.nakama || [])); here.splice(0, here.length, ...all.filter(id=> BUGS[id].time.includes(slot))); later.splice(0, later.length, ...all.filter(id=> !here.includes(id))); }
   view.innerHTML = `<div class="row" style="justify-content:space-between"><h2>${esc(spotName(sp))}</h2><button type="button" class="btn sub" id="btnLeave">おうちにかえる</button></div>
     <div class="spot here"><div class="small">${esc(spotEnv(sp))}　いまは${SLOT_NAMES[slot]}</div>
-      <div>いま活動中：${here.map(nmQ).join('・') || 'いない'}</div>
-      ${later.length ? `<div class="bugs">ねむっているけど、さがせる：${later.map(id=>`${nmQ(id)}（${BUGS[id].time.map(t=>SLOT_NAMES[t]).join('・')}に活動）`).join('・')}</div>` : ''}
+      <div>おきている虫：${here.map(nmQ).join('・') || 'いまは いない'}</div>
+      ${later.length ? `<div class="bugs">ねている虫も さがせる：${later.map(id=>`${nmQ(id)}（${BUGS[id].time.map(t=>SLOT_NAMES[t]).join('・')}に活動）`).join('・')}</div>` : ''}
       ${egg ? '<div class="small" style="color:var(--sun)">…木の根もとで、なにかが金色に光っている。</div>' : ''}</div>
     <div id="findBox" class="search"><div class="papaHint norb"><span><b class="who">おとうさん</b>${esc(SLOT_HINT[slot])}</span></div>
       <div class="findRow"><button type="button" class="findBtn" id="btnFind" ${left <= 0 || (!all.length && !egg) ? 'disabled' : ''}><img src="img/tools/megane.webp" alt="" draggable="false"><b>さがす</b></button>
