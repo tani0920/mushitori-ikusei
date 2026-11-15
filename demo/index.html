@@ -343,6 +343,7 @@ html.land:not(.tall) body.toriMode[data-tab=spot] .spot.here > div:not(.small){d
 .opt{display:flex;flex-direction:column;gap:8px}
 .opt .btn{text-align:left;display:flex;justify-content:space-between;align-items:center}
 .opt .btn span.v{color:var(--sun)}
+.btn[data-box] .v,.btn[data-k] .v{white-space:nowrap;text-align:right;flex:none;margin-left:.6em}.btn[data-box] .v small{font-size:.8em}
 .demoBox{border:2px dashed var(--low);border-radius:8px;padding:.6em .8em}html.prod .demoBox{display:none!important}
 .demoBox h3{color:var(--low);border:0}
 
@@ -2579,9 +2580,25 @@ const TORI_KEY = KEY_PRE + 'munakata-mushisodate-tori-v1';   // そとで虫を�
 const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
-const GAME_VER = '0.18.0';
-const BUILD = '20261115-2249';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const GAME_VER = '0.19.0';
+const BUILD = '20261115-2354';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
+  {v:'0.19.0', date:'2026-11-15', items:[
+    'スマホに「そとで虫をつかまえる」ができた：いまいる場所で虫をさがして、つかまえた虫を まとめて おうちのタブレットやパソコンに おくれる',
+    '宗像のとくべつなスポットでなくても、近くの公園・神社・山・川・海べなら、その場所らしい虫が見つかる（場所は この端末の中だけで しらべる）',
+    'とくべつなスポットのハンコ：6か所 ぜんぶ回ると名人。とくべつなスポットでは めずらしい色の虫が出やすい',
+    'タブレットとパソコンの右に「うけとる」：ゲームの中のカメラで、スマホのQRコードを読んで虫を受けとれる（リンクを はりつけても OK）',
+    'スマホで本物の虫の写真をとると、「どの虫だった？」から えらんで その虫を つかまえられる。そのなかまは「さがす」で見つかりやすくなり、さがすところに📷の印が出る',
+    '虫をおくる画面を1画面にして、小さい虫かごの ふたがあいて虫が入る動きにした',
+    'ストーリーのエンディングのあとに「エンドカード」（5しゅるい）。すもうの決勝・友だちとのなかよし・ふしぎのかけらで かわる。あつめたカードは2周目にも のこる',
+    'ふしぎのかけらを ぜんぶ見つけると、虫しらべノートに金色のしおりが はさまる',
+    'あそぶ時間（30分で休けいなど）と、はじめるときの設定（時間・ふりがな・説明）。はじめての説明は、光るところ以外を暗くして、とばすこともできる',
+    'タイトル画面を見やすくした：タブレットは小さいボタンを左上に、スマホは遊び方・友だちに教える・メニューを左上に。バグを見つけたときの おしらせボタンも',
+    'おとうさんのアドバイスは、タップするまで出ているようにした。「いま活動中」は「おきている虫」「ねている虫も さがせる」に',
+    '右のタグ「ケースのこと」は「できること」に。「家のタブレット」は「おうちのタブレット」に',
+    'アプリで遊んでいるときは「アプリにする方法」で「いま、アプリで遊んでいます」と出るようにした',
+    'スマホ・タブレットで 文字や画面が切れたり、ずれたりするところを直した',
+  ]},
   {v:'0.18.0', date:'2026-11-15', items:[
     '虫ずもうが もっと もりあがるようになった：対戦カードとVS、軍配、ぼくと あいての顔（かっているときは にこにこ）、必殺わざの大きなカットイン、おうえんと「かち！」の演出。とちゅうで曲が とぎれにくくした',
     '6章のすもう大会は、前の日の夕方に れんが声をかけてくれて、つぎの日の朝9時から 赤間の土俵で はじまる',
@@ -4268,7 +4285,7 @@ function render(){
   if(!S){ renderTitle(); otoScene(); return; }
   if(openCase !== null){ renderObs(); otoScene(); setTimeout(tutCheck, 900); return; }
   if(S.tori){ $('tabs').hidden = true; $('rtabs').hidden = true; if(!atSpot) document.body.dataset.tab = 'tori'; paintPlace(atSpot ? 'spot_' + spotArt(outState.spot) : 'tori_bg', slotOf()); view.onscroll = null; (atSpot ? renderSpot : renderTori)(); otoScene(); setTimeout(tutCheck, 900); return; }
-  paintPlace(atSpot ? 'spot_' + spotArt(outState.spot) : tab === 'home' ? 'place_heya' : 'scr_' + tab, slotOf());
+  paintPlace(atSpot ? 'spot_' + spotArt(outState.spot) : tab === 'home' ? 'place_heya' + (onShima() ? '_shima' : '') : 'scr_' + tab, slotOf());   // 3章は じいちゃんの家（2026-11-15 ユーザー）
   view.onscroll = null;
   ({home:renderHome, out:renderOut, sumo:renderSumo, shop:renderShop, dex:renderDex, opt:renderOpt})[tab]();
   if(storyOn() && (tab === 'shop' || atSpot)) visitInject(tab === 'shop' ? 'shop' : 'spot');
@@ -4362,7 +4379,10 @@ function fitTitle(){
   const go = ()=>{ const T = $('titleScr'); if(!T) return;
     T.classList.remove('fit1', 'fit2');
     const over = ()=>{ const b = T.getBoundingClientRect().bottom - parseFloat(getComputedStyle(T).paddingBottom || 0); return [...T.children].some(e=> e.offsetParent !== null && getComputedStyle(e).position !== 'absolute' && e.getBoundingClientRect().bottom > b + 1); };
-    for(const c of ['fit1', 'fit2']){ if(!over()) break; T.classList.add(c); } };
+    for(const c of ['fit1', 'fit2']){ if(!over()) break; T.classList.add(c); }
+    const M = T.querySelector('.tlMenu'), Lg = T.querySelector('.tlogoBox > *');
+    if(M && Lg){ Lg.style.transform = ''; const m = M.getBoundingClientRect(), l = Lg.getBoundingClientRect();   // 左上の小さいボタンと ロゴが重なるとき（2026-11-15 iPad 9.7）
+      if(m.right + 8 > l.left && m.bottom > l.top && m.top < l.bottom){ const sc = Math.max(.68, 1 - (m.right + 8 - l.left) / l.width); Lg.style.transformOrigin = '100% 0'; Lg.style.transform = `scale(${sc.toFixed(3)})`; } } };
   go(); setTimeout(go, 120); setTimeout(go, 600);   // ふりがなが付くのを待ってから もう一度
 }
 addEventListener('resize', ()=> setTimeout(()=>{ if(!S) fitTitle(); }, 80));
@@ -4518,7 +4538,7 @@ function renderHome(){
 }
 function renderShop(){
   const boxShop = `<h3 id="shopBox">虫かご（いま ${S.boxes.length} / ${MAX_BOXES}こ）</h3><div class="opt">${Object.keys(BOXES).map(k=>{ const B = BOXES[k];
-    return `<button type="button" class="btn" data-box="${k}" ${S.money < B.price ? 'disabled' : ''}><span><span class="decoIc boxIc"><img class="tim" src="img/ui/case_${k}.webp" alt="" draggable="false"></span>${esc(B.name)}<br><small class="small">${esc(B.desc)}${B.grow > 1 ? `　育ち +${Math.round((B.grow-1)*100)}%` : ''}${B.clean < 1 ? `　よごれにくさ +${Math.round((1-B.clean)*100)}%` : ''}</small></span><span class="v">${dg(B.price)}　もっている ×${S.boxes.filter(x=>x===k).length}</span></button>`; }).join('')}</div>`;
+    return `<button type="button" class="btn" data-box="${k}" ${S.money < B.price ? 'disabled' : ''}><span><span class="decoIc boxIc"><img class="tim" src="img/ui/case_${k}.webp" alt="" draggable="false"></span>${esc(B.name)}<br><small class="small">${esc(B.desc)}${B.grow > 1 ? `　育ち +${Math.round((B.grow-1)*100)}%` : ''}${B.clean < 1 ? `　よごれにくさ +${Math.round((1-B.clean)*100)}%` : ''}</small></span><span class="v">${dg(B.price)}<br><small>もっている ×${S.boxes.filter(x=>x===k).length}</small></span></button>`; }).join('')}</div>`;
   view.innerHTML = `<h2>おみせ</h2><div class="shopHi norb${html_land() ? '' : ' port'}">${faceImg('ojisan')}<span><b>虫具店のおじさん</b>いらっしゃい！ 虫の家も、ごはんも、土も そろってるよ。わからないことは、なんでも聞いてな。</span></div><p class="small shopMoney">どんぐり：<b style="color:var(--sun)">${dg(S.money)}</b>　<button type="button" class="linkBtn" id="dgHow">どんぐりのもらいかた ▸</button></p>
     <div class="shopNav norb">${[['shopBox','虫かご'],['shopFood','エサ'],['shopMat','土'],['shopDeco','かざり']].map(([id, t])=>`<button type="button" class="btn" data-go="${id}">${t}</button>`).join('')}</div>
     ${boxShop}
@@ -4584,7 +4604,7 @@ async function renderObs(){
   const BX = boxOf(c), tags = `<span class="tag">${boxIc((S.boxes||[])[boxIdx(c)] || 'futsu')}${esc(BX.name)}</span><span class="tag">${placeIc(c.place)}${esc(PLACES[c.place].name)}</span>${c.rare ? '<span class="tag" style="background:#7a5a20">めずらしい色</span>' : ''}`;
   const msgHtml = `${esc(sc.txt)}${persTxt ? `<br>${esc(persTxt)}` : ''}${c.trouble ? `<br><b class="yk">【${esc(TROUBLE[c.trouble].name)}】</b>${esc(TROUBLE[c.trouble].txt)}` : ''}${(c.soak||0) > 30 ? '<br><b class="yk">【びちゃびちゃ】</b>水をかけすぎて、土に水たまりができている。かわくまで、きりふきはやめよう。' : ''}${c.pending ? '<br><b class="yk">…なんだか、ようすがかわりそう！</b>' : fc ? `<br><b class="yk">【予告】</b>${esc(fc)}` : ''}`;
   // 左：ケース（＋メッセージ）／右：見出し・道具・ステータス・引き出し。横画面では1画面におさまる。たて画面（PCのせまい窓など）では上から順にならぶ
-  paintPlace('place_' + c.place, slot);
+  paintPlace('place_' + c.place + (onShima() ? '_shima' : ''), slot);
   view.innerHTML = `<div class="obsGrid" id="obs">
     <div class="obsL">
       <div class="caseBox" style="${caseBoxCSS(c)}"><img class="caseArt" src="img/ui/case_${(S.boxes||[])[boxIdx(c)] || 'futsu'}.webp" alt="" draggable="false"><div class="scene tool-${tool}" id="scene" style="${caseSceneCSS(c)}">${sc.svg}<div class="toolObj norb" id="toolObj" hidden></div><div class="binZone norb" id="binZone" hidden>しまう</div>${tool === 'big' && st.k !== 'pupa' ? `<div class="refuge norb ${big && big.step >= 1 ? 'on' : ''}" id="refuge"><small>ひなんケース</small><div class="rb" id="refugeBug">${big && big.step >= 2 ? svgBug(c.bug, st.k, {instar:instarOf(c), scale:.9}) : ''}</div></div>` : ''}<div class="mini norb" id="mini" hidden></div></div></div>
@@ -7269,7 +7289,7 @@ const SX = ()=> (S.story.x = S.story.x || {naka:{}, kakera:[], talk:{}, engawa:{
 const naka = (k, n=1)=>{ const x = SX(); x.naka[k] = (x.naka[k]||0) + n; save(); };
 const nakaOf = k=> SX().naka[k] || 0;
 // 金色のしおり：かけらを ぜんぶ見つけて、夢の場面を見たら（2周目は かけらを引きつぐので、ぜんぶあれば はじめから）。ノートの表紙と、右の「ノート」に出す（2026-11-15 ユーザー）
-const hasShiori = ()=> !!(S && S.story && (S.story.flags.allKakera || ((S.story.loop || 1) >= 2 && SX().kakera.length >= Object.keys(KAKERA).length)));
+const hasShiori = ()=> !!(S && S.story && ((S.story.flags || {}).allKakera || ((S.story.loop || 1) >= 2 && SX().kakera.length >= Object.keys(KAKERA).length)));
 /* エンドカード（2026-11-15 ユーザー：2周目も遊びたくなるように）。エンディングの さいごに、この夏で できたことで カードがかわる。
    あつめたカードは 周をこえて のこる（ENDS_KEY）。じょうけん：すもうの決勝・友だち5人となかよし・ふしぎのかけら */
 const ENDS_KEY = KEY_PRE + 'munakata-sodate-ends-v1';
