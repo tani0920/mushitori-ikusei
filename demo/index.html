@@ -270,6 +270,7 @@ html.land body.noteUI .shopNav{background:#f6ead2;border-radius:10px;padding:6px
 @keyframes peek{0%{transform:translateY(30%) scale(.7);opacity:0}60%{transform:translateY(-4%) scale(1.04);opacity:1}100%{transform:none}}
 /* さがすところ（場所の絵の上） */
 #findField{position:fixed;z-index:5;left:calc(96px + var(--sl,0px));right:calc(56% + 10px);top:max(52px,calc(var(--st,0px) + 46px));bottom:max(10px,var(--sb,0px));pointer-events:none}
+#findField .hide.pboost::after{content:'📷';position:absolute;right:-6px;top:-6px;font-size:20px;line-height:1;background:#fffaf0;border:2px solid #e0a040;border-radius:999px;padding:3px;box-shadow:0 1px 3px #0005;animation:pbBlink 1.4s ease-in-out infinite}
 #findField .hide{position:absolute;transform:translate(-50%,-50%);pointer-events:auto;width:clamp(64px,13vmin,110px);aspect-ratio:1;border:0;padding:0;background:radial-gradient(circle,#fff9 0,#fff5 40%,#ffffff22 62%,#fff0 70%);border-radius:50%;outline:2.5px dashed #ffffffe0;outline-offset:-6px;cursor:pointer;touch-action:none;font:inherit;animation:hideGlow 2.2s ease-in-out infinite}
 #findField .hide:nth-child(2){animation-delay:-.5s}#findField .hide:nth-child(3){animation-delay:-1.1s}#findField .hide:nth-child(4){animation-delay:-1.6s}
 @keyframes hideGlow{0%,100%{box-shadow:0 0 0 0 #fff6;transform:translate(-50%,-50%) scale(1)}50%{box-shadow:0 0 18px 6px #fff8;transform:translate(-50%,-50%) scale(1.06)}}
@@ -2569,7 +2570,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.18.0';
-const BUILD = '20261115-2040';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261115-2055';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.18.0', date:'2026-11-15', items:[
     '虫ずもうが もっと もりあがるようになった：対戦カードとVS、軍配、ぼくと あいての顔（かっているときは にこにこ）、必殺わざの大きなカットイン、おうえんと「かち！」の演出。とちゅうで曲が とぎれにくくした',
@@ -5074,7 +5075,7 @@ const hamming = (a,b)=> [...a].reduce((n,ch,i)=>n + (ch!==b[i]), 0);
 const BOOST_NM = {beetle:'カブトムシ', stag:'クワガタ', mantis:'カマキリ', grass:'バッタ', cricket:'コオロギ', butterfly:'チョウ'};
 // さがすの下の ひとこと：本物の虫の写真をとると、さがすで そのなかまが見つかりやすい（2026-11-15 ユーザー：本物の虫をさがそうと思える）
 const photoHint = noIc=>{ const ic = noIc ? '' : '📷 '; const b = S.photoBoost && S.photoBoost.day === dayKey() ? S.photoBoost.shapes : [];
-  return b.length ? `<div class="pmHint on">${ic}写真のおかげで、いま <b>${[...new Set(b.map(k=> BOOST_NM[k]).filter(Boolean))].join('・')}</b>が 見つかりやすい！</div>`
+  return b.length ? `<div class="pmHint on">${noIc ? '写真で' : '📷 写真のおかげで、いま'} <b>${[...new Set(b.map(k=> BOOST_NM[k]).filter(Boolean))].join('・')}</b>が 見つかりやすい！ ${noIc ? '' : '<br>'}📷の ついたところを さがそう</div>`
     : '<div class="pmHint">' + ic + '本物の虫の写真をとると、「さがす」で そのなかまが 見つかりやすくなるよ</div>'; };
 const photoBoost = shape=> S.photoBoost && S.photoBoost.day === dayKey() && S.photoBoost.shapes.includes(shape) ? 3 : 1;
 async function handlePhoto(file, sp, box){
@@ -5315,7 +5316,8 @@ function findField(sp, all, egg, slot, left){
   let F = $('findField'); F && F.remove();
   if(!html_land() || left <= 0 || (!all.length && !egg)) return;
   F = document.createElement('div'); F.id = 'findField'; F.className = 'norb';
-  F.innerHTML = HIDES.map(h=> `<button type="button" class="hide" data-k="${h.k}" style="left:${h.x}%;top:${h.y}%" aria-label="${h.name}"><i class="ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44"/></svg></i><b>${h.name}</b></button>`).join('')
+  const pb = !storyOn() && S.photoBoost && S.photoBoost.day === dayKey() ? S.photoBoost.shapes : [];   // 写真のおかげで見つかりやすい虫の、さがすところに 📷
+  F.innerHTML = HIDES.map(h=> `<button type="button" class="hide${h.like.some(k=> pb.includes(k)) ? ' pboost' : ''}" data-k="${h.k}" style="left:${h.x}%;top:${h.y}%" aria-label="${h.name}"><i class="ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44"/></svg></i><b>${h.name}</b></button>`).join('')
     + '<div class="fieldMsg" id="fieldMsg">光っているところに、指をおいて、じっと待とう</div>';
   document.body.appendChild(F);
   const msg = t=>{ const m = $('fieldMsg'); if(m) m.textContent = t; };
@@ -5807,7 +5809,7 @@ const isPhone = ()=> matchMedia('(pointer:coarse)').matches && Math.min(screen.w
 let installEvt = null;   // Android の Chrome は「インストール」ボタンを出せる
 addEventListener('beforeinstallprompt', e=>{ e.preventDefault(); installEvt = e; });
 function installHTML(){
-  if(isStandalone()) return `<div class="ibox now"><b class="ok">もうアプリとして遊んでいます！</b><br>ホーム画面の「虫そだて日記」のアイコンから、いつでも遊べます。</div>`;
+  if(isStandalone()) return `<div class="ibox now"><b class="ok">いま、アプリで遊んでいます！</b><br>ホーム画面の「虫そだて日記」のアイコンから、いつでも遊べます。<br><small>（もうアプリにしてあるので、このままでOK）</small></div>`;
   const ios = `<ol><li><b>Safari</b>でこのページを開く<br><small>LINEなど、ほかのアプリの中で開いているときは、メニューから「Safariで開く」をえらぶ</small></li>
     <li>共有ボタン（四角から上やじるしが出ているマーク）をタップ<br><small>iPhoneは画面の下、iPadは画面の右上にあります</small></li>
     <li>「<b>ホーム画面に追加</b>」をえらぶ<br><small>見つからないときは、メニューを下にスクロール</small></li>
@@ -5824,8 +5826,8 @@ function installHTML(){
     ${others.map(o=>`<details class="ibox"><summary>${o[0]}のばあい</summary>${o[1]}</details>`).join('')}
     <p class="small">※iPhone・iPadでは、Safariで遊んだセーブデータと、ホーム画面のアプリのセーブデータは別々になります。はじめからアプリで遊ぶのがおすすめです。</p>`;
 }
-function showInstall(){
-  openWin('アプリにする方法', installHTML());
+function showInstall(){ track('open_install');
+  openWin(isStandalone() ? 'アプリで遊んでいます' : 'アプリにする方法', installHTML());
   const b = $('doInstall'); if(b) b.onclick = async ()=>{ installEvt.prompt(); await installEvt.userChoice.catch(()=>{}); installEvt = null; b.textContent = 'ありがとう！'; b.disabled = true; };
 }
 async function showShare(){ track('open_share');
@@ -5895,11 +5897,6 @@ function showPrivacy(){
     <p><b>6. あそぶ時間</b><br>はじめは「30分あそぶと10分の休けい」です（はじめからのときに えらべます）。時間や休けい（「その日はおしまい」もえらべます）は、「その他」の「あそぶ時間」で変えられます。変えるときは、かんたんなかけ算で、おうちの方かどうかを確かめます。</p>
     <p><b>7. お問い合わせ</b><br>Game Director: Ryohei Taniguchi<br><a href="${contactURL()}" target="_blank" rel="noopener">お問い合わせフォーム</a>（ご意見・ご感想・不具合の報告はこちらから）</p>`);
   const c = $('gaOffChk'); if(c) c.onchange = ()=> setGaOff(c.checked);
-}
-function showInstall(){ track('open_install');
-  openWin('アプリにする方法', `<h3>iPhone・iPad（Safari）</h3><ol><li>画面の下の「共有」ボタン（四角から矢印が出ている形）を押す</li><li>「ホーム画面に追加」を押す</li></ol>
-    <h3>Android（Chrome）</h3><ol><li>右上の「︙」を押す</li><li>「ホーム画面に追加」または「アプリをインストール」を押す</li></ol>
-    <p class="small">ホーム画面のアイコンから開くと、アプリのように全画面で遊べます。</p>`);
 }
 
 /* キーボード：Esc／X で とじる・もどる（虫とり日記の B ボタンと同じ） */
