@@ -123,7 +123,13 @@ body.phone #titleScr .tpad{order:0}
 .suSeg{display:flex;flex-wrap:wrap;gap:.35em}.suSeg button{font:inherit;font-weight:700;font-size:.92em;color:#5a3a14;background:#fffaf0;border:2px solid #d9c49a;border-radius:999px;padding:.3em .9em;cursor:pointer}
 .suSeg button.on{background:#f6cf5b;border-color:#c8962a;color:#3a2410;box-shadow:0 2px 0 #c8962a}.suGo{align-self:center;margin-top:.3em;font-size:1.05em}
 .tMenu{display:flex;flex-direction:column;gap:6px}.tMenu .btn,.popWin .tMenu .btn{display:flex;justify-content:space-between;align-items:center;text-align:left;background:#fffaf0;color:#3a2a18;border:1.5px solid #d9c49a;box-shadow:0 2px 0 #d9c49a;font-weight:700}.tMenu .btn .v{color:#c06a10}.tMenu .btn .v{margin-left:.6em}.tmNote{margin-top:.8em}
-.spList{display:flex;flex-direction:column;gap:6px}.spItem{display:flex;align-items:center;gap:.6em;background:#fffaf0;border:1.5px solid #d9c49a;border-radius:10px;padding:5px 8px;color:#3a2a18}
+.spList{display:flex;flex-direction:column;gap:6px}
+.stamp{flex:none;display:inline-flex;align-items:center;justify-content:center;width:2.6em;height:2.6em;border-radius:50%;border:2px dashed #c9a978;color:#c9a978;font-weight:900;font-size:.8em;line-height:1;vertical-align:middle}
+.stamp.on{border:3px double #c0392b;color:#c0392b;background:#fff3ee;transform:rotate(-12deg);font-family:"Klee One","Yusei Magic",serif;font-size:.85em}
+.spot .stamp{float:right;margin:0 0 4px 6px}
+.stampGet .stamp{font-size:1.9em;animation:stampIn .5s cubic-bezier(.3,1.6,.5,1) both}@keyframes stampIn{0%{transform:scale(2.2) rotate(-12deg);opacity:0}100%{transform:scale(1) rotate(-12deg);opacity:1}}
+.stampBar{background:#fffaf0;border:1.5px solid #d9c49a;border-radius:10px;padding:6px 10px;margin:6px 0;color:#3a2a18}.stampBar small{display:block;color:#7a5a30;font-size:.82em;line-height:1.4}
+.stampRow{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0}.stMeijin{margin-left:.6em;background:#f6cf5b;color:#3a2410;border-radius:999px;padding:.05em .7em;font-weight:800;font-size:.9em}.spItem{display:flex;align-items:center;gap:.6em;background:#fffaf0;border:1.5px solid #d9c49a;border-radius:10px;padding:5px 8px;color:#3a2a18}
 .spItem img{width:64px;height:44px;object-fit:cover;border-radius:6px;flex:none}.spItem>div{flex:1;min-width:0;line-height:1.35}.spItem b{display:block}.spItem small{display:block;font-size:.8em;color:#7a5a30}.spItem .spBugs{color:#5a4a30}
 .spItem .spMap,body.noteUI .spItem .spMap{flex:none;padding:.25em .8em;font-size:.85em;text-decoration:none;color:#5a3a14;background:#f6cf5b;border:2px solid #fff;border-radius:999px;font-weight:800}
 .tbChk{display:flex;align-items:center;gap:.3em;font-weight:800;color:#5a3a14;background:#fff6dc;border:2px solid #d9b07a;border-radius:999px;padding:.2em .8em}.tbChk input{width:1.2em;height:1.2em}
@@ -2529,7 +2535,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.18.0';
-const BUILD = '20261115-1241';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261115-1346';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.18.0', date:'2026-11-15', items:[
     '虫ずもうが もっと もりあがるようになった：対戦カードとVS、軍配、ぼくと あいての顔（かっているときは にこにこ）、必殺わざの大きなカットイン、おうえんと「かち！」の演出。とちゅうで曲が とぎれにくくした',
@@ -3476,11 +3482,19 @@ function finalize(c){
   c.sex = MALE_ONLY.has(c.bug) || Math.random() < .6 ? 'オス' : 'メス';
   const q = clamp((ind.atk + ind.hp - 2)/.3, 0, 1) * .6 + Math.random()*.4 + (born.luck && Math.random() < .3 ? .15 : 0);
   const [mn, mx] = b.size; c.size = Math.round((mn + (mx-mn)*q) * (c.sex === 'メス' ? .8 : 1));
-  c.rare = (born.rareColor && Math.random() < .25) || (born.luck && Math.random() < .15);
+  c.rare = Math.random() < rareP(c, born);
   // わざ：基本わざ ＋ いちばん伸びたステータスの得意わざ
   const grow = {atk:ind.atk, def:ind.def, spd:ind.spd}, best = Object.keys(grow).sort((a,b)=>grow[b]-grow[a])[0];
   c.moves = [b.shape, MOVES[b.shape + '_' + best] ? b.shape + '_' + best : b.shape];
   c.uka = dayKey();
+}
+/* めずらしい色（2026-11-15 ユーザー ②）：じゆうに育てる・そとで虫をつかまえる では、どこでつかまえた虫でも 5%。
+   宗像の とくべつなスポット（6か所）に本当に行ってつかまえた虫（c.spc）は 3倍の15%＋宗像大社・大島の生まれの分。ハンコ6つ（c.st6）で +5%。
+   c.spc が ない虫（ストーリー・前のセーブ）は 今までどおり */
+function rareP(c, born){
+  const old = (born.rareColor ? .25 : 0) + (born.luck ? .15 : 0);
+  if(c.spc === undefined) return old;
+  return (c.spc ? .15 + old : .05) + (c.st6 ? .05 : 0);
 }
 /* 虫ずもう用の数字（虫とり日記の式をもとに、種類の差を小さくして、育て方の差が効くようにした） */
 /* その日の調子：おなかと元気が満タンに近いほど、すもうで力が出る（0〜1）。そだてている虫だけ */
@@ -3983,7 +3997,7 @@ function say(text, opts={}){
     const nm = faceName(opts.face), talk = !!nm, side = isBoku(opts.face) ? 'l' : 'r';
     if(talk) L.classList.add('talk');
     const w = document.createElement('div'); w.className = 'win' + (talk ? ' talkWin' : '');
-    w.innerHTML = (talk ? `<b class="who ${side} norb">${esc(nm)}</b>` : '') + fmtMsg(text) + (opts.gifts && opts.gifts.length ? `<div class="giftRow">${opts.gifts.map(([src, n, k])=> `<span class="gift"><img src="${src}" alt="" draggable="false"><b>${esc(n)}</b>${k ? `<small>×${k}</small>` : ''}</span>`).join('')}</div>` : '') + (opts.ans ? '' : '<span class="tap">▼ タップでつぎへ</span>');
+    w.innerHTML = (talk ? `<b class="who ${side} norb">${esc(nm)}</b>` : '') + fmtMsg(text) + (opts.gifts && opts.gifts.length ? `<div class="giftRow">${opts.gifts.map(([src, n, k])=> `<span class="gift"><img src="${src}" alt="" draggable="false"><b>${esc(n)}</b>${k ? `<small>×${k}</small>` : ''}</span>`).join('')}</div>` : '') + (opts.stamp ? `<div class="giftRow stampGet">${stampHTML(opts.stamp, 1)}</div>` : '') + (opts.ans ? '' : '<span class="tap">▼ タップでつぎへ</span>');
     if(opts.ans){ const a = document.createElement('div'); a.className = 'ans';
       opts.ans.forEach((t,i)=>{ const b = document.createElement('button'); b.type = 'button'; b.className = 'btn ansB'; const pic = opts.pics && opts.pics[i]; if(pic){ b.classList.add('pic'); b.innerHTML = `<img src="${pic}" alt="" draggable="false"><span>${esc(t)}</span>`; } else b.textContent = t; b.onclick = e=>{ e.stopPropagation(); L.remove(); res(i); }; a.appendChild(b); });
       w.appendChild(a);
@@ -5040,8 +5054,9 @@ function renderOut(){
   view.innerHTML = `<h2>そとへ虫をさがしに行く</h2>
     <p class="small">いまは<b style="color:var(--ink)">${SLOT_NAMES[slot]}</b>。活動中の虫は見つけやすい。ねむっている虫も、さがせば見つかることがある（夜の山は危ないので、昼に行っても大丈夫）。つかまえた場所と時間は、虫の「生まれ」として残る。</p>
     <div class="row"><button type="button" class="btn pri" id="btnGeo">📍 いまいる場所をしらべる</button></div>
+    ${stampBarHTML()}
     <div class="spots" style="margin-top:10px">${SPOTS.map(sp=>{ const v = (S.visits[sp.key+'|'+today]||0), bn = BORN[sp.key];
-      return `<div class="spot"><img class="spotPic" src="img/ui/spot_${sp.key}.webp" alt="" loading="lazy" draggable="false"><b>${esc(sp.name)}</b>　<span class="small">${esc(sp.env)}</span><div class="bugs">いま活動中：${spotBugs(sp.key, slot).map(nmQ).join('・') || 'いない'}　／　ねむっている：${spotBugs(sp.key).filter(id=>!BUGS[id].time.includes(slot) && !BUGS[id].spots.includes('any')).map(id=>`${nmQ(id)}（${BUGS[id].time.map(t=>SLOT_NAMES[t]).join('・')}）`).join('・') || 'なし'}</div><div class="small">${esc(bn.name)}：${esc(bn.txt)}</div>${v ? `<div class="small">今日は${v}回さがした</div>` : ''}</div>`; }).join('')}
+      return `<div class="spot"><img class="spotPic" src="img/ui/spot_${sp.key}.webp" alt="" loading="lazy" draggable="false">${stampHTML(sp.key, stamps()[sp.key])}<b>${esc(sp.name)}</b>　<span class="small">${esc(sp.env)}</span><div class="bugs">いま活動中：${spotBugs(sp.key, slot).map(nmQ).join('・') || 'いない'}　／　ねむっている：${spotBugs(sp.key).filter(id=>!BUGS[id].time.includes(slot) && !BUGS[id].spots.includes('any')).map(id=>`${nmQ(id)}（${BUGS[id].time.map(t=>SLOT_NAMES[t]).join('・')}）`).join('・') || 'なし'}</div><div class="small">${esc(bn.name)}：${esc(bn.txt)}</div>${v ? `<div class="small">今日は${v}回さがした</div>` : ''}</div>`; }).join('')}
     <div class="spot"><img class="spotPic" src="img/ui/spot_any.webp" alt="" loading="lazy" draggable="false"><b>${esc(ANY_SPOT.name)}</b>　<span class="small">宗像のそと・どこでも</span><div class="bugs">${spotBugs('any').map(nmQ).join('・')}</div></div></div>
     <div class="demoBox" style="margin-top:12px"><h3>デモ用（本番にはありません）</h3><p class="small">じっさいに宗像に行かなくても、場所をえらんで「着いたことにする」ができます。</p>
       <div class="row"><select id="demoSpot" class="btn">${SPOTS.map(sp=>`<option value="${sp.key}">${esc(sp.name)}</option>`).join('')}<option value="any">宗像のそと（どこでも）</option></select><button type="button" class="btn" id="btnDemoGo">着いたことにする</button></div></div>`;
@@ -5136,8 +5151,17 @@ async function phoneOK(){
 function loadTori(){ try{ const j = JSON.parse(localStorage.getItem(TORI_KEY)); return j && j.tori ? j : null; }catch(e){ return null; } }
 function newTori(){ const g = newGame(); g.tori = 1; g.boxes = Array(6).fill('futsu'); g.cases = Array(6).fill(null); g.yk.hello = 1; return g; }
 function startTori(){ S = loadTori() || newTori(); save(true); outState = null; openCase = null; tab = 'out'; track('game_start', {mode:'tori'}); hud(); render(); }
+/* スポットのハンコ（2026-11-15 ユーザー ③）：とくべつなスポットに 本当に着くと、その場所のハンコ（1回だけ）。端末ごと（じゆう・そとで虫をつかまえる 共通）。
+   6つそろうと「宗像 虫めぐり 名人」：どこでつかまえた虫も めずらしい色が少し出やすい（c.st6）。ストーリーでは ふえない */
+const STAMP_KEY = KEY_PRE + 'munakata-ikusei-stamp-v1';
+const stamps = ()=>{ try{ return JSON.parse(localStorage.getItem(STAMP_KEY)) || {}; }catch(e){ return {}; } };
+const stampN = ()=> SPOTS.filter(sp=> stamps()[sp.key]).length;
+const STAMP_SHORT = {taisha:'大社', joyama:'城山', tsurikawa:'釣川', matsubara:'松原', akama:'赤間', oshima:'大島'};
+const stampHTML = (k, on)=> `<span class="stamp${on ? ' on' : ''}" title="${on ? 'ハンコ' : 'まだ'}">${on ? esc(STAMP_SHORT[k] || '') : '？'}</span>`;
+function stampGet(sp){ const st = stamps(); if(st[sp.key]) return 0; st[sp.key] = dayKey(); try{ localStorage.setItem(STAMP_KEY, JSON.stringify(st)); }catch(e){} return SPOTS.filter(x=> st[x.key]).length; }
+const stampBarHTML = ()=>{ const st = stamps(), n = stampN(); return `<div class="stampBar"><b>スポットのハンコ ${n}/6</b>${n >= 6 ? '<span class="stMeijin">🏅 宗像 虫めぐり名人</span>' : ''}<div class="stampRow">${SPOTS.map(sp=> stampHTML(sp.key, st[sp.key])).join('')}</div><small>${n >= 6 ? 'どこでつかまえた虫も、めずらしい色が 少し 出やすい。' : 'とくべつなスポットに行くと ハンコがもらえる。そこでつかまえた虫は、めずらしい色が 3倍 出やすい。6つ集めると…？'}</small></div>`; };
 // 宗像の とくべつなスポット（位置情報で「着いた」になる6か所）。地図は Google マップで開く（場所の名前だけ。きみのいる場所は送らない）
-const spotListHTML = ()=> `<div class="spList">${SPOTS.map(sp=> `<div class="spItem"><img src="img/ui/spot_${sp.key}.webp" alt="" loading="lazy" draggable="false"><div><b>${esc(sp.name)}</b><small>${esc(sp.env)}</small></div><a class="btn sub spMap" href="https://www.google.com/maps/search/?api=1&query=${sp.lat},${sp.lon}" target="_blank" rel="noopener">地図</a></div>`).join('')}</div>`;
+const spotListHTML = ()=> `<div class="spList">${SPOTS.map(sp=> `<div class="spItem"><img src="img/ui/spot_${sp.key}.webp" alt="" loading="lazy" draggable="false">${stampHTML(sp.key, stamps()[sp.key])}<div><b>${esc(sp.name)}</b><small>${esc(sp.env)}</small></div><a class="btn sub spMap" href="https://www.google.com/maps/search/?api=1&query=${sp.lat},${sp.lon}" target="_blank" rel="noopener">地図</a></div>`).join('')}</div>`;
 function showSpots(){ openWin('宗像の とくべつなスポット（6か所）', `<p class="small">この近くに行くと、その場所の虫が さがせるよ。とくべつなスポットでなくても、「どこにでもある草むら」の虫なら、どこでも さがせる。</p>${spotListHTML()}`); }
 // いまいる場所をしらべる（じゆうに育てる・そとで虫をつかまえる）
 async function geoGo(){
@@ -5155,7 +5179,7 @@ function renderTori(){
     ${got.length ? `<h3>つかまえた虫（${got.length}/${S.cases.length}ひき・まだ おくっていない）</h3><div class="toriList">${got.map(i=>{ const c = S.cases[i];
       return `<div class="spot toriBug"><span class="tbPic">${svgBug(c.bug, stageOf(c).k, {instar:instarOf(c)})}</span><div class="tbTx"><b>${esc(dispName(c))}</b><small>${esc(c.from)}で つかまえた</small></div><div class="row"><label class="tbChk"><input type="checkbox" data-pick="${i}" checked>おくる</label><button type="button" class="btn sub" data-rel="${i}">にがす</button></div></div>`; }).join('')}</div>
       <div class="row"><button type="button" class="btn pri" id="tSendAll">📱→ えらんだ虫を まとめて おくる</button></div>` : ''}
-    <h3>宗像の とくべつなスポット（6か所）</h3>${spotListHTML()}
+    <h3>宗像の とくべつなスポット（6か所）</h3>${stampBarHTML()}${spotListHTML()}
     <div class="demoBox" style="margin-top:12px"><h3>デモ用（本番にはありません）</h3><div class="row"><select id="demoSpot" class="btn">${SPOTS.map(sp=>`<option value="${sp.key}">${esc(sp.name)}</option>`).join('')}<option value="any">とくべつなスポットではない場所</option></select><button type="button" class="btn" id="btnDemoGo">着いたことにする</button></div></div>`;
   $('tTitle').onclick = ()=>{ save(true); S = null; outState = null; render(); };
   $('tHow').onclick = showSendHow;
@@ -5184,6 +5208,8 @@ async function arrive(sp, outside){
   outState = {spot:sp, outside};
   const ar = await say((outside && sp.local ? `ここは「${sp.name}」の近く（${sp.env}）。\n宗像の とくべつなスポット（6か所）では ないけど、${sp.env.replace(/の.*$/, '')}に いそうな虫が さがせるよ。` : outside ? 'ここは、宗像の とくべつなスポット（6か所）の近くでは ないみたい。\n（位置情報は ちゃんと つかえているよ）\nでも、どこにでもいる虫なら、ここでも さがせるよ。' : `「${sp.name}」に着いた！`) + (moved ? `\n${moved} どんぐり ${dg(got)} をもらった。` : '') + gift, {gifts:[...(got ? [[DONGURI_IMG, 'どんぐり', got]] : []), ...(gift ? [giftOf(sp.gift, 2)] : [])], ...(outside ? {ans:['このまま さがす', 'とくべつなスポットを見る']} : {})});
   if(outside && ar === 1) showSpots();
+  if(!outside && !storyOn()){ const n = stampGet(sp);
+    if(n) await say(`「${sp.name}」の ハンコを もらった！（${n}/6）\nここで つかまえた虫は、成虫になったとき めずらしい色に なりやすいよ（ふつうの3倍）。` + (n >= 6 ? '\n\n6つ ぜんぶ そろった！ きみは「宗像 虫めぐり名人」。\nこれからは、どこで つかまえた虫も、めずらしい色が 少し 出やすくなるよ。' : ''), {stamp:sp.key}); }
   if(!outside || sp.local) await say(`【注意】${sp.warn}`, {face:'papa_teach'});
   render();
 }
@@ -5305,10 +5331,10 @@ async function doFind(sp, here, egg, slot, h){
   $('bLeave').onclick = ()=> renderSpot();
   $('bTake').onclick = async ()=>{
     if(S.tori){   // そとで虫をつかまえる：小さい虫かごに入れて、そのまま おくれる（お世話は、とどいた先で）
-      S.cases[free0] = {bug:id, si:0, prog:0, hunger:70, wet:70, clean:100, tick:now(), pending:false, from:sp.name, born:sp.key, bornSlot:slotOf(), since:dayKey(),
+      S.cases[free0] = {bug:id, si:0, prog:0, hunger:70, wet:70, clean:100, tick:now(), pending:false, from:sp.name, born:sp.key, bornSlot:slotOf(), since:dayKey(), ...(storyOn() ? {} : {spc:!outState.outside, st6:stampN() >= 6}),
         ind:{hp:1, atk:1, def:1, spd:1, heal:1}, log:newLog(), tot:newLog(), place:'genkan', trouble:null, dirt:[], foods:[], soak:0, hideUntil:0, deco:[], mat:null, soilAge:0, wetZ:Array(WZ).fill(70), soakZ:Array(WZ).fill(0), stress:0, known:!!know};
       save(true); track('bug_catch', {bug:id, chapter:0});
-      await say(`${know ? b.name + 'の' + (id === 'kinkabuto' ? 'たまご' : '幼虫') : 'なぞの' + G.name}を、小さい虫かごに入れた！\n「${sp.local ? sp.name : BORN[sp.key].name}」の虫だ。`);
+      await say(`${know ? b.name + 'の' + (id === 'kinkabuto' ? 'たまご' : '幼虫') : 'なぞの' + G.name}を、小さい虫かごに入れた！\n「${sp.local ? sp.name : BORN[sp.key].name}」の虫だ。` + (outState.outside ? '' : '\n✨とくべつなスポットの虫：めずらしい色に なりやすい！'));
       const n = S.cases.filter(Boolean).length, room = S.cases.length - n;
       const a = await say(`いま つかまえた虫は ${n}ひき。${room ? `あと ${room}ひき つかまえられるよ。` : '小さい虫かごは いっぱい！'}`, {ans:[...(room ? ['つづけて さがす'] : []), `まとめて おくる（${n}ひき）`, 'あとで おくる']});
       if(room ? a === 1 : a === 0){ await sendMany(S.cases.map((c,i)=> c ? i : -1).filter(i=> i >= 0)); return; }
@@ -5322,11 +5348,11 @@ async function doFind(sp, here, egg, slot, h){
     let free = free0;
     if(frees.length > 1){ const wi = await say('どの虫かごに入れる？', {ans:frees.map(j=>`${j+1}ばん：${BOXES[S.boxes[j]].ic} ${BOXES[S.boxes[j]].name}（${BOXES[S.boxes[j]].desc}）`).concat(['やめる'])}); if(wi >= frees.length) return; free = frees[wi]; }
     const keys = Object.keys(PLACES), pi = await say('おうちの、どこにおく？', {ans:keys.map(k=>`${PLACES[k].name}：${PLACES[k].desc}`), pics:placePics(keys)});
-    S.cases[free] = {bug:id, si:0, prog:0, hunger:70, wet:70, clean:100, tick:now(), pending:false, from:sp.name, born:sp.key, bornSlot:slotOf(), since:dayKey(),
+    S.cases[free] = {bug:id, si:0, prog:0, hunger:70, wet:70, clean:100, tick:now(), pending:false, from:sp.name, born:sp.key, bornSlot:slotOf(), since:dayKey(), ...(storyOn() ? {} : {spc:!outState.outside, st6:stampN() >= 6}),
       ind:{hp:1, atk:1, def:1, spd:1, heal:1}, log:newLog(), tot:newLog(), place:keys[pi], trouble:null, dirt:[], foods:[], soak:0, hideUntil:0, deco:[], mat:null, soilAge:0, wetZ:Array(WZ).fill(70), soakZ:Array(WZ).fill(0), stress:0};
     save(); hud();
     const nc = S.cases[free]; nc.known = !!know; track('bug_catch', {bug:id, chapter:storyOn() ? S.story.ch : 0});
-    await say(`${know ? b.name + 'の' + (id === 'kinkabuto' ? 'たまご' : '幼虫') : 'なぞの' + G.name}を、${free+1}ばんの${BOXES[S.boxes[free]].name}（${PLACES[keys[pi]].name}）に入れた。\n「${sp.local ? sp.name : BORN[sp.key].name}」の虫だ。`);
+    await say(`${know ? b.name + 'の' + (id === 'kinkabuto' ? 'たまご' : '幼虫') : 'なぞの' + G.name}を、${free+1}ばんの${BOXES[S.boxes[free]].name}（${PLACES[keys[pi]].name}）に入れた。\n「${sp.local ? sp.name : BORN[sp.key].name}」の虫だ。` + (!storyOn() && !outState.outside ? '\n✨とくべつなスポットの虫：めずらしい色に なりやすい！' : ''));
     await yakusoku('take', '虫をつれてかえるときは、いきをしやすいように、ふたにあなをあけたケースに。\n日なたにおくと、あつくて弱ってしまうよ。');
     if(storyOn()){ nc.story = S.story.ch; save(); await storyFound(nc); }
     else if(isPhone()) await yakusoku('okuru', 'つかまえた虫は、家のタブレットやパソコンにも おくれるよ。\n虫かごの「ケースのこと」→「タブレットやパソコンにおくる」。\n大きな画面で育てると、虫がよく見えるよ。');   // スマホで外にいるときに気づけるように
