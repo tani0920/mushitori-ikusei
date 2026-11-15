@@ -197,6 +197,7 @@ html.land #titleScr .tbtns.sub{margin-top:.25em}
 .full .sendHow small{font-size:13px}
 .full .sendHow b{color:#f4b63c}
 #titleScr .vrow{display:flex;gap:.5em;justify-content:center;flex-wrap:wrap;margin-top:.6em}
+#titleScr .tlMenu{position:absolute;left:calc(var(--sl,0px) + 12px);top:max(10px,var(--st,0px));margin:0;flex-direction:column;align-items:flex-start;gap:6px;z-index:2}html #titleScr .tlMenu .verbtn,html.land #titleScr .tlMenu .verbtn{font-size:14px;padding:.25em .9em;line-height:1.3}html #titleScr .tlMenu .gver{font-size:.85em;opacity:.85}   /* タブレット・パソコン：小さいボタンは左上に（2026-11-15 ユーザー） */
 #titleScr .verbtn{font-family:var(--f-pixel);font-size:clamp(9px,2vw,13px);letter-spacing:.04em;color:#fff;background:#14284a99;border:1px solid #f7f1dfaa;border-radius:999px;padding:.2em .8em;cursor:pointer;text-shadow:1px 1px 0 #000}
 #titleScr .credit{position:absolute;right:.8em;top:.6em;font-size:clamp(9px,1.9vw,12px);letter-spacing:.06em;color:#fff;opacity:.92;text-shadow:1px 1px 0 #000;pointer-events:none}
 
@@ -1494,7 +1495,7 @@ body.noteUI #hud .sch{color:#b0601a}   /* 明るい札の上でも読めるよ�
   <button type="button" class="rt" id="rtNote" hidden><span class="ic">📒</span><img class="rtIc" src="img/ui/ic_note.webp" alt="" draggable="false">ノート</button>
   <button type="button" class="rt" id="rtNext" hidden><img class="rtIc" src="img/ui/ic_next.webp" alt="" draggable="false"><b class="nxL">次の日へ</b></button>
   <button type="button" class="rt" id="rtRecv" hidden><span class="ic">📲</span><img class="rtIc" src="img/ui/ic_recv.webp" alt="" draggable="false">うけとる</button>
-  <button type="button" class="rt" id="rtCase" hidden><span class="ic">📋</span>ケースの<br>こと</button>
+  <button type="button" class="rt" id="rtCase" hidden><span class="ic">📋</span>できること</button>
 </div>
 <div class="drawer norb" id="itemsPanel" data-p="items"><div class="dHead"><b>もちもの</b></div><div id="itemsBody"></div></div>
 <div class="saveMark" id="saveMark">セーブしました</div>
@@ -2568,7 +2569,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.18.0';
-const BUILD = '20261115-2007';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261115-2024';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.18.0', date:'2026-11-15', items:[
     '虫ずもうが もっと もりあがるようになった：対戦カードとVS、軍配、ぼくと あいての顔（かっているときは にこにこ）、必殺わざの大きなカットイン、おうえんと「かち！」の演出。とちゅうで曲が とぎれにくくした',
@@ -4308,10 +4309,11 @@ function renderTitle(){
     <div class="t4">※このゲームに出てくる場所と虫の組み合わせはゲーム用のもので、実際にその場所にいる虫とはかぎりません。ゲームの中でそだつ速さも、本物よりずっと速くしてあります。</div>
     ${isPhone() ? `<div class="tbtns toriRow"><button type="button" class="tbtn pri tori" id="btnTori"><img class="emI" src="img/ui/ok_pin.webp" alt="">そとで虫をつかまえる<small>つかまえて、おうちのタブレットに おくる</small></button></div>` : ''}
     <div class="tbtns"><button type="button" class="tbtn ${isPhone() ? '' : 'pri'}" id="btnStory">ストーリー${hasS ? (hasS.story.done ? `<small>クリア${(hasS.story.loop || 1) > 1 ? '（' + hasS.story.loop + '周）' : ''}${hasS.story.flags && hasS.story.flags.allKakera ? '★' : ''}</small>` : `<small>${hasS.story.ch ? hasS.story.ch + '章' : '序章'}から</small>`) : ''}</button><button type="button" class="tbtn qm" id="btnModes">どっちで あそぶ？</button><button type="button" class="tbtn" id="btnFree">じゆうに育てる${has ? '<small>つづきから</small>' : ''}</button></div>
-    <div class="tbtns sub"><button type="button" class="tbtn" id="btnInstall">アプリにする方法</button><button type="button" class="tbtn" id="btnShare">友だちに教える</button>${isPhone() ? '' : '<button type="button" class="tbtn tori" id="btnTori"><img class="emI" src="img/ui/ok_pin.webp" alt="">そとで虫をつかまえる（スマホ）</button>'}</div>
+    ${isPhone() ? '' : `<div class="vrow tlMenu"><button type="button" class="verbtn" id="btnInstall">アプリにする方法</button><button type="button" class="verbtn" id="btnShare">友だちに教える</button><button type="button" class="verbtn" id="btnVer"><span class="gver">ver ${GAME_VER}</span>　こうしん情報</button><button type="button" class="verbtn" id="btnPriv">プライバシーについて</button></div>`}
+    <div class="tbtns sub">${isPhone() ? '<button type="button" class="tbtn" id="btnInstall">アプリにする方法</button><button type="button" class="tbtn" id="btnShare">友だちに教える</button>' : ''}${isPhone() ? '' : '<button type="button" class="tbtn tori" id="btnTori"><img class="emI" src="img/ui/ok_pin.webp" alt="">そとで虫をつかまえる（スマホ）</button>'}</div>
     <div class="tpad">虫を育てるのは、大きな画面の<b>タブレット</b>や<b>パソコン</b>がおすすめ</div>
     ${isPhone() ? '<div class="vrow tmRow"><button type="button" class="verbtn" id="btnTHow">遊び方</button><button type="button" class="verbtn" id="btnTShare">友だちに教える</button><button type="button" class="verbtn" id="btnTMenu">☰ メニュー</button></div>' : ''}
-    <div class="vrow"><button type="button" class="verbtn" id="btnVer"><span class="gver">ver ${GAME_VER}</span>　こうしん情報 ▸</button><button type="button" class="verbtn" id="btnFuri">${furiLabel()}</button><button type="button" class="verbtn" id="btnPriv">プライバシーについて</button>${rotMode ? '<button type="button" class="verbtn" id="btnRot">↻ 向きを反対に</button>' : ''}</div>
+    <div class="vrow">${isPhone() ? `<button type="button" class="verbtn" id="btnVer"><span class="gver">ver ${GAME_VER}</span>　こうしん情報 ▸</button>` : ''}<button type="button" class="verbtn" id="btnFuri">${furiLabel()}</button>${isPhone() ? '<button type="button" class="verbtn" id="btnPriv">プライバシーについて</button>' : ''}${rotMode ? '<button type="button" class="verbtn" id="btnRot">↻ 向きを反対に</button>' : ''}</div>
     <div class="bugRow"><a class="bugBtn" id="btnBug" href="${esc(bugURL())}" target="_blank" rel="noopener"><img class="emI" src="img/ui/ok_bugrep.webp" alt="">バグ（おかしいところ）を見つけたら、こちらへ おしらせください</a></div>
   </div>`;
   view.querySelector('#titleScr').classList.remove('norb');   // 文はふりがなを付けてよい（credit だけ英語）
@@ -4584,7 +4586,7 @@ async function renderObs(){
       <div class="obsTxt win" id="obsTxt">${showGuide && guide ? esc(guide) : msgHtml}</div>
       <div class="meters">${st.k !== 'pupa' ? m('おなか', c.hunger) : ''}${m('しめりけ', c.wet, `<b class="band" style="left:${band[0]}%;width:${band[1]-band[0]}%"></b>`)}${m('きれいさ', c.clean)}${m('元気', g)}</div>
       <p class="small info">${tool === 'yubi' && st.k !== 'pupa' ? '虫をタップすると、そっとさわれる。' : ''}${SLOT_NAMES[slot]}のようす。${c.pending || st.k === 'adult' ? '' : `このすがたで、あと${daysLeft(c)}日くらい。`}${st.k !== 'adult' ? (decoGood(c).length ? `<br><b class="decoUp">かざり：育ち +${Math.round((decoGrow(c) - 1)*100)}%</b>` : decoLikeTxt(c) ? `<span class="decoHint"><br>すきなかざり（育ちが はやくなる）：${esc(decoLikeTxt(c))}</span>` : '') : ''}${st.k === 'adult' ? `<br>${esc(indLine(c))}<br>わざ：${c.moves.map(k=>esc(MOVES[k].name)).join('・')}　${c.size}mm ${esc(c.sex||'')}<br><button type="button" class="btn sub detailBtn" id="aDetail">📋 くわしく見る（強さ・わざ・性格）</button>` : ''}</p>
-      <div class="drawer" id="drawer" data-p="case"><div class="dHead"><b>ケースのこと</b></div>
+      <div class="drawer" id="drawer" data-p="case"><div class="dHead"><b>できること</b></div>
         <div class="row">${tags}</div>
         <div class="acts">
           <button type="button" class="btn sub" id="aPlace">おき場所をかえる<small>いま：${esc(PLACES[c.place].name)}</small></button>
@@ -5090,7 +5092,7 @@ async function handlePhoto(file, sp, box){
   const C = PHOTO_CATS[cat], first = !photos.cats[cat], gifts = [];
   const money = S.tori ? 0 : C.money * (first ? 2 : 1); S.money += money; if(money) gifts.push(`どんぐり ${dg(money)}${first ? '（はじめてボーナス2ばい！）' : ''}`);
   const vk = sp.key + '|' + dayKey(); if((S.visits[vk]||0) > 0){ S.visits[vk]--; gifts.push(`${sp.name}で、今日もう1回さがせる`); }
-  if(C.shapes.length){ S.photoBoost = {day:dayKey(), shapes:[...new Set([...(S.photoBoost && S.photoBoost.day === dayKey() ? S.photoBoost.shapes : []), ...C.shapes])]}; gifts.push(`今日は、${C.name}の幼虫が見つかりやすい`); }
+  if(C.shapes.length){ S.photoBoost = {day:dayKey(), shapes:[...new Set([...(S.photoBoost && S.photoBoost.day === dayKey() ? S.photoBoost.shapes : []), ...C.shapes])]}; gifts.push(`今日は、この${S.tori ? 'スマホ' : 'ゲーム'}で さがすと ${C.name}の幼虫が見つかりやすい`); }
   photos.cats[cat] = {img:thumb, n:(photos.cats[cat]?.n||0) + 1, date:realDay(), where:sp.name};
   photos.hashes.push(h); if(photos.hashes.length > 300) photos.hashes.shift();
   photos.daily = {date:realDay(), n:(photos.daily.date === realDay() ? photos.daily.n : 0) + 1};
@@ -5437,7 +5439,7 @@ async function doFind(sp, here, egg, slot, h){
     await say(`${know ? b.name + 'の' + (id === 'kinkabuto' ? 'たまご' : '幼虫') : 'なぞの' + G.name}を、${free+1}ばんの${BOXES[S.boxes[free]].name}（${PLACES[keys[pi]].name}）に入れた。\n「${sp.local ? sp.name : BORN[sp.key].name}」の虫だ。` + (!storyOn() && !outState.outside ? '\n✨とくべつなスポットの虫：めずらしい色に なりやすい！' : ''));
     await yakusoku('take', '虫をつれてかえるときは、いきをしやすいように、ふたにあなをあけたケースに。\n日なたにおくと、あつくて弱ってしまうよ。');
     if(storyOn()){ nc.story = S.story.ch; save(); await storyFound(nc); }
-    else if(isPhone()) await yakusoku('okuru', 'つかまえた虫は、おうちのタブレットやパソコンにも おくれるよ。\n虫かごの「ケースのこと」→「タブレットやパソコンにおくる」。\n大きな画面で育てると、虫がよく見えるよ。');   // スマホで外にいるときに気づけるように
+    else if(isPhone()) await yakusoku('okuru', 'つかまえた虫は、おうちのタブレットやパソコンにも おくれるよ。\n虫かごの「できること」→「タブレットやパソコンにおくる」。\n大きな画面で育てると、虫がよく見えるよ。');   // スマホで外にいるときに気づけるように
     renderSpot();
   };
 }
@@ -5843,7 +5845,7 @@ function showSendHow(){
     <p>外ではスマホを持って、虫をさがして つれてかえる。おうちでは、大きな画面のタブレットやパソコンで、ゆっくり育てよう。</p>
     <div class="ibox now"><h3>おくりかた</h3><ol>
       <li>スマホのタイトルの「<b><img class="emI" src="img/ui/ok_pin.webp" alt="">そとで虫をつかまえる</b>」で、虫をつかまえる</li>
-      <li>「<b><img class="emI" src="img/ui/ok_phone.webp" alt="">→ おくる</b>」をおす<br><small>（「じゆうに育てる」で育てている虫は、虫かごの「ケースのこと」→「タブレットやパソコンにおくる」）</small></li>
+      <li>「<b><img class="emI" src="img/ui/ok_phone.webp" alt="">→ おくる</b>」をおす<br><small>（「じゆうに育てる」で育てている虫は、虫かごの「できること」→「タブレットやパソコンにおくる」）</small></li>
       <li>タブレットや パソコンで このゲームの「じゆうに育てる」をひらいて、右の「<b><img class="emI" src="img/ui/ic_recv.webp" alt="">うけとる</b>」をおす</li>
       <li>スマホに出た<b>QRコード</b>を、タブレットの画面のカメラに うつす<br><small>（カメラアプリで読むと、べつのゲームが ひらいてしまうことがあるよ。iPhone・iPad どうしなら「AirDrop などでおくる」→「受けとる」の「リンクを はりつける」でもOK）</small></li>
       <li>タブレットで虫が<b>とどいた</b>ら、スマホで「とどいた！」をおす</li></ol></div>
