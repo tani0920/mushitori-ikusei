@@ -128,6 +128,13 @@ html.land .popWin .mwBox{font-size:clamp(12px,calc(var(--H) * .036),16px);width:
 .popWin .qrImg{width:min(220px,60vw);margin:.6em auto;background:#fff;padding:8px;border-radius:10px;border:1.5px solid #e0c890}.popWin .qrImg svg{display:block;width:100%;height:auto}
 .popWin .sendHow{display:flex;align-items:center;justify-content:center;gap:.8em;font-size:30px;margin:.3em 0}.popWin .sendHow span{display:flex;flex-direction:column;align-items:center}.popWin .sendHow small{font-size:12px;color:#7a6040}.popWin .sendHow b{color:#c9a978}
 .modeCmp{display:flex;gap:12px;flex-wrap:wrap}.modeCmp .mc{flex:1 1 240px;background:#fffaf0;color:#4a3320;border:2px solid #c9a978;border-radius:12px;padding:.7em .9em;line-height:1.65}
+.modeCmp .mc{display:flex;flex-direction:column;align-items:flex-start;text-align:left}
+.modeCmp .mc .mcH{display:block;font-size:1.25em;font-weight:900;line-height:1.35;color:#3a2410;margin:.1em 0 .3em}   /* 2026-11-15 ユーザー：2つのちがいが すぐわかる見出し */
+.modeCmp .mc .mcTags{display:flex;flex-wrap:wrap;gap:.35em;margin-bottom:.4em}
+.modeCmp .mc .mcTags i{font-style:normal;font-weight:800;font-size:.9em;line-height:1.4;border-radius:6px;padding:.1em .55em}
+.modeCmp .st .mcTags i{background:#fde7a8;color:#6a4006}.modeCmp .fr .mcTags i{background:#dbe6f6;color:#14284a}
+.modeCmp .mc .mcGo{margin-top:auto;align-self:flex-end}
+html:not(.tall) .modeCmp .mc{padding:.5em .75em;line-height:1.5}html:not(.tall) .modeCmp .mc p{font-size:.86em;margin:.2em 0}html:not(.tall) .modeCmp .mc .mcH{font-size:1.12em;margin:0 0 .25em}html:not(.tall) .modeCmp .mc .mcTags{margin-bottom:.2em}html:not(.tall) .modeCmp .mc .mcTags i{font-size:.82em}   /* スマホ：なるべく1画面に */
 .modeCmp .mc b{display:inline-block;font-size:1.1em;padding:.05em .8em;border-radius:999px;margin-bottom:.3em}.modeCmp .st b{background:#f6cf5b;color:#3a2410}.modeCmp .fr b{background:#14284a;color:#fff}
 .modeTip{margin-top:12px;line-height:1.7}
 .storyBar .hakase{display:inline-block;margin-left:.5em;padding:.05em .7em;border-radius:999px;background:#f6cf5b;color:#3a2410;font-size:.82em;font-weight:800;border:1.5px solid #d9a93a;vertical-align:.1em}
@@ -1321,6 +1328,7 @@ html.land body.noteUI[data-tab=sumo] #view{margin-left:auto;width:58%}
 html.land body.noteUI[data-tab=shop] #view{margin-left:auto;width:62%}
 html.land body.noteUI[data-tab=dex] #view{margin-left:auto;width:68%}
 html.land body.noteUI[data-tab=opt] #view{margin-left:auto;width:62%}
+html.land:not(.tall) body.noteUI[data-tab=opt] #view{margin:0 auto;width:min(100%,620px)}   /* スマホ（高さが低い）：右の6割だとカードがせまく、字が何行にもなる（2026-11-15 ユーザー） */
 html.land body.noteUI[data-tab=sumo] #placeBg{background-size:calc(max(var(--W),var(--H) * 1.5) * 1.28) auto;background-position:right bottom}
 /* 押せないものも、すけないように（うしろの絵と文字がかさなって読めなくなる） */
 html.land body.noteUI:not(.obsMode) .btn:disabled{opacity:1;background:#e9dcc0a6;color:#6f5c44;border-color:#c9b48f}
@@ -2481,7 +2489,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.18.0';
-const BUILD = '20261115-1018';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261115-1026';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.18.0', date:'2026-11-15', items:[
     '虫ずもうが もっと もりあがるようになった：対戦カードとVS、軍配、ぼくと あいての顔（かっているときは にこにこ）、必殺わざの大きなカットイン、おうえんと「かち！」の演出。とちゅうで曲が とぎれにくくした',
@@ -4221,13 +4229,13 @@ function renderTitle(){
 /* ---- タイトル：ストーリーと じゆうに育てる のちがい（2026-11-14 ユーザー） ---- */
 const MODE_TXT = {
   story:'夏休みの7週間（7章）のお話。おとうさんといっしょに、毎週1ぴき 虫を見つけて育てて、見つけた場所にかえす。\n虫の育てかた・さわりかたや、いのちのつながりが わかるよ。友だちとの虫ずもうや、ふしぎな なぞも。',
-  free:'宗像の本物の場所で（おうちの人といっしょに）虫をさがして、すきなだけ育てる。\nいろんな虫を羽化させて、ずかんをうめよう。虫ずもうのライバルとも、何回でも。時計は本物の時間で進むよ。',
+  free:'宗像の本物の場所で（おうちの人といっしょに）虫をさがして、すきなだけ育てる。\nいろんな虫を羽化させて、ずかんをうめよう。虫ずもうのライバルとも、何回でも。時計は本物の時間で進むよ。ストーリーより ゆっくり育つ（成虫まで 3〜8日くらい）ので、毎日 お世話しよう。',
 };
 /* 「？」：別のページではなく、タイトルの上に うかぶウィンドウ。カードをタップすると、そのモードの「つづきから／はじめから」へ（2026-11-15 ユーザー） */
 let modePicked = false;   // カードからえらんだときは、「〜で はじめる？」を もう一度きかない
 function showModes(){
   const L = openWin('どっちで遊ぶ？', `
-    <div class="modeCmp"><button type="button" class="mc st" data-m="btnStory"><b>ストーリー</b><p>${esc(MODE_TXT.story).replace(/\n/g, '<br>')}</p><span class="mcGo">▶ タップで あそぶ</span></button><button type="button" class="mc fr" data-m="btnFree"><b>じゆうに育てる</b><p>${esc(MODE_TXT.free).replace(/\n/g, '<br>')}</p><span class="mcGo">▶ タップで あそぶ</span></button></div>
+    <div class="modeCmp"><button type="button" class="mc st" data-m="btnStory"><b>ストーリー</b><strong class="mcH">虫の 育てかたを 知る</strong><span class="mcTags"><i>⏩ 時間が はやく進む</i><i>🐛 3日ほどで 成虫に</i></span><p>${esc(MODE_TXT.story).replace(/\n/g, '<br>')}</p><span class="mcGo">▶ タップで あそぶ</span></button><button type="button" class="mc fr" data-m="btnFree"><b>じゆうに育てる</b><strong class="mcH">本物に近い形で 育てる</strong><span class="mcTags"><i>🕰 時計は 本物の時間と同じ</i><i>🐢 ゆっくり育つ（3〜8日）</i></span><p>${esc(MODE_TXT.free).replace(/\n/g, '<br>')}</p><span class="mcGo">▶ タップで あそぶ</span></button></div>
     <p class="modeTip"><b>おすすめ</b>：はじめは ストーリーで、虫の育てかたや いのちのことを知ってから、じゆうに育てる へ。親子で いっしょに 両方遊んでもOK（セーブは べつべつ）。</p>`, 'modeWin');
   L.querySelectorAll('[data-m]').forEach(b=> b.onclick = ()=>{ L.remove(); const t = $(b.dataset.m); if(t){ modePicked = true; Promise.resolve(t.onclick()).finally(()=> modePicked = false); } });
 }
