@@ -481,7 +481,7 @@ html.land.tall #msgLayer .ans .btn.pic img{width:132px;height:99px}
 .nsBook .nsStamp{position:absolute;right:9%;bottom:10%;width:clamp(58px,calc(var(--H,100vh) * 0.110),100px);height:clamp(58px,calc(var(--H,100vh) * 0.110),100px);border:3px solid #d8402a;border-radius:50%;color:#d8402a;font-family:"M PLUS Rounded 1c",sans-serif;font-weight:900;font-size:clamp(9px,calc(var(--H,100vh) * .016),15px);letter-spacing:-.05em;line-height:1.2;display:flex;align-items:center;justify-content:center;text-align:center;transform:rotate(-14deg);opacity:.85;animation:nsStamp .5s .6s cubic-bezier(.2,1.8,.4,1) both}
 @keyframes nsIn{from{opacity:0;transform:scale(.94) rotate(-1deg)}}
 @keyframes nsStamp{0%{transform:scale(2.4) rotate(-30deg);opacity:0}100%{transform:rotate(-14deg);opacity:.85}}
-.nbBook.shi .nbKt{margin-right:7%}.nbBook .nbShiori{position:absolute;left:94.5%;top:62%;height:42%;aspect-ratio:115/360;padding:0;border:0;background:none;cursor:pointer;z-index:3;transform:translateX(-50%) rotate(3deg);transform-origin:50% 0;filter:drop-shadow(2px 4px 4px #3a241266)}.nbBook .nbShiori img{width:100%;height:100%;object-fit:contain;display:block}.nbBook .nbShiori:active{transform:translateX(-50%) rotate(3deg) scale(.97)}
+.nbBook.shi .nbKg{grid-template-columns:repeat(5,1fr);margin-right:19%}.nbBook .nbShiori{position:absolute;left:93.3%;top:21%;height:42%;aspect-ratio:115/360;padding:0;border:0;background:none;cursor:pointer;z-index:3;transform:translateX(-50%) rotate(3deg);transform-origin:50% 0;filter:drop-shadow(2px 4px 4px #3a241266)}.nbBook .nbShiori img{width:100%;height:100%;object-fit:contain;display:block}.nbBook .nbShiori:active{transform:translateX(-50%) rotate(3deg) scale(.97)}
 .nbBook .nbFoot{margin-top:.4em;display:flex;gap:1.2em;align-items:baseline;flex-wrap:wrap;font-size:clamp(12px,calc(var(--H,100vh) * .024),18px);color:#5a3a14}.nbBook .nbGold{color:#a06a08;font-weight:800}
 #rtabs #rtNote.gold::after{content:'';position:absolute;right:6px;top:-8px;width:14px;height:40px;background:url(img/ui/shiori.webp) center/contain no-repeat;transform:rotate(10deg);filter:drop-shadow(0 0 3px #ffd860)}
 .storyCard .sc.endCard{display:flex;flex-direction:row;align-items:stretch;gap:0;width:min(92%,860px);max-width:min(92%,860px);max-height:88%;background:linear-gradient(#fffaf0,#fff0c8);color:#4a3320;border:3px solid #e0b040;border-radius:18px;overflow:hidden;box-shadow:0 0 0 4px #fff6d8aa,0 0 40px 10px #ffd86066;text-align:left;padding:0}
@@ -2580,7 +2580,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.18.0';
-const BUILD = '20261115-2245';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261115-2249';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.18.0', date:'2026-11-15', items:[
     '虫ずもうが もっと もりあがるようになった：対戦カードとVS、軍配、ぼくと あいての顔（かっているときは にこにこ）、必殺わざの大きなカットイン、おうえんと「かち！」の演出。とちゅうで曲が とぎれにくくした',
