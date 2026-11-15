@@ -498,7 +498,9 @@ html.land.tall #msgLayer .ans .btn.pic img{width:132px;height:99px}
 @keyframes cgIn{0%{opacity:0;transform:scale(1.04)}100%{opacity:1;transform:none}}
 /* おみせのおじさん・そとのおとうさん（2026-11-13）：会話と同じ立ち絵を、左のあいているところに立たせる */
 #standee{position:fixed;bottom:0;left:calc(var(--sl,0px) + 92px);height:min(88%,780px);width:auto;pointer-events:none;z-index:0;filter:drop-shadow(0 4px 10px #0005);animation:actorIn .4s ease-out}
-#papaPop{position:fixed;right:calc(var(--sr,0px) + 64px);bottom:0;height:min(62%,560px);z-index:5;pointer-events:none;animation:papaPop 5.2s ease both}
+#papaPop{position:fixed;right:calc(var(--sr,0px) + 64px);bottom:0;height:min(62%,560px);z-index:5;pointer-events:none;animation:papaIn .45s ease both}#papaPop.bye{animation:papaOut .45s ease both}
+#papaCatch{position:fixed;inset:0;z-index:7;cursor:pointer}#papaBub .pbNext{display:block;text-align:right;font-size:.78em;color:#8a5a20;margin-top:.2em;animation:pbBlink 1.2s ease-in-out infinite}
+@keyframes papaIn{0%{transform:translateX(40px);opacity:0}100%{transform:none;opacity:1}}@keyframes papaOut{0%{transform:none;opacity:1}100%{transform:translateX(30px);opacity:0}}@keyframes pbBlink{50%{opacity:.35}}
 #papaPop img{height:100%;width:auto;filter:drop-shadow(0 4px 10px #0005)}
 #coach{position:fixed;inset:0;z-index:230}
 #coach .cHole{position:fixed;border-radius:26px;pointer-events:none;transition:left .25s,top .25s,width .25s,height .25s;}
@@ -522,7 +524,7 @@ html.land.tall .fuki{width:min(calc(100% - 154px - var(--sl,0px) - var(--sr,0px)
 .fuki b.who{position:absolute;top:-.95em;right:1.3em;background:#f6cf5b;border:2px solid #d9a93a;border-radius:999px;padding:0 1em;color:#3a2410;font-size:14px;font-weight:700;line-height:1.6;white-space:nowrap}
 .fuki b.who.l{right:auto;left:1.3em}
 html.land.tall .fuki b.who{font-size:17px}
-#papaBub{pointer-events:none}
+#papaBub{pointer-events:none;animation:fukiIn .35s ease both}@keyframes fukiIn{0%{transform:translateY(16px);opacity:0}100%{transform:none;opacity:1}}   /* タップするまで消えない */
 html.land:not(.tall) body[data-tab=spot] #papaBub{bottom:auto;top:calc(var(--st,0px) + 44px);min-height:0;width:min(46%,420px);left:auto;right:calc(var(--sr,0px) + 8px);margin:0;font-size:.9em}
 #shopBub{cursor:pointer;animation-duration:9s}
 @keyframes fuki{0%{transform:translateY(16px);opacity:0}6%,88%{transform:none;opacity:1}100%{opacity:0;visibility:hidden}}
@@ -709,6 +711,7 @@ html.land.tall .toolTip{font-size:16px}
 .vh{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 .photoRes{margin-top:6px;background:#0003;border-radius:8px;padding:.5em;font-size:13px}
 .photoRes ul{margin:.3em 0 0;padding-left:1.2em}
+.pcatch{margin-top:.5em;text-align:center}.pcRow{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:.4em 0}.pcB{display:flex;flex-direction:column;align-items:center;gap:2px;width:84px;padding:4px;border-radius:10px;border:2px solid #c9a978;background:#fffaf0;color:#3a2a18;font:inherit;font-size:11px;cursor:pointer}.pcB svg{width:56px;height:56px}.pcFull{margin:.4em 0 0;font-weight:700}#photoWin .photoRes{background:#f3e6c8;color:#3a2a18}#photoWin .btn.sub{color:#5a3a14;background:#fffaf0;border-color:#c9a978;opacity:1}
 .pthumb{float:left;width:90px;height:90px;object-fit:cover;border-radius:6px;margin:0 .6em .3em 0}
 .album{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:6px}
 .album .ph{background:var(--paper);color:var(--paper-ink);border-radius:6px;padding:3px;text-align:center;font-size:10px}
@@ -2565,7 +2568,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.18.0';
-const BUILD = '20261115-1903';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261115-1927';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.18.0', date:'2026-11-15', items:[
     '虫ずもうが もっと もりあがるようになった：対戦カードとVS、軍配、ぼくと あいての顔（かっているときは にこにこ）、必殺わざの大きなカットイン、おうえんと「かち！」の演出。とちゅうで曲が とぎれにくくした',
@@ -4205,11 +4208,14 @@ function shopBub(){ $('shopBub')?.remove();
   setTimeout(bye, 9200);
 }
 // そとの場所に着いたとき、おとうさんが左下に出て、ひとこと言って下がる（さわってもじゃまにならない）
-function papaPop(text){ const old = $('papaPop'); if(old) old.remove(); if(!html_land()) return;
+function papaPop(text){ const old = $('papaPop'); if(old) old.remove(); $('papaCatch')?.remove(); if(!html_land()) return;
+  if(navigator.webdriver && !/[?&]papa/.test(location.search)) return;   // テストのときは出さない（?papa で出る）
   const e = document.createElement('div'); e.id = 'papaPop'; e.className = 'norb';
   e.innerHTML = `<img src="img/chara/cut/papa_teach.webp" alt="" draggable="false">`;
-  $('papaBub')?.remove(); const f = document.createElement('div'); f.id = 'papaBub'; f.className = 'fuki norb'; f.innerHTML = `<b class="who">おとうさん</b>${esc(text)}`;
-  document.body.appendChild(e); document.body.appendChild(f); setTimeout(()=>{ e.remove(); f.remove(); }, 5300);
+  $('papaBub')?.remove(); const f = document.createElement('div'); f.id = 'papaBub'; f.className = 'fuki norb'; f.innerHTML = `<b class="who">おとうさん</b>${esc(text)}<span class="pbNext">▼ タップして つぎへ</span>`;
+  const c = document.createElement('div'); c.id = 'papaCatch';   // 画面のどこをタップしても、おとうさんは下がる（2026-11-15 ユーザー：タップして次へ）
+  const bye = ()=>{ c.remove(); f.remove(); e.classList.add('bye'); setTimeout(()=> e.remove(), 450); };
+  c.onclick = bye; document.body.appendChild(e); document.body.appendChild(f); document.body.appendChild(c);
 }
 // ストーリーの章で場所の絵をかえる（2章は「ため池と田んぼ」の絵。じゆうに育てる では釣川の絵のまま）
 const spotCh = sp=> { const cn = storyOn() && CH[S.story.ch]; return cn && cn.spot === sp.key ? cn : null; };
@@ -4246,7 +4252,7 @@ function render(){
   $('rtRecv').hidden = !(S && !S.story && !S.tori && openCase === null && !isPhone());   // じゆうに育てる（タブレット・パソコン）：スマホでつかまえた虫を受けとる（2026-11-15 ユーザー）
   if($('rtNext')){ const on = !!(S && S.story && openCase === null && !S.story.done && S.story.ch && storySp().m > 1); $('rtNext').hidden = !on;   // 右のアイコンの下に「次の日へ」（ねる・次の章へ）。おすと、もう一度きく（storySleep）
     if(on){ const lb = nextLabel(); $('rtNext').querySelector('.nxL').textContent = lb.replace('（あしたへ）', ''); } }
-  setStandee(S && openCase === null && tab === 'shop' ? 'ojisan' : null); if(!atSpot && $('papaPop')){ $('papaPop').remove(); $('papaBub')?.remove(); }
+  setStandee(S && openCase === null && tab === 'shop' ? 'ojisan' : null); if(!atSpot && $('papaPop')){ $('papaPop').remove(); $('papaBub')?.remove(); $('papaCatch')?.remove(); }
   if(!S){ renderTitle(); otoScene(); return; }
   if(openCase !== null){ renderObs(); otoScene(); setTimeout(tutCheck, 900); return; }
   if(S.tori){ $('tabs').hidden = true; $('rtabs').hidden = true; if(!atSpot) document.body.dataset.tab = 'tori'; paintPlace(atSpot ? 'spot_' + spotArt(outState.spot) : 'tori_bg', slotOf()); view.onscroll = null; (atSpot ? renderSpot : renderTori)(); otoScene(); setTimeout(tutCheck, 900); return; }
@@ -4300,7 +4306,7 @@ function renderTitle(){
     <div class="tgap"></div>
     <div class="t3">宗像の森や川で虫をみつけて、おうちのケースでそだてよう。脱皮・さなぎ・羽化を見られるかな？</div>
     <div class="t4">※このゲームに出てくる場所と虫の組み合わせはゲーム用のもので、実際にその場所にいる虫とはかぎりません。ゲームの中でそだつ速さも、本物よりずっと速くしてあります。</div>
-    ${isPhone() ? `<div class="tbtns toriRow"><button type="button" class="tbtn pri tori" id="btnTori"><img class="emI" src="img/ui/ok_pin.webp" alt="">そとで虫をつかまえる<small>つかまえて、家のタブレットに おくる</small></button></div>` : ''}
+    ${isPhone() ? `<div class="tbtns toriRow"><button type="button" class="tbtn pri tori" id="btnTori"><img class="emI" src="img/ui/ok_pin.webp" alt="">そとで虫をつかまえる<small>つかまえて、おうちのタブレットに おくる</small></button></div>` : ''}
     <div class="tbtns"><button type="button" class="tbtn ${isPhone() ? '' : 'pri'}" id="btnStory">ストーリー${hasS ? (hasS.story.done ? `<small>クリア${(hasS.story.loop || 1) > 1 ? '（' + hasS.story.loop + '周）' : ''}${hasS.story.flags && hasS.story.flags.allKakera ? '★' : ''}</small>` : `<small>${hasS.story.ch ? hasS.story.ch + '章' : '序章'}から</small>`) : ''}</button><button type="button" class="tbtn qm" id="btnModes">どっちで あそぶ？</button><button type="button" class="tbtn" id="btnFree">じゆうに育てる${has ? '<small>つづきから</small>' : ''}</button></div>
     <div class="tbtns sub"><button type="button" class="tbtn" id="btnInstall">アプリにする方法</button><button type="button" class="tbtn" id="btnShare">友だちに教える</button>${isPhone() ? '' : '<button type="button" class="tbtn tori" id="btnTori"><img class="emI" src="img/ui/ok_pin.webp" alt="">そとで虫をつかまえる（スマホ）</button>'}</div>
     <div class="tpad">虫を育てるのは、大きな画面の<b>タブレット</b>や<b>パソコン</b>がおすすめ</div>
@@ -4382,7 +4388,7 @@ function showTitleMenu(){
 }
 function showModes(phone){
   const L = openWin(phone ? '遊び方' : 'どっちで遊ぶ？', `${phone ? `
-    <div class="modeCmp"><button type="button" class="mc tr" data-m="btnTori"><b><img class="emI" src="img/ui/ok_pin.webp" alt="">そとで虫をつかまえる</b><strong class="mcH">スマホで そとへ</strong><span class="mcTags"><i>🌳 宗像のスポットや 近くの公園</i><i><img class="emI" src="img/ui/ok_phone.webp" alt="">→ タブレットに おくる</i></span><p>おうちの人と いっしょに そとへ行って、いまいる場所で 虫をさがそう。つかまえた虫は、家の タブレットや パソコンの「じゆうに育てる」に おくって 育てるよ。</p><span class="mcGo">▶ タップで あそぶ</span></button></div>
+    <div class="modeCmp"><button type="button" class="mc tr" data-m="btnTori"><b><img class="emI" src="img/ui/ok_pin.webp" alt="">そとで虫をつかまえる</b><strong class="mcH">スマホで そとへ</strong><span class="mcTags"><i>🌳 宗像のスポットや 近くの公園</i><i><img class="emI" src="img/ui/ok_phone.webp" alt="">→ タブレットに おくる</i></span><p>おうちの人と いっしょに そとへ行って、いまいる場所で 虫をさがそう。つかまえた虫は、おうちの タブレットや パソコンの「じゆうに育てる」に おくって 育てるよ。</p><span class="mcGo">▶ タップで あそぶ</span></button></div>
     <h3 class="modeH">おうちで 育てる（タブレット・パソコンが おすすめ）</h3>` : ''}
     <div class="modeCmp"><button type="button" class="mc st" data-m="btnStory"><b>ストーリー</b><strong class="mcH">虫の 育てかたを 知る</strong><span class="mcTags"><i>⏩ 時間が はやく進む</i><i>🐛 3日ほどで 成虫に</i></span><p>${esc(MODE_TXT.story).replace(/\n/g, '<br>')}</p><span class="mcGo">▶ タップで あそぶ</span></button><button type="button" class="mc fr" data-m="btnFree"><b>じゆうに育てる</b><strong class="mcH">本物に近い形で 育てる</strong><span class="mcTags"><i>🕰 時計は 本物の時間と同じ</i><i>🐢 ゆっくり育つ（3〜8日）</i></span><p>${esc(MODE_TXT.free).replace(/\n/g, '<br>')}</p><span class="mcGo">▶ タップで あそぶ</span></button></div>
     <p class="modeTip"><b>おすすめ</b>：はじめは ストーリーで、虫の育てかたや いのちのことを知ってから、じゆうに育てる へ。親子で いっしょに 両方遊んでもOK（セーブは べつべつ）。</p>`, 'modeWin');
@@ -5037,6 +5043,9 @@ const PHOTO_CATS = {
   ari:      {name:'アリ', money:5, shapes:[], labels:['ant']},
   sonota:   {name:'そのほかの虫', money:10, shapes:[], labels:['walking stick','cockroach','leafhopper','lacewing','fly']},
 };
+// そとで虫をつかまえる（スマホ）：写真の虫のなかまから「どれだった？」をえらんで、成虫を つかまえる（2026-11-15 ユーザー：リアルと連動）。
+// AI（mobilenet）は カブトとクワガタ、バッタとコオロギなどを見分けられないので、えらぶのは子ども。幼虫は AI がわからない（ImageNet に幼虫がない）
+const PHOTO_CATCH = {kabuto:['kabuto','kokuwa','nokogiri','hirata','miyama','ookuwa'], mantis:['kamakiri'], batta:['shoryo','tonosama','suzumushi'], chou:['monshiro','ageha','karasu','oomurasaki']};
 const LABEL2CAT = {}; Object.entries(PHOTO_CATS).forEach(([k,c])=>c.labels.forEach(l=>{ if(!LABEL2CAT[l]) LABEL2CAT[l] = k; }));
 function loadPhotos(){ let p; try{ p = JSON.parse(localStorage.getItem(PHOTO_KEY)); }catch(e){} p = p || {}; p.cats = p.cats || {}; p.hashes = p.hashes || []; p.daily = p.daily || {date:'', n:0}; return p; }
 let photos = loadPhotos();
@@ -5089,11 +5098,29 @@ async function handlePhoto(file, sp, box){
   save(); hud();
   box.innerHTML = head + `<b class="yk">${esc(C.name)}だ！</b> <small>AIのはんてい ${Math.round(score[cat]*100)}%</small>${first ? '<br>写真アルバムに登録された！' : ''}<ul>${gifts.map(g=>`<li>${esc(g)}</li>`).join('')}</ul>`;
   await yakusoku('photo', '本物の虫は、写真をとったら そっとしておこう。\nつかまえなくても、写真で記録できるよ。');
+  if(S.tori && PHOTO_CATCH[cat]) photoCatch(cat, sp, box);
+}
+function photoCatch(cat, sp, box){
+  const frees = S.cases.map((c,j)=> c ? -1 : j).filter(j=> j >= 0);
+  if(!frees.length){ box.insertAdjacentHTML('beforeend', '<p class="pcFull">小さい虫かごが いっぱい。おくってから、また とってね。</p>'); return; }
+  box.insertAdjacentHTML('beforeend', `<div class="pcatch"><b>どの虫だった？ えらぶと、ゲームでも つかまえられるよ</b><div class="pcRow">${PHOTO_CATCH[cat].map(id=>`<button type="button" class="pcB" data-b="${id}">${svgBug(id, 'adult')}<span>${esc(BUGS[id].name)}</span></button>`).join('')}</div><button type="button" class="btn sub" id="pcNo">つかまえない</button></div>`);
+  box.querySelector('#pcNo').onclick = ()=> box.querySelector('.pcatch').remove();
+  setTimeout(()=> box.querySelector('.pcatch')?.scrollIntoView({block:'end', behavior:'smooth'}), 80);   // スマホは窓が低いので、えらぶところまで動かす
+  box.querySelectorAll('.pcB').forEach(btn=> btn.onclick = async ()=>{
+    const id = btn.dataset.b, b = BUGS[id], free = S.cases.findIndex(c=> !c); if(free < 0) return;
+    S.cases[free] = {bug:id, si:Math.max(0, b.plan.findIndex(x=> x.k === 'adult')), prog:0, hunger:70, wet:70, clean:100, tick:now(), pending:false, from:sp.name, born:sp.key, bornSlot:slotOf(), since:dayKey(), spc:!outState.outside, st6:stampN() >= 6, photo:1,
+      ind:{hp:1, atk:1, def:1, spd:1, heal:1}, log:newLog(), tot:newLog(), place:'genkan', trouble:null, dirt:[], foods:[], soak:0, hideUntil:0, deco:[], mat:null, soilAge:0, wetZ:Array(WZ).fill(70), soakZ:Array(WZ).fill(0), stress:0, known:true};
+    const d = S.dex[id] = S.dex[id] || {found:dayKey(), where:sp.name}; d.known = 1; d.adult = d.adult || dayKey();
+    save(true); track('bug_catch', {bug:id, chapter:0, photo:1});
+    document.querySelectorAll('#photoWin').forEach(w=> w.close ? w.close() : w.remove());
+    await say(`本物の虫と同じ、${b.name}の成虫を 小さい虫かごに入れた！\n本物の虫は、写真をとったら そっとしておこうね。`, {face:'papa_teach'});
+    await toriAfterCatch();
+  });
 }
 
 // 写真の欄（じゆうに育てるは 場所の画面の中、そとで虫をつかまえるは 窓）
 const photoInner = win=> `${win ? '' : '<b>📷 本物の虫の写真をとる</b>　'}<span class="small">今日のこり ${photoLeft()}まい</span>
-      <div class="small">外で見つけた本物の虫をとると、${S.tori ? '' : 'どんぐりがもらえる。'}写真の虫のなかまの幼虫も見つかりやすくなるよ。写真はこのたんまつの中だけでAIが判定して、どこにも送られません。</div>
+      <div class="small">外で見つけた本物の虫をとると、${S.tori ? 'その虫を つかまえられる（カブトムシ・クワガタ・カマキリ・バッタ・スズムシ・チョウ）。' : 'どんぐりがもらえる。'}写真の虫のなかまの幼虫も見つかりやすくなるよ。写真はこのたんまつの中だけでAIが判定して、どこにも送られません。</div>
       <div class="row" style="margin-top:6px"><label class="btn pri">カメラでとる<input id="camIn" class="vh" type="file" accept="image/*" capture="environment"></label><label class="btn">アルバムから<input id="libIn" class="vh" type="file" accept="image/*"></label></div>
       <div id="photoRes" class="small"></div>`;
 const photoWire = sp=> ['camIn','libIn'].forEach(k=>{ $(k).onchange = async e=>{ const f = e.target.files[0]; e.target.value = ''; const box = $('photoRes'); box.className = 'photoRes'; await handlePhoto(f, sp, box); }; });
@@ -5195,7 +5222,7 @@ setInterval(ptTick, 1000);
 async function phoneOK(){
   if(!isPhone() || !tutOK()) return true;
   try{ if(localStorage.getItem('munakata-ikusei-phone-ok')) return true; }catch(e){}
-  const i = await say('このゲームで虫を育てるのは、画面の大きい タブレットや パソコンが おすすめ。\nスマホは画面が小さくて、虫かごの お世話が しにくいかも。\nスマホでは「そとで虫をつかまえる」で虫をつかまえて、家の タブレットや パソコンに おくれるよ。', {ans:['このまま スマホで遊ぶ', 'そとで虫をつかまえる', 'やめる']});
+  const i = await say('このゲームで虫を育てるのは、画面の大きい タブレットや パソコンが おすすめ。\nスマホは画面が小さくて、虫かごの お世話が しにくいかも。\nスマホでは「そとで虫をつかまえる」で虫をつかまえて、おうちの タブレットや パソコンに おくれるよ。', {ans:['このまま スマホで遊ぶ', 'そとで虫をつかまえる', 'やめる']});
   if(i === 1){ startTori(); return false; }
   if(i === 2) return false;
   try{ localStorage.setItem('munakata-ikusei-phone-ok', '1'); }catch(e){}
@@ -5227,7 +5254,7 @@ async function geoGo(){
 function renderTori(){
   const got = S.cases.map((c,i)=> c ? i : -1).filter(i=> i >= 0);
   view.innerHTML = `<div class="row" style="justify-content:space-between"><h2><img class="emI" src="img/ui/ok_pin.webp" alt="">そとで虫をつかまえる</h2><button type="button" class="btn sub" id="tTitle">タイトルへ</button></div>
-    <p class="win toriLead">宗像の とくべつなスポットや、近くの草むらで 虫をさがそう。つかまえた虫は、家の <b>タブレットや パソコン</b>（「じゆうに育てる」）に おくって 育てるよ。<br><small>そとでは、かならず おうちの人と いっしょにね。</small></p>
+    <p class="win toriLead">宗像の とくべつなスポットや、近くの草むらで 虫をさがそう。つかまえた虫は、おうちの <b>タブレットや パソコン</b>（「じゆうに育てる」）に おくって 育てるよ。<br><small>そとでは、かならず おうちの人と いっしょにね。</small></p>
     <div class="row"><button type="button" class="btn pri" id="btnGeo"><img class="emI" src="img/ui/ok_pin.webp" alt="">いまいる場所をしらべる</button><button type="button" class="btn" id="tHow">おくりかた</button></div>
     ${got.length ? `<h3>つかまえた虫（${got.length}/${S.cases.length}ひき・まだ おくっていない）</h3><div class="toriList">${got.map(i=>{ const c = S.cases[i];
       return `<div class="spot toriBug"><span class="tbPic">${svgBug(c.bug, stageOf(c).k, {instar:instarOf(c)})}</span><div class="tbTx"><b>${esc(dispName(c))}</b><small>${esc(c.from)}で つかまえた</small></div><div class="row"><label class="tbChk"><input type="checkbox" data-pick="${i}" checked>おくる</label><button type="button" class="btn sub" data-rel="${i}">にがす</button></div></div>`; }).join('')}</div>
@@ -5320,7 +5347,7 @@ function renderSpot(){
     <div id="findBox" class="search"><div class="papaHint norb"><span><b class="who">おとうさん</b>${esc(SLOT_HINT[slot])}</span></div>
       <div class="findRow"><button type="button" class="findBtn" id="btnFind" ${left <= 0 || (!all.length && !egg) ? 'disabled' : ''}><img src="img/tools/megane.webp" alt="" draggable="false"><b>さがす</b></button>
       <div class="left"><div class="small">今日ここで さがせるのは</div><div class="acorns">${Array.from({length:Math.max(FINDS_PER_VISIT + (storyOn() ? 2 : 0), used + left)}, (_, i)=> `<i class="${i < left ? 'on' : ''}"></i>`).join('')}</div><div class="small">あと${Math.max(0, left)}回</div></div></div>${S.tori ? '<div class="row photoMini"><button type="button" class="btn" id="btnPhotoW">📷 本物の虫の写真をとる</button></div>' : ''}</div>
-    <div class="spot photoBox" ${storyOn() || S.tori ? 'hidden' : ''}>${photoInner()}</div>`;
+    ${storyOn() || S.tori ? '' : `<div class="spot photoBox">${photoInner()}</div>`}`;   // スマホ（S.tori）は窓で。同じ id がふたつにならないように、ここには出さない
   if(!storyOn() && !S.tori) photoWire(sp);
   if(S.tori && $('btnPhotoW')) $('btnPhotoW').onclick = ()=>{ openWin('本物の虫の写真をとる', `<div class="photoBox">${photoInner(true)}</div>`, 'photoWin'); photoWire(sp); };   // そとで虫をつかまえる（スマホ）：場所の画面は1画面なので、ボタンから窓で（2026-11-15 ユーザー）
   $('btnLeave').onclick = ()=>{ outState = null; $('findField') && $('findField').remove(); setTab(S.tori ? 'out' : 'home'); };   // そとで虫をつかまえる は「そと」のまま（home になると、つぎに着いても場面が かわらなかった。2026-11-15 ユーザー）
@@ -5335,6 +5362,13 @@ function renderSpot(){
    ストーリーでは おみせで売らないので、これがエサの手に入れ方（脚本：はるか「草むらで、小さいバッタやコオロギをつかまえて」） */
 const needFeeder = ()=> S.cases.some(c=> c && (BUGS[c.bug].food === 'koorogi' || BUGS[c.bug].foodAdult === 'koorogi'));
 const feederTxt = n=> `<b class="yk">草むらで、エサになる小さなバッタを ${n}ぴき つかまえた！</b><br><small>生きた虫しか食べない虫の ごはんにしよう。（もちもの：${S.items.koorogi}ぴき）</small>`;
+async function toriAfterCatch(){
+  const n = S.cases.filter(Boolean).length, room = S.cases.length - n;
+  const a = await say(`いま つかまえた虫は ${n}ひき。${room ? `あと ${room}ひき つかまえられるよ。` : '小さい虫かごは いっぱい！'}`, {ans:[...(room ? ['つづけて さがす'] : []), `まとめて おくる（${n}ひき）`, 'あとで おくる']});
+  if(room ? a === 1 : a === 0){ await sendMany(S.cases.map((c,i)=> c ? i : -1).filter(i=> i >= 0)); return; }
+  if(room && a === 0){ renderSpot(); return; }
+  outState = null; tab = 'home'; render();
+}
 async function doFind(sp, here, egg, slot, h){
   const key = sp.key + '|' + dayKey(); S.visits[key] = (S.visits[key]||0) + 1; save(); storyAdvance('sagasu', 'さがす');
   const box = $('findBox'), F = $('findField');
@@ -5386,11 +5420,7 @@ async function doFind(sp, here, egg, slot, h){
         ind:{hp:1, atk:1, def:1, spd:1, heal:1}, log:newLog(), tot:newLog(), place:'genkan', trouble:null, dirt:[], foods:[], soak:0, hideUntil:0, deco:[], mat:null, soilAge:0, wetZ:Array(WZ).fill(70), soakZ:Array(WZ).fill(0), stress:0, known:!!know};
       save(true); track('bug_catch', {bug:id, chapter:0});
       await say(`${know ? b.name + 'の' + (id === 'kinkabuto' ? 'たまご' : '幼虫') : 'なぞの' + G.name}を、小さい虫かごに入れた！\n「${sp.local ? sp.name : BORN[sp.key].name}」の虫だ。` + (outState.outside ? '' : '\n✨とくべつなスポットの虫：めずらしい色に なりやすい！'));
-      const n = S.cases.filter(Boolean).length, room = S.cases.length - n;
-      const a = await say(`いま つかまえた虫は ${n}ひき。${room ? `あと ${room}ひき つかまえられるよ。` : '小さい虫かごは いっぱい！'}`, {ans:[...(room ? ['つづけて さがす'] : []), `まとめて おくる（${n}ひき）`, 'あとで おくる']});
-      if(room ? a === 1 : a === 0){ await sendMany(S.cases.map((c,i)=> c ? i : -1).filter(i=> i >= 0)); return; }
-      if(room && a === 0){ renderSpot(); return; }
-      outState = null; tab = 'home'; render(); return;
+      await toriAfterCatch(); return;
     }
     const foodKey = b.food, food = ITEMS[foodKey];
     if(foodKey === 'koorogi' && !(S.items[foodKey]||0)) await say('つれてかえるなら、ごはんの「生きた小さな虫」がいるよ。\nそとの「草むら」をさがすと、エサになる小さなバッタやコオロギが つかまえられる。いっしょに さがしてみよう。', {face:'papa_teach'});   // 2026-11-14 ユーザー：カマキリのエサは、そとでつかまえる
@@ -5406,7 +5436,7 @@ async function doFind(sp, here, egg, slot, h){
     await say(`${know ? b.name + 'の' + (id === 'kinkabuto' ? 'たまご' : '幼虫') : 'なぞの' + G.name}を、${free+1}ばんの${BOXES[S.boxes[free]].name}（${PLACES[keys[pi]].name}）に入れた。\n「${sp.local ? sp.name : BORN[sp.key].name}」の虫だ。` + (!storyOn() && !outState.outside ? '\n✨とくべつなスポットの虫：めずらしい色に なりやすい！' : ''));
     await yakusoku('take', '虫をつれてかえるときは、いきをしやすいように、ふたにあなをあけたケースに。\n日なたにおくと、あつくて弱ってしまうよ。');
     if(storyOn()){ nc.story = S.story.ch; save(); await storyFound(nc); }
-    else if(isPhone()) await yakusoku('okuru', 'つかまえた虫は、家のタブレットやパソコンにも おくれるよ。\n虫かごの「ケースのこと」→「タブレットやパソコンにおくる」。\n大きな画面で育てると、虫がよく見えるよ。');   // スマホで外にいるときに気づけるように
+    else if(isPhone()) await yakusoku('okuru', 'つかまえた虫は、おうちのタブレットやパソコンにも おくれるよ。\n虫かごの「ケースのこと」→「タブレットやパソコンにおくる」。\n大きな画面で育てると、虫がよく見えるよ。');   // スマホで外にいるときに気づけるように
     renderSpot();
   };
 }
@@ -5806,10 +5836,10 @@ async function showShare(){ track('open_share');
     const q = qrcode(0, 'M'); q.addData(GAME_URL); q.make(); if($('qrBox')) $('qrBox').outerHTML = `<div class="qrImg">${q.createSvgTag({cellSize:6, margin:2, scalable:true})}</div>`; }
   catch(e){ if($('qrBox')) $('qrBox').textContent = '（QRコードを作れませんでした。URLを送ってね）'; }
 }
-// スマホでつかまえた虫を、家のタブレットやパソコンへ（やり方）
+// スマホでつかまえた虫を、おうちのタブレットやパソコンへ（やり方）
 function showSendHow(){
-  openWin('スマホでつかまえて、タブレットにおくる', `<div class="okRow norb"><span><img src="img/ui/ok_phone.webp" alt="">そとで</span><b>→</b><span><img src="img/ui/ok_bug.webp" alt="">虫をおくる</span><b>→</b><span><img src="img/ui/ok_tab.webp" alt="">家のタブレット</span></div>
-    <p>外ではスマホを持って、虫をさがして つれてかえる。家では、大きな画面のタブレットやパソコンで、ゆっくり育てよう。</p>
+  openWin('スマホでつかまえて、タブレットにおくる', `<div class="okRow norb"><span><img src="img/ui/ok_phone.webp" alt="">そとで</span><b>→</b><span><img src="img/ui/ok_bug.webp" alt="">虫をおくる</span><b>→</b><span><img src="img/ui/ok_tab.webp" alt="">おうちのタブレット</span></div>
+    <p>外ではスマホを持って、虫をさがして つれてかえる。おうちでは、大きな画面のタブレットやパソコンで、ゆっくり育てよう。</p>
     <div class="ibox now"><h3>おくりかた</h3><ol>
       <li>スマホのタイトルの「<b><img class="emI" src="img/ui/ok_pin.webp" alt="">そとで虫をつかまえる</b>」で、虫をつかまえる</li>
       <li>「<b><img class="emI" src="img/ui/ok_phone.webp" alt="">→ おくる</b>」をおす<br><small>（「じゆうに育てる」で育てている虫は、虫かごの「ケースのこと」→「タブレットやパソコンにおくる」）</small></li>
@@ -5975,7 +6005,7 @@ function openZoom(id, opt={}){
 }
 
 /* =========================================================
-   虫をおくる：スマホでつかまえた虫を、家のタブレットやパソコンへ。サーバーは使わない。
+   虫をおくる：スマホでつかまえた虫を、おうちのタブレットやパソコンへ。サーバーは使わない。
    虫のデータ（種類・大きさ・どこでつかまえたか・育ちぐあい）を URL（?okuru=…）に入れて、QRコードか AirDrop などでわたす。
    名前や位置情報は入れない。同じ虫は1回しか受けとれない（uid）
    ========================================================= */
@@ -6017,7 +6047,7 @@ const groupBugSVG = cs=>{ const n = Math.min(cs.length, 6), cols = n <= 1 ? 1 : 
 async function sendBug(i, noAsk){
   const c = S.cases[i]; if(!c) return;
   const st = stageOf(c), nm = dispName(c);
-  if(!noAsk && !(await ask(`${nm}を、べつの端末（家のタブレットやパソコン）におくる？\nとどいたら、この端末からはいなくなるよ。`, 'おくる', 'やめる'))) return;
+  if(!noAsk && !(await ask(`${nm}を、べつの端末（おうちのタブレットやパソコン）におくる？\nとどいたら、この端末からはいなくなるよ。`, 'おくる', 'やめる'))) return;
   c.uid = c.uid || (Date.now().toString(36) + Math.random().toString(36).slice(2, 8)); save();
   const url = location.origin + location.pathname + '?okuru=' + await packBug(c);
   document.querySelectorAll('.sendL').forEach(e=>e.remove());
@@ -6048,7 +6078,7 @@ async function sendBug(i, noAsk){
    AirDrop・コピーでもらったリンクを はりつけても受けとれる */
 const okuruOf = t=>{ const m = String(t || '').match(/[?&]okuru=([A-Za-z0-9_\-]+)/); return m ? m[1] : null; };
 async function recvWin(){
-  const W = openWin('スマホから 虫を受けとる', `<div class="rcvBox"><div class="okRow norb"><span><img src="img/ui/ok_phone.webp" alt="">そとで</span><b>→</b><span><img src="img/ui/ok_bug.webp" alt="">虫をおくる</span><b>→</b><span><img src="img/ui/ok_tab.webp" alt="">家のタブレット</span></div><p class="rcvHow"><b>①</b> スマホの「そとで虫をつかまえる」で、<b>「えらんだ虫を まとめて おくる」</b>をおす<br><b>②</b> スマホに出た <b>QRコードを、下のカメラに うつす</b></p>
+  const W = openWin('スマホから 虫を受けとる', `<div class="rcvBox"><div class="okRow norb"><span><img src="img/ui/ok_phone.webp" alt="">そとで</span><b>→</b><span><img src="img/ui/ok_bug.webp" alt="">虫をおくる</span><b>→</b><span><img src="img/ui/ok_tab.webp" alt="">おうちのタブレット</span></div><p class="rcvHow"><b>①</b> スマホの「そとで虫をつかまえる」で、<b>「えらんだ虫を まとめて おくる」</b>をおす<br><b>②</b> スマホに出た <b>QRコードを、下のカメラに うつす</b></p>
     <div class="rcvCam"><video id="rcvV" playsinline muted></video><i class="rcvFrame"></i><span class="small" id="rcvMsg">カメラを じゅんびしています…</span></div>
     <details class="rcvLink"><summary>カメラが つかえないとき（リンクを はりつける）</summary><p class="small">スマホで「AirDrop などでおくる」か「リンクをコピー」をして、とどいたリンクを ここに はりつけてね。</p><div class="row"><input id="rcvIn" class="btn" type="url" placeholder="https://…?okuru=…" autocomplete="off"><button type="button" class="btn pri" id="rcvGo">受けとる</button></div></details>
     <p class="small">カメラの画像は、この端末の中でQRコードを読むだけ。保存も送信もしないよ。</p></div>`, 'recvWin');
