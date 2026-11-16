@@ -2581,9 +2581,14 @@ const TORI_KEY = KEY_PRE + 'munakata-mushisodate-tori-v1';   // そとで虫を�
 const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
-const GAME_VER = '0.19.1';
-const BUILD = '20261116-0121';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const GAME_VER = '0.20.0';
+const BUILD = '20261116-2347';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
+  {v:'0.20.0', date:'2026-11-16', items:[
+    '宗像大社・城山・さつき松原・釣川・赤間・大島の場所の絵を、本物の場所の写真をもとに描きなおした（赤間は 赤間宿の酒蔵の通り）',
+    'ストーリーの絵を、本物の場所に合わせて描きなおした：神湊でフェリーに乗るところ、フェリーの上、中津宮と天の川、七夕祭の夜、御岳山の展望所、高宮祭場、沖津宮遙拝所',
+    '大島の絵をふやした：かんす海水浴場と夢の小夜島、風車の丘、天真名井（夕方と夜）',
+  ]},
   {v:'0.19.1', date:'2026-11-16', items:[
     '「じゆうに育てる」の ずかんの上に、しるし（🦋虫そだて見ならい・名人・虫はかせ）と、つぎの しるしまで あと何しゅるいかを出すようにした。羽化して しるしが上がったときも おしらせする',
     'iPad の アプリで、タイトル画面の下がつまって見えるのを直した',
@@ -6536,7 +6541,7 @@ async function tanabataStalls0(){
       await play(r.got.includes(1) ? 'けんた：1等！？ まじかよ！' : r.got.length ? 'けんた：おれ、ラムネばっかりだった。…いっしょに飲もうぜ。' : 'けんた：くじは、また来年だな。'); }
     save(); }
 }
-const CG = ['ame', 'hotaru', 'ferry', 'amanogawa', 'tenbodai', 'matsuri', 'taifu', 'eki', 'yamaasa', 'takamiya', 'yohaisho', 'happyo', 'gakko', 'obaa', 'tosho', 'jousen', 'oshimako', 'note', 'ranou', 'hikari', 'fuka', 'kinsora', 'ending', 'yume', 'morifuka'];   // 2026-11-14：序章の光・ふ化・金色の虫が海へ・エンディング・かけらの夢・森で生まれていた   // img/ui/ev/キー.webp（gakko・obaa・tosho は ほかの場所の絵。2026-11-14）
+const CG = ['manai', 'manai_yoru', 'kansu', 'fusha', 'ame', 'hotaru', 'ferry', 'amanogawa', 'tenbodai', 'matsuri', 'taifu', 'eki', 'yamaasa', 'takamiya', 'yohaisho', 'happyo', 'gakko', 'obaa', 'tosho', 'jousen', 'oshimako', 'note', 'ranou', 'hikari', 'fuka', 'kinsora', 'ending', 'yume', 'morifuka'];   // 2026-11-14：序章の光・ふ化・金色の虫が海へ・エンディング・かけらの夢・森で生まれていた   // img/ui/ev/キー.webp（gakko・obaa・tosho は ほかの場所の絵。2026-11-14）
 function cgShow(k){ let e = $('cgLayer');
   if(!k || k === 'off' || !CG.includes(k)){ if(e){ e.remove(); otoScene(); } return; }
   if(e) e.classList.remove('atBg');
@@ -6956,7 +6961,8 @@ const STORY_DAY = {
   // 七夕祭の出店は、夕方から（2026-11-14 ユーザー：朝から行けるのはおかしい）。朝は予告だけで、出店は STORY_EVE['3-5']
   '3-5': async ()=>{ await play(`＊8月7日。きょうは七夕祭。夕方から、港のそばの広場に 出店がならぶ。
       けんた：夕方になったら、いっしょに出店をまわろうぜ！ それまでに、虫のお世話をすませとけよ。`); storyGoal('夕方の七夕祭まで、虫のお世話をする'); },
-  '3-6': async ()=>{ await play(`＊かんす海水浴場の近くの海べ。海の中に、朱色の鳥居が立つ小さな島（夢の小夜島）が見える。
+  '3-6': async ()=>{ await play(`＠絵 kansu
+      ＊かんす海水浴場の近くの海べ。海の中に、朱色の鳥居が立つ小さな島（夢の小夜島）が見える。
       けんた：…おれさ、じいちゃんの むかしの船の話、きいてから、ちょっと考えたんだ。
       けんた：おれ、ふだんは町の子だから、島のこと、ちゃんと知らなかった。じいちゃんが どんな海で 漁をしてるのかも。`);
     const a = await choose('けんた：来年も、じいちゃんの船に のせてもらうんだ。', ['「いいね。ぼくも、また島に来る」', '「みあれ祭も、見てみたい！」'], 'boku');
@@ -7129,6 +7135,7 @@ const STORY_DAY = {
       ＠絵 oshimako
       ＊港で、けんたと漁師のじいちゃんが待っていた。
       ${eggLeft() ? 'けんた：はやく、たまごのところへ行こうぜ！' : 'けんた：生まれたんだ…！ 金色じゃん！'}
+      ＠絵 manai
       ＊夕方、たまごを見つけた、中津宮のそばの、天真名井へ向かう階段の近くへ。`);
     if(k){ let a = await choose('ぼく（ふつう）：…ここで、かえすんだね。', ['森にかえす', 'もう少しだけ、そばにいてほしい'], 'boku');
       if(a === 1) await play('ぼく（なみだ）：…もう少しだけ、そばにいてほしい。\nおとうさん（にっこり）：その気持ちが、育てたってことなんだよ。');
@@ -7208,7 +7215,8 @@ const STORY_DAY = {
 };
 // 3章4日目の「虫の先生」：島の子の質問に答える
 STORY_DAY['3-4'] = async ()=>{ meet('kenta');
-  await play(`＊島の北の、風車の丘。ヒマワリがさいている。けんたの友だちの、島の小さい子たちが、ぼくの虫を見にきた。
+  await play(`＠絵 fusha
+    ＊島の北の、風車の丘。ヒマワリがさいている。けんたの友だちの、島の小さい子たちが、ぼくの虫を見にきた。
     けんた：こいつ、虫の先生なんだぜ！`);
   const c = stCase(); let ok = 0;
   if(c){ const b = BUGS[c.bug];
@@ -7265,7 +7273,8 @@ const STORY_EVE = {
       ＊夜8時、中津宮の織女神社の前で、七夕祭。「${S.story.flags.wish || '虫が元気に育ちますように'}」の短冊も、おさめられた。`); cgShow('off'); storyGoal('七夕祭の夜');
     await play('＊お祭りのあと、天の川のそば。手おけの水をのぞくと、水面に、金色の光がゆらっとうつった。');
     await choose('…！', ['光のほうを見る', 'おとうさんをよぶ'], 'boku_surprise');
-    await play(`＊おとうさんといっしょに、光のほうへ。境内の横の、天真名井（あまのまない）へ向かう階段の近く。
+    await play(`＠絵 manai_yoru
+      ＊おとうさんといっしょに、光のほうへ。境内の横の、天真名井（あまのまない）へ向かう階段の近く。
       ＊落ち葉の下に、金色にかすかに光る、大きなたまご。
       おとうさん（しんぱい）：…見たことがない。カブトムシのなかまのたまごに、にているけど…。`);
     await play('おとうさん（教える）：ほんとうは、この島のものは、この島にあるのがいちばんだ。//でも、このたまご…落ち葉がかわいて、このままだとひからびてしまいそうだ。');
@@ -7390,7 +7399,7 @@ const PLACES_X = [
 const PLACES_SHIMA = [
   {k:'minato',  name:'大島の港', desc:'漁船とフェリーのりば。じいちゃんの船もここ', pic:'img/ui/ev/oshimako.webp', cg:'oshimako'},
   {k:'nakatsu', name:'中津宮', desc:'港の近くのお宮。境内に天の川が流れる', pic:'img/ui/ev/amanogawa.webp', cg:'amanogawa'},
-  {k:'umibe',   name:'島の海べ', desc:'岩場と砂浜。島の子たちの遊び場', pic:'img/ui/spot_oshima.webp'},
+  {k:'umibe',   name:'島の海べ', desc:'かんす海水浴場。海の中に、鳥居の立つ小さな島', pic:'img/ui/ev/kansu.webp', cg:'kansu'},
 ];
 const placesNow = ()=> S.story.ch === 3 ? PLACES_SHIMA : PLACES_X;
 const plDone = k=> !!SX().talk[k + '|' + dayKey()];
@@ -7510,7 +7519,7 @@ const PLACE_TALK = {
     await play(a === 1 ? 'けんた：…それ、じいちゃんが毎日おいのりしてることと、同じだ。' : 'けんた：おれは、じいちゃんの船が ぶじに帰ってきますように、だ。'); naka('kenta'); },
   async umibe(){ const f = S.story.flags, first = !f.shima_umibe; f.shima_umibe = 1;
     if(!first){ await play(pick(['＊波打ちぎわで、小さな魚が すいすい およいでいた。', '＊砂浜に、きれいな貝がらが落ちていた。…見るだけにして、そのままにした。', '＊岩のくぼみの水たまりに、ヤドカリが何びきも いた。'])); return; }
-    await play(`＊島の海べの岩場。島の子たちが、石をひっくりかえして、カニをさがしていた。
+    await play(`＊かんす海水浴場の はしの岩場。海の中の小さな島に、朱色の鳥居が立っている。島の子たちが、石をひっくりかえして、カニをさがしていた。
       島の子（びっくり）：いたー！ カニ！ おなかに、たまごを だいてる！
       おとうさん（教える）：カニのお母さんは、たまごを おなかにかかえて守るんだ。たまごから生まれた赤ちゃんは、小さすぎて、海をただよって大きくなる。
       おとうさん（教える）：そして、カニのすがたになったら、どこかの海べに たどりつく。…この岩場のカニも、遠くの海から、海をわたってきたのかもしれないね。
