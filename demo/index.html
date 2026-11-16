@@ -2582,7 +2582,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.20.1';
-const BUILD = '20261117-0129';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261117-0134';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.20.1', date:'2026-11-17', items:[
     '1章の場所を「赤間宿通り」にした（絵の赤間宿の通りに合わせて、おばあちゃんの家の前の畑とミカンの木で いもむしをさがす）。じゆうに育てる の赤間も「赤間宿通り」に',
@@ -5834,6 +5834,10 @@ function renderOpt(){
   if($('oNext')) $('oNext').onclick = ()=>{ storyCommit(); S.story.gt = atHour(storyIdx() + 1, 7); storyRT = Date.now(); save(); setTab('home'); refresh(); };
   if($('oMini')) $('oMini').onclick = async ()=>{ storyBusy = true; try{ await tanabataStalls(); } finally { storyBusy = false; } refresh(); };
   if($('oCh')) $('oCh').onclick = async ()=>{ const i = await say('何章へとぶ？（その章の1日目の朝へ。とちゅうの章は見たことにする）', {ans:['1章','2章','3章','4章','5章','6章','やめる']}); if(i > 5) return; const ch = i + 1;
+    // その章から先は、まだ見ていないことにする（1日目の話が もう一度 始まるように。2026-11-17 ユーザー：今の章や前の章へとぶと、はじめの話が出なかった）
+    ['seen', 'eve'].forEach(t=>{ const o = S.story[t] || {}; Object.keys(o).forEach(key=>{ if(+key.split('-')[0] >= ch) delete o[key]; }); });
+    Object.keys(S.story.note || {}).forEach(n=>{ if(+n >= ch) delete S.story.note[n]; });
+    S.story.done = false; S.story.lastCare = 0; S.story.hold = 0; if(ch <= 3) S.story.egg = null;
     for(let k=1; k<ch; k++){ for(let d=1; d<=7; d++) S.story.seen[k + '-' + d] = 1; S.story.seen[k + '-7m'] = 1; }
     if(ch > 3 && !S.story.egg) S.story.egg = {day:dayKey(), glow:0, txt:'大島で見つけた、金色のたまご。'};
     CH.forEach((cc, k)=>{ if(cc.kid && k < ch) meet(cc.kid); }); S.cases = S.cases.map(c=> c && c.story && c.story < ch ? null : c);
