@@ -2582,7 +2582,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.19.1';
-const BUILD = '20261116-2221';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261116-2300';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.19.1', date:'2026-11-16', items:[
     '「じゆうに育てる」の ずかんの上に、しるし（🦋虫そだて見ならい・名人・虫はかせ）と、つぎの しるしまで あと何しゅるいかを出すようにした。羽化して しるしが上がったときも おしらせする',
@@ -6536,7 +6536,7 @@ async function tanabataStalls0(){
       await play(r.got.includes(1) ? 'けんた：1等！？ まじかよ！' : r.got.length ? 'けんた：おれ、ラムネばっかりだった。…いっしょに飲もうぜ。' : 'けんた：くじは、また来年だな。'); }
     save(); }
 }
-const CG = ['kansu', 'fusha', 'ame', 'hotaru', 'ferry', 'amanogawa', 'tenbodai', 'matsuri', 'taifu', 'eki', 'yamaasa', 'takamiya', 'yohaisho', 'happyo', 'gakko', 'obaa', 'tosho', 'jousen', 'oshimako', 'note', 'ranou', 'hikari', 'fuka', 'kinsora', 'ending', 'yume', 'morifuka'];   // 2026-11-14：序章の光・ふ化・金色の虫が海へ・エンディング・かけらの夢・森で生まれていた   // img/ui/ev/キー.webp（gakko・obaa・tosho は ほかの場所の絵。2026-11-14）
+const CG = ['manai', 'manai_yoru', 'kansu', 'fusha', 'ame', 'hotaru', 'ferry', 'amanogawa', 'tenbodai', 'matsuri', 'taifu', 'eki', 'yamaasa', 'takamiya', 'yohaisho', 'happyo', 'gakko', 'obaa', 'tosho', 'jousen', 'oshimako', 'note', 'ranou', 'hikari', 'fuka', 'kinsora', 'ending', 'yume', 'morifuka'];   // 2026-11-14：序章の光・ふ化・金色の虫が海へ・エンディング・かけらの夢・森で生まれていた   // img/ui/ev/キー.webp（gakko・obaa・tosho は ほかの場所の絵。2026-11-14）
 function cgShow(k){ let e = $('cgLayer');
   if(!k || k === 'off' || !CG.includes(k)){ if(e){ e.remove(); otoScene(); } return; }
   if(e) e.classList.remove('atBg');
@@ -7130,6 +7130,7 @@ const STORY_DAY = {
       ＠絵 oshimako
       ＊港で、けんたと漁師のじいちゃんが待っていた。
       ${eggLeft() ? 'けんた：はやく、たまごのところへ行こうぜ！' : 'けんた：生まれたんだ…！ 金色じゃん！'}
+      ＠絵 manai
       ＊夕方、たまごを見つけた、中津宮のそばの、天真名井へ向かう階段の近くへ。`);
     if(k){ let a = await choose('ぼく（ふつう）：…ここで、かえすんだね。', ['森にかえす', 'もう少しだけ、そばにいてほしい'], 'boku');
       if(a === 1) await play('ぼく（なみだ）：…もう少しだけ、そばにいてほしい。\nおとうさん（にっこり）：その気持ちが、育てたってことなんだよ。');
@@ -7267,7 +7268,8 @@ const STORY_EVE = {
       ＊夜8時、中津宮の織女神社の前で、七夕祭。「${S.story.flags.wish || '虫が元気に育ちますように'}」の短冊も、おさめられた。`); cgShow('off'); storyGoal('七夕祭の夜');
     await play('＊お祭りのあと、天の川のそば。手おけの水をのぞくと、水面に、金色の光がゆらっとうつった。');
     await choose('…！', ['光のほうを見る', 'おとうさんをよぶ'], 'boku_surprise');
-    await play(`＊おとうさんといっしょに、光のほうへ。境内の横の、天真名井（あまのまない）へ向かう階段の近く。
+    await play(`＠絵 manai_yoru
+      ＊おとうさんといっしょに、光のほうへ。境内の横の、天真名井（あまのまない）へ向かう階段の近く。
       ＊落ち葉の下に、金色にかすかに光る、大きなたまご。
       おとうさん（しんぱい）：…見たことがない。カブトムシのなかまのたまごに、にているけど…。`);
     await play('おとうさん（教える）：ほんとうは、この島のものは、この島にあるのがいちばんだ。//でも、このたまご…落ち葉がかわいて、このままだとひからびてしまいそうだ。');
