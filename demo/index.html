@@ -2582,7 +2582,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.20.1';
-const BUILD = '20261117-0140';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261117-0148';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.20.1', date:'2026-11-17', items:[
     '1章の場所を「赤間宿通り」にした（絵の赤間宿の通りに合わせて、おばあちゃんの家の前の畑とミカンの木で いもむしをさがす）。じゆうに育てる の赤間も「赤間宿通り」に',
@@ -6653,11 +6653,13 @@ const CH_LOOK = [
   {img:'spot_joyama', col:'#4f9a62', theme:'ささえあう', fx:'moya', line:'朝もやの山。森は、みんなで ささえあっている。'},
   {img:'spot_taisha', col:'#d8a22a', theme:'帰る', fx:'kin', line:'三つのお宮と、金色の光。ふしぎの こたえは、すぐそこに。'},
 ];
+// 章の題を1つずつ出すときの区切り。ふりがなの辞書にあることば（七夕 など）は1つにまとめる（1字ずつだと「夕」だけで「ゆう」になった。2026-11-17 ユーザー）
+function ttlBits(t){ const out = [], a = [...t]; for(let i = 0; i < a.length;){ let n = 1; for(let k = Math.min(8, a.length - i); k > 1; k--) if(RUBY[a.slice(i, i + k).join('')]){ n = k; break; } out.push(a.slice(i, i + n).join('')); i += n; } return out; }
 function chTitleHTML(ch, date){ const L = CH_LOOK[ch] || CH_LOOK[1], ttl = ch ? CH[ch].ttl : '夏休みのはじまり', place = ch ? CH[ch].place.replace(/の(畑|森|草むら|山道|松林|海ぞいの林)$/, '') : '宗像';
   const fx = Array.from({length:L.fx === 'kaze' ? 16 : 22}, (_, i)=> `<i style="--x:${(i*37 % 100)}%;--y:${(i*53 % 100)}%;--d:${(i*.37 % 3).toFixed(2)}s;--s:${.6 + (i*7 % 10)/10}"></i>`).join('');
   return `<div class="chCard fx-${L.fx}" style="--chc:${L.col};--chimg:url(img/ui/${L.img}.webp)"><div class="chBg"></div><div class="chFx">${fx}</div>
     <div class="chIn"><div class="chNo norb">${ch ? `<small>第</small>${ch}<small>章</small>` : '序章'}</div>
-      <div class="chTtl">${[...ttl].map((t, i)=> `<span style="--i:${i}">${esc(t)}</span>`).join('')}</div>
+      <div class="chTtl">${ttlBits(ttl).map((t, i)=> `<span style="--i:${i}">${esc(t)}</span>`).join('')}</div>
       <div class="chTheme norb">テーマ：${esc(L.theme)}</div>
       <div class="chLine">${esc(L.line)}</div>
       <div class="chDate">${esc(place)}　${esc(date)}</div></div></div>`; }
