@@ -2581,9 +2581,12 @@ const TORI_KEY = KEY_PRE + 'munakata-mushisodate-tori-v1';   // そとで虫を�
 const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
-const GAME_VER = '0.20.2';
-const BUILD = '20261120-1013';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const GAME_VER = '0.20.3';
+const BUILD = '20261120-1059';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
+  {v:'0.20.3', date:'2026-11-20', items:[
+    '虫かごをひらいてすぐにタップして進めると、羽化が2回おきて おうちの画面がこわれ、虫かごをえらべなくなることがあったのを直した（こわれたセーブも、ひらくと成虫にもどる）',
+  ]},
   {v:'0.20.2', date:'2026-11-17', items:[
     '章のはじまりの題のふりがなを直した（「七夕」は たなばた、「台風」は たいふう）',
     '4章で、おみせの前でしょんぼりしている はるかの顔を、なみだの顔にした',
