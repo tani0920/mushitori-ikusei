@@ -1483,6 +1483,20 @@ html.land.tall body.noteUI #rtabs .rt{font-size:15px}
 body.noteUI #hud .sch{color:#b0601a}   /* 明るい札の上でも読めるように */
 .storyFinal{margin:.4em 0}.storyFinal .btn{margin-left:.6em}
 #titleScr .tbtn small{display:block;font-size:.62em;opacity:.85}
+
+/* ホーム画面に追加の案内：押すところの絵（お手伝い日記と同じ。2026-11-21） */
+.agMock{display:flex;align-items:center;gap:6px;background:#E9E6E1;border-radius:14px;padding:7px;margin:.45em 0 .2em;max-width:360px;font-size:13px;font-weight:700;color:#3A3633;line-height:1.2}
+.agMock.col{flex-direction:column;align-items:stretch;gap:2px;padding:5px 7px}
+.agMock.btns{justify-content:space-around}
+.agMock svg{width:18px;height:18px;flex:none;fill:none;stroke:#3A3633;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.agMock .agC{width:34px;height:34px;border-radius:50%;background:#fffc;display:flex;align-items:center;justify-content:center;flex:none}
+.agMock .agPill{flex:1;min-width:0;height:34px;border-radius:999px;background:#fffc;display:flex;align-items:center;gap:4px;padding:0 9px 0 3px;color:#8a817a;font-size:12px}
+.agMock .agPill i{flex:1;font-style:normal;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
+.agMock .agR{display:flex;align-items:center;gap:9px;padding:0 9px;height:32px}
+.agMock .agBt{display:flex;flex-direction:column;align-items:center;gap:3px;padding:3px 5px;font-size:11px;white-space:nowrap}
+.agMock .agMk{border-radius:10px;box-shadow:0 0 0 3px #E8762B;background:#FFF4E8}
+.agMock .agSp{flex:1}
+.agMock .agBl{color:#2B6BE4}
 </style>
 
 <div id="app">
@@ -2588,7 +2602,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.20.4';
-const BUILD = '20261121-1859';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261121-2123';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.20.4', date:'2026-11-21', items:[
     '虫ずもうで「おうえん」をたくさんおすと、音楽がおかしくなったり 鳴らなくなったりするのを直した',
@@ -5891,12 +5905,35 @@ const isStandalone = ()=> matchMedia('(display-mode: standalone)').matches || na
 const isPhone = ()=> matchMedia('(pointer:coarse)').matches && Math.min(screen.width, screen.height) < 600;
 let installEvt = null;   // Android の Chrome は「インストール」ボタンを出せる
 addEventListener('beforeinstallprompt', e=>{ e.preventDefault(); installEvt = e; });
+// ホーム画面に追加の案内（iPhone）。いまの Safari は 下の バーが「≡」だけで、共有ボタンが その中に ある（2026-11-21、お手伝い日記と同じ）
+const isCriOS = /CriOS/.test(navigator.userAgent);
+const agI = d=> `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}"/></svg>`;
+const AG = {menu:'M4 7h16M4 12h16M4 17h10', back:'M15 5l-7 7 7 7', reload:'M19 12a7 7 0 1 1-2-4.9M19 4v4h-4', tabs:'M8 8h11v11H8zM5 16V5h11',
+  share:'M12 3v12M8 7l4-4 4 4M6 11H5v10h14V11h-1', more:'M6 9l6 6 6-6', plus:'M5 4h14v16H5zM12 8v8M8 12h8', copy:'M9 9h10v11H9zM5 15V4h10',
+  book:'M7 4h10v16l-5-4-5 4z', find:'M6 3h9l3 3v8M6 3v18h7M16 16a3 3 0 1 0 0 .01M18.5 18.5L21 21', lang:'M4 6h9M8.5 4v2M6 6c1 4 4 7 7 8M11 6c-1 4-4 7-7 8M14 20l3.5-8 3.5 8M15.2 17h4.6'};
+const agBox = (cls, h)=> `<div class="agMock norb nofuri ${cls}" aria-hidden="true">${h}</div>`;
+const agRows = (rows, mk)=> agBox('col', rows.map(([d, t], k)=> `<span class="agR${k===mk?' agMk':''}">${agI(d)}${t}</span>`).join(''));
+const agAdd = ()=> agBox('', `<span class="agBl" style="padding:0 6px">キャンセル</span><span class="agSp"></span><span style="font-size:12px">ホーム画面に追加</span><span class="agSp"></span><span class="agMk agBl" style="padding:5px 10px">追加</span>`);
+function agIOS(app){
+  if(isCriOS) return `<ol><li>画面の上、アドレスの右にある 共有ボタン（四角から上やじるし）をタップ
+      ${agBox('', `<span class="agPill" style="padding-left:9px"><i>tani0920.github.io</i></span><span class="agC agMk">${agI(AG.share)}</span>`)}</li>
+    <li>出てきた画面の下のほうの「<b>ホーム画面に追加</b>」をタップ<br><small>見つからないときは「表示を増やす」をタップするか、下にスクロール</small>
+      ${agRows([[AG.find, 'ページを検索'], [AG.plus, 'ホーム画面に追加']], 1)}</li>
+    <li>右上の「<b>追加</b>」をタップ → ホーム画面に「${app}」のアイコンができる ${agAdd()}</li></ol>
+    <p class="small">Safari で開いても、アプリにできます。</p>`;
+  return `<ol><li><b>Safari</b>でこのページを開く<br><small>LINEなど、ほかのアプリの中で開いているときは、メニューから「Safariで開く」をえらぶ</small></li>
+    <li>画面の下、アドレスの左にある「≡」をタップ
+      ${agBox('', `<span class="agC">${agI(AG.back)}</span><span class="agPill"><span class="agC agMk" style="width:30px;height:26px;border-radius:9px">${agI(AG.menu)}</span><i>tani0920.github.io</i>${agI(AG.reload)}</span><span class="agC">${agI(AG.tabs)}</span>`)}</li>
+    <li>「<b>共有</b>」をタップ ${agRows([[AG.lang, 'ウェブサイトを翻訳…'], [AG.share, '共有'], [AG.book, 'ブックマークに追加']], 1)}</li>
+    <li>下のボタンのならびの「<b>表示を増やす</b>」をタップ
+      ${agBox('btns', [[AG.copy, 'コピー'], [AG.book, 'ブックマーク'], [AG.more, '表示を増やす']].map(([d, t], k)=> `<span class="agBt${k===2?' agMk':''}"><span class="agC">${agI(d)}</span>${t}</span>`).join(''))}</li>
+    <li>いちばん下の「<b>ホーム画面に追加</b>」をタップ ${agRows([[AG.find, 'ページを検索'], [AG.plus, 'ホーム画面に追加']], 1)}</li>
+    <li>右上の「<b>追加</b>」をタップ → ホーム画面に「${app}」のアイコンができる ${agAdd()}</li></ol>
+    <p class="small">画面の下に共有ボタン（四角から上やじるし）がそのまま見えているときは、それをタップして「表示を増やす」から。iPadは、画面の右上の共有ボタンから「ホーム画面に追加」をえらびます。</p>`;
+}
 function installHTML(){
   if(isStandalone()) return `<div class="ibox now"><b class="ok">いま、アプリで遊んでいます！</b><br>ホーム画面の「虫そだて日記」のアイコンから、いつでも遊べます。<br><small>（もうアプリにしてあるので、このままでOK）</small></div>`;
-  const ios = `<ol><li><b>Safari</b>でこのページを開く<br><small>LINEなど、ほかのアプリの中で開いているときは、メニューから「Safariで開く」をえらぶ</small></li>
-    <li>共有ボタン（四角から上やじるしが出ているマーク）をタップ<br><small>iPhoneは画面の下、iPadは画面の右上にあります</small></li>
-    <li>「<b>ホーム画面に追加</b>」をえらぶ<br><small>見つからないときは、メニューを下にスクロール</small></li>
-    <li>右上の「<b>追加</b>」をタップ → ホーム画面に「虫そだて日記」のアイコンができる</li></ol>`;
+  const ios = agIOS('虫そだて日記');
   const android = `<ol><li><b>Chrome</b>でこのページを開く</li><li>右上の「︙」（点が3つのボタン）をタップ</li>
     <li>「<b>ホーム画面に追加</b>」または「<b>アプリをインストール</b>」をえらぶ</li><li>「追加」（または「インストール」）をタップ → ホーム画面にアイコンができる</li></ol>`;
   const pc = `<ol><li>ChromeやEdgeで開く</li><li>アドレスバーの右はしにある「インストール」のマーク（画面に下やじるし）をクリック</li><li>「インストール」をクリック</li></ol>
