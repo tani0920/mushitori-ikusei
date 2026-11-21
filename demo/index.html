@@ -2534,24 +2534,30 @@ const KEY = 'mi_oto';
 let on = true; try{ on = localStorage.getItem(KEY) !== 'off'; }catch(e){}
 let want = {bgm:null, amb:{}}, bgmId = null, bgmH = null; const ambs = new Map();   // id → handle
 const hv = (id, v)=> sliderToGain(LV[id][0] * (v == null ? 100 : v) / 100);
+// 大きさをかえるのは、かわるときだけ。前の予定は消す（タップのたびに setTargetAtTime がたまると、iPad では音の処理がおもくなり、
+// すもうで おうえんを連打すると 曲がおかしくなって、さいごは鳴らなくなった。2026-11-21）
+function volTo(h, v, tc){
+  if(h.vol === v) return; h.vol = v;
+  const g = h.out.gain, t = ctx.currentTime; g.cancelScheduledValues(t); g.setValueAtTime(g.value, t); g.setTargetAtTime(v, t, tc);
+}
 function apply(){
   if(!ctx || ctx.state === 'closed') return;
   const W = on ? want : {bgm:null, amb:{}};
   if(W.bgm !== bgmId){
     if(bgmH) stopHandle(bgmH, 1.2);
     bgmH = null; bgmId = W.bgm;
-    if(bgmId && LV[bgmId]){ bgmH = newHandle(hv(bgmId, W.bgmV), 0.6, LV[bgmId][1]); startBgm(bgmH, bgmId); }
-  } else if(bgmH) bgmH.out.gain.setTargetAtTime(hv(bgmId, W.bgmV), ctx.currentTime, 0.6);
+    if(bgmId && LV[bgmId]){ bgmH = newHandle(hv(bgmId, W.bgmV), 0.6, LV[bgmId][1]); bgmH.vol = hv(bgmId, W.bgmV); startBgm(bgmH, bgmId); }
+  } else if(bgmH) volTo(bgmH, hv(bgmId, W.bgmV), 0.6);
   ambs.forEach((h, id)=>{ if(!(id in W.amb)){ stopHandle(h, 1.5); ambs.delete(id); } });
   Object.keys(W.amb).forEach(id=>{
     if(!LV[id] || !AMB[id]) return;
     const g = hv(id, W.amb[id]), h = ambs.get(id);
-    if(h) h.out.gain.setTargetAtTime(g, ctx.currentTime, 0.8);
-    else { const n = newHandle(g, 0.9, LV[id][1]); try{ AMB[id](n); }catch(e){ console.error(e); } ambs.set(id, n); }
+    if(h) volTo(h, g, 0.8);
+    else { const n = newHandle(g, 0.9, LV[id][1]); n.vol = g; try{ AMB[id](n); }catch(e){ console.error(e); } ambs.set(id, n); }
   });
 }
-function unlock(){
-  if(!on) return;
+function unlock(){   // 画面にさわったとき：音がまだ鳴っていないときだけ はじめる（鳴っているときは何もしない）
+  if(!on || (ctx && ctx.state === 'running')) return;
   try{ initAudio(); }catch(e){ console.error(e); return; }
   apply();
 }
@@ -2582,7 +2588,7 @@ const QS = new URLSearchParams(location.search);
 
 /* バージョンとこうしん情報：公開するたびに番号を上げる（ふだんは +0.0.1、大きなこうしんは +0.1） */
 const GAME_VER = '0.20.3';
-const BUILD = '20261120-1059';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
+const BUILD = '20261121-1822';   // 公開するたびに tools/bump.sh が日時を書きこむ（version.json と同じ値）
 const CHANGELOG = [
   {v:'0.20.3', date:'2026-11-20', items:[
     '虫かごをひらいてすぐにタップして進めると、羽化が2回おきて おうちの画面がこわれ、虫かごをえらべなくなることがあったのを直した（こわれたセーブも、ひらくと成虫にもどる）',
@@ -5613,7 +5619,7 @@ async function sumoBattle(r, c){
     let cf = rg.querySelector('.cheerFace'); if(!cf){ cf = document.createElement('div'); cf.className = 'cheerFace norb'; cf.innerHTML = '<img src="img/chara/boku_fun.webp" alt="" draggable="false"><span></span>'; rg.appendChild(cf); }
     cf.querySelector('span').textContent = pick(['がんばれー！', 'いけー！', 'まけるなー！', 'ファイトー！', 'そこだー！']);
     cf.classList.remove('on'); void cf.offsetWidth; cf.classList.add('on'); clearTimeout(cf._t); cf._t = setTimeout(()=> cf.classList.remove('on'), 1300);
-    for(let i=0; i<3; i++){ const h = document.createElement('span'); h.className = 'cheerPop norb'; h.textContent = pick(['♥', '★', '♪', '✦']); const q = center(elOf(me)); h.style.left = (q.x + (Math.random()*90 - 45)) + 'px'; h.style.top = (q.y - 20 - Math.random()*30) + 'px'; h.style.setProperty('--c', pick(['#ff7aa8', '#ffd23a', '#7ad0ff', '#9ce07a'])); h.style.animationDelay = (i*.08) + 's'; rg.appendChild(h); setTimeout(()=> h.remove(), 1200); }
+    for(let i=0; i<3 && rg.querySelectorAll('.cheerPop').length < 12; i++){ const h = document.createElement('span'); h.className = 'cheerPop norb'; h.textContent = pick(['♥', '★', '♪', '✦']); const q = center(elOf(me)); h.style.left = (q.x + (Math.random()*90 - 45)) + 'px'; h.style.top = (q.y - 20 - Math.random()*30) + 'px'; h.style.setProperty('--c', pick(['#ff7aa8', '#ffd23a', '#7ad0ff', '#9ce07a'])); h.style.animationDelay = (i*.08) + 's'; rg.appendChild(h); setTimeout(()=> h.remove(), 1200); }
     fx(me, 'cheered', 450); };
   const logEl = $('blog');
   // ぼくと あいての顔：ゆうせい（HPの割合が上）なら えがお、れっせいなら かなしい顔（2026-11-15 ユーザー）
